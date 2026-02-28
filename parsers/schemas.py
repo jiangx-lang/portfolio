@@ -48,9 +48,13 @@ class FundData(BaseModel):
         default_factory=dict,
         description="类别/行业分布，如 {'资讯科技': 55.6, '通讯服务': 17.6}，数值为占比不含百分号",
     )
-    bond_metrics: Optional[Dict[str, float]] = Field(
+    bond_metrics: Optional[Dict[str, Union[float, str]]] = Field(
         default=None,
-        description="债券指标（仅债券/混合基金）：investment_grade_pct, high_yield_pct, avg_duration, avg_maturity, yield_to_maturity；纯股票基金为 None",
+        description="债券指标（仅债券/混合基金）：investment_grade_pct, high_yield_pct, avg_duration, yield_to_maturity, avg_credit_rating(BB-等)；纯股票基金为 None",
+    )
+    asset_allocation: Optional[Dict[str, float]] = Field(
+        default=None,
+        description="宏观资产配置（如百达直接给出的北美股票、发达市场政府债券等），与 market_allocation/sector_allocation 二选一或并存",
     )
 
     class Config:

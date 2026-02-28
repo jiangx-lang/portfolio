@@ -4,5 +4,13 @@
 from parsers.base_parser import BaseFundParser
 from parsers.schemas import BondHolding, FundData, TopHolding
 from parsers.jpm_parser import JPMFundParser
+from parsers.pictet_parser import PictetFundParser
 
-__all__ = ["BaseFundParser", "BondHolding", "FundData", "TopHolding", "JPMFundParser"]
+__all__ = [
+    "BaseFundParser",
+    "BondHolding",
+    "FundData",
+    "TopHolding",
+    "JPMFundParser",
+    "PictetFundParser",
+]

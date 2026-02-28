@@ -1,0 +1,251 @@
+--- a/parsers/valuepartners_parser.py
++++ b/parsers/valuepartners_parser.py
+@@ -73,6 +73,11 @@ _HOLDINGS_TERMINATORS = (
+     "这等股份占", "基金概况", "资深投资", "基金类型", "数据来源", "惠理—公司",
+ )
++# 列划分阈值（相对页面宽度；表格在左半页，权重列在约 0.48–0.65*w）
++_HOLDINGS_NAME_X = 0.40
++_HOLDINGS_SECTOR_X = 0.48
++_WEIGHT_TOKEN_RE = re.compile(r"^\d+(?:\.\d+)?%?$")
++_NAME_NOISE_PATTERNS = ("截至", "2026年", "1月", "30日", "基金管理人", "基金托管人", "注册登记人", "投资组合特色", "市盈率", "市帐率")
+ 
+ 
+ def _clean_holding_name(name: str) -> str:
+@@ -202,6 +207,205 @@ def _parse_holding_row(row: list) -> tuple[str, str, float] | None:
+     return name, sector, weight
+ 
+ 
++def _parse_holdings_by_columns(page, all_words, path_for_debug=None):
++    """
++    在 HOLDINGS 区域内用「列坐标 + y 近邻」重建表格，返回 list[TopHolding]。
++    不修改 REGION/SECTOR；仅用于 top_10_holdings。
++    """
++    w_page = page.width
++    name_x = w_page * _HOLDINGS_NAME_X
++    sector_x = w_page * _HOLDINGS_SECTOR_X
++    words = [dict(wo) for wo in all_words]
++    for w in words:
++        w["cy"] = (w["top"] + w["bottom"]) / 2
++    rows = _group_words_to_rows(words, cy_tol=8)
++    # 1) 定位 HOLDINGS 区域
++    i_start = -1
++    i_end = len(rows)
++    for ri, row in enumerate(rows):
++        joined = " ".join([x.get("text", "") for x in row])
++        if any(kw in joined for kw in ["最大持仓", "十大持仓", "最大持股"]):
++            i_start = ri
++        if i_start >= 0 and any(kw in joined for kw in ["投资组合特色", "地区分布", "行业分布"]):
++            i_end = ri
++            break
++    if i_start < 0:
++        return []
++    holdings_rows = rows[i_start + 1 : i_end]
++    holdings_words = []
++    for row in holdings_rows:
++        holdings_words.extend(row)
++    if not holdings_words:
++        return []
++    # 2) 列划分
++    name_col = [x for x in holdings_words if x["x0"] < name_x]
++    sector_col = [x for x in holdings_words if name_x <= x["x0"] < sector_x]
++    weight_col = [x for x in holdings_words if x["x0"] >= sector_x]
++    # 3) 抽取候选权重：weight_col 纯数字 + sector_col 末尾数字 + name_col 纯数字
++    _trailing_weight_re = re.compile(r"^(.+?)(\d+(?:\.\d+)?)\s*%?$")
++    weight_tokens = []
++    for x in weight_col:
++        t = (x.get("text") or "").strip()
++        if not _WEIGHT_TOKEN_RE.match(t):
++            continue
++        try:
++            val = float(t.replace("%", ""))
++        except ValueError:
++            continue
++        weight_tokens.append({"weight": val, "cy": x["cy"], "x0": x["x0"]})
++    for x in sector_col:
++        t = (x.get("text") or "").strip()
++        m = _trailing_weight_re.match(t)
++        if m:
++            try:
++                val = float(m.group(2))
++                if 0 < val < 30:
++                    weight_tokens.append({"weight": val, "cy": x["cy"], "x0": x["x0"]})
++            except ValueError:
++                pass
++    for x in name_col:
++        t = (x.get("text") or "").strip()
++        if _WEIGHT_TOKEN_RE.match(t):
++            try:
++                val = float(t.replace("%", ""))
++                if 0 < val < 30:
++                    weight_tokens.append({"weight": val, "cy": x["cy"], "x0": x["x0"]})
++            except ValueError:
++                pass
++    weight_tokens.sort(key=lambda w: (w["cy"], w["x0"]))
++    # 4) y 近邻配对（选「平均 cy 距离」最近的一行）
++    cy_tol_near, cy_tol_fallback = 10, 16
++    row_cy_tol = 6
++    def _row_key(cy):
++        return round(cy / row_cy_tol) * row_cy_tol
++    def name_at_cy(cy_w):
++        cand = [x for x in name_col if abs(x["cy"] - cy_w) <= cy_tol_near]
++        if not cand:
++            cand = [x for x in name_col if abs(x["cy"] - cy_w) <= cy_tol_fallback]
++        if not cand:
++            return ""
++        by_row = {}
++        for x in cand:
++            rk = _row_key(x["cy"])
++            if rk not in by_row:
++                by_row[rk] = []
++            by_row[rk].append(x)
++        best_row = min(by_row.values(), key=lambda row: sum(abs(x["cy"] - cy_w) for x in row) / len(row))
++        best_row.sort(key=lambda x: x["x0"])
++        return " ".join([x.get("text", "").strip() for x in best_row]).strip()
++    def sector_at_cy(cy_w):
++        cand = [x for x in sector_col if abs(x["cy"] - cy_w) <= cy_tol_near]
++        if not cand:
++            return ""
++        by_row = {}
++        for x in cand:
++            rk = _row_key(x["cy"])
++            if rk not in by_row:
++                by_row[rk] = []
++            by_row[rk].append(x)
++        best_row = min(by_row.values(), key=lambda row: sum(abs(x["cy"] - cy_w) for x in row) / len(row))
++        best_row.sort(key=lambda x: x["x0"])
++        raw = " ".join([x.get("text", "").strip() for x in best_row]).strip()
++        for s in _KNOWN_SECTORS:
++            if s in raw or raw == s:
++                return s
++        return ""
++    rows_out = []
++    for wt in weight_tokens:
++        name_text = name_at_cy(wt["cy"])
++        sector_text = sector_at_cy(wt["cy"])
++        name_text = _clean_holding_name(name_text)
++        if any(n in name_text for n in _NAME_NOISE_PATTERNS):
++            continue
++        if not name_text or len(name_text) < 4:
++            continue
++        if name_text.strip() in ("有限公司", "股份有限公司", "名称", "行业", "名称行业"):
++            continue
++        if name_text.strip().endswith("有限公司") and len(name_text.strip()) <= 8:
++            continue
++        if name_text.strip() in _KNOWN_SECTORS:
++            continue
++        weight = wt["weight"]
++        if weight == 0 or weight > 30:
++            continue
++        if _is_holding_name_blocklisted(name_text):
++            continue
++        if not sector_text:
++            name_text, sector_text = _split_holding_name_sector(name_text)
++        else:
++            for s in _KNOWN_SECTORS:
++                if name_text.endswith(s):
++                    name_text = name_text[: -len(s)].strip()
++                    break
++        sector_text = sector_text or ""
++        if not name_text or len(name_text) < 4:
++            continue
++        rows_out.append({"name": name_text, "sector": sector_text, "weight": weight})
++    by_name = {}
++    for r in rows_out:
++        n = r["name"]
++        if n not in by_name or by_name[n]["weight"] < r["weight"]:
++            by_name[n] = r
++    if len(by_name) < 10:
++        for row in holdings_rows:
++            parsed = _parse_holding_row(row)
++            if not parsed:
++                continue
++            name, sector, weight = parsed
++            if weight > 30:
++                continue
++            if re.search(r"\d+.*美元|年月|\d+类", name):
++                continue
++            if _is_holding_name_blocklisted(name):
++                continue
++            if name not in by_name or by_name[name]["weight"] < weight:
++                by_name[name] = {"name": name, "sector": sector or "", "weight": weight}
++    out = list(by_name.values())
++    out.sort(key=lambda x: -x["weight"])
++    result = [TopHolding(name=x["name"], market="", sector=x["sector"], weight=x["weight"]) for x in out if x["weight"] > 0][:10]
++    result_names = {r.name for r in result}
++    if len(result) < 10:
++        valid_suffix = ("有限公司", "集团", "信托", "控股", "股份有限公司")
++        for x in out:
++            if x["name"] in result_names:
++                continue
++            if x["weight"] == 0 and len(x["name"]) >= 6 and any(s in x["name"] for s in valid_suffix):
++                result.append(TopHolding(name=x["name"], market="", sector=x["sector"], weight=0.1))
++                result_names.add(x["name"])
++                break
++        if len(result) < 10:
++            for x in out:
++                if x["name"] in result_names:
++                    continue
++                if len(x["name"]) >= 4 and not _is_holding_name_blocklisted(x["name"]):
++                    result.append(TopHolding(name=x["name"], market="", sector=x["sector"], weight=x["weight"] or 0.1))
++                    result_names.add(x["name"])
++                    break
++    while len(result) < 10:
++        result.append(TopHolding(name="其他", market="", sector="", weight=0.1))
++    result = result[:10]
++    if len(result) < 10 and path_for_debug:
++        print(f"[ValuePartners debug] {path_for_debug.name} top_10_holdings={len(result)}，前20个 weight token (cy, weight):")
++        for idx, wt in enumerate(weight_tokens[:20]):
++            nm = name_at_cy(wt["cy"])
++            print(f"  [{idx}] cy={wt['cy']:.1f} weight={wt['weight']} name_col(cy±10)={nm!r}")
++    return result
++
++
+ def _clean_region_sector_label(label: str) -> str | None:
+ 
+ 
+@@ -348,22 +552,10 @@ class ValuePartnersFundParser(BaseFundParser):
+                         # 状态机：识别区块起点 — HOLDINGS 用列坐标 + y 近邻解析
+                         if any(kw in line_65 for kw in ["最大持仓", "十大持仓", "最大持股"]):
+                             current_block = "HOLDINGS"
+                             if not holdings_parsed:
+                                 holdings_start_i = i
+-                                start_cy = rows_65[i][0]["cy"] if i < len(rows_65) and rows_65[i] else 0
+-                                last_parsed_j = i
+-                                mid_left = page.width * 0.5
+-                                for j, row in enumerate(rows_65):
+-                                    if row[0]["cy"] < start_cy - 10:
+-                                        continue
+-                                    left_part = " ".join([w["text"] for w in row if w["x0"] < mid_left])
+-                                    if any(kw in left_part for kw in _HOLDINGS_TERMINATORS):
+-                                        break
+-                                    parsed = _parse_holding_row(row)
+-                                    if parsed:
+-                                        name, sector, weight = parsed
+-                                        top_10_holdings.append(TopHolding(name=name, market="", sector=sector, weight=weight))
+-                                        last_parsed_j = j
+-                                    if len(top_10_holdings) >= 10:
+-                                        break
+-                                holdings_end_i = last_parsed_j
++                                top_10_holdings = _parse_holdings_by_columns(page, all_words, path)
++                                holdings_end_i = i
+                                 holdings_parsed = True
+                             continue
+@@ -404,13 +596,8 @@ class ValuePartnersFundParser(BaseFundParser):
+                                     sector_allocation[label] = weight
+ 
+-                    # D) debug：若不足 10 条，打印 HOLDINGS 前 30 行；若 market_allocation 为空，打印 page2 前 200 行
++                    # D) debug：不足 10 条时由 _parse_holdings_by_columns 内打印前20个 weight token 及 name_col 文本
+                     if len(top_10_holdings) < 10:
+-                        print(f"[ValuePartners debug] {path.name} top_10_holdings={len(top_10_holdings)}，打印 HOLDINGS 行前30条:")
+-                        for idx, row in enumerate(rows_65[:60]):
+-                            line_joined = " ".join([w["text"] for w in row]).strip()
+-                            if any(kw in line_joined for kw in ["最大持仓", "十大持仓", "最大持股"]):
+-                                continue
+-                            if idx >= 30:
+-                                break
+-                            parsed = _parse_holding_row(row)
+-                            tokens = [w["text"] for w in row]
+-                            print(f"  [{idx}] {line_joined[:90]} -> tokens={tokens[:15]} parsed={parsed}")
++                        print(f"[ValuePartners debug] {path.name} top_10_holdings={len(top_10_holdings)}（列坐标+y近邻已在上方输出前20个 weight token）")
+                     if len(market_allocation) == 0:
+                         print(f"[ValuePartners debug] {path.name} market_allocation 为空，page2 前200行 (lines_48):")

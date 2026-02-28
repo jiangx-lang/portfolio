@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Portfolio Matcher - 基金投资组合匹配系统
-入口脚本：使用 fund_factory 解析 onepage 目录下的摩根 PDF，并打印 FundData。
+Phase 1 最后一步：批量扫描 onepage 目录下所有摩根基金 PDF，将解析结果以 JSON 形式打印到终端，供人工校验。
 """
 
 import json
@@ -15,124 +15,56 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from fund_factory import parse_fund_pdf
-from parsers.schemas import FundData
+from fund_factory import get_parser_for_file, parse_fund_pdf
 
 
-def format_fund_summary(data: FundData, index: int) -> str:
-    """将单只 FundData 格式化为「摩根产品一览」风格的可读汇总（含投资组合分析、十大持仓、市场/类别分布、债券指标）。"""
-    lines = [f"{index}. {data.fund_name}"]
+# 目标文件夹：优先使用指定绝对路径，不存在时退回到脚本所在目录的 onepage 子目录
+ONEPAGE_DIR = Path(r"D:\portoflio for mrf\onepage")
+if not ONEPAGE_DIR.exists():
+    ONEPAGE_DIR = Path(__file__).resolve().parent / "onepage"
 
-    # 投资组合分析
-    pa = data.portfolio_analysis
-    if pa:
-        parts = []
-        if "年化波幅(%)" in pa:
-            v = pa["年化波幅(%)"]
-            vals = [str(v.get("近三年")), str(v.get("近五年")), str(v.get("自成立至今"))]
-            vals = [x if x != "None" else "无" for x in vals]
-            parts.append(f"年化波幅 近三/五/成立 {' / '.join(vals)}")
-        if "Sharpe比率" in pa:
-            v = pa["Sharpe比率"]
-            vals = [str(v.get("近三年")) if v.get("近三年") is not None else "无",
-                    str(v.get("近五年")) if v.get("近五年") is not None else "无",
-                    str(v.get("自成立至今")) if v.get("自成立至今") is not None else "无"]
-            parts.append(f"Sharpe {' / '.join(vals)}")
-        if "平均每年回报(%)" in pa:
-            v = pa["平均每年回报(%)"]
-            vals = [str(v.get("近三年")), str(v.get("近五年")), str(v.get("自成立至今"))]
-            vals = [x if x != "None" else "无" for x in vals]
-            parts.append(f"平均每年回报 {' / '.join(vals)}")
-        lines.append("投资组合分析：" + "；".join(parts))
-    else:
-        lines.append("投资组合分析：无（该 PDF 未解析到该表）")
-
-    # 十大持仓（股票部分）
-    holdings = data.top_10_holdings
-    if holdings:
-        items = [f"{h.name} {h.weight}" for h in holdings]
-        lines.append("十大持仓：" + "、".join(items))
-    else:
-        lines.append("十大持仓：无（债券型，未解析到股票持仓）")
-
-    # 十大债券持仓（债券型）
-    bond_holdings = data.top_10_bond_holdings
-    if bond_holdings:
-        items = [f"{h.name} 票息{h.coupon_rate}% 到期{h.maturity} {h.weight}%" for h in bond_holdings]
-        lines.append("十大债券持仓：" + "； ".join(items))
-
-    # 市场分布
-    market = data.market_allocation
-    if market:
-        items = [f"{k} {v}" for k, v in sorted(market.items(), key=lambda x: -x[1])]
-        lines.append("市场分布：" + "、".join(items))
-    else:
-        lines.append("市场分布：无")
-
-    # 类别分布
-    sector = data.sector_allocation
-    if sector:
-        items = [f"{k} {v}" for k, v in sorted(sector.items(), key=lambda x: -x[1])]
-        lines.append("类别分布：" + "、".join(items))
-    else:
-        lines.append("类别分布：无")
-
-    # 债券指标（若有）
-    bm = data.bond_metrics
-    if bm:
-        parts = []
-        if "investment_grade_pct" in bm:
-            parts.append(f"投资级占比 {bm['investment_grade_pct']}%")
-        if "high_yield_pct" in bm:
-            parts.append(f"高收益占比 {bm['high_yield_pct']}%")
-        if "avg_duration" in bm:
-            parts.append(f"平均久期 {bm['avg_duration']} 年")
-        if "avg_maturity" in bm:
-            parts.append(f"平均到期 {bm['avg_maturity']} 年")
-        if "yield_to_maturity" in bm:
-            parts.append(f"期满收益率 {bm['yield_to_maturity']}%")
-        if parts:
-            lines.append("债券指标：" + "、".join(parts))
-
-    return "\n".join(lines)
+# 支持解析的 PDF：文件名包含以下任一关键字（摩根、百达等）
+SUPPORTED_KEYWORDS = ("摩根", "百达", "jpm", "pictet")
 
 
 def main() -> None:
-    # 优先解析 onepage 目录下包含「摩根」的 PDF
-    project_root = Path(__file__).resolve().parent
-    onepage_dir = project_root / "onepage"
-
-    if not onepage_dir.is_dir():
-        print(f"未找到 onepage 目录: {onepage_dir}")
-        print("请将《摩根太平洋科技》等 PDF 放入 onepage 目录后重试。")
+    if not ONEPAGE_DIR.is_dir():
+        print(f"错误：目标目录不存在: {ONEPAGE_DIR}")
         return
 
-    pdfs = list(onepage_dir.glob("*.pdf"))
-    jpm_pdfs = [p for p in pdfs if "摩根" in p.stem or "jpm" in p.stem.lower()]
+    pdf_files = list(ONEPAGE_DIR.glob("*.pdf"))
+    supported_pdfs = [p for p in pdf_files if get_parser_for_file(p) is not None]
 
-    if not jpm_pdfs:
-        print(f"onepage 目录下未找到摩根相关 PDF。当前 PDF 列表: {[p.name for p in pdfs]}")
+    if not supported_pdfs:
+        print(f"在 {ONEPAGE_DIR} 下未找到可解析的 PDF（文件名需包含：{SUPPORTED_KEYWORDS}）。")
+        print(f"当前该目录下 PDF 数量: {len(pdf_files)}")
         return
 
-    results: list[tuple[Path, FundData]] = []
-    for pdf_path in jpm_pdfs:
+    print(f"共找到 {len(supported_pdfs)} 个可解析基金 PDF，开始批量解析……\n")
+    print("=" * 60)
+
+    success_count = 0
+    for pdf_path in sorted(supported_pdfs, key=lambda p: p.name):
         try:
             data = parse_fund_pdf(pdf_path)
-            results.append((pdf_path, data))
+            success_count += 1
+            # 使用 Pydantic 的 model_dump() 转成字典，再用 json.dumps 保证中文正常显示、格式易读
+            json_str = json.dumps(
+                data.model_dump(),
+                ensure_ascii=False,
+                indent=2,
+            )
+            print(f"\n【{data.fund_name}】 {pdf_path.name}\n")
+            print(json_str)
+            print("\n" + "-" * 60)
         except FileNotFoundError as e:
-            print("文件不存在:", e)
+            print(f"\n[跳过] 文件不存在: {pdf_path.name}\n  错误: {e}\n" + "-" * 60)
         except ValueError as e:
-            print("解析失败:", e)
+            print(f"\n[跳过] 解析失败: {pdf_path.name}\n  错误: {e}\n" + "-" * 60)
+        except Exception as e:
+            print(f"\n[跳过] 未预期错误: {pdf_path.name}\n  错误: {e}\n" + "-" * 60)
 
-    if not results:
-        return
-
-    print("摩根产品一览")
-    print()
-    for i, (pdf_path, data) in enumerate(results, 1):
-        print(format_fund_summary(data, i))
-        print()
-    print("以上即为本次运行解析出的摩根所有产品汇总；如需某一只的完整 JSON 或只保留某几项字段，可以说下要哪只、要哪些字段。")
+    print(f"\n批量扫描结束。成功解析: {success_count}/{len(supported_pdfs)} 个文件。")
 
 
 if __name__ == "__main__":
