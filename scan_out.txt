@@ -1,0 +1,436 @@
+﻿共找到 6 个可解析基金 PDF，开始批量解析……
+
+============================================================
+
+【摩根亚洲总收益】 摩根亚洲总收益.pdf
+
+{
+  "fund_name": "摩根亚洲总收益",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 4.86,
+      "近五年": 6.05,
+      "自成立至今": 5.6
+    },
+    "Sharpe比率": {
+      "近三年": 0.25,
+      "近五年": null,
+      "自成立至今": null
+    },
+    "平均每年回报(%)": {
+      "近三年": 3.23,
+      "近五年": -1.31,
+      "自成立至今": 2.46
+    }
+  },
+  "top_10_holdings": [],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "其他": 36.2,
+    "印度": 16.3,
+    "印度尼西亚": 14.4,
+    "中国内地": 10.2,
+    "日本": 6.2,
+    "中国香港": 5.7,
+    "韩国": 5.2,
+    "澳门": 4.9,
+    "流动资金": 0.9
+  },
+  "sector_allocation": {
+    "政府": 21.6,
+    "政府机构": 7.1,
+    "可换股债券": 2.6,
+    "流动资金": 0.9,
+    "跨国组织": 0.3
+  },
+  "bond_metrics": {
+    "investment_grade_pct": 68.2,
+    "high_yield_pct": 28.7,
+    "avg_duration": 5.2,
+    "avg_maturity": 6.6,
+    "yield_to_maturity": 5.83
+  },
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根亚洲股息】 摩根亚洲股息.pdf
+
+{
+  "fund_name": "摩根亚洲股息",
+  "portfolio_analysis": {},
+  "top_10_holdings": [
+    {
+      "name": "Taiwan Semiconductor",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 9.9
+    },
+    {
+      "name": "Tencent Holdings",
+      "market": "中国内地",
+      "sector": "通讯服务",
+      "weight": 7.3
+    },
+    {
+      "name": "HDFC Bank",
+      "market": "印度",
+      "sector": "金融",
+      "weight": 4.0
+    },
+    {
+      "name": "Samsung Electronics",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 3.8
+    },
+    {
+      "name": "Alibaba Group Holding",
+      "market": "中国内地",
+      "sector": "非必需消费",
+      "weight": 3.2
+    },
+    {
+      "name": "Telstra Group",
+      "market": "澳大利亚",
+      "sector": "通讯服务",
+      "weight": 3.1
+    },
+    {
+      "name": "AIA Group",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.7
+    },
+    {
+      "name": "SK hynix",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 2.4
+    },
+    {
+      "name": "Hong Kong Exchanges & Clearing",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.2
+    },
+    {
+      "name": "Midea Group",
+      "market": "中国内地",
+      "sector": "非必需消费",
+      "weight": 1.9
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "中国内地": 26.6,
+    "中国台湾": 17.2,
+    "韩国": 15.5,
+    "澳大利亚": 15.1,
+    "印度": 8.8,
+    "其他": 6.6,
+    "中国香港": 6.1,
+    "新加坡": 4.1
+  },
+  "sector_allocation": {
+    "金融": 29.3,
+    "资讯科技": 24.8,
+    "通讯服务": 16.9,
+    "非必需消费": 12.6,
+    "房地产": 6.6,
+    "其他": 5.2,
+    "必需消费": 2.4,
+    "工业": 2.3
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根国际债】 摩根国际债.pdf
+
+{
+  "fund_name": "摩根国际债",
+  "portfolio_analysis": {},
+  "top_10_holdings": [],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "北美": 39.9,
+    "成熟欧洲": 30.4,
+    "新兴市场": 19.9,
+    "成熟亚太区": 7.7,
+    "流动资金": 1.8,
+    "国际": 0.3
+  },
+  "sector_allocation": {
+    "现金": 36.2,
+    "投资类别企业债券": 31.6,
+    "本地货币": 11.3,
+    "政府相关": 9.6,
+    "硬货币": 8.2,
+    "高收益企业债券": 1.7,
+    "资产担保证券": 0.7,
+    "其他证券化": 0.4,
+    "担保债券": 0.3
+  },
+  "bond_metrics": {
+    "investment_grade_pct": 94.9,
+    "high_yield_pct": 5.2,
+    "avg_duration": 6.2,
+    "avg_maturity": 7.9,
+    "yield_to_maturity": 5.26
+  },
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根太平洋科技】 摩根太平洋科技.pdf
+
+{
+  "fund_name": "摩根太平洋科技",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 19.31,
+      "近五年": 21.4,
+      "自成立至今": 23.35
+    },
+    "Sharpe比率": {
+      "近三年": 0.75,
+      "近五年": null,
+      "自成立至今": 0.28
+    },
+    "平均每年回报(%)": {
+      "近三年": 16.76,
+      "近五年": -2.73,
+      "自成立至今": 8.74
+    }
+  },
+  "top_10_holdings": [
+    {
+      "name": "Tencent Holdings",
+      "market": "中国内地",
+      "sector": "通讯服务",
+      "weight": 5.1
+    },
+    {
+      "name": "Taiwan Semiconductor",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 4.9
+    },
+    {
+      "name": "SK hynix",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 4.7
+    },
+    {
+      "name": "Alibaba Group Holding",
+      "market": "中国内地",
+      "sector": "非必需消费",
+      "weight": 4.1
+    },
+    {
+      "name": "Sony Group",
+      "market": "日本",
+      "sector": "非必需消费",
+      "weight": 3.2
+    },
+    {
+      "name": "Zhongji Innolight",
+      "market": "中国内地",
+      "sector": "资讯科技",
+      "weight": 3.0
+    },
+    {
+      "name": "Nintendo",
+      "market": "日本",
+      "sector": "通讯服务",
+      "weight": 3.0
+    },
+    {
+      "name": "Sungrow Power Supply",
+      "market": "中国内地",
+      "sector": "工业",
+      "weight": 2.9
+    },
+    {
+      "name": "MediaTek",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 2.7
+    },
+    {
+      "name": "Futu Holdings",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.5
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "中国内地": 31.9,
+    "日本": 26.6,
+    "中国台湾": 14.1,
+    "韩国": 9.7,
+    "印度": 8.4,
+    "新加坡": 6.2,
+    "中国香港": 1.9,
+    "流动资金": 1.4
+  },
+  "sector_allocation": {
+    "资讯科技": 55.6,
+    "通讯服务": 17.6,
+    "工业": 10.9,
+    "非必需消费": 10.3,
+    "金融": 4.3,
+    "流动资金": 1.4
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根太平洋证券】 摩根太平洋证券.pdf
+
+{
+  "fund_name": "摩根太平洋证券",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 12.55,
+      "近五年": 15.41,
+      "自成立至今": 15.41
+    },
+    "Sharpe比率": {
+      "近三年": 0.53,
+      "近五年": null,
+      "自成立至今": 0.45
+    },
+    "平均每年回报(%)": {
+      "近三年": 8.76,
+      "近五年": -0.13,
+      "自成立至今": 9.7
+    }
+  },
+  "top_10_holdings": [
+    {
+      "name": "Taiwan Semiconductor",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 9.5
+    },
+    {
+      "name": "Tencent Holdings",
+      "market": "中国内地",
+      "sector": "通讯服务",
+      "weight": 5.9
+    },
+    {
+      "name": "Sony Group",
+      "market": "日本",
+      "sector": "非必需消费",
+      "weight": 4.3
+    },
+    {
+      "name": "Samsung Electronics",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 3.6
+    },
+    {
+      "name": "HDFC Bank",
+      "market": "印度",
+      "sector": "金融",
+      "weight": 3.0
+    },
+    {
+      "name": "SK hynix",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 2.7
+    },
+    {
+      "name": "Hong Kong Exchanges & Clearing",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.7
+    },
+    {
+      "name": "AIA Group",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.6
+    },
+    {
+      "name": "HOYA",
+      "market": "日本",
+      "sector": "健康护理",
+      "weight": 2.4
+    },
+    {
+      "name": "FAST RETAILING",
+      "market": "日本",
+      "sector": "非必需消费",
+      "weight": 2.2
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "日本": 30.5,
+    "中国内地": 17.5,
+    "中国台湾": 12.5,
+    "韩国": 11.8,
+    "印度": 9.6,
+    "澳大利亚": 7.1,
+    "中国香港": 5.2,
+    "其他": 4.6,
+    "流动资金": 1.2
+  },
+  "sector_allocation": {
+    "资讯科技": 28.6,
+    "金融": 24.4,
+    "非必需消费": 13.8,
+    "工业": 11.9,
+    "通讯服务": 9.6,
+    "物料": 3.9,
+    "其他": 3.5,
+    "健康护理": 3.3,
+    "流动资金": 1.2
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【瑞士百达策略收益基金-HM人民币每月基金报告（2025年12月)】 瑞士百达策略收益基金-HM人民币每月基金报告（2025年12月).pdf
+
+{
+  "fund_name": "瑞士百达策略收益基金-HM人民币每月基金报告（2025年12月)",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 3.0,
+      "近五年": null,
+      "自成立至今": null
+    },
+    "Sharpe比率": {
+      "近三年": 3.0,
+      "近五年": null,
+      "自成立至今": null
+    }
+  },
+  "top_10_holdings": [],
+  "top_10_bond_holdings": [],
+  "market_allocation": {},
+  "sector_allocation": {},
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+批量扫描结束。成功解析: 6/6 个文件。

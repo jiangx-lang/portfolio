@@ -1,0 +1,43 @@
+========== 第一步：上传代码到服务器 ==========
+
+【在你本地 Windows 电脑 PowerShell 里执行】
+
+你的项目路径是：d:\portoflio for mrf
+服务器：root@65.49.215.242，SSH 端口：11227
+
+--- 做法 A：上传后 ~/portfolio 里直接看到 app.py（推荐）---
+
+1) 先在服务器上创建目录（需输入一次 SSH 密码）：
+   ssh -p 11227 root@65.49.215.242 "mkdir -p ~/portfolio"
+
+2) 在本机上传「项目内容」到 ~/portfolio（会覆盖服务器上同名文件）：
+   cd "d:\portoflio for mrf"
+   scp -P 11227 -r * root@65.49.215.242:~/portfolio/
+
+--- 做法 B：整文件夹上传（上传后多一层目录）---
+
+一条命令搞定（不需要先 ssh 建目录）：
+   scp -P 11227 -r "d:\portoflio for mrf" root@65.49.215.242:~/portfolio
+
+上传完成后，服务器上实际路径是：~/portfolio/portoflio for mrf/
+所以要 cd 进子目录才能看到 app.py。
+
+========== 第二步：在服务器上确认 ==========
+
+SSH 登录：
+   ssh -p 11227 root@65.49.215.242
+
+若用的是「做法 A」，执行：
+   cd ~/portfolio
+   ls
+
+若用的是「做法 B」，执行：
+   cd ~/portfolio/portoflio\ for\ mrf
+   ls
+
+把 ls 的输出发我确认即可。
+
+========== 说明 ==========
+-P 11227     → 你的 SSH 端口
+-r           → 递归整个目录
+~/portfolio  → 服务器上 root 家目录下的 portfolio 文件夹

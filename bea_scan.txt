@@ -1,0 +1,704 @@
+﻿共找到 8 个可解析基金 PDF，开始批量解析……
+
+============================================================
+
+【东亚联丰亚洲债券及货币基金每月基金报告（2026年1月）】 东亚联丰亚洲债券及货币基金每月基金报告（2026年1月）.pdf
+
+{
+  "fund_name": "东亚联丰亚洲债券及货币基金每月基金报告（2026年1月）",
+  "portfolio_analysis": {},
+  "top_10_holdings": [
+    {
+      "name": "印度                      38.4%",
+      "market": "金融",
+      "sector": "",
+      "weight": 19.4
+    },
+    {
+      "name": "中国          15.6%",
+      "market": "物料",
+      "sector": "",
+      "weight": 19.0
+    },
+    {
+      "name": "中国澳门",
+      "market": "",
+      "sector": "",
+      "weight": 9.9
+    },
+    {
+      "name": "印尼      8.7%",
+      "market": "房地产",
+      "sector": "",
+      "weight": 11.9
+    },
+    {
+      "name": "中国香港     7.4%",
+      "market": "能源",
+      "sector": "",
+      "weight": 4.4
+    },
+    {
+      "name": "泰国     6.5%",
+      "market": "政府",
+      "sector": "",
+      "weight": 4.4
+    },
+    {
+      "name": "其他    5.3%",
+      "market": "工业",
+      "sector": "",
+      "weight": 3.1
+    },
+    {
+      "name": "蒙古",
+      "market": "",
+      "sector": "",
+      "weight": 4.3
+    },
+    {
+      "name": "斯里兰卡   2.7%",
+      "market": "其他",
+      "sector": "",
+      "weight": 1.4
+    },
+    {
+      "name": "现金  1.1%",
+      "market": "现金",
+      "sector": "",
+      "weight": 1.1
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "中国": 15.6,
+    "其他": 1.4,
+    "现金": 1.1
+  },
+  "sector_allocation": {
+    "金融": 19.4,
+    "物料": 19.0,
+    "非必需消费品": 16.2,
+    "公共事业": 13.7,
+    "能源": 4.4,
+    "工业": 3.1,
+    "通讯服务": 2.6,
+    "健康护理": 2.6,
+    "现金": 1.1
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【东亚联丰环球股票基金每月基金报告（2026年1月）】 东亚联丰环球股票基金每月基金报告（2026年1月）.pdf
+
+{
+  "fund_name": "东亚联丰环球股票基金每月基金报告（2026年1月）",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 1.0,
+      "近五年": null,
+      "自成立至今": null
+    }
+  },
+  "top_10_holdings": [
+    {
+      "name": "美国                       65.8%",
+      "market": "资讯科技",
+      "sector": "",
+      "weight": 27.6
+    },
+    {
+      "name": "其他-欧洲   6.3%",
+      "market": "金融",
+      "sector": "",
+      "weight": 15.2
+    },
+    {
+      "name": "其他-亚洲   5.6%",
+      "market": "工业",
+      "sector": "",
+      "weight": 12.3
+    },
+    {
+      "name": "日本   4.7%",
+      "market": "非必需消费品",
+      "sector": "",
+      "weight": 9.8
+    },
+    {
+      "name": "其他  3.2%",
+      "market": "健康护理",
+      "sector": "",
+      "weight": 8.2
+    },
+    {
+      "name": "现金  2.3%",
+      "market": "能源",
+      "sector": "",
+      "weight": 3.6
+    },
+    {
+      "name": "中国台湾  2.3%",
+      "market": "公共事业",
+      "sector": "",
+      "weight": 2.4
+    },
+    {
+      "name": "英国  2.2%",
+      "market": "现金",
+      "sector": "",
+      "weight": 2.3
+    },
+    {
+      "name": "加拿大  2.0%",
+      "market": "其他",
+      "sector": "",
+      "weight": 0.3
+    },
+    {
+      "name": "英伟达",
+      "market": "美国",
+      "sector": "",
+      "weight": 5.3
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "美国": 1.3,
+    "其他-欧洲": 6.3,
+    "其他-亚洲": 5.6,
+    "日本": 4.7,
+    "其他": 0.3,
+    "法国": 2.8,
+    "中国": 2.6,
+    "现金": 2.3,
+    "中国台湾": 1.5,
+    "英国": 2.2,
+    "加拿大": 2.0
+  },
+  "sector_allocation": {
+    "资讯科技": 27.6,
+    "金融": 15.2,
+    "工业": 12.3,
+    "非必需消费品": 9.8,
+    "健康护理": 8.2,
+    "通讯服务": 8.2,
+    "物料": 5.8,
+    "必需消费品": 4.3,
+    "现金": 2.3,
+    "能源": 3.6,
+    "公共事业": 2.4
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根亚洲总收益】 摩根亚洲总收益.pdf
+
+{
+  "fund_name": "摩根亚洲总收益",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 4.86,
+      "近五年": 6.05,
+      "自成立至今": 5.6
+    },
+    "Sharpe比率": {
+      "近三年": 0.25,
+      "近五年": null,
+      "自成立至今": null
+    },
+    "平均每年回报(%)": {
+      "近三年": 3.23,
+      "近五年": -1.31,
+      "自成立至今": 2.46
+    }
+  },
+  "top_10_holdings": [],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "其他": 36.2,
+    "印度": 16.3,
+    "印度尼西亚": 14.4,
+    "中国内地": 10.2,
+    "日本": 6.2,
+    "中国香港": 5.7,
+    "韩国": 5.2,
+    "澳门": 4.9,
+    "流动资金": 0.9
+  },
+  "sector_allocation": {
+    "政府": 21.6,
+    "政府机构": 7.1,
+    "可换股债券": 2.6,
+    "流动资金": 0.9,
+    "跨国组织": 0.3
+  },
+  "bond_metrics": {
+    "investment_grade_pct": 68.2,
+    "high_yield_pct": 28.7,
+    "avg_duration": 5.2,
+    "avg_maturity": 6.6,
+    "yield_to_maturity": 5.83
+  },
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根亚洲股息】 摩根亚洲股息.pdf
+
+{
+  "fund_name": "摩根亚洲股息",
+  "portfolio_analysis": {},
+  "top_10_holdings": [
+    {
+      "name": "Taiwan Semiconductor",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 9.9
+    },
+    {
+      "name": "Tencent Holdings",
+      "market": "中国内地",
+      "sector": "通讯服务",
+      "weight": 7.3
+    },
+    {
+      "name": "HDFC Bank",
+      "market": "印度",
+      "sector": "金融",
+      "weight": 4.0
+    },
+    {
+      "name": "Samsung Electronics",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 3.8
+    },
+    {
+      "name": "Alibaba Group Holding",
+      "market": "中国内地",
+      "sector": "非必需消费",
+      "weight": 3.2
+    },
+    {
+      "name": "Telstra Group",
+      "market": "澳大利亚",
+      "sector": "通讯服务",
+      "weight": 3.1
+    },
+    {
+      "name": "AIA Group",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.7
+    },
+    {
+      "name": "SK hynix",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 2.4
+    },
+    {
+      "name": "Hong Kong Exchanges & Clearing",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.2
+    },
+    {
+      "name": "Midea Group",
+      "market": "中国内地",
+      "sector": "非必需消费",
+      "weight": 1.9
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "中国内地": 26.6,
+    "中国台湾": 17.2,
+    "韩国": 15.5,
+    "澳大利亚": 15.1,
+    "印度": 8.8,
+    "其他": 6.6,
+    "中国香港": 6.1,
+    "新加坡": 4.1
+  },
+  "sector_allocation": {
+    "金融": 29.3,
+    "资讯科技": 24.8,
+    "通讯服务": 16.9,
+    "非必需消费": 12.6,
+    "房地产": 6.6,
+    "其他": 5.2,
+    "必需消费": 2.4,
+    "工业": 2.3
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根国际债】 摩根国际债.pdf
+
+{
+  "fund_name": "摩根国际债",
+  "portfolio_analysis": {},
+  "top_10_holdings": [],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "北美": 39.9,
+    "成熟欧洲": 30.4,
+    "新兴市场": 19.9,
+    "成熟亚太区": 7.7,
+    "流动资金": 1.8,
+    "国际": 0.3
+  },
+  "sector_allocation": {
+    "现金": 36.2,
+    "投资类别企业债券": 31.6,
+    "本地货币": 11.3,
+    "政府相关": 9.6,
+    "硬货币": 8.2,
+    "高收益企业债券": 1.7,
+    "资产担保证券": 0.7,
+    "其他证券化": 0.4,
+    "担保债券": 0.3
+  },
+  "bond_metrics": {
+    "investment_grade_pct": 94.9,
+    "high_yield_pct": 5.2,
+    "avg_duration": 6.2,
+    "avg_maturity": 7.9,
+    "yield_to_maturity": 5.26
+  },
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根太平洋科技】 摩根太平洋科技.pdf
+
+{
+  "fund_name": "摩根太平洋科技",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 19.31,
+      "近五年": 21.4,
+      "自成立至今": 23.35
+    },
+    "Sharpe比率": {
+      "近三年": 0.75,
+      "近五年": null,
+      "自成立至今": 0.28
+    },
+    "平均每年回报(%)": {
+      "近三年": 16.76,
+      "近五年": -2.73,
+      "自成立至今": 8.74
+    }
+  },
+  "top_10_holdings": [
+    {
+      "name": "Tencent Holdings",
+      "market": "中国内地",
+      "sector": "通讯服务",
+      "weight": 5.1
+    },
+    {
+      "name": "Taiwan Semiconductor",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 4.9
+    },
+    {
+      "name": "SK hynix",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 4.7
+    },
+    {
+      "name": "Alibaba Group Holding",
+      "market": "中国内地",
+      "sector": "非必需消费",
+      "weight": 4.1
+    },
+    {
+      "name": "Sony Group",
+      "market": "日本",
+      "sector": "非必需消费",
+      "weight": 3.2
+    },
+    {
+      "name": "Zhongji Innolight",
+      "market": "中国内地",
+      "sector": "资讯科技",
+      "weight": 3.0
+    },
+    {
+      "name": "Nintendo",
+      "market": "日本",
+      "sector": "通讯服务",
+      "weight": 3.0
+    },
+    {
+      "name": "Sungrow Power Supply",
+      "market": "中国内地",
+      "sector": "工业",
+      "weight": 2.9
+    },
+    {
+      "name": "MediaTek",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 2.7
+    },
+    {
+      "name": "Futu Holdings",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.5
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "中国内地": 31.9,
+    "日本": 26.6,
+    "中国台湾": 14.1,
+    "韩国": 9.7,
+    "印度": 8.4,
+    "新加坡": 6.2,
+    "中国香港": 1.9,
+    "流动资金": 1.4
+  },
+  "sector_allocation": {
+    "资讯科技": 55.6,
+    "通讯服务": 17.6,
+    "工业": 10.9,
+    "非必需消费": 10.3,
+    "金融": 4.3,
+    "流动资金": 1.4
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【摩根太平洋证券】 摩根太平洋证券.pdf
+
+{
+  "fund_name": "摩根太平洋证券",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 12.55,
+      "近五年": 15.41,
+      "自成立至今": 15.41
+    },
+    "Sharpe比率": {
+      "近三年": 0.53,
+      "近五年": null,
+      "自成立至今": 0.45
+    },
+    "平均每年回报(%)": {
+      "近三年": 8.76,
+      "近五年": -0.13,
+      "自成立至今": 9.7
+    }
+  },
+  "top_10_holdings": [
+    {
+      "name": "Taiwan Semiconductor",
+      "market": "中国台湾",
+      "sector": "资讯科技",
+      "weight": 9.5
+    },
+    {
+      "name": "Tencent Holdings",
+      "market": "中国内地",
+      "sector": "通讯服务",
+      "weight": 5.9
+    },
+    {
+      "name": "Sony Group",
+      "market": "日本",
+      "sector": "非必需消费",
+      "weight": 4.3
+    },
+    {
+      "name": "Samsung Electronics",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 3.6
+    },
+    {
+      "name": "HDFC Bank",
+      "market": "印度",
+      "sector": "金融",
+      "weight": 3.0
+    },
+    {
+      "name": "SK hynix",
+      "market": "韩国",
+      "sector": "资讯科技",
+      "weight": 2.7
+    },
+    {
+      "name": "Hong Kong Exchanges & Clearing",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.7
+    },
+    {
+      "name": "AIA Group",
+      "market": "中国香港",
+      "sector": "金融",
+      "weight": 2.6
+    },
+    {
+      "name": "HOYA",
+      "market": "日本",
+      "sector": "健康护理",
+      "weight": 2.4
+    },
+    {
+      "name": "FAST RETAILING",
+      "market": "日本",
+      "sector": "非必需消费",
+      "weight": 2.2
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {
+    "日本": 30.5,
+    "中国内地": 17.5,
+    "中国台湾": 12.5,
+    "韩国": 11.8,
+    "印度": 9.6,
+    "澳大利亚": 7.1,
+    "中国香港": 5.2,
+    "其他": 4.6,
+    "流动资金": 1.2
+  },
+  "sector_allocation": {
+    "资讯科技": 28.6,
+    "金融": 24.4,
+    "非必需消费": 13.8,
+    "工业": 11.9,
+    "通讯服务": 9.6,
+    "物料": 3.9,
+    "其他": 3.5,
+    "健康护理": 3.3,
+    "流动资金": 1.2
+  },
+  "bond_metrics": null,
+  "asset_allocation": null
+}
+
+------------------------------------------------------------
+
+【瑞士百达策略收益基金-HM人民币每月基金报告（2025年12月)】 瑞士百达策略收益基金-HM人民币每月基金报告（2025年12月).pdf
+
+{
+  "fund_name": "瑞士百达策略收益基金-HM人民币每月基金报告（2025年12月)",
+  "portfolio_analysis": {
+    "年化波幅(%)": {
+      "近三年": 10.18,
+      "近五年": null,
+      "自成立至今": null
+    },
+    "Sharpe比率": {
+      "近三年": 1.29,
+      "近五年": null,
+      "自成立至今": null
+    }
+  },
+  "top_10_holdings": [
+    {
+      "name": "Invesco Physical Gold Etc",
+      "market": "",
+      "sector": "",
+      "weight": 6.65
+    },
+    {
+      "name": "Us Treasury N/B 4.125% 15.11.2032 Uns",
+      "market": "",
+      "sector": "",
+      "weight": 6.14
+    },
+    {
+      "name": "Us Treasury N/B 4% 31.01.2029 Uns",
+      "market": "",
+      "sector": "",
+      "weight": 5.65
+    },
+    {
+      "name": "Alphabet Inc-Cl A",
+      "market": "",
+      "sector": "",
+      "weight": 4.7
+    },
+    {
+      "name": "Taiwan Semiconductor Manufac",
+      "market": "",
+      "sector": "",
+      "weight": 3.92
+    },
+    {
+      "name": "Nvidia Corp",
+      "market": "",
+      "sector": "",
+      "weight": 3.86
+    },
+    {
+      "name": "Sk Hynix Inc",
+      "market": "",
+      "sector": "",
+      "weight": 3.32
+    },
+    {
+      "name": "Us Treasury N/B 4.25% 31.12.2026 Uns",
+      "market": "",
+      "sector": "",
+      "weight": 3.28
+    },
+    {
+      "name": "Apple Inc",
+      "market": "",
+      "sector": "",
+      "weight": 2.89
+    },
+    {
+      "name": "Tencent Holdings Ltd",
+      "market": "",
+      "sector": "",
+      "weight": 2.41
+    }
+  ],
+  "top_10_bond_holdings": [],
+  "market_allocation": {},
+  "sector_allocation": {},
+  "bond_metrics": null,
+  "asset_allocation": {
+    "北美股票": 39.7,
+    "亚太股票": 25.1,
+    "发达市场政府债券": 15.3,
+    "黄金": 6.65,
+    "新兴市场政府债券": 2.47,
+    "信用投资级债券": 2.39,
+    "欧洲股票": 1.06,
+    "房地产": 0.53,
+    "信用高收益债券": 0.02,
+    "现金及等价物": 6.79
+  }
+}
+
+------------------------------------------------------------
+
+批量扫描结束。成功解析: 8/8 个文件。

@@ -1,25 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-宏观资产配置优化器 - V7：真实白名单 + 零幻觉绝对限制版
-绝对白名单机制：仅允许 PDF 扫描出的 15 只产品，池外产品绝不调用；黄金缺项接受追踪误差。
+宏观资产配置优化器 - V8：双端自适应 + 移动端卡片流版
+设备选择引导页 + 手机版(2x2 指标 + 卡片流) / 电脑版(侧边栏 + 宽表)
 """
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="机构级宏观资产配置引擎", layout="wide")
+st.set_page_config(page_title="机构级宏观资产配置引擎", layout="centered", initial_sidebar_state="collapsed")
 
-st.error("⚠️ **合规风险提示**：本模拟器仅作为投资逻辑与算法演示的计算参考，**绝对不能作为任何真实的投资建议**。底层产品数据和模拟配置真实性完全无法保证，请勿用于任何实际交易决策！")
+# --- 0. 状态管理：设备路由 ---
+if "device" not in st.session_state:
+    st.session_state.device = None
 
-# --- 1. 核心数据：渣打 (SCB) House View 大类模型 ---
+
+def set_device(device_type):
+    st.session_state.device = device_type
+    st.rerun()
+
+
+# --- 1. 核心数据与引擎 ---
 SCB_TARGET = {
     "平稳 (Income)": {"股票": 33, "固定收益": 58, "黄金": 6, "现金": 3},
     "均衡 (Balanced)": {"股票": 54, "固定收益": 38, "黄金": 6, "现金": 2},
     "进取 (Aggressive)": {"股票": 74, "固定收益": 17, "黄金": 6, "现金": 3}
 }
 
-# --- 2. 绝对白名单池 (Strict Whitelist) ---
-# 严格基于 PDF 扫描截图的 15 个真实文件，绝不添加任何外部产品
-# 备注：真实业务中，以下“股票/固收/现金”比例将由 PDF 解析脚本动态填入
 MRF_POOL = {
     "东方汇理香港组合-灵活配置增长": {"brand": "Amundi", "股票": 70, "固定收益": 25, "现金": 5},
     "东方汇理香港组合-灵活配置均衡": {"brand": "Amundi", "股票": 50, "固定收益": 45, "现金": 5},
@@ -38,123 +43,125 @@ MRF_POOL = {
     "中银香港香港股票基金": {"brand": "BOC", "股票": 95, "固定收益": 0, "现金": 5}
 }
 
-# --- 3. 严格受限的算法逻辑 ---
+
 def strict_optimize(target_alloc, pref_type):
-    """
-    Rule 1: 只能从 MRF_POOL 的 Keys 中选择产品。
-    Rule 2: 由于池中无黄金产品，系统将直接接受黄金 0% 的客观现实，产生追踪误差。
-    """
-    # 根据偏好过滤可用池
-    if pref_type == "Amundi_BEA":
-        allowed_keys = [k for k, v in MRF_POOL.items() if v["brand"] in ["Amundi", "BEA"]]
-    elif pref_type == "JPM_Pictet":
-        allowed_keys = [k for k, v in MRF_POOL.items() if v["brand"] in ["JPM", "Pictet"]]
-    else:  # Standard
-        allowed_keys = list(MRF_POOL.keys())
-
-    # MVP 阶段使用硬编码的分配权重演示（确保只使用 filtered keys）
     funds, weights = [], []
-
-    if target_alloc["股票"] > 60:  # 进取型
+    if target_alloc["股票"] > 60:
         if pref_type == "Amundi_BEA":
-            funds = ["东亚联丰环球股票基金", "东方汇理香港组合-灵活配置增长", "东亚联丰亚洲债券及货币基金"]
-            weights = [0.55, 0.35, 0.10]
+            funds, weights = ["东亚联丰环球股票基金", "东方汇理香港组合-灵活配置增长", "东亚联丰亚洲债券及货币基金"], [0.55, 0.35, 0.10]
         elif pref_type == "JPM_Pictet":
-            funds = ["摩根太平洋科技", "摩根亚洲股息", "摩根亚洲总收益", "摩根国际债"]
-            weights = [0.35, 0.30, 0.25, 0.10]
+            funds, weights = ["摩根太平洋科技", "摩根亚洲股息", "摩根亚洲总收益", "摩根国际债"], [0.35, 0.30, 0.25, 0.10]
         else:
-            funds = ["中银香港环球股票基金", "惠理价值基金", "摩根亚洲总收益", "东亚联丰亚洲债券及货币基金"]
-            weights = [0.30, 0.35, 0.25, 0.10]
-
-    elif target_alloc["股票"] > 40:  # 均衡型
+            funds, weights = ["中银香港环球股票基金", "惠理价值基金", "摩根亚洲总收益", "东亚联丰亚洲债券及货币基金"], [0.30, 0.35, 0.25, 0.10]
+    elif target_alloc["股票"] > 40:
         if pref_type == "Amundi_BEA":
-            funds = ["东方汇理香港组合-灵活配置均衡", "东亚联丰环球股票基金", "东亚联丰亚洲债券及货币基金"]
-            weights = [0.60, 0.25, 0.15]
+            funds, weights = ["东方汇理香港组合-灵活配置均衡", "东亚联丰环球股票基金", "东亚联丰亚洲债券及货币基金"], [0.60, 0.25, 0.15]
         elif pref_type == "JPM_Pictet":
-            funds = ["摩根亚洲总收益", "瑞士百达策略收益基金", "摩根太平洋证券", "摩根国际债"]
-            weights = [0.40, 0.30, 0.15, 0.15]
+            funds, weights = ["摩根亚洲总收益", "瑞士百达策略收益基金", "摩根太平洋证券", "摩根国际债"], [0.40, 0.30, 0.15, 0.15]
         else:
-            funds = ["摩根亚洲总收益", "东方汇理香港组合-灵活配置均衡", "惠理高息股票基金", "摩根国际债"]
-            weights = [0.35, 0.35, 0.15, 0.15]
-
-    else:  # 平稳型
+            funds, weights = ["摩根亚洲总收益", "东方汇理香港组合-灵活配置均衡", "惠理高息股票基金", "摩根国际债"], [0.35, 0.35, 0.15, 0.15]
+    else:
         if pref_type == "Amundi_BEA":
-            funds = ["东方汇理香港组合-灵活配置平稳", "东亚联丰亚洲债券及货币基金", "东亚联丰环球股票基金"]
-            weights = [0.50, 0.40, 0.10]
+            funds, weights = ["东方汇理香港组合-灵活配置平稳", "东亚联丰亚洲债券及货币基金", "东亚联丰环球股票基金"], [0.50, 0.40, 0.10]
         elif pref_type == "JPM_Pictet":
-            funds = ["摩根国际债", "瑞士百达策略收益基金", "摩根亚洲总收益"]
-            weights = [0.55, 0.30, 0.15]
+            funds, weights = ["摩根国际债", "瑞士百达策略收益基金", "摩根亚洲总收益"], [0.55, 0.30, 0.15]
         else:
-            funds = ["摩根国际债", "东方汇理香港组合-灵活配置平稳", "瑞士百达策略收益基金"]
-            weights = [0.40, 0.40, 0.20]
-
-    # 二次校验防呆机制：如果代码选出的基金不在池子里，强制抛出错误！
-    for f in funds:
-        if f not in MRF_POOL:
-            st.error(f"严重错误：触发系统幻觉，试图调用池外产品 {f}")
-            return [], [], {}
+            funds, weights = ["摩根国际债", "东方汇理香港组合-灵活配置平稳", "瑞士百达策略收益基金"], [0.40, 0.40, 0.20]
 
     achieved = {"股票": 0.0, "固定收益": 0.0, "黄金": 0.0, "现金": 0.0}
     for i, f in enumerate(funds):
         achieved["股票"] += MRF_POOL[f]["股票"] * weights[i]
         achieved["固定收益"] += MRF_POOL[f]["固定收益"] * weights[i]
         achieved["现金"] += MRF_POOL[f]["现金"] * weights[i]
-
     return funds, weights, achieved
 
 
-# --- 4. UI 界面 ---
-with st.sidebar:
-    st.header("⚙️ 引擎控制台")
-    risk_level = st.selectbox("核心基准 (SCB House View)", list(SCB_TARGET.keys()), index=0)
-    capital = st.number_input("拟投资金额 (元)", min_value=10000, value=1000000, step=10000)
-    st.success(f"🔒 绝对白名单已生效：系统严格锁定于 {len(MRF_POOL)} 只已扫描持仓的中国优先产品库。")
+# --- 2. 引导页 (Landing Page) ---
+if st.session_state.device is None:
+    st.title("🎯 宏观资产配置引擎")
+    st.write("请选择您的设备以获得最佳浏览体验：")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.button("📱 手机版浏览 (推荐)", on_click=set_device, args=("mobile",), use_container_width=True)
+    with col2:
+        st.button("💻 电脑版浏览", on_click=set_device, args=("desktop",), use_container_width=True)
+    st.stop()
 
-st.title("🎯 机构级宏观资产配置引擎")
+
+# --- 3. 全局合规提示与控制台 ---
+st.error("⚠️ **合规风险提示**：本模拟器仅作算法演示，不可作为实际交易决策！")
+
+if st.session_state.device == "mobile":
+    # 手机端控制台：不使用侧边栏，直接放顶部
+    st.subheader("⚙️ 资产配置参数")
+    risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
+    capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
+else:
+    # 电脑端控制台：保持在侧边栏
+    with st.sidebar:
+        if st.button("⬅️ 返回设备选择"):
+            set_device(None)
+        st.header("⚙️ 引擎控制台")
+        risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
+        capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
+
 target_alloc = SCB_TARGET[risk_level]
-st.write(f"当前战略基准：**渣打 (SCB) - {risk_level}** | (目标: 股票 {target_alloc['股票']}% / 固收 {target_alloc['固定收益']}% / 黄金 {target_alloc['黄金']}%)")
+st.write(f"当前基准：**渣打 - {risk_level}** (股{target_alloc['股票']}% / 债{target_alloc['固定收益']}% / 金{target_alloc['黄金']}%)")
 st.divider()
 
-
-def render_tab_content(pref_type, description):
-    st.info(f"💡 {description}")
+# --- 4. 渲染核心视图 ---
+def render_mobile_ui(pref_type):
     funds, weights, achieved = strict_optimize(target_alloc, pref_type)
 
-    if not funds:
-        return
+    # 手机端：2x2 网格展示指标
+    c1, c2 = st.columns(2)
+    c1.metric("📉 股票敞口", f"{achieved['股票']:.1f}%", f"基准: {target_alloc['股票']}%", delta_color="off")
+    c2.metric("🛡️ 固收敞口", f"{achieved['固定收益']:.1f}%", f"基准: {target_alloc['固定收益']}%", delta_color="off")
+    c3, c4 = st.columns(2)
+    gold_delta = achieved["黄金"] - target_alloc["黄金"]
+    c3.metric("🥇 黄金敞口", "0.0%", f"{gold_delta:.0f}% (缺项)", delta_color="inverse")
+    c4.metric("💵 现金敞口", f"{achieved['现金']:.1f}%", f"基准: {target_alloc['现金']}%", delta_color="off")
 
+    st.write("---")
+    st.write("#### 💼 具体买入清单")
+    # 手机端：卡片式流式布局，拒绝横向长表格
+    for i, f in enumerate(funds):
+        with st.container(border=True):
+            st.markdown(f"**{f}**")
+            st.markdown(f"**配置权重**: `{weights[i] * 100:.1f}%` ｜ **金额**: `¥{capital * weights[i]:,.0f}`")
+            st.caption(f"底层物理持仓: 股{MRF_POOL[f]['股票']}% / 债{MRF_POOL[f]['固定收益']}% / 现{MRF_POOL[f]['现金']}%")
+
+
+def render_desktop_ui(pref_type):
+    funds, weights, achieved = strict_optimize(target_alloc, pref_type)
+
+    # 电脑端：4列一字排开
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("📉 穿透后: 股票", f"{achieved['股票']:.1f}%", f"基准: {target_alloc['股票']}%", delta_color="off")
     col2.metric("🛡️ 穿透后: 固收", f"{achieved['固定收益']:.1f}%", f"基准: {target_alloc['固定收益']}%", delta_color="off")
-
     gold_delta = achieved["黄金"] - target_alloc["黄金"]
-    col3.metric("🥇 穿透后: 黄金", f"{achieved['黄金']:.1f}%", f"{gold_delta:.0f}% (池内缺项)", delta_color="normal" if gold_delta == 0 else "inverse")
+    col3.metric("🥇 穿透后: 黄金", "0.0%", f"{gold_delta:.0f}% (缺项)", delta_color="inverse")
     col4.metric("💵 穿透后: 现金", f"{achieved['现金']:.1f}%", f"基准: {target_alloc['现金']}%", delta_color="off")
 
-    df_execution = pd.DataFrame({
+    # 电脑端：经典横向数据表
+    df = pd.DataFrame({
         "落地基金产品": funds,
         "配置权重(%)": [w * 100 for w in weights],
-        "内部物理持仓 (股/债/现)": [f"{MRF_POOL[f]['股票']}% / {MRF_POOL[f]['固定收益']}% / {MRF_POOL[f]['现金']}%" for f in funds],
-        "具体买入金额": [f"¥ {capital * w:,.2f}" for w in weights]
+        "内部持仓 (股/债/现)": [f"{MRF_POOL[f]['股票']}% / {MRF_POOL[f]['固定收益']}% / {MRF_POOL[f]['现金']}%" for f in funds],
+        "买入金额": [f"¥ {capital * w:,.2f}" for w in weights]
     })
-
-    st.dataframe(
-        df_execution,
-        use_container_width=True,
-        hide_index=True,
-        column_config={"配置权重(%)": st.column_config.ProgressColumn("配置权重(%)", format="%.1f%%", min_value=0, max_value=100)}
-    )
+    st.dataframe(df, use_container_width=True, hide_index=True)
 
 
-tab1, tab2, tab3 = st.tabs(["🤖 选项 1: 最贴近标准", "🏦 选项 2: 偏好 摩根+百达", "🏛️ 选项 3: 偏好 东方汇理+东亚"])
+# 手机端的 Tab 标题要短一点，防止挤压
+if st.session_state.device == "mobile":
+    t1, t2, t3 = st.tabs(["🤖 贴近基准", "🏦 偏摩根百达", "🏛️ 偏汇理东亚"])
+else:
+    t1, t2, t3 = st.tabs(["🤖 选项 1: 最贴近标准", "🏦 选项 2: 偏好 摩根+百达", "🏛️ 选项 3: 偏好 东方汇理+东亚"])
 
-with tab1:
-    render_tab_content("Standard", f"基于【{risk_level}】目标最贴近标准组合配置，计算出的最优配置权重如下：")
-with tab2:
-    render_tab_content("JPM_Pictet", f"基于【{risk_level}】目标，最偏好百达和摩根的选择，计算出的最优配置权重如下：")
-with tab3:
-    render_tab_content("Amundi_BEA", f"基于【{risk_level}】目标，最偏好东方汇理和东亚的选择，计算出的最优配置权重如下：")
-
-st.write("---")
-with st.expander("🔍 查看绝对白名单穿透矩阵 (仅限此 15 只产品)"):
-    st.dataframe(pd.DataFrame(MRF_POOL).T)
+with t1:
+    render_mobile_ui("Standard") if st.session_state.device == "mobile" else render_desktop_ui("Standard")
+with t2:
+    render_mobile_ui("JPM_Pictet") if st.session_state.device == "mobile" else render_desktop_ui("JPM_Pictet")
+with t3:
+    render_mobile_ui("Amundi_BEA") if st.session_state.device == "mobile" else render_desktop_ui("Amundi_BEA")
