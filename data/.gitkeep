@@ -1,0 +1,1 @@
+# 占位文件，保证 data 目录被 Git 跟踪；wmp_history.csv 由 GitHub Actions 爬虫写入

@@ -1,0 +1,48 @@
+# 渣打 WMP 净值每日定时抓取 + 自动提交 CSV（北京时间凌晨 2:00）
+# 触发后：爬虫写入 data/wmp_history.csv，自动 commit 并 push，Streamlit 检测到变更后热更新
+name: WMP NAV Daily Scraper
+
+on:
+  schedule:
+    # 北京时间 02:00 = UTC 18:00（前一天）
+    - cron: '0 18 * * *'
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  scrape-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 允许 push 回仓库
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run WMP scraper and save to CSV
+        run: |
+          python -c "
+          from wmp_scraper import scrape_wmp
+          from wmp_csv import append_wmp_records
+          recs = scrape_wmp()
+          n = append_wmp_records(recs)
+          print(f'Appended {n} new rows, total scraped {len(recs)}')
+          "
+
+      - name: Commit and push if CSV changed
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/wmp_history.csv
+          git diff --staged --quiet || (git commit -m "chore(wmp): update NAV from scraper [automated]" && git push)
