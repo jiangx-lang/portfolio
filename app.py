@@ -7,6 +7,7 @@
 import streamlit as st
 import pandas as pd
 import requests
+import ipaddress
 from datetime import datetime
 
 # 渣打 WMP 数据模块（导入失败时仍显示 Tab，便于排查）
@@ -34,13 +35,21 @@ def get_supabase_client():
 
 
 def get_real_ip():
-    """利用 Streamlit 1.35+ 的底层 context 穿透代理获取真实 IP"""
+    """智能穿透：过滤 192/10/172 等局域网 IP，取第一个真实公网 IP"""
     try:
         headers = st.context.headers
+        ips = []
         if "X-Forwarded-For" in headers:
-            return headers["X-Forwarded-For"].split(",")[0].strip()
-        elif "X-Real-Ip" in headers:
-            return headers["X-Real-Ip"].strip()
+            ips.extend([ip.strip() for ip in headers["X-Forwarded-For"].split(",")])
+        if "X-Real-Ip" in headers:
+            ips.append(headers["X-Real-Ip"].strip())
+        for ip in ips:
+            try:
+                parsed = ipaddress.ip_address(ip)
+                if not parsed.is_private and not parsed.is_loopback:
+                    return ip
+            except ValueError:
+                continue
     except Exception:
         pass
     return "隐身访客"
@@ -327,24 +336,7 @@ for _ in range(50):
 st.write("---")
 col_left, _ = st.columns([1, 2])
 with col_left:
-    with st.expander("♏ 引擎状态监控 (Debug)", expanded=True):
-        try:
-            from supabase import create_client
-            if not st.secrets.get("SUPABASE_URL") or not st.secrets.get("SUPABASE_KEY"):
-                st.error("🚨 找不到 Supabase 钥匙，请检查 Streamlit 后台的 Secrets！")
-            else:
-                url = st.secrets["SUPABASE_URL"]
-                key = st.secrets["SUPABASE_KEY"]
-                client = create_client(url, key)
-                response = client.table("visitor_logs").select("*").order("last_visit", desc=True).execute()
-                logs = response.data
-                st.success("✅ 数据库连接成功！")
-                st.caption(f"👁️ 当前累计独立 IP: {len(logs)} 个")
-                if logs:
-                    df_logs = pd.DataFrame(logs)
-                    if set(["ip", "visits", "last_visit"]).issubset(df_logs.columns):
-                        df_logs = df_logs[["ip", "visits", "last_visit"]]
-                        df_logs.columns = ["访客 IP", "访问频次", "最后出没"]
-                    st.dataframe(df_logs, hide_index=True, use_container_width=True)
-        except Exception as e:
-            st.error(f"🚨 诊断错误信息: {str(e)}")
+    with st.expander("♏ 引擎状态监控", expanded=False):
+        df_visitors, total_ips = fetch_visitor_logs_df()
+        st.metric("总独立访客 IP", total_ips)
+        st.dataframe(df_visitors, use_container_width=True, hide_index=True)
