@@ -247,15 +247,9 @@ else:
         st.header("⚙️ 引擎控制台")
         risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
         capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
-        with st.expander("♏ 引擎状态监控", expanded=False):
-            df_visitors, total_ips = fetch_visitor_logs_df()
-            st.metric("总独立访客 IP", total_ips)
-            st.dataframe(df_visitors, use_container_width=True, hide_index=True)
 
 target_alloc = SCB_TARGET[risk_level]
 st.write(f"当前基准：**渣打 - {risk_level}** (股{target_alloc['股票']}% / 债{target_alloc['固定收益']}% / 金{target_alloc['黄金']}%)")
-if not WMP_AVAILABLE and WMP_ERROR:
-    st.warning(f"⚠️ 渣打 WMP 未加载：{WMP_ERROR[:80]}…（安装依赖：pip install requests beautifulsoup4）")
 st.divider()
 
 # --- 4. 渲染核心视图（宏观配置 4 个 Tab）---
@@ -302,45 +296,9 @@ def render_desktop_ui(pref_type):
     st.dataframe(df, use_container_width=True, hide_index=True)
 
 
-# WMP 放第一个 Tab，保证一进来就能看见
-tab_labels = ["🏦 渣打 WMP 净值", "🤖 贴近基准", "🏦 偏摩根百达", "🏛️ 偏汇理东亚"] if st.session_state.device == "mobile" else ["🏦 渣打 WMP 净值", "🤖 选项 1: 最贴近标准", "🏦 选项 2: 偏好 摩根+百达", "🏛️ 选项 3: 偏好 东方汇理+东亚"]
-wmp_tab, t1, t2, t3 = st.tabs(tab_labels)
-
-# --- 渣打 WMP 净值 Tab（第一个）---
-with wmp_tab:
-    if not WMP_AVAILABLE:
-        st.error("**WMP 模块未加载**。请安装依赖后重启 Streamlit：`pip install requests beautifulsoup4`")
-        if WMP_ERROR:
-            st.code(WMP_ERROR, language="text")
-    else:
-        if st.button("🔄 抓取今日净值并写入 CSV"):
-            with st.spinner("正在抓取渣打 WMP 页面…"):
-                records = scrape_wmp()
-            if records:
-                init_db()
-                n = insert_nav_records(records)
-                st.success(f"已写入 {n} 条新记录（共抓取 {len(records)} 条）。")
-            else:
-                st.warning("未抓取到数据，请检查网络或稍后重试。")
-        df_wmp = get_wmp_display_data()
-        if df_wmp.empty:
-            st.info("暂无净值历史数据。请先点击上方「抓取今日净值并写入 CSV」，或等待 GitHub Actions 每日自动更新。")
-        else:
-            yield_cols = ["daily% 【年化】", "1W收益率% 【年化】", "1M收益率% 【年化】", "3M收益率% 【年化】"]
-            def _color_yield(val):
-                if val == "N/A" or not isinstance(val, str):
-                    return ""
-                try:
-                    num = float(str(val).replace("%", "").strip())
-                    if num > 0:
-                        return "color: red"
-                    if num < 0:
-                        return "color: green"
-                except ValueError:
-                    pass
-                return ""
-            styled = df_wmp.style.apply(lambda s: [_color_yield(v) for v in s], subset=yield_cols)
-            st.dataframe(styled, use_container_width=True, hide_index=True)
+# 宏观资产配置仅保留三个偏好 Tab（WMP 已从首页单独入口进入）
+tab_labels = ["🤖 贴近基准", "🏦 偏摩根百达", "🏛️ 偏汇理东亚"] if st.session_state.device == "mobile" else ["🤖 选项 1: 最贴近标准", "🏦 选项 2: 偏好 摩根+百达", "🏛️ 选项 3: 偏好 东方汇理+东亚"]
+t1, t2, t3 = st.tabs(tab_labels)
 
 with t1:
     render_mobile_ui("Standard") if st.session_state.device == "mobile" else render_desktop_ui("Standard")
@@ -348,3 +306,14 @@ with t2:
     render_mobile_ui("JPM_Pictet") if st.session_state.device == "mobile" else render_desktop_ui("JPM_Pictet")
 with t3:
     render_mobile_ui("Amundi_BEA") if st.session_state.device == "mobile" else render_desktop_ui("Amundi_BEA")
+
+# 引擎状态监控：放在页面最底部左侧，需下滚较多才可见，不主动展示
+for _ in range(8):
+    st.write("")
+st.write("---")
+col_left, _ = st.columns([1, 2])
+with col_left:
+    with st.expander("♏ 引擎状态监控", expanded=False):
+        df_visitors, total_ips = fetch_visitor_logs_df()
+        st.metric("总独立访客 IP", total_ips)
+        st.dataframe(df_visitors, use_container_width=True, hide_index=True)
