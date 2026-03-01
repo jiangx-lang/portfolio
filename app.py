@@ -307,13 +307,30 @@ with t2:
 with t3:
     render_mobile_ui("Amundi_BEA") if st.session_state.device == "mobile" else render_desktop_ui("Amundi_BEA")
 
-# 引擎状态监控：放在页面最底部左侧，需下滚较多才可见，不主动展示
+# 引擎状态监控（Debug 显影版）：放在页面最底部左侧，便于诊断 Supabase 连接
 for _ in range(8):
     st.write("")
 st.write("---")
 col_left, _ = st.columns([1, 2])
 with col_left:
-    with st.expander("♏ 引擎状态监控", expanded=False):
-        df_visitors, total_ips = fetch_visitor_logs_df()
-        st.metric("总独立访客 IP", total_ips)
-        st.dataframe(df_visitors, use_container_width=True, hide_index=True)
+    with st.expander("♏ 引擎状态监控 (Debug)", expanded=True):
+        try:
+            from supabase import create_client
+            if not st.secrets.get("SUPABASE_URL") or not st.secrets.get("SUPABASE_KEY"):
+                st.error("🚨 找不到 Supabase 钥匙，请检查 Streamlit 后台的 Secrets！")
+            else:
+                url = st.secrets["SUPABASE_URL"]
+                key = st.secrets["SUPABASE_KEY"]
+                client = create_client(url, key)
+                response = client.table("visitor_logs").select("*").order("last_visit", desc=True).execute()
+                logs = response.data
+                st.success("✅ 数据库连接成功！")
+                st.caption(f"👁️ 当前累计独立 IP: {len(logs)} 个")
+                if logs:
+                    df_logs = pd.DataFrame(logs)
+                    if set(["ip", "visits", "last_visit"]).issubset(df_logs.columns):
+                        df_logs = df_logs[["ip", "visits", "last_visit"]]
+                        df_logs.columns = ["访客 IP", "访问频次", "最后出没"]
+                    st.dataframe(df_logs, hide_index=True, use_container_width=True)
+        except Exception as e:
+            st.error(f"🚨 诊断错误信息: {str(e)}")
