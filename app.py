@@ -307,8 +307,8 @@ with t2:
 with t3:
     render_mobile_ui("Amundi_BEA") if st.session_state.device == "mobile" else render_desktop_ui("Amundi_BEA")
 
-# 引擎状态监控（Debug 显影版）：放在页面最底部左侧，便于诊断 Supabase 连接
-for _ in range(8):
+# 引擎状态监控（Debug 显影版）：放在页面最底部左侧，下留 50 行空白，不主动被人看见
+for _ in range(50):
     st.write("")
 st.write("---")
 col_left, _ = st.columns([1, 2])
