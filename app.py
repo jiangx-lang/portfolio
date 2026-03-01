@@ -2,10 +2,11 @@
 """
 宏观资产配置优化器 - V8：双端自适应 + 移动端卡片流版
 设备选择引导页 + 手机版(2x2 指标 + 卡片流) / 电脑版(侧边栏 + 宽表)
-+ 渣打 WMP 净值展示（SQLite + 年化收益率红绿样式）
++ 渣打 WMP 净值展示 + Supabase 云端访客雷达
 """
 import streamlit as st
 import pandas as pd
+from datetime import datetime, timezone
 
 # 渣打 WMP 数据模块（导入失败时仍显示 Tab，便于排查）
 WMP_AVAILABLE = False
@@ -16,6 +17,74 @@ try:
     WMP_AVAILABLE = True
 except Exception as e:
     WMP_ERROR = f"{type(e).__name__}: {e}"
+
+# --- Supabase 访客雷达（可选，依赖 st.secrets）---
+def get_supabase_client():
+    """使用 st.secrets 读取 SUPABASE_URL / SUPABASE_KEY，未配置时返回 None。"""
+    try:
+        from supabase import create_client
+        url = st.secrets.get("SUPABASE_URL") or st.secrets.get("supabase", {}).get("SUPABASE_URL")
+        key = st.secrets.get("SUPABASE_KEY") or st.secrets.get("supabase", {}).get("SUPABASE_KEY")
+        if url and key:
+            return create_client(url, key)
+    except Exception:
+        pass
+    return None
+
+
+def _get_client_ip():
+    """解析真实 IP（X-Forwarded-For / X-Real-IP），Streamlit Cloud 适用。"""
+    try:
+        from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+        ctx = get_script_run_ctx()
+        if ctx and hasattr(ctx, "request") and ctx.request and hasattr(ctx.request, "headers"):
+            raw = (ctx.request.headers.get("X-Forwarded-For") or ctx.request.headers.get("X-Real-IP") or "").strip()
+            return raw.split(",")[0].strip() or "unknown"
+    except Exception:
+        pass
+    return "unknown"
+
+
+def track_visitor():
+    """
+    访客追踪：写 Supabase visitor_logs（ip 主键，visits + last_visit）。
+    同一会话只写一次（st.session_state.has_logged），失败静默不崩溃。
+    """
+    if st.session_state.get("has_logged"):
+        return
+    try:
+        client = get_supabase_client()
+        if not client:
+            return
+        ip = _get_client_ip()
+        now = datetime.now(timezone.utc).isoformat()
+        r = client.table("visitor_logs").select("ip, visits, last_visit").eq("ip", ip).execute()
+        if r.data and len(r.data) > 0:
+            row = r.data[0]
+            new_visits = (row.get("visits") or 0) + 1
+            client.table("visitor_logs").update({"visits": new_visits, "last_visit": now}).eq("ip", ip).execute()
+        else:
+            client.table("visitor_logs").insert({"ip": ip, "visits": 1, "last_visit": now}).execute()
+        st.session_state.has_logged = True
+    except Exception:
+        pass
+
+
+def fetch_visitor_logs_df():
+    """从 Supabase visitor_logs 拉取全部记录，按 last_visit 降序，返回 (DataFrame, 总IP数)。"""
+    try:
+        client = get_supabase_client()
+        if not client:
+            return pd.DataFrame(columns=["访客 IP", "访问频次", "最后出没"]), 0
+        r = client.table("visitor_logs").select("ip, visits, last_visit").order("last_visit", desc=True).execute()
+        if not r.data:
+            return pd.DataFrame(columns=["访客 IP", "访问频次", "最后出没"]), 0
+        df = pd.DataFrame(r.data)
+        df = df.rename(columns={"ip": "访客 IP", "visits": "访问频次", "last_visit": "最后出没"})
+        return df, len(df)
+    except Exception:
+        return pd.DataFrame(columns=["访客 IP", "访问频次", "最后出没"]), 0
+
 
 st.set_page_config(page_title="机构级宏观资产配置引擎", layout="centered", initial_sidebar_state="collapsed")
 
@@ -117,6 +186,8 @@ if st.session_state.device is None:
         st.button("💻 电脑", key="wmp_desktop", on_click=set_device, args=("desktop", "wmp"), use_container_width=True)
     st.stop()
 
+# --- 访客追踪（每会话一次，Supabase 失败静默）---
+track_visitor()
 
 # --- 3. 全局合规提示 ---
 st.error("⚠️ **合规风险提示**：本模拟器仅作算法演示，不可作为实际交易决策！")
@@ -176,6 +247,10 @@ else:
         st.header("⚙️ 引擎控制台")
         risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
         capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
+        with st.expander("♏ 引擎状态监控", expanded=False):
+            df_visitors, total_ips = fetch_visitor_logs_df()
+            st.metric("总独立访客 IP", total_ips)
+            st.dataframe(df_visitors, use_container_width=True, hide_index=True)
 
 target_alloc = SCB_TARGET[risk_level]
 st.write(f"当前基准：**渣打 - {risk_level}** (股{target_alloc['股票']}% / 债{target_alloc['固定收益']}% / 金{target_alloc['黄金']}%)")
