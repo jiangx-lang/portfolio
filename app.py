@@ -19,13 +19,22 @@ except Exception as e:
 
 st.set_page_config(page_title="机构级宏观资产配置引擎", layout="centered", initial_sidebar_state="collapsed")
 
-# --- 0. 状态管理：设备路由 ---
+# --- 0. 状态管理：设备路由 + 入口（宏观配置 / WMP）---
 if "device" not in st.session_state:
     st.session_state.device = None
+if "entry" not in st.session_state:
+    st.session_state.entry = None  # "config" | "wmp"
 
 
-def set_device(device_type):
+def set_device(device_type, entry_type="config"):
     st.session_state.device = device_type
+    st.session_state.entry = entry_type
+    st.rerun()
+
+
+def back_to_landing():
+    st.session_state.device = None
+    st.session_state.entry = None
     st.rerun()
 
 
@@ -90,37 +99,91 @@ def strict_optimize(target_alloc, pref_type):
 # --- 2. 引导页 (Landing Page) ---
 if st.session_state.device is None:
     st.title("🎯 宏观资产配置引擎")
-    st.write("请选择您的设备以获得最佳浏览体验：")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.button("📱 手机版浏览 (推荐)", on_click=set_device, args=("mobile",), use_container_width=True)
-    with col2:
-        st.button("💻 电脑版浏览", on_click=set_device, args=("desktop",), use_container_width=True)
+    st.write("请选择入口与设备：")
+    # 第一行：宏观资产配置引擎 【手机】【电脑】
+    st.subheader("宏观资产配置引擎")
+    r1c1, r1c2 = st.columns(2)
+    with r1c1:
+        st.button("📱 手机", key="cfg_mobile", on_click=set_device, args=("mobile", "config"), use_container_width=True)
+    with r1c2:
+        st.button("💻 电脑", key="cfg_desktop", on_click=set_device, args=("desktop", "config"), use_container_width=True)
+    st.write("")
+    # 第二行：WMP NAV 【手机】【电脑】
+    st.subheader("WMP NAV")
+    r2c1, r2c2 = st.columns(2)
+    with r2c1:
+        st.button("📱 手机", key="wmp_mobile", on_click=set_device, args=("mobile", "wmp"), use_container_width=True)
+    with r2c2:
+        st.button("💻 电脑", key="wmp_desktop", on_click=set_device, args=("desktop", "wmp"), use_container_width=True)
     st.stop()
 
 
-# --- 3. 全局合规提示与控制台 ---
+# --- 3. 全局合规提示 ---
 st.error("⚠️ **合规风险提示**：本模拟器仅作算法演示，不可作为实际交易决策！")
 
+# --- 入口分支：仅 WMP 或 宏观配置（含 WMP Tab）---
+if st.session_state.entry == "wmp":
+    # 仅展示 WMP 页面，带返回
+    if st.session_state.device == "desktop":
+        with st.sidebar:
+            st.button("⬅️ 返回首页", on_click=back_to_landing)
+    else:
+        st.button("⬅️ 返回首页", on_click=back_to_landing)
+    st.subheader("🏦 渣打 WMP 净值")
+    if not WMP_AVAILABLE:
+        st.error("**WMP 模块未加载**。请安装依赖后重启：`pip install requests beautifulsoup4`")
+        if WMP_ERROR:
+            st.code(WMP_ERROR, language="text")
+    else:
+        if st.button("🔄 抓取今日净值并写入 CSV"):
+            with st.spinner("正在抓取渣打 WMP 页面…"):
+                records = scrape_wmp()
+            if records:
+                init_db()
+                n = insert_nav_records(records)
+                st.success(f"已写入 {n} 条新记录（共抓取 {len(records)} 条）。")
+            else:
+                st.warning("未抓取到数据，请检查网络或稍后重试。")
+        df_wmp = get_wmp_display_data()
+        if df_wmp.empty:
+            st.info("暂无净值历史数据。请先点击「抓取今日净值并写入 CSV」，或等待 GitHub Actions 每日自动更新。")
+        else:
+            yield_cols = ["daily% 【年化】", "1W收益率% 【年化】", "1M收益率% 【年化】", "3M收益率% 【年化】"]
+            def _color_yield(val):
+                if val == "N/A" or not isinstance(val, str):
+                    return ""
+                try:
+                    num = float(str(val).replace("%", "").strip())
+                    if num > 0:
+                        return "color: red"
+                    if num < 0:
+                        return "color: green"
+                except ValueError:
+                    pass
+                return ""
+            styled = df_wmp.style.apply(lambda s: [_color_yield(v) for v in s], subset=yield_cols)
+            st.dataframe(styled, use_container_width=True, hide_index=True)
+    st.stop()
+
+# --- 宏观资产配置引擎：控制台与 4 个 Tab ---
 if st.session_state.device == "mobile":
-    # 手机端控制台：不使用侧边栏，直接放顶部
     st.subheader("⚙️ 资产配置参数")
     risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
     capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
 else:
-    # 电脑端控制台：保持在侧边栏
     with st.sidebar:
-        if st.button("⬅️ 返回设备选择"):
-            set_device(None)
+        st.button("⬅️ 返回首页", on_click=back_to_landing)
         st.header("⚙️ 引擎控制台")
         risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
         capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
 
 target_alloc = SCB_TARGET[risk_level]
 st.write(f"当前基准：**渣打 - {risk_level}** (股{target_alloc['股票']}% / 债{target_alloc['固定收益']}% / 金{target_alloc['黄金']}%)")
+if not WMP_AVAILABLE and WMP_ERROR:
+    st.warning(f"⚠️ 渣打 WMP 未加载：{WMP_ERROR[:80]}…（安装依赖：pip install requests beautifulsoup4）")
 st.divider()
 
-# --- 4. 渲染核心视图 ---
+# --- 4. 渲染核心视图（宏观配置 4 个 Tab）---
 def render_mobile_ui(pref_type):
     funds, weights, achieved = strict_optimize(target_alloc, pref_type)
 
@@ -164,10 +227,45 @@ def render_desktop_ui(pref_type):
     st.dataframe(df, use_container_width=True, hide_index=True)
 
 
-# 始终显示 WMP Tab，便于用户看到入口或依赖错误
-tab_labels = ["🤖 贴近基准", "🏦 偏摩根百达", "🏛️ 偏汇理东亚"] if st.session_state.device == "mobile" else ["🤖 选项 1: 最贴近标准", "🏦 选项 2: 偏好 摩根+百达", "🏛️ 选项 3: 偏好 东方汇理+东亚"]
-tab_labels.append("🏦 渣打 WMP 净值")
-t1, t2, t3, *rest_tabs = st.tabs(tab_labels)
+# WMP 放第一个 Tab，保证一进来就能看见
+tab_labels = ["🏦 渣打 WMP 净值", "🤖 贴近基准", "🏦 偏摩根百达", "🏛️ 偏汇理东亚"] if st.session_state.device == "mobile" else ["🏦 渣打 WMP 净值", "🤖 选项 1: 最贴近标准", "🏦 选项 2: 偏好 摩根+百达", "🏛️ 选项 3: 偏好 东方汇理+东亚"]
+wmp_tab, t1, t2, t3 = st.tabs(tab_labels)
+
+# --- 渣打 WMP 净值 Tab（第一个）---
+with wmp_tab:
+    if not WMP_AVAILABLE:
+        st.error("**WMP 模块未加载**。请安装依赖后重启 Streamlit：`pip install requests beautifulsoup4`")
+        if WMP_ERROR:
+            st.code(WMP_ERROR, language="text")
+    else:
+        if st.button("🔄 抓取今日净值并写入 CSV"):
+            with st.spinner("正在抓取渣打 WMP 页面…"):
+                records = scrape_wmp()
+            if records:
+                init_db()
+                n = insert_nav_records(records)
+                st.success(f"已写入 {n} 条新记录（共抓取 {len(records)} 条）。")
+            else:
+                st.warning("未抓取到数据，请检查网络或稍后重试。")
+        df_wmp = get_wmp_display_data()
+        if df_wmp.empty:
+            st.info("暂无净值历史数据。请先点击上方「抓取今日净值并写入 CSV」，或等待 GitHub Actions 每日自动更新。")
+        else:
+            yield_cols = ["daily% 【年化】", "1W收益率% 【年化】", "1M收益率% 【年化】", "3M收益率% 【年化】"]
+            def _color_yield(val):
+                if val == "N/A" or not isinstance(val, str):
+                    return ""
+                try:
+                    num = float(str(val).replace("%", "").strip())
+                    if num > 0:
+                        return "color: red"
+                    if num < 0:
+                        return "color: green"
+                except ValueError:
+                    pass
+                return ""
+            styled = df_wmp.style.apply(lambda s: [_color_yield(v) for v in s], subset=yield_cols)
+            st.dataframe(styled, use_container_width=True, hide_index=True)
 
 with t1:
     render_mobile_ui("Standard") if st.session_state.device == "mobile" else render_desktop_ui("Standard")
@@ -175,40 +273,3 @@ with t2:
     render_mobile_ui("JPM_Pictet") if st.session_state.device == "mobile" else render_desktop_ui("JPM_Pictet")
 with t3:
     render_mobile_ui("Amundi_BEA") if st.session_state.device == "mobile" else render_desktop_ui("Amundi_BEA")
-
-# --- 渣打 WMP 净值 Tab：从 SQLite 读入并展示年化收益率（红涨绿跌）---
-if rest_tabs:
-    with rest_tabs[0]:
-        if not WMP_AVAILABLE:
-            st.error("**WMP 模块未加载**。请安装依赖后重启 Streamlit：`pip install requests beautifulsoup4`")
-            if WMP_ERROR:
-                st.code(WMP_ERROR, language="text")
-        else:
-            if st.button("🔄 抓取今日净值并写入数据库"):
-                with st.spinner("正在抓取渣打 WMP 页面…"):
-                    records = scrape_wmp()
-                if records:
-                    init_db()
-                    n = insert_nav_records(records)
-                    st.success(f"已写入 {n} 条新记录（共抓取 {len(records)} 条）。")
-                else:
-                    st.warning("未抓取到数据，请检查网络或稍后重试。")
-            df_wmp = get_wmp_display_data()
-            if df_wmp.empty:
-                st.info("暂无净值历史数据。请先点击上方「抓取今日净值并写入数据库」，并多日运行以积累 T-1/T-7/T-30/T-90 后再查看年化收益率。")
-            else:
-                yield_cols = ["daily% 【年化】", "1W收益率% 【年化】", "1M收益率% 【年化】", "3M收益率% 【年化】"]
-                def _color_yield(val):
-                    if val == "N/A" or not isinstance(val, str):
-                        return ""
-                    try:
-                        num = float(str(val).replace("%", "").strip())
-                        if num > 0:
-                            return "color: red"
-                        if num < 0:
-                            return "color: green"
-                    except ValueError:
-                        pass
-                    return ""
-                styled = df_wmp.style.apply(lambda s: [_color_yield(v) for v in s], subset=yield_cols)
-                st.dataframe(styled, use_container_width=True, hide_index=True)
