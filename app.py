@@ -6,7 +6,8 @@
 """
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timezone
+import requests
+from datetime import datetime
 
 # 渣打 WMP 数据模块（导入失败时仍显示 Tab，便于排查）
 WMP_AVAILABLE = False
@@ -32,40 +33,53 @@ def get_supabase_client():
     return None
 
 
-def _get_client_ip():
-    """解析真实 IP（X-Forwarded-For / X-Real-IP），Streamlit Cloud 适用。"""
+def get_real_ip():
+    """利用 Streamlit 1.35+ 的底层 context 穿透代理获取真实 IP"""
     try:
-        from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
-        ctx = get_script_run_ctx()
-        if ctx and hasattr(ctx, "request") and ctx.request and hasattr(ctx.request, "headers"):
-            raw = (ctx.request.headers.get("X-Forwarded-For") or ctx.request.headers.get("X-Real-IP") or "").strip()
-            return raw.split(",")[0].strip() or "unknown"
+        headers = st.context.headers
+        if "X-Forwarded-For" in headers:
+            return headers["X-Forwarded-For"].split(",")[0].strip()
+        elif "X-Real-Ip" in headers:
+            return headers["X-Real-Ip"].strip()
     except Exception:
         pass
-    return "unknown"
+    return "隐身访客"
+
+
+def get_geo_location(ip):
+    """通过免费接口把 IP 翻译成具体城市"""
+    if ip == "隐身访客" or not ip:
+        return ip
+    try:
+        res = requests.get(f"http://ip-api.com/json/{ip}?lang=zh-CN", timeout=2).json()
+        if res.get("status") == "success":
+            return f"{res['city']}, {res['country']} ({ip})"
+    except Exception:
+        pass
+    return ip
 
 
 def track_visitor():
-    """
-    访客追踪：写 Supabase visitor_logs（ip 主键，visits + last_visit）。
-    同一会话只写一次（st.session_state.has_logged），失败静默不崩溃。
-    """
+    """终极雷达：写入 Supabase，带 IP 归属地解析，同一会话只写一次，失败静默不崩溃。"""
     if st.session_state.get("has_logged"):
         return
+    st.session_state.has_logged = True
+    raw_ip = get_real_ip()
+    geo_ip = get_geo_location(raw_ip)
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
-        client = get_supabase_client()
-        if not client:
+        from supabase import create_client
+        url = st.secrets.get("SUPABASE_URL") or st.secrets.get("supabase", {}).get("SUPABASE_URL")
+        key = st.secrets.get("SUPABASE_KEY") or st.secrets.get("supabase", {}).get("SUPABASE_KEY")
+        if not url or not key:
             return
-        ip = _get_client_ip()
-        now = datetime.now(timezone.utc).isoformat()
-        r = client.table("visitor_logs").select("ip, visits, last_visit").eq("ip", ip).execute()
-        if r.data and len(r.data) > 0:
-            row = r.data[0]
-            new_visits = (row.get("visits") or 0) + 1
-            client.table("visitor_logs").update({"visits": new_visits, "last_visit": now}).eq("ip", ip).execute()
+        client = create_client(url, key)
+        res = client.table("visitor_logs").select("visits").eq("ip", geo_ip).execute()
+        if res.data and len(res.data) > 0:
+            new_visits = res.data[0]["visits"] + 1
+            client.table("visitor_logs").update({"visits": new_visits, "last_visit": now_str}).eq("ip", geo_ip).execute()
         else:
-            client.table("visitor_logs").insert({"ip": ip, "visits": 1, "last_visit": now}).execute()
-        st.session_state.has_logged = True
+            client.table("visitor_logs").insert({"ip": geo_ip, "visits": 1, "last_visit": now_str}).execute()
     except Exception:
         pass
 
