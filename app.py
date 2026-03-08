@@ -581,8 +581,8 @@ def calc_annual_returns(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def render_fund_nav_chart(fund_name: str, key_suffix: str | int = "") -> None:
-    """绘制基金 NAV 走势 + 年度收益柱状图，数据来自 GitHub Raw CSV，无则模拟。key_suffix 用于区分同页多个图表，避免 Streamlit 重复 key 报错。"""
+def render_fund_nav_chart(fund_name: str, unique_key: str = "") -> None:
+    """绘制基金 NAV 走势 + 年度收益柱状图。unique_key 必须全局唯一（tab 名+基金名+序号），避免 Streamlit 重复 element ID。"""
     df = load_fund_nav(fund_name)
     is_mock = False
     if df.empty:
@@ -605,9 +605,7 @@ def render_fund_nav_chart(fund_name: str, key_suffix: str | int = "") -> None:
 
     with chart_col:
         range_options = ["YTD", "1Y", "2Y", "3Y", "5Y", "全部"]
-        # 纯英文+数字 key，避免 Streamlit 截断/规范化导致重复（每处调用必须传唯一 key_suffix）
-        _key = f"nav_radio_{key_suffix}_{abs(hash(fund_name)) % 100000}"
-        selected_range = st.radio("时间范围", range_options, index=1, horizontal=True, key=_key)
+        selected_range = st.radio("时间范围", range_options, index=1, horizontal=True, key=f"radio_{unique_key}")
         latest = df["date"].max()
         range_map = {
             "YTD": latest.replace(month=1, day=1),
@@ -663,7 +661,7 @@ def render_fund_nav_chart(fund_name: str, key_suffix: str | int = "") -> None:
         )
         if is_mock:
             fig.add_annotation(text="⚠️ 模拟数据，仅供演示", xref="paper", yref="paper", x=0.5, y=1.08, showarrow=False, font=dict(color="#e67e22", size=12))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key=f"chart_{unique_key}")
 
 
 # ─────────────────────────────────────────────
@@ -678,6 +676,7 @@ def render_desktop_ui(
     capital: float,
     weighted_avg_fee: float | None = None,
     is_new_fund: list | None = None,
+    tab_name: str = "t1",
 ):
     # ── 区块一：标准组合构成 ──────────────────────────────
     with st.container():
@@ -734,7 +733,7 @@ def render_desktop_ui(
                         unsafe_allow_html=True
                     )
                 with st.expander("📈 净值走势 & 历史收益"):
-                    render_fund_nav_chart(f, key_suffix=f"d{i}")
+                    render_fund_nav_chart(f, unique_key=f"{tab_name}_{risk_level}_{f}_{i}")
 
 
 # ─────────────────────────────────────────────
@@ -749,6 +748,7 @@ def render_mobile_ui(
     capital: float,
     weighted_avg_fee: float | None = None,
     is_new_fund: list | None = None,
+    tab_name: str = "t1",
 ):
     # 标准组合构成（折叠）
     with st.expander("📊 标准组合构成（点击展开）", expanded=False):
@@ -772,7 +772,7 @@ def render_mobile_ui(
             st.markdown(f"**配置权重**: `{weights[i] * 100:.1f}%` ｜ **金额**: `¥{capital * weights[i]:,.0f}` ｜ 申购费 {fee:.2f}%")
             st.caption(f"底层物理持仓: 股{MRF_POOL[f]['股票']}% / 债{MRF_POOL[f]['固定收益']}% / 现{MRF_POOL[f]['现金']}%")
             with st.expander("📈 净值走势"):
-                render_fund_nav_chart(f, key_suffix=f"m{i}")
+                render_fund_nav_chart(f, unique_key=f"{tab_name}_{risk_level}_{f}_{i}")
     if weighted_avg_fee is not None:
         st.caption(f"组合加权平均申购费 = **{weighted_avg_fee:.2f}%**")
 
@@ -900,24 +900,24 @@ with t1:
     f1, w1, a1 = res_fee
     waf1 = _weighted_avg_fee(f1, w1)
     if is_mobile:
-        render_mobile_ui(f1, w1, a1, risk_level, target_alloc, capital, weighted_avg_fee=waf1, is_new_fund=None)
+        render_mobile_ui(f1, w1, a1, risk_level, target_alloc, capital, weighted_avg_fee=waf1, is_new_fund=None, tab_name="t1")
     else:
-        render_desktop_ui(f1, w1, a1, risk_level, target_alloc, capital, weighted_avg_fee=waf1, is_new_fund=None)
+        render_desktop_ui(f1, w1, a1, risk_level, target_alloc, capital, weighted_avg_fee=waf1, is_new_fund=None, tab_name="t1")
 
 with t2:
     f2, w2, a2 = res_opt
     if is_mobile:
-        render_mobile_ui(f2, w2, a2, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=None)
+        render_mobile_ui(f2, w2, a2, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=None, tab_name="t2")
     else:
-        render_desktop_ui(f2, w2, a2, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=None)
+        render_desktop_ui(f2, w2, a2, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=None, tab_name="t2")
 
 with t3:
     f3, w3, a3 = res_div
     is_new = [f not in used_funds_set for f in f3]
     if is_mobile:
-        render_mobile_ui(f3, w3, a3, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=is_new)
+        render_mobile_ui(f3, w3, a3, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=is_new, tab_name="t3")
     else:
-        render_desktop_ui(f3, w3, a3, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=is_new)
+        render_desktop_ui(f3, w3, a3, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=is_new, tab_name="t3")
 
 # ─────────────────────────────────────────────
 #  引擎状态监控（折叠）
