@@ -71,15 +71,20 @@ def get_wmp_display_data() -> pd.DataFrame:
     target_30 = (t0_dt - timedelta(days=30)).strftime("%Y-%m-%d")
     target_90 = (t0_dt - timedelta(days=90)).strftime("%Y-%m-%d")
 
-    t0_rows = df_all[df_all["date"] == t0_date].drop_duplicates(subset=["product_code"], keep="first")
+    # 展示「历史上出现过且在 t0 及之前有记录」的全部产品，不限于「仅 t0 当天有记录」的几条
+    df_on_or_before = df_all[df_all["date"] <= t0_date]
+    # 每个产品取「日期 <= t0 的最近一条」作为最新净值与展示信息
     rows_out = []
-
-    for _, r in t0_rows.iterrows():
-        code = r["product_code"]
-        name = r["product_name"]
-        risk = r["risk_level"]
-        term = r["term"]
-        nav_t0 = float(r["nav"])
+    for code in df_on_or_before["product_code"].unique():
+        df_product = df_all[df_all["product_code"] == code]
+        candidates = df_product[df_product["date"] <= t0_date]
+        if candidates.empty:
+            continue
+        last_row = candidates.sort_values("date", ascending=False).iloc[0]
+        name = last_row["product_name"]
+        risk = last_row["risk_level"]
+        term = last_row["term"]
+        nav_t0 = float(last_row["nav"])
 
         df_product = df_all[df_all["product_code"] == code]
         nav_1 = _nav_on_or_before(df_product, target_1)

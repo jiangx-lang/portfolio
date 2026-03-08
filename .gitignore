@@ -17,3 +17,10 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# 本地数据/临时
+_fee_names.txt
+*.db
+wmp_nav_*.txt
+wmp_table_preview.txt
+data/*.bak
