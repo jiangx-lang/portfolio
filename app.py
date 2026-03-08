@@ -99,7 +99,7 @@ def track_visitor():
         pass
 
 
-st.set_page_config(page_title="机构级宏观资产配置引擎", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="锦城轮动系统 · JinCity Rotation Engine", layout="wide", initial_sidebar_state="collapsed")
 
 # --- 0. 状态管理 ---
 if "device" not in st.session_state:
@@ -784,9 +784,9 @@ def render_mobile_ui(
 #  引导页
 # ─────────────────────────────────────────────
 if st.session_state.device is None:
-    st.title("🎯 宏观资产配置引擎")
+    st.title("🎯 锦城轮动系统 · JinCity Rotation Engine")
     st.write("请选择入口与设备：")
-    st.subheader("宏观资产配置引擎")
+    st.subheader("锦城轮动系统 · JinCity Rotation Engine")
     r1c1, r1c2 = st.columns(2)
     with r1c1:
         st.button("📱 手机", key="cfg_mobile", on_click=set_device, args=("mobile", "config"), use_container_width=True)
