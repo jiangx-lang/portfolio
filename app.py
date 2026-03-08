@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-宏观资产配置优化器 - V11：三组合 + Fee-Aware + 基金 NAV 交互曲线图
-NAV 数据从 GitHub Raw CSV 读取（data/nav/{fund_name}.csv），无数据时展示模拟曲线。
+宏观资产配置优化器 - V12：综合费率统计 + 自定义 Portfolio 构建器
+V11 基础上新增：落地基金表下费率汇总（加权费率/年化费用/分布）、自定义选基+权重+穿透拟合度。
 """
 import streamlit as st
 import pandas as pd
@@ -243,6 +243,45 @@ def _compute_achieved(funds: list, weights: list) -> dict:
     return achieved
 
 
+def calc_fee_summary(funds: list, weights: list) -> dict:
+    """综合费率统计：加权平均、最高/最低基金及费率、明细。"""
+    if not funds or not weights or len(funds) != len(weights):
+        return {
+            "weighted_avg": 0.0, "max_fee_fund": "", "max_fee": 0.0,
+            "min_fee_fund": "", "min_fee": 0.0, "fee_breakdown": [],
+        }
+    breakdown = []
+    weighted_sum = 0.0
+    for f, w in zip(funds, weights):
+        fee = MRF_POOL[f].get("fee_rate") or 0.0
+        contribution = w * fee
+        weighted_sum += contribution
+        breakdown.append({"fund": f, "weight": w, "fee": fee, "contribution": contribution})
+    if not breakdown:
+        return {
+            "weighted_avg": 0.0, "max_fee_fund": "", "max_fee": 0.0,
+            "min_fee_fund": "", "min_fee": 0.0, "fee_breakdown": [],
+        }
+    by_fee = sorted(breakdown, key=lambda x: x["fee"])
+    return {
+        "weighted_avg": weighted_sum,
+        "max_fee_fund": by_fee[-1]["fund"],
+        "max_fee": by_fee[-1]["fee"],
+        "min_fee_fund": by_fee[0]["fund"],
+        "min_fee": by_fee[0]["fee"],
+        "fee_breakdown": breakdown,
+    }
+
+
+def calc_fit_score(achieved: dict, target: dict) -> float:
+    """与标准组合的拟合度 0–100，基于股/债/现均方误差归一化。"""
+    keys = ["股票", "固定收益", "现金"]
+    mse = np.mean([(achieved.get(k, 0) - target.get(k, 0)) ** 2 for k in keys])
+    max_mse = np.mean([(target.get(k, 0)) ** 2 for k in keys]) or 1e-6
+    score = max(0.0, (1 - mse / max_mse) * 100)
+    return float(score)
+
+
 def _drop_small_weights(funds: list, weights: list, min_weight: float = MIN_WEIGHT_DISPLAY):
     """剔除权重低于 min_weight 的基金，重新归一化；低于 10% 操作意义不大不展示。"""
     keep = [i for i in range(len(weights)) if weights[i] >= min_weight]
@@ -456,7 +495,7 @@ def render_fund_penetration_table(
         "落地基金产品": funds,
         "品牌": [MRF_POOL[f]["brand"] for f in funds],
         "配置权重(%)": [round(w * 100, 1) for w in weights],
-        "申购费(%)": [round(MRF_POOL[f].get("fee_rate") or 0.0, 2) for f in funds],
+        "申购费率(%)": [round(MRF_POOL[f].get("fee_rate") or 0.0, 2) for f in funds],
         "底层: 股票%": [MRF_POOL[f]["股票"] for f in funds],
         "底层: 固收%": [MRF_POOL[f]["固定收益"] for f in funds],
         "底层: 现金%": [MRF_POOL[f]["现金"] for f in funds],
@@ -467,7 +506,7 @@ def render_fund_penetration_table(
     df = pd.DataFrame(base)
     col_cfg = {
         "配置权重(%)": st.column_config.ProgressColumn("配置权重(%)", min_value=0, max_value=100, format="%.1f%%"),
-        "申购费(%)": st.column_config.NumberColumn("申购费(%)", format="%.2f%%"),
+        "申购费率(%)": st.column_config.NumberColumn("申购费率(%)", format="%.2f%%"),
         "底层: 股票%": st.column_config.ProgressColumn("底层 股票%", min_value=0, max_value=100, format="%d%%"),
         "底层: 固收%": st.column_config.ProgressColumn("底层 固收%", min_value=0, max_value=100, format="%d%%"),
         "底层: 现金%": st.column_config.ProgressColumn("底层 现金%", min_value=0, max_value=100, format="%d%%"),
@@ -476,6 +515,36 @@ def render_fund_penetration_table(
     st.dataframe(df, use_container_width=True, hide_index=True, column_config=col_cfg)
     if weighted_avg_fee is not None:
         st.caption(f"**组合加权平均申购费** = Σ(权重 × 申购费) = **{weighted_avg_fee:.2f}%**")
+
+
+INDUSTRY_AVG_FEE = 1.2  # 行业平均费率 %，用于 delta 对比
+
+
+def render_fee_summary(funds: list, weights: list, capital: float):
+    """在落地基金表格下方展示：组合加权费率、年化费用、费率分布（三列 metric）。"""
+    summary = calc_fee_summary(funds, weights)
+    if not summary["fee_breakdown"]:
+        return
+    wavg = summary["weighted_avg"]
+    delta_vs_industry = wavg - INDUSTRY_AVG_FEE
+    delta_color = "inverse" if delta_vs_industry > 0 else "normal"
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.metric(
+            "💰 组合加权费率",
+            f"{wavg:.2f}%",
+            delta=f"{delta_vs_industry:+.2f}% vs 行业约{INDUSTRY_AVG_FEE}%",
+            delta_color=delta_color,
+        )
+    with c2:
+        annual = capital * wavg / 100
+        st.metric("📅 每年费用（按AUM）", f"¥{annual:,.0f}", help="基于当前投资金额的年化费用估算")
+    with c3:
+        st.caption("📊 费率分布")
+        st.markdown(
+            f"**最贵**: {summary['max_fee_fund'][:12]}…（{summary['max_fee']:.2f}%）  \n"
+            f"**最便宜**: {summary['min_fee_fund'][:12]}…（{summary['min_fee']:.2f}%）"
+        )
 
 
 # ─────────────────────────────────────────────
@@ -700,6 +769,7 @@ def render_desktop_ui(
         weighted_avg_fee=weighted_avg_fee,
         is_new_fund=is_new_fund,
     )
+    render_fee_summary(funds, weights, capital)
 
     # ── 区块三：每只基金详细穿透卡片 ─────────────────────
     st.markdown("### 🃏 各基金底层持仓明细")
@@ -734,6 +804,9 @@ def render_desktop_ui(
                     )
                 with st.expander("📈 净值走势 & 历史收益"):
                     render_fund_nav_chart(f, unique_key=f"{tab_name}_{risk_level}_{f}_{i}")
+
+    # ── 区块四：自定义 Portfolio 构建器 ─────────────────────
+    _render_custom_portfolio_builder(risk_level, target_alloc, capital, tab_name, device="desktop")
 
 
 # ─────────────────────────────────────────────
@@ -775,13 +848,155 @@ def render_mobile_ui(
                 render_fund_nav_chart(f, unique_key=f"{tab_name}_{risk_level}_{f}_{i}")
     if weighted_avg_fee is not None:
         st.caption(f"组合加权平均申购费 = **{weighted_avg_fee:.2f}%**")
+    render_fee_summary(funds, weights, capital)
 
     st.write("---")
     render_penetration_summary(achieved, target_alloc)
 
+    _render_custom_portfolio_builder(risk_level, target_alloc, capital, tab_name, device="mobile")
+
+
+# ─────────────────────────────────────────────
+#  自定义 Portfolio 构建器（每 Tab 底部 expander）
+# ─────────────────────────────────────────────
+def _key_safe(s: str) -> str:
+    """用于 Streamlit key 的简短安全字符串（去空格、括号等）。"""
+    return (s or "").replace(" ", "_").replace("(", "").replace(")", "").replace("-", "_")[:30]
+
+
+def _render_custom_portfolio_builder(
+    risk_level: str, target_alloc: dict, capital: float, tab_name: str, device: str = "desktop"
+):
+    """展开后：选基金 → 分配权重 → 计算穿透与拟合度。"""
+    rk = _key_safe(risk_level)
+    with st.expander("🛠️ 自定义 Portfolio 构建器", expanded=False):
+        st.markdown("#### 第一步：选择你的基金组合")
+        if device == "mobile":
+            st.caption("下滑列表，点击勾选要纳入组合的基金（可多选）")
+            selected_funds = []
+            for f in MRF_POOL.keys():
+                fd = MRF_POOL[f]
+                short = f"股{fd['股票']}% 债{fd['固定收益']}% 现{fd['现金']}%"
+                cb_key = f"custom_cb_{rk}_{tab_name}_{_key_safe(f)}"
+                if st.checkbox(f"{f}（{short}）", key=cb_key):
+                    selected_funds.append(f)
+        else:
+            selected_funds = st.multiselect(
+                "从基金池中选择（可多选）",
+                options=list(MRF_POOL.keys()),
+                default=[],
+                key=f"custom_funds_{rk}_{tab_name}",
+            )
+
+        if not selected_funds:
+            st.caption("请至少选择一只基金后分配权重。")
+            return
+
+        st.markdown("#### 第二步：分配权重")
+        st.caption("拖动滑块分配各基金权重，总和须等于 100%。可先点「等权分配」再微调。")
+        n = len(selected_funds)
+        equal = 100 // n
+        defaults = [equal] * n
+        defaults[-1] += 100 - sum(defaults)
+
+        if st.button("⚖️ 等权分配", key=f"equal_weight_{rk}_{tab_name}"):
+            for i, f in enumerate(selected_funds):
+                w_key = f"weight_{_key_safe(f)}_{rk}_{tab_name}"
+                st.session_state[w_key] = defaults[i]
+            st.rerun()
+
+        weights_vals = []
+        for i, f in enumerate(selected_funds):
+            fd = MRF_POOL[f]
+            lab = f"{f}（底层：股{fd['股票']}% / 债{fd['固定收益']}% / 现{fd['现金']}%）"
+            w_key = f"weight_{_key_safe(f)}_{rk}_{tab_name}"
+            default_val = defaults[i] if w_key not in st.session_state else st.session_state[w_key]
+            v = st.slider(lab, min_value=0, max_value=100, value=default_val, step=5, key=w_key)
+            weights_vals.append((f, v))
+
+        total = sum(v for _, v in weights_vals)
+        if total == 100:
+            st.success(f"✅ 权重合计：{total}%")
+        else:
+            st.warning(f"⚠️ 权重合计：{total}%，请调整至 100%")
+
+        st.markdown("#### 第三步：计算结果")
+        if total != 100:
+            st.caption("权重合计为 100% 后可查看穿透与拟合度。")
+            return
+
+        if st.button("🔍 计算自定义组合", key=f"calc_{rk}_{tab_name}"):
+            st.session_state[f"custom_calc_done_{rk}_{tab_name}"] = True
+        if not st.session_state.get(f"custom_calc_done_{rk}_{tab_name}", False):
+            return
+
+        w_list = [v / 100.0 for _, v in weights_vals]
+        selected_funds_ordered = [f for f, _ in weights_vals]
+        custom_achieved = _compute_achieved(selected_funds_ordered, w_list)
+
+        # A. 综合费率
+        st.markdown("**A. 综合费率**")
+        render_fee_summary(selected_funds_ordered, w_list, capital)
+
+        # B. 穿透后资产配置
+        st.markdown("**B. 穿透后资产配置**")
+        if device == "mobile":
+            cc1, cc2 = st.columns(2)
+            cc1.metric("📉 股票", f"{custom_achieved['股票']:.1f}%", f"基准 {target_alloc['股票']}%", delta_color="off")
+            cc2.metric("🛡️ 固收", f"{custom_achieved['固定收益']:.1f}%", f"基准 {target_alloc['固定收益']}%", delta_color="off")
+            cc3, cc4 = st.columns(2)
+            cc3.metric("🥇 黄金", "0.0% (缺项)", delta_color="off")
+            cc4.metric("💵 现金", f"{custom_achieved['现金']:.1f}%", f"基准 {target_alloc['现金']}%", delta_color="off")
+        else:
+            dc1, dc2, dc3, dc4 = st.columns(4)
+            dc1.metric("📉 穿透: 股票", f"{custom_achieved['股票']:.1f}%", f"基准 {target_alloc['股票']}%", delta_color="off")
+            dc2.metric("🛡️ 穿透: 固收", f"{custom_achieved['固定收益']:.1f}%", f"基准 {target_alloc['固定收益']}%", delta_color="off")
+            dc3.metric("🥇 穿透: 黄金", "0.0% (缺项)", delta_color="off")
+            dc4.metric("💵 穿透: 现金", f"{custom_achieved['现金']:.1f}%", f"基准 {target_alloc['现金']}%", delta_color="off")
+
+        # C. 拟合度
+        score = calc_fit_score(custom_achieved, target_alloc)
+        st.metric("🎯 与标准组合拟合度", f"{score:.1f} / 100", delta=None)
+        if score >= 85:
+            st.caption("🟢 优秀 — 高度贴合标准组合")
+        elif score >= 70:
+            st.caption("🟡 良好 — 基本符合风险目标")
+        elif score >= 50:
+            st.caption("🟠 一般 — 偏离较大，建议调整")
+        else:
+            st.caption("🔴 较差 — 与标准组合差异显著")
+
+        # D. 偏差明细表
+        st.markdown("**D. 偏差明细表**")
+        rows = []
+        for asset, target_pct in target_alloc.items():
+            ach = custom_achieved.get(asset, 0.0)
+            diff = ach - target_pct
+            diff_str = f"+{diff:.1f}%" if diff > 0 else (f"{diff:.1f}%" if diff != 0 else "持平")
+            status = "✅" if abs(diff) <= 5 else ("⚠️ 缺项" if diff < -5 else "⚠️ 超配")
+            rows.append({"资产类别": asset, "标准目标%": target_pct, "自定义组合%": round(ach, 1), "偏差": diff_str, "状态": status})
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+        # E. 自定义组合基金明细
+        st.markdown("**E. 自定义组合基金明细**")
+        e_rows = []
+        for f, v in weights_vals:
+            w = v / 100.0
+            fd = MRF_POOL[f]
+            fee = fd.get("fee_rate") or 0.0
+            e_rows.append({
+                "基金": f,
+                "权重%": v,
+                "股/债/现": f"{fd['股票']}/{fd['固定收益']}/{fd['现金']}",
+                "申购费率%": fee,
+                "年化费用估算¥": round(capital * w * fee / 100),
+            })
+        st.dataframe(pd.DataFrame(e_rows), use_container_width=True, hide_index=True)
+
 
 # ─────────────────────────────────────────────
 #  引导页
+# ─────────────────────────────────────────────
 # ─────────────────────────────────────────────
 if st.session_state.device is None:
     st.title("🎯 锦城轮动系统 · JinCity Rotation Engine")
