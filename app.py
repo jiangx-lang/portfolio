@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
 """
-宏观资产配置优化器 - V10：三组合重构 + Fee-Aware 选基逻辑
-Tab1 精选 Portfolio（Fee-First）| Tab2 Model Portfolio（Optimizer-First）| Tab3 补充 Portfolio（Diversify-First）
-MRF_POOL 含 fee_rate 字段（占位 0.0，接 DB 时从 fund_fees 表读入覆盖）。
+宏观资产配置优化器 - V11：三组合 + Fee-Aware + 基金 NAV 交互曲线图
+NAV 数据从 GitHub Raw CSV 读取（data/nav/{fund_name}.csv），无数据时展示模拟曲线。
 """
 import streamlit as st
 import pandas as pd
 import requests
 import ipaddress
+import urllib.parse
 from datetime import datetime
+from pathlib import Path
 from zoneinfo import ZoneInfo
 import numpy as np
 from scipy.optimize import minimize
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
+# 基金 NAV CSV：优先读本地 data/nav/，不存在再读 GitHub Raw（部署后用）
+NAV_DATA_DIR = Path(__file__).resolve().parent / "data" / "nav"
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/jiangx-lang/portfolio/master/data/nav/"
 
 # 渣打 WMP 数据模块（导入失败时仍显示 Tab，便于排查）
 WMP_AVAILABLE = False
@@ -504,6 +511,162 @@ def render_penetration_summary(achieved: dict, target_alloc: dict):
 
 
 # ─────────────────────────────────────────────
+#  基金 NAV 交互曲线图（GitHub Raw CSV，无数据时模拟）
+# ─────────────────────────────────────────────
+@st.cache_data(ttl=3600)
+def load_fund_nav(fund_name: str) -> pd.DataFrame:
+    """优先读本地 data/nav/{fund_name}.csv，否则从 GitHub Raw 拉取。列需含 date/csvdate 与 nav。"""
+    local_path = NAV_DATA_DIR / f"{fund_name}.csv"
+    try:
+        if local_path.exists():
+            df = pd.read_csv(local_path, encoding="utf-8")
+        else:
+            url = GITHUB_RAW_BASE + urllib.parse.quote(fund_name) + ".csv"
+            df = pd.read_csv(url)
+        if "csvdate" in df.columns and "date" not in df.columns:
+            df = df.rename(columns={"csvdate": "date"})
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        df["nav"] = pd.to_numeric(df["nav"], errors="coerce")
+        df = df.dropna(subset=["date", "nav"]).sort_values("date").reset_index(drop=True)
+        return df
+    except Exception:
+        return pd.DataFrame()
+
+
+def calc_returns(df: pd.DataFrame) -> dict:
+    """计算各区间收益率，(nav_end/nav_start)-1，不足则 None。"""
+    if df.empty or len(df) < 2:
+        return {k: None for k in ("YTD", "1Y", "2Y", "3Y", "5Y", "成立以来")}
+    df = df.sort_values("date").reset_index(drop=True)
+    latest = df["date"].max()
+    nav_end = df.loc[df["date"] == latest, "nav"].iloc[-1]
+    out = {}
+    # YTD
+    ytd_start = df[df["date"] >= pd.Timestamp(latest.year, 1, 1)]
+    if not ytd_start.empty:
+        nav_start = ytd_start["nav"].iloc[0]
+        out["YTD"] = (nav_end / nav_start) - 1 if nav_start and nav_start > 0 else None
+    else:
+        out["YTD"] = None
+    # 1Y/2Y/3Y/5Y
+    for label, days in [("1Y", 365), ("2Y", 730), ("3Y", 1095), ("5Y", 1825)]:
+        cut = latest - pd.DateOffset(days=days)
+        start_df = df[df["date"] <= cut].tail(1)
+        if not start_df.empty:
+            nav_start = start_df["nav"].iloc[0]
+            out[label] = (nav_end / nav_start) - 1 if nav_start and nav_start > 0 else None
+        else:
+            out[label] = None
+    # 成立以来
+    nav_start = df["nav"].iloc[0]
+    out["成立以来"] = (nav_end / nav_start) - 1 if nav_start and nav_start > 0 else None
+    return out
+
+
+def calc_annual_returns(df: pd.DataFrame) -> pd.DataFrame:
+    """按自然年计算年度收益率，返回 year, return_pct。"""
+    if df.empty or len(df) < 2:
+        return pd.DataFrame(columns=["year", "return_pct"])
+    df = df.sort_values("date").reset_index(drop=True)
+    df["year"] = df["date"].dt.year
+    rows = []
+    for y in df["year"].unique():
+        sub = df[df["year"] == y]
+        if len(sub) < 2:
+            continue
+        nav_start = sub["nav"].iloc[0]
+        nav_end = sub["nav"].iloc[-1]
+        if nav_start and nav_start > 0:
+            rows.append({"year": int(y), "return_pct": (nav_end / nav_start) - 1})
+    return pd.DataFrame(rows)
+
+
+def render_fund_nav_chart(fund_name: str, key_suffix: str | int = "") -> None:
+    """绘制基金 NAV 走势 + 年度收益柱状图，数据来自 GitHub Raw CSV，无则模拟。key_suffix 用于区分同页多个图表，避免 Streamlit 重复 key 报错。"""
+    df = load_fund_nav(fund_name)
+    is_mock = False
+    if df.empty:
+        dates = pd.date_range("2020-01-01", periods=1200, freq="B")
+        np.random.seed(hash(fund_name) % 2**32)
+        nav = (1 + np.random.normal(0.0003, 0.008, len(dates))).cumprod()
+        df = pd.DataFrame({"date": dates, "nav": nav})
+        is_mock = True
+
+    chart_col, stat_col = st.columns([3, 1])
+    with stat_col:
+        st.markdown("**区间收益率**")
+        returns = calc_returns(df)
+        for period, ret in returns.items():
+            if ret is None:
+                st.metric(period, "—", delta=None)
+            else:
+                pct_str = f"{ret*100:+.2f}%"
+                st.metric(period, pct_str, delta=None, delta_color="normal" if ret >= 0 else "inverse")
+
+    with chart_col:
+        range_options = ["YTD", "1Y", "2Y", "3Y", "5Y", "全部"]
+        # 纯英文+数字 key，避免 Streamlit 截断/规范化导致重复（每处调用必须传唯一 key_suffix）
+        _key = f"nav_radio_{key_suffix}_{abs(hash(fund_name)) % 100000}"
+        selected_range = st.radio("时间范围", range_options, index=1, horizontal=True, key=_key)
+        latest = df["date"].max()
+        range_map = {
+            "YTD": latest.replace(month=1, day=1),
+            "1Y": latest - pd.DateOffset(years=1),
+            "2Y": latest - pd.DateOffset(years=2),
+            "3Y": latest - pd.DateOffset(years=3),
+            "5Y": latest - pd.DateOffset(years=5),
+            "全部": df["date"].min(),
+        }
+        start_date = range_map[selected_range]
+        df_filtered = df[df["date"] >= start_date].copy()
+
+        fig = make_subplots(
+            rows=2, cols=1,
+            shared_xaxes=False,
+            row_heights=[0.65, 0.35],
+            vertical_spacing=0.12,
+            subplot_titles=("单位净值走势", "自然年度收益率 (%)"),
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"], y=df_filtered["nav"], mode="lines",
+                line=dict(color="#1d6fa4", width=1.8), name="单位净值",
+                hovertemplate="<b>%{x|%Y-%m-%d}</b><br>净值: %{y:.4f}<extra></extra>",
+            ),
+            row=1, col=1,
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"], y=df_filtered["nav"], fill="tozeroy",
+                fillcolor="rgba(29,111,164,0.08)", line=dict(width=0),
+                showlegend=False, hoverinfo="skip",
+            ),
+            row=1, col=1,
+        )
+        annual = calc_annual_returns(df)
+        if not annual.empty:
+            colors = ["#2c8c6b" if r >= 0 else "#c0392b" for r in annual["return_pct"]]
+            fig.add_trace(
+                go.Bar(
+                    x=annual["year"].astype(str), y=(annual["return_pct"] * 100).round(2),
+                    marker_color=colors, name="年度收益%",
+                    hovertemplate="<b>%{x}年</b><br>收益率: %{y:.2f}%<extra></extra>",
+                ),
+                row=2, col=1,
+            )
+        fig.update_layout(
+            height=520, margin=dict(l=10, r=10, t=40, b=10), showlegend=False,
+            plot_bgcolor="white", paper_bgcolor="white", hovermode="x unified",
+            xaxis=dict(rangeslider=dict(visible=True, thickness=0.04), showgrid=True, gridcolor="#f0f0f0"),
+            yaxis=dict(showgrid=True, gridcolor="#f0f0f0"),
+            xaxis2=dict(showgrid=False), yaxis2=dict(showgrid=True, gridcolor="#f0f0f0", ticksuffix="%", zeroline=True, zerolinecolor="#999"),
+        )
+        if is_mock:
+            fig.add_annotation(text="⚠️ 模拟数据，仅供演示", xref="paper", yref="paper", x=0.5, y=1.08, showarrow=False, font=dict(color="#e67e22", size=12))
+        st.plotly_chart(fig, use_container_width=True)
+
+
+# ─────────────────────────────────────────────
 #  主渲染函数：电脑端（并排布局）
 # ─────────────────────────────────────────────
 def render_desktop_ui(
@@ -570,6 +733,8 @@ def render_desktop_ui(
                         f"</div>",
                         unsafe_allow_html=True
                     )
+                with st.expander("📈 净值走势 & 历史收益"):
+                    render_fund_nav_chart(f, key_suffix=f"d{i}")
 
 
 # ─────────────────────────────────────────────
@@ -606,6 +771,8 @@ def render_mobile_ui(
             st.markdown(f"**{f}**{tag if is_new_fund else ''}")
             st.markdown(f"**配置权重**: `{weights[i] * 100:.1f}%` ｜ **金额**: `¥{capital * weights[i]:,.0f}` ｜ 申购费 {fee:.2f}%")
             st.caption(f"底层物理持仓: 股{MRF_POOL[f]['股票']}% / 债{MRF_POOL[f]['固定收益']}% / 现{MRF_POOL[f]['现金']}%")
+            with st.expander("📈 净值走势"):
+                render_fund_nav_chart(f, key_suffix=f"m{i}")
     if weighted_avg_fee is not None:
         st.caption(f"组合加权平均申购费 = **{weighted_avg_fee:.2f}%**")
 
