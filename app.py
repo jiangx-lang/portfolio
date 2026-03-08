@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 宏观资产配置优化器 - V12：综合费率统计 + 自定义 Portfolio 构建器
-V11 基础上新增：落地基金表下费率汇总（加权费率/年化费用/分布）、自定义选基+权重+穿透拟合度。
+V11 基础上新增：落地基金表下费率汇总（加权费率/一次性申购费/分布）、自定义选基+权重+穿透拟合度。
 """
 import streamlit as st
 import pandas as pd
@@ -521,7 +521,7 @@ INDUSTRY_AVG_FEE = 1.2  # 行业平均费率 %，用于 delta 对比
 
 
 def render_fee_summary(funds: list, weights: list, capital: float):
-    """在落地基金表格下方展示：组合加权费率、年化费用、费率分布（三列 metric）。"""
+    """在落地基金表格下方展示：组合加权费率、一次性申购费、费率分布（三列 metric）。"""
     summary = calc_fee_summary(funds, weights)
     if not summary["fee_breakdown"]:
         return
@@ -537,8 +537,8 @@ def render_fee_summary(funds: list, weights: list, capital: float):
             delta_color=delta_color,
         )
     with c2:
-        annual = capital * wavg / 100
-        st.metric("📅 每年费用（按AUM）", f"¥{annual:,.0f}", help="基于当前投资金额的年化费用估算")
+        one_time_fee = capital * wavg / 100
+        st.metric("📅 一次性申购费", f"¥{one_time_fee:,.0f}", help="基于当前投资金额的一次性申购费估算")
     with c3:
         st.caption("📊 费率分布")
         st.markdown(
@@ -989,7 +989,7 @@ def _render_custom_portfolio_builder(
                 "权重%": v,
                 "股/债/现": f"{fd['股票']}/{fd['固定收益']}/{fd['现金']}",
                 "申购费率%": fee,
-                "年化费用估算¥": round(capital * w * fee / 100),
+                "申购费估算¥": round(capital * w * fee / 100),
             })
         st.dataframe(pd.DataFrame(e_rows), use_container_width=True, hide_index=True)
 
