@@ -9,6 +9,8 @@ import requests
 import ipaddress
 import urllib.parse
 from datetime import datetime
+import datetime as _dt
+import hashlib
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import numpy as np
@@ -1377,3 +1379,59 @@ with st.expander("♏ 引擎状态监控", expanded=False):
                 st.dataframe(df_logs, hide_index=True, use_container_width=True)
     except Exception:
         pass
+
+# ─────────────────────────────────────────────
+#  每日随机格言（同一天所有用户看同一句）
+# ─────────────────────────────────────────────
+DAILY_QUOTES = [
+    ("The market is a device for transferring money from the impatient to the patient.", "Warren Buffett"),
+    ("It's not always easy to do what's not popular, but that's where you make your money.", "Warren Buffett"),
+    ("Risk comes from not knowing what you're doing.", "Warren Buffett"),
+    ("Behind every stock is a company. Find out what it's doing.", "Peter Lynch"),
+    ("In this business, if you're good, you're right six times out of ten.", "Peter Lynch"),
+    ("The person that turns over the most rocks wins the game.", "Peter Lynch"),
+    ("Know what you own, and know why you own it.", "Peter Lynch"),
+    ("The stock market is filled with individuals who know the price of everything, but the value of nothing.", "Philip Fisher"),
+    ("The best time to sell a stock is almost never.", "Philip Fisher"),
+    ("I am not a businessman, I am an artist.", "Philip Fisher"),
+    ("When something is important enough, you do it even if the odds are not in your favor.", "Elon Musk"),
+    ("I think it's very important to have a feedback loop.", "Elon Musk"),
+    ("The first step is to establish that something is possible; then probability will occur.", "Elon Musk"),
+    ("The market can stay irrational longer than you can stay solvent.", "John Maynard Keynes"),
+    ("Successful investing is anticipating the anticipations of others.", "John Maynard Keynes"),
+    ("The difficulty lies not so much in developing new ideas as in escaping from old ones.", "John Maynard Keynes"),
+    ("Every individual endeavours to employ his capital so that its produce may be of greatest value.", "Adam Smith, The Wealth of Nations"),
+    ("The real price of everything is the toil and trouble of acquiring it.", "Adam Smith, The Wealth of Nations"),
+    ("No society can surely be flourishing and happy, of which the far greater part of the members are poor and miserable.", "Adam Smith, The Wealth of Nations"),
+    ("It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness.", "Charles Dickens, A Tale of Two Cities"),
+    ("It was the spring of hope, it was the winter of despair.", "Charles Dickens, A Tale of Two Cities"),
+    ("We had everything before us, we had nothing before us.", "Charles Dickens, A Tale of Two Cities"),
+    ("价格是你付出的，价值是你得到的。", "沃伦·巴菲特"),
+    ("投资最重要的三个字：安全边际。", "本杰明·格雷厄姆"),
+    ("牛市让你赚钱，熊市让你成长。", "彼得·林奇"),
+    ("分散投资是对无知的保护，对于知道自己在做什么的人来说意义不大。", "沃伦·巴菲特"),
+    ("市场短期是投票机，长期是称重机。", "本杰明·格雷厄姆"),
+    ("那是最好的时代，那是最坏的时代；那是智慧的年代，那是愚蠢的年代。", "查尔斯·狄更斯《双城记》"),
+    ("现在是希望之春，现在是绝望之冬。", "查尔斯·狄更斯《双城记》"),
+    ("劳动是所有财富的真实源泉。", "亚当·斯密《国富论》"),
+    ("分工是国民财富增长的根本原因。", "亚当·斯密《国富论》"),
+]
+
+
+def get_daily_quote():
+    today = str(_dt.date.today())
+    idx = int(hashlib.md5(today.encode()).hexdigest(), 16) % len(DAILY_QUOTES)
+    return DAILY_QUOTES[idx]
+
+
+quote_text, quote_author = get_daily_quote()
+st.markdown("---")
+st.markdown(
+    f"""
+    <div style='text-align:center; padding: 20px 40px; color: #aaa;'>
+        <p style='font-style:italic; font-size:15px; margin-bottom:6px;'>"{quote_text}"</p>
+        <p style='font-size:12px; letter-spacing:1px;'>— {quote_author}</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
