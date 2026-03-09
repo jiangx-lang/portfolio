@@ -20,6 +20,39 @@ import plotly.graph_objects as go
 NAV_DATA_DIR = Path(__file__).resolve().parent / "data" / "nav"
 GITHUB_RAW_BASE = "https://raw.githubusercontent.com/jiangx-lang/portfolio/master/data/nav/"
 
+# 每日报告 PDF / 市场播客 目录（服务器 /root/market_files，本地为项目下 market_files）
+import os
+import threading
+if os.path.exists("/root/market_files"):
+    MARKET_FILES_BASE = Path("/root/market_files")
+else:
+    MARKET_FILES_BASE = Path(__file__).resolve().parent / "market_files"
+MARKET_PDFS = MARKET_FILES_BASE / "pdfs"
+MARKET_PODCASTS = MARKET_FILES_BASE / "podcasts"
+MARKET_FILES_BASE.mkdir(parents=True, exist_ok=True)
+MARKET_PDFS.mkdir(exist_ok=True)
+MARKET_PODCASTS.mkdir(exist_ok=True)
+# 静态文件服务 base URL（PDF 链接用），服务器可设环境变量 FILE_SERVER_BASE_URL
+FILE_SERVER_BASE_URL = os.environ.get("FILE_SERVER_BASE_URL", "http://43.161.234.75:8504")
+FILE_SERVER_PORT = 8504
+
+
+def _start_static_file_server():
+    """后台启动静态文件服务 8504，不阻塞 Streamlit。若端口已被占用则跳过。"""
+    try:
+        from http.server import HTTPServer, SimpleHTTPRequestHandler
+        class Handler(SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory=str(MARKET_FILES_BASE), **kwargs)
+        server = HTTPServer(("", FILE_SERVER_PORT), Handler)
+        t = threading.Thread(target=server.serve_forever, daemon=True)
+        t.start()
+    except OSError:
+        pass  # 端口已被占用，说明已启动
+    except Exception:
+        pass
+
+
 # 渣打 WMP 数据模块（导入失败时仍显示 Tab，便于排查）
 WMP_AVAILABLE = False
 WMP_ERROR = None
@@ -995,6 +1028,71 @@ def _render_custom_portfolio_builder(
 
 
 # ─────────────────────────────────────────────
+#  每日报告 PDF / 市场播客
+# ─────────────────────────────────────────────
+def _parse_date_from_filename(name: str) -> str:
+    """从文件名解析 YYYYMMDD，若没有则返回空。"""
+    import re
+    m = re.match(r"^(\d{8})", name)
+    return m.group(1) if m else ""
+
+
+def _title_from_filename(name: str) -> str:
+    """去掉日期前缀后的标题。"""
+    import re
+    s = re.sub(r"^\d{8}[\s_\-]*", "", name)
+    return Path(s).stem if s else name
+
+
+def _render_daily_reports_tab():
+    """每日报告：列出 pdfs 目录下 PDF，卡片 + 查看报告链接。"""
+    st.markdown("### 📄 每日报告")
+    if not MARKET_PDFS.exists():
+        st.info("暂无报告，敬请期待。")
+        return
+    pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
+    if not pdfs:
+        st.info("暂无报告，敬请期待。")
+        return
+    for p in pdfs:
+        with st.container(border=True):
+            title = _title_from_filename(p.name)
+            date_str = _parse_date_from_filename(p.name)
+            if date_str and len(date_str) >= 8:
+                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+            size_mb = p.stat().st_size / (1024 * 1024)
+            st.markdown(f"**{title}**")
+            st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
+            url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
+            st.markdown(f'<a href="{url}" target="_blank" rel="noopener">查看报告</a>', unsafe_allow_html=True)
+
+
+def _render_podcast_tab():
+    """市场播客：列出 podcasts 目录下 mp3/m4a/wav，嵌入 st.audio 播放。"""
+    st.markdown("### 🎙️ 市场播客")
+    if not MARKET_PODCASTS.exists():
+        st.info("暂无播客，敬请期待。")
+        return
+    exts = (".mp3", ".m4a", ".wav")
+    audios = [p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts]
+    audios.sort(key=lambda p: p.name, reverse=True)
+    if not audios:
+        st.info("暂无播客，敬请期待。")
+        return
+    for p in audios:
+        with st.container(border=True):
+            title = _title_from_filename(p.name)
+            date_str = _parse_date_from_filename(p.name)
+            if date_str and len(date_str) >= 8:
+                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+            st.markdown(f"**{title}**")
+            if date_str:
+                st.caption(f"日期：{date_str}")
+            with open(p, "rb") as f:
+                st.audio(f.read(), format=f"audio/{p.suffix.lower().lstrip('.')}")
+
+
+# ─────────────────────────────────────────────
 #  引导页
 # ─────────────────────────────────────────────
 # ─────────────────────────────────────────────
@@ -1081,6 +1179,21 @@ else:
         st.header("⚙️ 引擎控制台")
         risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
         capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
+        st.caption("---")
+        with st.expander("管理员入口", expanded=False):
+            pwd = st.text_input("密码", type="password", key="admin_pwd")
+            if pwd == "admin888":
+                st.caption("上传 PDF 或 音频")
+                up_pdf = st.file_uploader("上传 PDF", type=["pdf"], key="admin_pdf")
+                if up_pdf is not None:
+                    out = MARKET_PDFS / up_pdf.name
+                    out.write_bytes(up_pdf.getvalue())
+                    st.success("上传成功 ✅")
+                up_audio = st.file_uploader("上传音频", type=["mp3", "m4a", "wav"], key="admin_audio")
+                if up_audio is not None:
+                    out = MARKET_PODCASTS / up_audio.name
+                    out.write_bytes(up_audio.getvalue())
+                    st.success("上传成功 ✅")
 
 target_alloc = SCB_TARGET[risk_level]
 
@@ -1104,12 +1217,14 @@ def _weighted_avg_fee(funds: list, weights: list) -> float:
     return sum((MRF_POOL[f].get("fee_rate") or 0.0) * w for f, w in zip(funds, weights))
 
 is_mobile = st.session_state.device == "mobile"
+_start_static_file_server()
+
 tab_labels = (
-    ["💰 精选 Portfolio（手续费优先）", "🎯 Model Portfolio（最优匹配）", "🔄 补充 Portfolio（差异化配置）"]
+    ["💰 精选 Portfolio（手续费优先）", "🎯 Model Portfolio（最优匹配）", "🔄 补充 Portfolio（差异化配置）", "📄 每日报告", "🎙️ 市场播客"]
     if is_mobile else
-    ["💰 Tab1: 精选 Portfolio（手续费优先）", "🎯 Tab2: Model Portfolio（最优匹配）", "🔄 Tab3: 补充 Portfolio（差异化配置）"]
+    ["💰 Tab1: 精选 Portfolio（手续费优先）", "🎯 Tab2: Model Portfolio（最优匹配）", "🔄 Tab3: 补充 Portfolio（差异化配置）", "📄 每日报告", "🎙️ 市场播客"]
 )
-t1, t2, t3 = st.tabs(tab_labels)
+t1, t2, t3, t4_pdf, t5_podcast = st.tabs(tab_labels)
 
 with t1:
     f1, w1, a1 = res_fee
@@ -1133,6 +1248,12 @@ with t3:
         render_mobile_ui(f3, w3, a3, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=is_new, tab_name="t3")
     else:
         render_desktop_ui(f3, w3, a3, risk_level, target_alloc, capital, weighted_avg_fee=None, is_new_fund=is_new, tab_name="t3")
+
+with t4_pdf:
+    _render_daily_reports_tab()
+
+with t5_podcast:
+    _render_podcast_tab()
 
 # ─────────────────────────────────────────────
 #  引擎状态监控（折叠）
