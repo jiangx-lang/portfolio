@@ -1099,12 +1099,14 @@ def _render_podcast_tab():
 if st.session_state.device is None:
     st.title("🎯 锦城轮动系统 · JinCity Rotation Engine")
     st.write("请选择入口与设备：")
+
     st.subheader("锦城轮动系统 · JinCity Rotation Engine")
     r1c1, r1c2 = st.columns(2)
     with r1c1:
         st.button("📱 手机", key="cfg_mobile", on_click=set_device, args=("mobile", "config"), use_container_width=True)
     with r1c2:
         st.button("💻 电脑", key="cfg_desktop", on_click=set_device, args=("desktop", "config"), use_container_width=True)
+
     st.write("")
     st.subheader("WMP NAV")
     r2c1, r2c2 = st.columns(2)
@@ -1112,6 +1114,15 @@ if st.session_state.device is None:
         st.button("📱 手机", key="wmp_mobile", on_click=set_device, args=("mobile", "wmp"), use_container_width=True)
     with r2c2:
         st.button("💻 电脑", key="wmp_desktop", on_click=set_device, args=("desktop", "wmp"), use_container_width=True)
+
+    st.write("")
+    st.subheader("📝 市场笔记")
+    st.button("进入市场笔记 →", key="notes_enter", on_click=set_device, args=("desktop", "notes"), use_container_width=True)
+
+    st.write("")
+    st.subheader("🎙️ 播客")
+    st.button("进入播客 →", key="podcast_enter", on_click=set_device, args=("desktop", "podcast"), use_container_width=True)
+
     st.stop()
 
 # 访客追踪
@@ -1164,6 +1175,77 @@ if st.session_state.entry == "wmp":
             styled = df_wmp.style.apply(lambda s: [_color_yield(v) for v in s], subset=yield_cols)
             st.dataframe(styled, use_container_width=True, hide_index=True)
         st.caption("**赎回到账**：WMP 产品 T+1 到账；142890 T+2 到账；汇华 CIO 系列 T+5 到账。")
+    st.stop()
+
+# ─────────────────────────────────────────────
+#  市场笔记入口（密码保护）
+# ─────────────────────────────────────────────
+if st.session_state.entry == "notes":
+    st.button("⬅️ 返回首页", on_click=back_to_landing)
+    st.subheader("📝 市场笔记")
+    pwd = st.text_input("请输入密码", type="password", key="notes_pwd")
+    if pwd != "admin888":
+        if pwd:
+            st.error("密码错误")
+        st.stop()
+    st.success("✅ 已登录")
+    up_pdf = st.file_uploader("上传 PDF 报告", type=["pdf"], key="notes_upload_pdf")
+    if up_pdf is not None:
+        out = MARKET_PDFS / up_pdf.name
+        out.write_bytes(up_pdf.getvalue())
+        st.success(f"上传成功 ✅ {up_pdf.name}")
+    st.divider()
+    st.markdown("### 已上传的报告")
+    pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
+    if not pdfs:
+        st.info("暂无报告")
+    for p in pdfs:
+        with st.container(border=True):
+            title = _title_from_filename(p.name)
+            date_str = _parse_date_from_filename(p.name)
+            if date_str and len(date_str) >= 8:
+                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+            size_mb = p.stat().st_size / (1024 * 1024)
+            st.markdown(f"**{title}**")
+            st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
+            url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
+            st.markdown(f'<a href="{url}" target="_blank" rel="noopener">📄 查看报告</a>', unsafe_allow_html=True)
+    st.stop()
+
+# ─────────────────────────────────────────────
+#  播客入口（密码保护）
+# ─────────────────────────────────────────────
+if st.session_state.entry == "podcast":
+    st.button("⬅️ 返回首页", on_click=back_to_landing)
+    st.subheader("🎙️ 播客")
+    pwd = st.text_input("请输入密码", type="password", key="podcast_pwd")
+    if pwd != "admin888":
+        if pwd:
+            st.error("密码错误")
+        st.stop()
+    st.success("✅ 已登录")
+    up_audio = st.file_uploader("上传音频", type=["mp3", "m4a", "wav"], key="podcast_upload_audio")
+    if up_audio is not None:
+        out = MARKET_PODCASTS / up_audio.name
+        out.write_bytes(up_audio.getvalue())
+        st.success(f"上传成功 ✅ {up_audio.name}")
+    st.divider()
+    st.markdown("### 已上传的播客")
+    exts = (".mp3", ".m4a", ".wav")
+    audios = sorted([p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts], key=lambda p: p.name, reverse=True)
+    if not audios:
+        st.info("暂无播客")
+    for p in audios:
+        with st.container(border=True):
+            title = _title_from_filename(p.name)
+            date_str = _parse_date_from_filename(p.name)
+            if date_str and len(date_str) >= 8:
+                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+            st.markdown(f"**{title}**")
+            if date_str:
+                st.caption(f"日期：{date_str}")
+            with open(p, "rb") as f:
+                st.audio(f.read(), format=f"audio/{p.suffix.lower().lstrip('.')}")
     st.stop()
 
 # ─────────────────────────────────────────────

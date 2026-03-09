@@ -6,10 +6,10 @@
 
 ## 更新代码
 
-拉取最新代码并重启服务：
+拉取最新代码并重启服务（先 stash 本地修改再 pull，避免冲突）：
 
 ```bash
-cd /home/portfolio && git pull && systemctl restart portfolio
+cd /home/portfolio && git stash && git pull && systemctl restart portfolio
 ```
 
 ---
