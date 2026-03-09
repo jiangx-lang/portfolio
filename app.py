@@ -163,6 +163,44 @@ def _podcast_request_upload():
     st.session_state.podcast_show_pwd = True
 
 
+def _set_notes_delete_pending(path_str):
+    st.session_state.notes_delete_pending = path_str
+
+
+def _do_notes_delete(path_str):
+    p = Path(path_str)
+    if p.exists():
+        p.unlink(missing_ok=True)
+    if "notes_delete_pending" in st.session_state:
+        del st.session_state.notes_delete_pending
+    st.rerun()
+
+
+def _clear_notes_delete_pending():
+    if "notes_delete_pending" in st.session_state:
+        del st.session_state.notes_delete_pending
+    st.rerun()
+
+
+def _set_podcast_delete_pending(path_str):
+    st.session_state.podcast_delete_pending = path_str
+
+
+def _do_podcast_delete(path_str):
+    p = Path(path_str)
+    if p.exists():
+        p.unlink(missing_ok=True)
+    if "podcast_delete_pending" in st.session_state:
+        del st.session_state.podcast_delete_pending
+    st.rerun()
+
+
+def _clear_podcast_delete_pending():
+    if "podcast_delete_pending" in st.session_state:
+        del st.session_state.podcast_delete_pending
+    st.rerun()
+
+
 # --- 1. 核心数据 ---
 SCB_TARGET = {
     "平稳 (Income)":     {"股票": 33, "固定收益": 58, "黄金": 6, "现金": 3},
@@ -1047,6 +1085,12 @@ def _parse_date_from_filename(name: str) -> str:
     return m.group(1) if m else ""
 
 
+def _yyyymm_from_filename(name: str) -> str:
+    """从文件名解析 YYYYMM（年月），用于筛选。"""
+    s = _parse_date_from_filename(name)
+    return s[:6] if len(s) >= 6 else ""
+
+
 def _title_from_filename(name: str) -> str:
     """去掉日期前缀后的标题。"""
     import re
@@ -1188,27 +1232,51 @@ if st.session_state.entry == "wmp":
     st.stop()
 
 # ─────────────────────────────────────────────
-#  市场笔记入口（直接展示，上传需密码）
+#  市场笔记入口（直接展示，上传/删除需密码）
 # ─────────────────────────────────────────────
 if st.session_state.entry == "notes":
     st.button("⬅️ 返回首页", on_click=back_to_landing)
     st.subheader("📝 市场笔记")
-    # 直接显示所有 PDF，用户可点击查看
-    pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
+    # 删除确认
+    if st.session_state.get("notes_delete_pending"):
+        st.warning("确认删除该文件？此操作不可恢复。")
+        c1, c2 = st.columns(2)
+        with c1:
+            st.button("确认删除", key="notes_confirm_del", on_click=_do_notes_delete, args=(st.session_state.notes_delete_pending,))
+        with c2:
+            st.button("取消", key="notes_cancel_del", on_click=_clear_notes_delete_pending)
+        st.stop()
+    # 左侧：月份筛选
+    all_pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
+    months = sorted({_yyyymm_from_filename(p.name) for p in all_pdfs if _yyyymm_from_filename(p.name)}, reverse=True)
+    month_options = ["全部"] + months
+    with st.sidebar:
+        st.caption("📅 按月份筛选")
+        selected_month = st.selectbox("月份", month_options, key="notes_month_filter", label_visibility="collapsed")
+    if selected_month != "全部":
+        pdfs = [p for p in all_pdfs if _yyyymm_from_filename(p.name) == selected_month]
+    else:
+        pdfs = all_pdfs
+    # 主区：文件列表（按日期倒序）
     if not pdfs:
-        st.info("暂无报告")
+        st.info("暂无报告" if selected_month == "全部" else f"该月暂无报告")
     for p in pdfs:
         with st.container(border=True):
-            title = _title_from_filename(p.name)
-            date_str = _parse_date_from_filename(p.name)
-            if date_str and len(date_str) >= 8:
-                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-            size_mb = p.stat().st_size / (1024 * 1024)
-            st.markdown(f"**{title}**")
-            st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
-            url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
-            st.markdown(f'<a href="{url}" target="_blank" rel="noopener">📄 查看报告</a>', unsafe_allow_html=True)
-    # 底部：仅点击「上传内容」后才可能出现密码框与上传区
+            row1 = st.columns([5, 1] if st.session_state.get("notes_upload_unlocked", False) else [1])
+            with row1[0]:
+                title = _title_from_filename(p.name)
+                date_str = _parse_date_from_filename(p.name)
+                if date_str and len(date_str) >= 8:
+                    date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+                size_mb = p.stat().st_size / (1024 * 1024)
+                st.markdown(f"**{title}**")
+                st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
+                url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
+                st.markdown(f'<a href="{url}" target="_blank" rel="noopener">📄 查看报告</a>', unsafe_allow_html=True)
+            if st.session_state.get("notes_upload_unlocked", False) and len(row1) > 1:
+                with row1[1]:
+                    st.button("🗑️ 删除", key=f"notes_del_{p.name}", on_click=_set_notes_delete_pending, args=(str(p),), type="secondary")
+    # 底部：上传入口（密码后显示）
     st.write("")
     st.button("上传内容", key="notes_upload_btn", on_click=_notes_request_upload)
     if st.session_state.get("notes_show_pwd", False):
@@ -1223,34 +1291,62 @@ if st.session_state.entry == "notes":
         st.success("✅ 已登录")
         up_pdf = st.file_uploader("上传 PDF 报告", type=["pdf"], key="notes_upload_pdf")
         if up_pdf is not None:
-            out = MARKET_PDFS / up_pdf.name
+            today_prefix = _dt.date.today().strftime("%Y%m%d") + "_"
+            filename = up_pdf.name
+            if not (len(filename) >= 8 and filename[:8].isdigit()):
+                filename = today_prefix + filename
+            out = MARKET_PDFS / filename
             out.write_bytes(up_pdf.getvalue())
-            st.success(f"上传成功 ✅ {up_pdf.name}")
+            st.success(f"上传成功 ✅ {filename}")
     st.stop()
 
 # ─────────────────────────────────────────────
-#  播客入口（直接展示，上传需密码）
+#  播客入口（直接展示，上传/删除需密码）
 # ─────────────────────────────────────────────
 if st.session_state.entry == "podcast":
     st.button("⬅️ 返回首页", on_click=back_to_landing)
     st.subheader("🎙️ 播客")
-    # 直接显示所有播客，带播放器
+    # 删除确认
+    if st.session_state.get("podcast_delete_pending"):
+        st.warning("确认删除该文件？此操作不可恢复。")
+        c1, c2 = st.columns(2)
+        with c1:
+            st.button("确认删除", key="podcast_confirm_del", on_click=_do_podcast_delete, args=(st.session_state.podcast_delete_pending,))
+        with c2:
+            st.button("取消", key="podcast_cancel_del", on_click=_clear_podcast_delete_pending)
+        st.stop()
     exts = (".mp3", ".m4a", ".wav")
-    audios = sorted([p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts], key=lambda p: p.name, reverse=True)
+    all_audios = sorted([p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts], key=lambda p: p.name, reverse=True)
+    # 左侧：月份筛选
+    months = sorted({_yyyymm_from_filename(p.name) for p in all_audios if _yyyymm_from_filename(p.name)}, reverse=True)
+    month_options = ["全部"] + months
+    with st.sidebar:
+        st.caption("📅 按月份筛选")
+        selected_month = st.selectbox("月份", month_options, key="podcast_month_filter", label_visibility="collapsed")
+    if selected_month != "全部":
+        audios = [p for p in all_audios if _yyyymm_from_filename(p.name) == selected_month]
+    else:
+        audios = all_audios
+    # 主区：文件列表（按日期倒序）
     if not audios:
-        st.info("暂无播客")
+        st.info("暂无播客" if selected_month == "全部" else "该月暂无播客")
     for p in audios:
         with st.container(border=True):
-            title = _title_from_filename(p.name)
-            date_str = _parse_date_from_filename(p.name)
-            if date_str and len(date_str) >= 8:
-                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-            st.markdown(f"**{title}**")
-            if date_str:
-                st.caption(f"日期：{date_str}")
-            with open(p, "rb") as f:
-                st.audio(f.read(), format=f"audio/{p.suffix.lower().lstrip('.')}")
-    # 底部：仅点击「上传内容」后才可能出现密码框与上传区
+            row1 = st.columns([5, 1] if st.session_state.get("podcast_upload_unlocked", False) else [1])
+            with row1[0]:
+                title = _title_from_filename(p.name)
+                date_str = _parse_date_from_filename(p.name)
+                if date_str and len(date_str) >= 8:
+                    date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+                size_mb = p.stat().st_size / (1024 * 1024)
+                st.markdown(f"**{title}**")
+                st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
+                with open(p, "rb") as f:
+                    st.audio(f.read(), format=f"audio/{p.suffix.lower().lstrip('.')}")
+            if st.session_state.get("podcast_upload_unlocked", False) and len(row1) > 1:
+                with row1[1]:
+                    st.button("🗑️ 删除", key=f"podcast_del_{p.name}", on_click=_set_podcast_delete_pending, args=(str(p),), type="secondary")
+    # 底部：上传入口（密码后显示）
     st.write("")
     st.button("上传内容", key="podcast_upload_btn", on_click=_podcast_request_upload)
     if st.session_state.get("podcast_show_pwd", False):
@@ -1265,9 +1361,13 @@ if st.session_state.entry == "podcast":
         st.success("✅ 已登录")
         up_audio = st.file_uploader("上传音频", type=["mp3", "m4a", "wav"], key="podcast_upload_audio")
         if up_audio is not None:
-            out = MARKET_PODCASTS / up_audio.name
+            today_prefix = _dt.date.today().strftime("%Y%m%d") + "_"
+            filename = up_audio.name
+            if not (len(filename) >= 8 and filename[:8].isdigit()):
+                filename = today_prefix + filename
+            out = MARKET_PODCASTS / filename
             out.write_bytes(up_audio.getvalue())
-            st.success(f"上传成功 ✅ {up_audio.name}")
+            st.success(f"上传成功 ✅ {filename}")
     st.stop()
 
 # ─────────────────────────────────────────────
