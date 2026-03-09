@@ -153,6 +153,14 @@ def back_to_landing():
     st.rerun()
 
 
+def _notes_request_upload():
+    st.session_state.notes_show_pwd = True
+
+
+def _podcast_request_upload():
+    st.session_state.podcast_show_pwd = True
+
+
 # --- 1. 核心数据 ---
 SCB_TARGET = {
     "平稳 (Income)":     {"股票": 33, "固定收益": 58, "黄金": 6, "现金": 3},
@@ -1178,24 +1186,12 @@ if st.session_state.entry == "wmp":
     st.stop()
 
 # ─────────────────────────────────────────────
-#  市场笔记入口（密码保护）
+#  市场笔记入口（直接展示，上传需密码）
 # ─────────────────────────────────────────────
 if st.session_state.entry == "notes":
     st.button("⬅️ 返回首页", on_click=back_to_landing)
     st.subheader("📝 市场笔记")
-    pwd = st.text_input("请输入密码", type="password", key="notes_pwd")
-    if pwd != "admin888":
-        if pwd:
-            st.error("密码错误")
-        st.stop()
-    st.success("✅ 已登录")
-    up_pdf = st.file_uploader("上传 PDF 报告", type=["pdf"], key="notes_upload_pdf")
-    if up_pdf is not None:
-        out = MARKET_PDFS / up_pdf.name
-        out.write_bytes(up_pdf.getvalue())
-        st.success(f"上传成功 ✅ {up_pdf.name}")
-    st.divider()
-    st.markdown("### 已上传的报告")
+    # 直接显示所有 PDF，用户可点击查看
     pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
     if not pdfs:
         st.info("暂无报告")
@@ -1210,27 +1206,33 @@ if st.session_state.entry == "notes":
             st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
             url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
             st.markdown(f'<a href="{url}" target="_blank" rel="noopener">📄 查看报告</a>', unsafe_allow_html=True)
+    # 底部：仅点击「上传内容」后才可能出现密码框与上传区
+    st.write("")
+    st.button("上传内容", key="notes_upload_btn", on_click=_notes_request_upload)
+    if st.session_state.get("notes_show_pwd", False):
+        pwd = st.text_input("请输入密码", type="password", key="notes_pwd")
+        if pwd == "cd123":
+            st.session_state.notes_upload_unlocked = True
+            st.session_state.notes_show_pwd = False
+            st.rerun()
+        elif pwd:
+            st.error("密码错误")
+    if st.session_state.get("notes_upload_unlocked", False):
+        st.success("✅ 已登录")
+        up_pdf = st.file_uploader("上传 PDF 报告", type=["pdf"], key="notes_upload_pdf")
+        if up_pdf is not None:
+            out = MARKET_PDFS / up_pdf.name
+            out.write_bytes(up_pdf.getvalue())
+            st.success(f"上传成功 ✅ {up_pdf.name}")
     st.stop()
 
 # ─────────────────────────────────────────────
-#  播客入口（密码保护）
+#  播客入口（直接展示，上传需密码）
 # ─────────────────────────────────────────────
 if st.session_state.entry == "podcast":
     st.button("⬅️ 返回首页", on_click=back_to_landing)
     st.subheader("🎙️ 播客")
-    pwd = st.text_input("请输入密码", type="password", key="podcast_pwd")
-    if pwd != "admin888":
-        if pwd:
-            st.error("密码错误")
-        st.stop()
-    st.success("✅ 已登录")
-    up_audio = st.file_uploader("上传音频", type=["mp3", "m4a", "wav"], key="podcast_upload_audio")
-    if up_audio is not None:
-        out = MARKET_PODCASTS / up_audio.name
-        out.write_bytes(up_audio.getvalue())
-        st.success(f"上传成功 ✅ {up_audio.name}")
-    st.divider()
-    st.markdown("### 已上传的播客")
+    # 直接显示所有播客，带播放器
     exts = (".mp3", ".m4a", ".wav")
     audios = sorted([p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts], key=lambda p: p.name, reverse=True)
     if not audios:
@@ -1246,6 +1248,24 @@ if st.session_state.entry == "podcast":
                 st.caption(f"日期：{date_str}")
             with open(p, "rb") as f:
                 st.audio(f.read(), format=f"audio/{p.suffix.lower().lstrip('.')}")
+    # 底部：仅点击「上传内容」后才可能出现密码框与上传区
+    st.write("")
+    st.button("上传内容", key="podcast_upload_btn", on_click=_podcast_request_upload)
+    if st.session_state.get("podcast_show_pwd", False):
+        pwd = st.text_input("请输入密码", type="password", key="podcast_pwd")
+        if pwd == "cd123":
+            st.session_state.podcast_upload_unlocked = True
+            st.session_state.podcast_show_pwd = False
+            st.rerun()
+        elif pwd:
+            st.error("密码错误")
+    if st.session_state.get("podcast_upload_unlocked", False):
+        st.success("✅ 已登录")
+        up_audio = st.file_uploader("上传音频", type=["mp3", "m4a", "wav"], key="podcast_upload_audio")
+        if up_audio is not None:
+            out = MARKET_PODCASTS / up_audio.name
+            out.write_bytes(up_audio.getvalue())
+            st.success(f"上传成功 ✅ {up_audio.name}")
     st.stop()
 
 # ─────────────────────────────────────────────
@@ -1264,7 +1284,7 @@ else:
         st.caption("---")
         with st.expander("管理员入口", expanded=False):
             pwd = st.text_input("密码", type="password", key="admin_pwd")
-            if pwd == "admin888":
+            if pwd == "cd123":
                 st.caption("上传 PDF 或 音频")
                 up_pdf = st.file_uploader("上传 PDF", type=["pdf"], key="admin_pdf")
                 if up_pdf is not None:
