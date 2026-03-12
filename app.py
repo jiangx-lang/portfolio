@@ -134,6 +134,49 @@ def track_visitor():
         pass
 
 
+def track_file_click(file_name: str, file_type: str):
+    """静默记录用户点击了哪个文件。file_type: 'podcast' | 'pdf'。失败不影响任何功能。"""
+    try:
+        from supabase import create_client
+        url = st.secrets.get("SUPABASE_URL") or st.secrets.get("supabase", {}).get("SUPABASE_URL")
+        key = st.secrets.get("SUPABASE_KEY") or st.secrets.get("supabase", {}).get("SUPABASE_KEY")
+        if not url or not key:
+            return
+        client = create_client(url, key)
+        raw_ip = get_real_ip()
+        geo = get_geo_location(raw_ip)
+        now_str = datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d %H:%M:%S")
+        client.table("file_clicks").insert({
+            "file_name": file_name,
+            "file_type": file_type,
+            "ip": geo,
+            "clicked_at": now_str,
+        }).execute()
+    except Exception:
+        pass
+
+
+def track_page_entry(entry_name: str):
+    """静默记录用户进入了哪个模块（config/wmp/notes/podcast）。用于分析用户偏好。"""
+    try:
+        from supabase import create_client
+        url = st.secrets.get("SUPABASE_URL") or st.secrets.get("supabase", {}).get("SUPABASE_URL")
+        key = st.secrets.get("SUPABASE_KEY") or st.secrets.get("supabase", {}).get("SUPABASE_KEY")
+        if not url or not key:
+            return
+        client = create_client(url, key)
+        raw_ip = get_real_ip()
+        geo = get_geo_location(raw_ip)
+        now_str = datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d %H:%M:%S")
+        client.table("page_entries").insert({
+            "entry": entry_name,
+            "ip": geo,
+            "entered_at": now_str,
+        }).execute()
+    except Exception:
+        pass
+
+
 st.set_page_config(page_title="锦城轮动系统 · JinCity Rotation Engine", layout="wide", initial_sidebar_state="collapsed")
 
 # --- 0. 状态管理 ---
@@ -146,6 +189,8 @@ if "entry" not in st.session_state:
 def set_device(device_type, entry_type="config"):
     st.session_state.device = device_type
     st.session_state.entry = entry_type
+    if entry_type != "admin":
+        threading.Thread(target=track_page_entry, args=(entry_type,), daemon=True).start()
     st.rerun()
 
 
@@ -1163,52 +1208,621 @@ def _title_from_filename(name: str) -> str:
     return Path(s).stem if s else name
 
 
+# ─────────────────────────────────────────────
+#  媒体页卡片样式（每日报告 / 市场播客 Tab 共用）
+# ─────────────────────────────────────────────
+MEDIA_PAGE_CSS = """
+<style>
+/* ── 卡片基础 ── */
+.media-card {
+    background: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+}
+.media-card:hover {
+    border-color: #444;
+    background: #202020;
+}
+/* ── 图标区 ── */
+.media-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+.media-icon.podcast { background: linear-gradient(135deg, #1a3a2a, #0f5132); }
+.media-icon.pdf     { background: linear-gradient(135deg, #2a1a1a, #7b2d00); }
+/* ── 文字区 ── */
+.media-info { flex: 1; min-width: 0; }
+.media-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #f0f0f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+    font-family: 'PingFang SC', 'Noto Sans SC', sans-serif;
+}
+.media-meta {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.meta-tag {
+    background: #2a2a2a;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #aaa;
+}
+/* ── 右侧操作区 ── */
+.media-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.btn-view {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #1a3a5c;
+    color: #5ba3d9 !important;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none !important;
+    border: 1px solid #1e4d7a;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+.btn-view:hover { background: #1e4d7a; }
+.btn-play {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #0f3d20;
+    color: #3dbd6e !important;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none !important;
+    border: 1px solid #155724;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.player-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px solid #2d2d2d; }
+/* ── 月份标题 ── */
+.month-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 20px 0 8px 4px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #2a2a2a;
+}
+.search-wrap { margin-bottom: 16px; }
+</style>
+"""
+
+
+def _month_label(ym: str) -> str:
+    """YYYYMM -> YYYY 年 MM 月"""
+    return f"{ym[:4]} 年 {ym[4:]} 月" if len(ym) == 6 else ym
+
+
 def _render_daily_reports_tab():
-    """每日报告：列出 pdfs 目录下 PDF，卡片 + 查看报告链接。"""
+    """每日报告：卡片式 UI，按月分组，搜索，查看报告外链；登录后可删除、上传。"""
+    st.markdown(MEDIA_PAGE_CSS, unsafe_allow_html=True)
     st.markdown("### 📄 每日报告")
     if not MARKET_PDFS.exists():
         st.info("暂无报告，敬请期待。")
         return
-    pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
-    if not pdfs:
+    all_pdfs = sorted(
+        MARKET_PDFS.glob("*.pdf"),
+        key=lambda p: (_parse_date_from_filename(p.name) or "00000000", p.name),
+        reverse=True,
+    )
+    if not all_pdfs:
         st.info("暂无报告，敬请期待。")
         return
+    search = st.text_input("🔍 搜索报告名称", placeholder="输入关键词…", label_visibility="collapsed", key="notes_tab_search")
+    months = sorted({_yyyymm_from_filename(p.name) for p in all_pdfs if _yyyymm_from_filename(p.name)}, reverse=True)
+    col_f, col_count = st.columns([3, 1])
+    with col_f:
+        sel_month = st.selectbox("月份", ["全部"] + months, key="notes_tab_month", label_visibility="collapsed")
+    pdfs = all_pdfs
+    if sel_month != "全部":
+        pdfs = [p for p in pdfs if _yyyymm_from_filename(p.name) == sel_month]
+    if search:
+        pdfs = [p for p in pdfs if search.lower() in _title_from_filename(p.name).lower()]
+    with col_count:
+        st.markdown(f"<div style='padding-top:8px;color:#888;font-size:13px;'>共 {len(pdfs)} 份</div>", unsafe_allow_html=True)
+    if not pdfs:
+        st.info("没有符合条件的报告")
+        return
+    groups = {}
     for p in pdfs:
-        with st.container(border=True):
+        ym = _yyyymm_from_filename(p.name) or "其他"
+        groups.setdefault(ym, []).append(p)
+    for ym in sorted(groups.keys(), reverse=True):
+        group = groups[ym]
+        st.markdown(f'<div class="month-header">📅 {_month_label(ym)} · {len(group)} 份</div>', unsafe_allow_html=True)
+        for p in group:
             title = _title_from_filename(p.name)
             date_str = _parse_date_from_filename(p.name)
-            if date_str and len(date_str) >= 8:
-                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+            date_label = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}" if date_str and len(date_str) >= 8 else "—"
             size_mb = p.stat().st_size / (1024 * 1024)
-            st.markdown(f"**{title}**")
-            st.caption(f"日期：{date_str} ｜ 大小：{size_mb:.2f} MB")
             url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
-            st.markdown(f'<a href="{url}" target="_blank" rel="noopener">查看报告</a>', unsafe_allow_html=True)
+            html = f"""
+            <div class="media-card">
+                <div class="media-icon pdf">📄</div>
+                <div class="media-info">
+                    <div class="media-title" title="{title}">{title}</div>
+                    <div class="media-meta">
+                        <span class="meta-tag">📅 {date_label}</span>
+                        <span class="meta-tag">📦 {size_mb:.1f} MB</span>
+                        <span class="meta-tag">PDF</span>
+                    </div>
+                </div>
+                <div class="media-actions"></div>
+            </div>
+            """
+            pdf_col1, pdf_col2 = st.columns([4, 1])
+            with pdf_col1:
+                st.markdown(html, unsafe_allow_html=True)
+            with pdf_col2:
+                url_open = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
+                if st.button("📖 查看", key=f"pdf_open_{p.name}", use_container_width=True):
+                    threading.Thread(
+                        target=track_file_click,
+                        args=(p.name, "pdf"),
+                        daemon=True,
+                    ).start()
+                    st.markdown(
+                        f'<script>window.open("{url_open}", "_blank")</script>',
+                        unsafe_allow_html=True,
+                    )
+            if st.session_state.get("notes_upload_unlocked", False):
+                if st.button("🗑️ 删除", key=f"notes_del_tab_{p.name}", type="secondary"):
+                    _set_notes_delete_pending(str(p))
+                    st.rerun()
+    st.markdown("---")
+    st.button("上传内容", key="notes_tab_upload_btn", on_click=_notes_request_upload)
+    if st.session_state.get("notes_show_pwd", False):
+        pwd = st.text_input("请输入密码", type="password", key="notes_tab_pwd")
+        if pwd == "cd123":
+            st.session_state.notes_upload_unlocked = True
+            st.session_state.notes_show_pwd = False
+            st.rerun()
+        elif pwd:
+            st.error("密码错误")
+    if st.session_state.get("notes_upload_unlocked", False):
+        st.success("✅ 已登录")
+        up_pdf = st.file_uploader("上传 PDF 报告", type=["pdf"], key="notes_tab_upload_pdf")
+        if up_pdf is not None:
+            today_prefix = _dt.date.today().strftime("%Y%m%d") + "_"
+            filename = up_pdf.name
+            if not (len(filename) >= 8 and filename[:8].isdigit()):
+                filename = today_prefix + filename
+            out = MARKET_PDFS / filename
+            out.write_bytes(up_pdf.getvalue())
+            st.success(f"上传成功 ✅ {filename}")
 
 
 def _render_podcast_tab():
-    """市场播客：列出 podcasts 目录下 mp3/m4a/wav，嵌入 st.audio 播放。"""
+    """市场播客：卡片式 UI，按月分组，搜索；点击「播放」才展开 st.audio（懒加载）；登录后可删除、上传。"""
+    st.markdown(MEDIA_PAGE_CSS, unsafe_allow_html=True)
     st.markdown("### 🎙️ 市场播客")
     if not MARKET_PODCASTS.exists():
         st.info("暂无播客，敬请期待。")
         return
     exts = (".mp3", ".m4a", ".wav")
-    audios = [p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts]
-    audios.sort(key=lambda p: p.name, reverse=True)
-    if not audios:
+    all_audios = sorted(
+        [p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts],
+        key=lambda p: (_parse_date_from_filename(p.name) or "00000000", p.name),
+        reverse=True,
+    )
+    if not all_audios:
         st.info("暂无播客，敬请期待。")
         return
+    search = st.text_input("🔍 搜索播客名称", placeholder="输入关键词…", label_visibility="collapsed", key="podcast_tab_search")
+    months = sorted({_yyyymm_from_filename(p.name) for p in all_audios if _yyyymm_from_filename(p.name)}, reverse=True)
+    col_f, col_count = st.columns([3, 1])
+    with col_f:
+        sel_month = st.selectbox("月份", ["全部"] + months, key="podcast_tab_month", label_visibility="collapsed")
+    audios = all_audios
+    if sel_month != "全部":
+        audios = [p for p in audios if _yyyymm_from_filename(p.name) == sel_month]
+    if search:
+        audios = [p for p in audios if search.lower() in _title_from_filename(p.name).lower()]
+    with col_count:
+        st.markdown(f"<div style='padding-top:8px;color:#888;font-size:13px;'>共 {len(audios)} 集</div>", unsafe_allow_html=True)
+    if not audios:
+        st.info("没有符合条件的播客")
+        return
+    if "podcast_expanded" not in st.session_state:
+        st.session_state.podcast_expanded = set()
+    groups = {}
     for p in audios:
-        with st.container(border=True):
+        ym = _yyyymm_from_filename(p.name) or "其他"
+        groups.setdefault(ym, []).append(p)
+    for ym in sorted(groups.keys(), reverse=True):
+        group = groups[ym]
+        st.markdown(f'<div class="month-header">🎙️ {_month_label(ym)} · {len(group)} 集</div>', unsafe_allow_html=True)
+        for p in group:
             title = _title_from_filename(p.name)
             date_str = _parse_date_from_filename(p.name)
-            if date_str and len(date_str) >= 8:
-                date_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-            st.markdown(f"**{title}**")
-            if date_str:
-                st.caption(f"日期：{date_str}")
-            with open(p, "rb") as f:
-                st.audio(f.read(), format=f"audio/{p.suffix.lower().lstrip('.')}")
+            date_label = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}" if date_str and len(date_str) >= 8 else "—"
+            size_mb = p.stat().st_size / (1024 * 1024)
+            ext = p.suffix.lower().lstrip(".")
+            is_expanded = p.name in st.session_state.podcast_expanded
+            toggle_label = "⏸ 收起" if is_expanded else "▶ 播放"
+            html = f"""
+            <div class="media-card">
+                <div class="media-icon podcast">🎙️</div>
+                <div class="media-info">
+                    <div class="media-title" title="{title}">{title}</div>
+                    <div class="media-meta">
+                        <span class="meta-tag">📅 {date_label}</span>
+                        <span class="meta-tag">📦 {size_mb:.1f} MB</span>
+                        <span class="meta-tag">{ext.upper()}</span>
+                    </div>
+                </div>
+            </div>
+            """
+            st.markdown(html, unsafe_allow_html=True)
+            btn_cols = st.columns([1, 1, 4] if st.session_state.get("podcast_upload_unlocked", False) else [1, 5])
+            with btn_cols[0]:
+                if st.button(toggle_label, key=f"podcast_play_{p.name}", use_container_width=True):
+                    if is_expanded:
+                        st.session_state.podcast_expanded.discard(p.name)
+                    else:
+                        st.session_state.podcast_expanded.add(p.name)
+                        threading.Thread(
+                            target=track_file_click,
+                            args=(p.name, "podcast"),
+                            daemon=True,
+                        ).start()
+                    st.rerun()
+            if st.session_state.get("podcast_upload_unlocked", False):
+                with btn_cols[1]:
+                    if st.button("🗑️ 删除", key=f"podcast_del_tab_{p.name}", type="secondary", use_container_width=True):
+                        _set_podcast_delete_pending(str(p))
+                        st.rerun()
+            if is_expanded:
+                with open(p, "rb") as f:
+                    audio_bytes = f.read()
+                st.audio(audio_bytes, format=f"audio/{ext}")
+    st.markdown("---")
+    st.button("上传内容", key="podcast_tab_upload_btn", on_click=_podcast_request_upload)
+    if st.session_state.get("podcast_show_pwd", False):
+        pwd = st.text_input("请输入密码", type="password", key="podcast_tab_pwd")
+        if pwd == "cd123":
+            st.session_state.podcast_upload_unlocked = True
+            st.session_state.podcast_show_pwd = False
+            st.rerun()
+        elif pwd:
+            st.error("密码错误")
+    if st.session_state.get("podcast_upload_unlocked", False):
+        st.success("✅ 已登录")
+        up_audio = st.file_uploader("上传音频", type=["mp3", "m4a", "wav"], key="podcast_tab_upload_audio")
+        if up_audio is not None:
+            today_prefix = _dt.date.today().strftime("%Y%m%d") + "_"
+            filename = up_audio.name
+            if not (len(filename) >= 8 and filename[:8].isdigit()):
+                filename = today_prefix + filename
+            out = MARKET_PODCASTS / filename
+            out.write_bytes(up_audio.getvalue())
+            st.success(f"上传成功 ✅ {filename}")
+
+
+# ─────────────────────────────────────────────
+#  管理员看板（密码保护，Supabase 数据展示）
+# ─────────────────────────────────────────────
+ADMIN_CSS = """
+<style>
+.admin-header {
+    background: linear-gradient(135deg, #0d1b2a 0%, #1a2a1a 100%);
+    border: 1px solid #1e3a1e;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+}
+.admin-header h2 { color: #5dba6e; margin: 0 0 4px 0; font-size: 22px; }
+.admin-header p  { color: #666; margin: 0; font-size: 13px; }
+
+.stat-card {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-align: center;
+}
+.stat-card .num  { font-size: 36px; font-weight: 700; color: #f0f0f0; line-height: 1.1; }
+.stat-card .lbl  { font-size: 12px; color: #777; margin-top: 4px; letter-spacing: 1px; }
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 28px 0 12px 2px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #222;
+}
+
+.rank-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #141414;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+.rank-num  { font-size: 18px; font-weight: 700; color: #444; width: 28px; text-align: center; }
+.rank-name { flex: 1; font-size: 14px; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank-bar-wrap { width: 120px; background: #222; border-radius: 4px; height: 6px; overflow: hidden; }
+.rank-bar { height: 6px; border-radius: 4px; background: linear-gradient(90deg, #1a6b3a, #3dbd6e); }
+.rank-cnt  { font-size: 13px; color: #5dba6e; font-weight: 600; width: 40px; text-align: right; }
+
+.ip-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: #141414;
+    border-left: 3px solid #1a3a5c;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #ccc;
+}
+.ip-geo  { flex: 1; color: #aaa; }
+.ip-cnt  { color: #5ba3d9; font-weight: 600; }
+.ip-time { color: #555; font-size: 11px; }
+</style>
+"""
+
+
+def _render_admin_dashboard():
+    """管理员后台：密码保护，展示文件点击统计 + 访客分析 + 用户偏好。"""
+    st.markdown(ADMIN_CSS, unsafe_allow_html=True)
+    st.button("⬅️ 返回首页", on_click=back_to_landing)
+
+    if not st.session_state.get("admin_unlocked", False):
+        st.markdown("---")
+        col_c = st.columns([1, 2, 1])[1]
+        with col_c:
+            st.markdown("### 🔐 管理员登录")
+            pwd = st.text_input("密码", type="password", key="admin_pwd_input", placeholder="请输入管理员密码")
+            if st.button("登录", key="admin_login_btn", use_container_width=True):
+                if pwd == "cd123":
+                    st.session_state.admin_unlocked = True
+                    st.rerun()
+                else:
+                    st.error("密码错误")
+        st.stop()
+
+    try:
+        from supabase import create_client
+        url = st.secrets.get("SUPABASE_URL") or st.secrets.get("supabase", {}).get("SUPABASE_URL")
+        key = st.secrets.get("SUPABASE_KEY") or st.secrets.get("supabase", {}).get("SUPABASE_KEY")
+        if not url or not key:
+            st.error("Supabase 未配置，请检查 secrets。")
+            st.stop()
+        client = create_client(url, key)
+    except Exception as e:
+        st.error(f"Supabase 连接失败：{e}")
+        st.stop()
+
+    try:
+        clicks_raw = client.table("file_clicks").select("*").order("clicked_at", desc=True).execute().data or []
+        visitors_raw = client.table("visitor_logs").select("*").order("last_visit", desc=True).execute().data or []
+        entries_raw = client.table("page_entries").select("*").order("entered_at", desc=True).execute().data or []
+    except Exception as e:
+        st.error(f"数据拉取失败：{e}")
+        st.stop()
+
+    now_sh = datetime.now(ZoneInfo("Asia/Shanghai"))
+
+    st.markdown(f"""
+    <div class="admin-header">
+        <h2>📊 锦城轮动 · 管理员看板</h2>
+        <p>数据截至 {now_sh.strftime('%Y-%m-%d %H:%M')} · 上海时间</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    total_visitors = len(visitors_raw)
+    total_clicks = len(clicks_raw)
+    podcast_clicks = sum(1 for c in clicks_raw if c.get("file_type") == "podcast")
+    pdf_clicks = sum(1 for c in clicks_raw if c.get("file_type") == "pdf")
+    total_entries = len(entries_raw)
+
+    c1, c2, c3, c4, c5 = st.columns(5)
+    for col, num, lbl in [
+        (c1, total_visitors, "独立访客"),
+        (c2, total_entries, "页面进入次数"),
+        (c3, total_clicks, "文件点击总数"),
+        (c4, podcast_clicks, "播客点击"),
+        (c5, pdf_clicks, "报告点击"),
+    ]:
+        col.markdown(f'<div class="stat-card"><div class="num">{num}</div><div class="lbl">{lbl}</div></div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">⏱ 时间范围</div>', unsafe_allow_html=True)
+    time_options = {"最近 7 天": 7, "最近 30 天": 30, "最近 90 天": 90, "全部": 99999}
+    sel_range = st.radio("时间范围", list(time_options.keys()), horizontal=True, label_visibility="collapsed", key="admin_time_range")
+    days = time_options[sel_range]
+    cutoff = (now_sh - _dt.timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
+
+    def _filter_by_time(rows, time_key):
+        return [r for r in rows if r.get(time_key, "") >= cutoff]
+
+    clicks_f = _filter_by_time(clicks_raw, "clicked_at")
+    entries_f = _filter_by_time(entries_raw, "entered_at")
+    visitors_f = _filter_by_time(visitors_raw, "last_visit")
+
+    st.markdown('<div class="section-title">🏆 文件点击排行</div>', unsafe_allow_html=True)
+    tab_pod, tab_pdf = st.tabs(["🎙️ 播客排行", "📄 报告排行"])
+
+    def _render_rank(items_filtered, file_type_filter):
+        filtered = [c for c in items_filtered if c.get("file_type") == file_type_filter]
+        if not filtered:
+            st.info("暂无数据")
+            return
+        counter = {}
+        for c in filtered:
+            fn = c.get("file_name", "未知")
+            counter[fn] = counter.get(fn, 0) + 1
+        ranked = sorted(counter.items(), key=lambda x: x[1], reverse=True)
+        max_cnt = ranked[0][1] if ranked else 1
+        for i, (fname, cnt) in enumerate(ranked[:20], 1):
+            pct = int(cnt / max_cnt * 100)
+            medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(i, f"{i}")
+            import re
+            display_name = re.sub(r"^\d{8}[\s_\-]*", "", fname)
+            display_name = Path(display_name).stem if display_name else fname
+            st.markdown(f"""
+            <div class="rank-row">
+                <div class="rank-num">{medal}</div>
+                <div class="rank-name" title="{fname}">{display_name}</div>
+                <div class="rank-bar-wrap"><div class="rank-bar" style="width:{pct}%"></div></div>
+                <div class="rank-cnt">{cnt} 次</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    with tab_pod:
+        _render_rank(clicks_f, "podcast")
+    with tab_pdf:
+        _render_rank(clicks_f, "pdf")
+
+    st.markdown('<div class="section-title">📐 用户偏好 · 模块使用分布</div>', unsafe_allow_html=True)
+    entry_labels = {
+        "config": "📈 资产配置",
+        "wmp": "🏦 WMP净值",
+        "notes": "📝 市场笔记",
+        "podcast": "🎙️ 播客",
+        "admin": "🔐 管理员",
+    }
+    entry_counter = {}
+    for e in entries_f:
+        key = e.get("entry", "其他")
+        label = entry_labels.get(key, key)
+        entry_counter[label] = entry_counter.get(label, 0) + 1
+
+    if entry_counter:
+        total_e = sum(entry_counter.values())
+        sorted_entries = sorted(entry_counter.items(), key=lambda x: x[1], reverse=True)
+        cols_e = st.columns(len(sorted_entries))
+        for i, (label, cnt) in enumerate(sorted_entries):
+            pct = cnt / total_e * 100
+            cols_e[i].markdown(f"""
+            <div class="stat-card">
+                <div class="num">{pct:.0f}%</div>
+                <div class="lbl">{label}<br>{cnt} 次</div>
+            </div>
+            """, unsafe_allow_html=True)
+        fig = go.Figure(go.Pie(
+            labels=[x[0] for x in sorted_entries],
+            values=[x[1] for x in sorted_entries],
+            hole=0.55,
+            marker_colors=["#1a6b3a", "#1a3a5c", "#5a2d00", "#4a1a5c", "#3a3a1a"],
+            textinfo="label+percent",
+            textfont=dict(color="#ddd", size=12),
+        ))
+        fig.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#aaa"),
+            showlegend=False,
+            margin=dict(t=20, b=20, l=20, r=20),
+            height=260,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("暂无模块进入记录")
+
+    st.markdown('<div class="section-title">🌍 访客地理分布</div>', unsafe_allow_html=True)
+    if not visitors_f:
+        st.info("暂无访客数据")
+    else:
+        import re
+        city_counter = {}
+        for v in visitors_f:
+            ip_geo = v.get("ip", "未知")
+            m = re.match(r"^(.+?)\s*\(", ip_geo)
+            loc = m.group(1).strip() if m else ip_geo
+            city_counter[loc] = city_counter.get(loc, 0) + v.get("visits", 1)
+        sorted_cities = sorted(city_counter.items(), key=lambda x: x[1], reverse=True)
+        max_v = sorted_cities[0][1] if sorted_cities else 1
+        col_map, col_list = st.columns([3, 2])
+        with col_list:
+            st.caption(f"共 {len(visitors_f)} 个独立访客")
+            for loc, cnt in sorted_cities[:15]:
+                st.markdown(f"""
+                <div class="ip-row">
+                    <div class="ip-geo">📍 {loc}</div>
+                    <div class="ip-cnt">{cnt} 次</div>
+                </div>
+                """, unsafe_allow_html=True)
+        with col_map:
+            top_cities = sorted_cities[:10]
+            fig2 = go.Figure(go.Bar(
+                x=[x[1] for x in reversed(top_cities)],
+                y=[x[0] for x in reversed(top_cities)],
+                orientation="h",
+                marker=dict(
+                    color=[x[1] for x in reversed(top_cities)],
+                    colorscale=[[0, "#1a3a2a"], [1, "#3dbd6e"]],
+                    showscale=False,
+                ),
+                text=[str(x[1]) for x in reversed(top_cities)],
+                textposition="outside",
+                textfont=dict(color="#aaa", size=11),
+            ))
+            fig2.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                xaxis=dict(showgrid=False, showticklabels=False, zeroline=False),
+                yaxis=dict(color="#aaa", tickfont=dict(size=11)),
+                margin=dict(t=10, b=10, l=10, r=40),
+                height=280,
+            )
+            st.plotly_chart(fig2, use_container_width=True)
+
+    st.markdown('<div class="section-title">📋 最近点击明细</div>', unsafe_allow_html=True)
+    if clicks_f:
+        df_clicks = pd.DataFrame(clicks_f[:50])
+        if not df_clicks.empty:
+            import re
+            df_clicks["文件名"] = df_clicks["file_name"].apply(
+                lambda x: Path(re.sub(r"^\d{8}[\s_\-]*", "", x)).stem
+            )
+            df_clicks["类型"] = df_clicks["file_type"].map({"podcast": "🎙️ 播客", "pdf": "📄 报告"})
+            df_clicks["来源"] = df_clicks["ip"]
+            df_clicks["时间"] = df_clicks["clicked_at"]
+            st.dataframe(
+                df_clicks[["时间", "类型", "文件名", "来源"]],
+                hide_index=True,
+                use_container_width=True,
+                height=300,
+            )
+    else:
+        st.info("暂无点击记录")
+
+    st.markdown("---")
+    if st.button("🚪 退出登录", key="admin_logout"):
+        st.session_state.admin_unlocked = False
+        st.rerun()
 
 
 # ─────────────────────────────────────────────
@@ -1242,6 +1856,9 @@ if st.session_state.device is None:
     st.subheader("🎙️ 播客")
     st.button("进入播客 →", key="podcast_enter", on_click=set_device, args=("desktop", "podcast"), use_container_width=True)
 
+    st.write("")
+    st.button("🔐 管理员", key="admin_enter", on_click=set_device, args=("desktop", "admin"), use_container_width=False)
+
     st.markdown("---")
     quote_text, quote_author = get_daily_quote()
     st.markdown(
@@ -1253,6 +1870,13 @@ if st.session_state.device is None:
         """,
         unsafe_allow_html=True
     )
+    st.stop()
+
+# ─────────────────────────────────────────────
+#  管理员入口（密码保护看板）
+# ─────────────────────────────────────────────
+if st.session_state.entry == "admin":
+    _render_admin_dashboard()
     st.stop()
 
 # 访客追踪
@@ -1322,8 +1946,12 @@ if st.session_state.entry == "notes":
         with c2:
             st.button("取消", key="notes_cancel_del", on_click=_clear_notes_delete_pending)
         st.stop()
-    # 左侧：月份筛选
-    all_pdfs = sorted(MARKET_PDFS.glob("*.pdf"), key=lambda p: p.name, reverse=True)
+    # 左侧：月份筛选（列表按日期倒序，最新在上）
+    all_pdfs = sorted(
+        MARKET_PDFS.glob("*.pdf"),
+        key=lambda p: (_parse_date_from_filename(p.name) or "00000000", p.name),
+        reverse=True,
+    )
     months = sorted({_yyyymm_from_filename(p.name) for p in all_pdfs if _yyyymm_from_filename(p.name)}, reverse=True)
     month_options = ["全部"] + months
     with st.sidebar:
@@ -1392,7 +2020,11 @@ if st.session_state.entry == "podcast":
             st.button("取消", key="podcast_cancel_del", on_click=_clear_podcast_delete_pending)
         st.stop()
     exts = (".mp3", ".m4a", ".wav")
-    all_audios = sorted([p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts], key=lambda p: p.name, reverse=True)
+    all_audios = sorted(
+        [p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts],
+        key=lambda p: (_parse_date_from_filename(p.name) or "00000000", p.name),
+        reverse=True,
+    )
     # 左侧：月份筛选
     months = sorted({_yyyymm_from_filename(p.name) for p in all_audios if _yyyymm_from_filename(p.name)}, reverse=True)
     month_options = ["全部"] + months
