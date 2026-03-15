@@ -46,8 +46,7 @@ except Exception as _e:
 # 静态文件服务 base URL（PDF 链接用），服务器可设环境变量 FILE_SERVER_BASE_URL
 FILE_SERVER_BASE_URL = os.environ.get("FILE_SERVER_BASE_URL", "http://43.161.234.75:8504")
 FILE_SERVER_PORT = 8504
-# QDII 系统地址（MRF 首页「锦城轮动系统 QDII」跳转用，可设环境变量 QDII_APP_URL）
-QDII_APP_URL = os.environ.get("QDII_APP_URL", "http://43.161.234.75:8502")
+# QDII 已合并进本 app，入口用 set_device 在当前页切换，不跳转外部链接（勿再使用 8502）
 
 
 def _start_static_file_server():

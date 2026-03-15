@@ -1,0 +1,10 @@
+---
+description: QDII 入口不跳转 8502，在当前 app 内用 set_device 切换
+alwaysApply: false
+---
+
+# QDII 入口：不跳转外部链接
+
+- **首页「锦城轮动系统 QDII」的 手机/电脑 按钮**：必须用 `on_click=set_device, args=("mobile", "qdii")` 或 `("desktop", "qdii")` 在当前 app 内切换，**不要**使用 `st.link_button`、`href` 或任何指向 8502 / `QDII_APP_URL` 的链接。
+- **QDII 系统内侧栏的 手机/电脑 切换**：同样用 `set_device` 在当前 app 内切换，不跳转。
+- 与 MRF 其他入口（config、wmp、notes 等）一致：全部用 `set_device(device_type, entry_type)` + `st.rerun()`，不打开新窗口、不跳转 8502。
