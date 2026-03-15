@@ -1,0 +1,17 @@
+---
+description: 提交并推送 MRF+QDII 全部改动到 GitHub 的流程
+alwaysApply: false
+---
+
+# 全部提交并推送到 GitHub
+
+当用户要求「把所有未提交的改动 commit 并 push 到 GitHub」或类似表述时，按以下执行：
+
+1. **查看状态**：`git status` 看有哪些未提交（含未跟踪文件）。
+2. **全部添加并提交推送**：
+   - Windows PowerShell：`git add . ; git commit -m "feat: MRF+QDII合并部署" ; git push origin master`
+   - Bash / 腾讯云：`git add . && git commit -m "feat: MRF+QDII合并部署" && git push origin master`
+
+应包含的文件包括但不限于：`start.sh`、`update.sh`、`config.py`、合并后的 `app.py`、以及其它脚本与文档（`.gitignore` 已排除 `*.db`、`.env` 等，无需担心误提交数据库与密钥）。
+
+推送完成后，腾讯云上使用 `git pull origin master` 或 `bash update.sh` 即可更新代码。

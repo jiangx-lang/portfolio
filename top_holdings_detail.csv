@@ -1,0 +1,1405 @@
+﻿fund_id,fund_name_cn,source_file,sc_product_codes,as_of_date,rank,holding_name,holding_type,weight_pct
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,1,McDonald's Corp (Restaurants),equity,4.0
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,2,Waste Management Inc (Environmental & Facilities Services),equity,3.9
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,3,Meituan (Restaurants),equity,3.5
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,4,Tyson Foods Inc (Packaged Foods & Meat),equity,3.5
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,5,Corteva Inc (Fertilizers & Agricultural Chemicals),equity,3.0
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,6,Mowi ASA (Packaged Foods & Meat),equity,2.9
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,7,Nutrien Ltd (Fertilizers & Agricultural Chemicals),equity,2.9
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,8,CF Industries Holdings Inc (Fertilizers & Agricultural Chemicals),equity,2.7
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,9,Koninklijke Ahold Delhaize NV (Food Retail),equity,2.7
+91,DWS投资全球神衣基金,cn-fs-qdur128.pdf,"QDUR128USD,QDUR128EUR",2024-12-31,10,Deere & Co (Agricultural & Farm Machinery),equity,2.7
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,1,FMC Corp (Fertilizers & Agricultural Chemicals),equity,3.8
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,2,Nutrien Ltd (Fertilizers & Agricultural Chemicals),equity,3.2
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,3,Danone SA (Packaged Foods & Meat),equity,3.0
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,4,Corteva Inc (Fertilizers & Agricultural Chemicals),equity,3.0
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,5,AGCO Corp (Agricultural & Farm Machinery),equity,2.9
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,6,Tyson Foods Inc (Packaged Foods & Meat),equity,2.8
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,7,Kubota Corp (Agricultural & Farm Machinery),equity,2.8
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,8,CF Industries Holdings Inc (Fertilizers & Agricultural Chemicals),equity,2.8
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,9,Nestle SA (Packaged Foods & Meat),equity,2.6
+135,DWS环球神农基金,cn-fs-qdut007.pdf,"QDUT007USD,QDUT007EUR",2020-01-31,10,Takeaway.com NV (Internet Retail),equity,2.4
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,1,ISHARES $ FLOATING RATE BD UCITS ETF USD,equity,18.8
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,1,ISHARES $ FLOATING RATE BD UCITS ETF USD,bond,18.8
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,1,ISHARES $ FLOATING RATE BD UCITS ETF USD,equity,18.8
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,2,ISHARES $ ULTRASHORT BOND UCITS ETF USD,equity,9.4
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,2,ISHARES $ ULTRASHORT BOND UCITS ETF USD,bond,9.4
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,2,ISHARES $ ULTRASHORT BOND UCITS ETF USD,equity,9.4
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,3,AM FLOAT RAT US CORP UC ETF (C),equity,9.3
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,3,AM FLOAT RAT US CORP UC ETF (C),bond,9.3
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,3,AM FLOAT RAT US CORP UC ETF (C),equity,9.3
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,4,ISHARES CORP BD 0-3YR ESG SRI ETF ACC,equity,9.0
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,4,ISHARES CORP BD 0-3YR ESG SRI ETF ACC,bond,9.0
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,4,ISHARES CORP BD 0-3YR ESG SRI ETF ACC,equity,9.0
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,5,ALLIANZ GLOBAL FLOAT RT NTS + WT USD,equity,8.9
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,5,ALLIANZ GLOBAL FLOAT RT NTS + WT USD,bond,8.9
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,5,ALLIANZ GLOBAL FLOAT RT NTS + WT USD,equity,8.9
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,6,PRINCIPAL GI FIN UNCON EM FX INC I2 ACC,equity,8.6
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,6,PRINCIPAL GI FIN UNCON EM FX INC I2 ACC,bond,8.6
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,6,PRINCIPAL GI FIN UNCON EM FX INC I2 ACC,equity,8.6
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,7,VANGUARD USD CORPO 1-3 YEAR BD UCITS ETF,equity,6.5
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,7,VANGUARD USD CORPO 1-3 YEAR BD UCITS ETF,bond,6.5
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,7,VANGUARD USD CORPO 1-3 YEAR BD UCITS ETF,equity,6.5
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,8,ISHARES $ SHT DURATION HY CRP BD UCITS E,equity,5.8
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,8,ISHARES $ SHT DURATION HY CRP BD UCITS E,bond,5.8
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,8,ISHARES $ SHT DURATION HY CRP BD UCITS E,equity,5.8
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,9,INVERCO US TRS BD 1-3 YR ETF USD ACC,equity,3.5
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,9,INVERSCO US TRS BD 1-3 YR ETF USD ACC,bond,3.5
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,9,INVESCO US TRS BD 1-3 YR ETF USD ACC,equity,3.5
+119,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur166.pdf,QDUR166USD,2025-12-31,10,AMUNDI MON MKT SHT TERM (USD)-OV,equity,3.3
+121,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur169.pdf,QDUR169USD,2025-12-31,10,AMUNDI MON MKT SHT TERM (USD)-OV,bond,3.3
+123,东方汇理亚洲伞子基金 — CIO 精选保守基金,cn-fs-qdur171.pdf,QDUR171CNY,2025-12-31,10,AMUNDI MON MKT SHT TERM (USD)-OV,equity,3.3
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,1,NVIDIA CORP,equity,4.5
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,2,TAWAN SEMICONDUCTOR-SP ADR,equity,2.2
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,3,MKS INC 1.2500 06/01/30,bond,2.2
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,4,BROADCOM INC,equity,2.2
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,5,MACOM TECH SOLUTIONS 0.0000 12/15/29,bond,2.2
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,6,ELI LILLY & CO,equity,2.2
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,7,CITIGROUP INC,equity,2.1
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,8,FLEX LTD,equity,2.0
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,9,LUMENTUM HOLDINGS INC 0.5000 06/15/28,bond,2.0
+74,安联AI收益基金,cn-fs-qdur107.pdf,"QDUR107USD,QDUR107CNY",2026-01-31,10,AMPHENOL CORP-CL A,equity,1.8
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,1,ALPHABET INC-CL A,equity,5.3
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,2,NVIDIA CORP,equity,5.0
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,3,MICROSOFT CORP,equity,4.5
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,4,APPLE INC,equity,4.2
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,5,AMAZON.COM INC,equity,3.8
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,6,RECKITT BENCKISER GROUP PLC,equity,2.9
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,7,TAIWAN SEMICONDUCTOR-SP ADR,equity,2.9
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,8,RENTOKIL INITIAL PLC,equity,2.8
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,9,WSP GLOBAL INC,equity,2.5
+72,安联全球永续发展基金,cn-fs-qdur105.pdf,"QDUR105USD,QDUR105EUR",2026-01-31,10,MEDTRONIC PLC,equity,2.4
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,1,ALPHABET INC-CL A,equity,5.3
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,2,NVIDIA CORP,equity,5.0
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,3,MICROSOFT CORP,equity,4.5
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,4,APPLE INC,equity,4.2
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,5,AMAZON.COM INC,equity,3.8
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,6,RECKITT BENCKISER GROUP PLC,equity,2.9
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,7,TAIWAN SEMICONDUCTOR-SP ADR,equity,2.9
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,8,RENTOKIL INITIAL PLC,equity,2.8
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,9,WSP GLOBAL INC,equity,2.5
+132,安联全球永续发展基金（派息款）,cn-fs-qdur185.pdf,"QDUR185USD,QDUR185CNY",2026-01-31,10,MEDTRONIC PLC,equity,2.4
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,1,TAIWAN SEMICONDUCTOR-SP ADR,equity,1.8
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,2,META PLATFORMS INC-CLASS A,equity,1.6
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,3,NVIDIA CORP,equity,1.6
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,4,ALPHABET INC-CL A,equity,1.4
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,5,ABB LTD-REG,equity,1.4
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,6,BROADCOM INC,equity,1.4
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,7,AMAZON.COM INC,equity,1.3
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,8,JPMORGAN CHASE & CO,equity,1.3
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,9,PRYSMIAN SPA,equity,1.2
+103,安联多元主题基金,cn-fs-qdur142.pdf,"QDUR142USD,QDUR142CNY",2025-01-14,10,AMERICAN EXPRESS CO,equity,1.1
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,1,NVIDIA CORP,equity,7.4
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,2,BROADCOM INC,equity,5.1
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,3,TAIWAN SEMICONDUCTOR-SP ADR,equity,4.9
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,4,LAM RESEARCH CORP,equity,4.5
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,5,CATerpillAR INC,equity,3.8
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,6,ELI LILLY & CO,equity,3.7
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,7,AMPHENOL CORP-CL A,equity,3.5
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,8,TESLA INC,equity,3.0
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,9,MORGAN STANLEY,equity,2.9
+71,安联环球人工智能股票基金,cn-fs-qdur104.pdf,"QDUR104USD,QDUR104CNY",2024-01-31,10,JPMORGAN CHASE & CO,equity,2.9
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,1,COHERENT CORP (美国),equity,1.9
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,2,CORNING INC (美国),equity,1.9
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,3,AMPHENOL CORP-CL A (美国),equity,1.8
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,4,LUMENTUM HOLDINGS INC 0.3750 03/15/32 (美国),bond,1.7
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,5,MONOLITHIC POWER SYSTEMS INC (美国),equity,1.7
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,6,KEYSIGHT TECHNOLOGIES IN (美国),equity,1.5
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,7,MKS INC 1.2500 06/01/30 (美国),bond,1.5
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,8,HITACHI LTD (日本),equity,1.4
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,9,MICROCHIP TECHNOLOGY INC CPR 7.5000 03/15/28 (美国),bond,1.4
+97,安联环球智能城市收益基金,cn-fs-qdur135.pdf,QDUR135USD,2026-01-31,10,ASML HOLDING NV-NY REG SHS (荷兰),equity,1.3
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,1,TSY INFL IX N/B ILX FIX 0.125% 15.01.32,bond,7.0
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,2,US TREASURY N/B FIX 3.875% 30.09.32,bond,4.9
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,3,US TREASURY N/B FIX 4.250% 15.11.34,bond,3.4
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,4,NOTA DO TESOURO NACIONAL NTNF FIX 10.000% 01.01.35,bond,3.4
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,5,US TREASURY N/B FIX 4.375% 15.05.34,bond,3.3
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,6,US TREASURY N/B FIX 4.250% 15.05.35,bond,3.1
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,7,US TREASURY N/B FIX 3.500% 15.10.28,bond,3.0
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,8,US TREASURY N/B FIX 2.750% 15.08.32,bond,2.8
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,9,BONOS Y OBLIG DEL ESTADO FIX 4.000% 31.10.54,bond,2.8
+90,安联环球机遇债券基金,cn-fs-qdur127.pdf,"QDUR127USD,QDUR127CNY",2026-01-31,10,BONOS Y OBLIG DEL ESTADO FIX 1.900% 31.10.52,bond,2.7
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,1,NVIDIA CORP,equity,3.0
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,2,APPLE INC,equity,2.2
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,3,MICROSOFT CORP,equity,1.8
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,4,ALPHABET INC-CL A,equity,1.8
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,5,AMAZON.COM INC,equity,1.8
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,6,WESTERN DIGITAL CORP - 3.0000 11/15/28,bond,1.1
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,7,LUMENTUM HOLDINGS INC - 144A 0.3750 03/15/32,bond,1.1
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,8,WELLS FARGO & COMPANY - CPR 7.5000 03/15/98,bond,0.9
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,9,BROADCOM INC,equity,0.9
+129,安联精选收益及增长基金,cn-fs-qdur182.pdf,QDUR182USD,2026-01-31,10,MORGAN STANLEY - 5.9480 01/19/38,bond,0.8
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,1,Link Real Estate Investment Trust,equity,8.51
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,2,Capitaland Ascendas REIT,equity,8.46
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,3,Capitaland Integrated Commercial Trust,equity,8.17
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,4,Keppel DC REIT,equity,5.45
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,5,Mapletree Pan Asia Commercial Trust,equity,5.35
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,6,Mapletree Logistics Trust,equity,4.79
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,7,Frasers Centrepoint Trust,equity,4.61
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,8,Mapletree Industrial Trust,equity,4.11
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,9,Embassy Office Parks REIT,equity,3.91
+85,宏利环球基金 — 亚太房地产投资信托产业基金,cn-fs-qdur121.pdf,QDUR121USD,2025-12-31,10,Suntec Real Estate Investment Trust,equity,3.63
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,1,Tencent Holdings Ltd,equity,9.59
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,2,Alibaba Group Holding Limited,equity,9.02
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,3,AIA Group Limited,equity,4.83
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,4,China Construction Bank Corporation,equity,4.69
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,5,Xiaomi Corporation,equity,3.95
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,6,Hong Kong Exchanges & Clearing Ltd.,equity,3.16
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,7,"Ping An Insurance (Group) Company of China, Ltd.",equity,3.08
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,8,"China Merchants Bank Co., Ltd.",equity,2.37
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,9,Kingboard Laminates Holdings Limited,equity,2.35
+78,宏利环球基金 — 巨龙增长基金,cn-fs-qdur112.pdf,QDUR112USD,2025-12-31,10,Trip.com Group Ltd.,equity,2.35
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,1,AMAZON.COM INC,equity,1.71
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,2,MICROSOFT CORP,equity,1.48
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,3,CENTERPPOINT ENERGY INC,equity,1.39
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,4,AMERICAN ELECTRIC POWER,equity,1.3
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,5,OPEN TEXT CORP,equity,1.3
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,6,ALEXANDER FUND TRUST,equity,1.23
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,7,APOLLO DEBT SOLUTIONS BD,equity,1.13
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,8,CMS ENERGY CORP,equity,1.13
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,9,GARTNER INC,equity,1.11
+115,宏利环球基金 — 投资级优先证券收益基金,cn-fs-qdur160.pdf,QDUR160USD,2025-12-31,10,T-MOBILE USA INC,equity,1.06
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,1,ROCHE HOLDING AG,equity,4.97
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,1,ROCHE HOLDING AG,equity,4.97
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,2,NOVARTIS AG,equity,4.08
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,2,NOVARTIS AG,equity,4.08
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,3,BNP PARIBAS SA,equity,3.74
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,3,BNP PARIBAS SA,equity,3.74
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,4,UNICREDIT SPA,equity,3.74
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,4,UNICREDIT SPA,equity,3.74
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,5,ASR NEDERLAND NV,equity,3.05
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,5,ASR NEDERLAND NV,equity,3.05
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,6,CAIXABANK SA,equity,3.0
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,6,CAIXABANK SA,equity,3.05
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,7,ING GROEP NV,equity,2.96
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,7,ING GROEP NV,equity,2.96
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,8,DEUTSCHE BANK AG,equity,2.95
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,8,DEUTSCHE BANK AG,equity,2.95
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,9,AERCAP HOLDINGS NV,equity,2.94
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,9,AERCAP HOLDINGS NV,equity,2.94
+57,富兰克林互惠欧洲基金,cn-fs-qdur087.pdf,QDUR087USD,2025-12-31,10,BP PLC,equity,2.9
+133,富兰克林互惠欧洲基金,cn-fs-qdut002.pdf,"QDUT002EUR,QDUT002USD",2025-12-31,10,BP PLC,equity,2.9
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,1,NVIDIA CORP,equity,9.66
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,2,BROADCOM INC,equity,8.65
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,3,MICROSOFT CORP,equity,8.09
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,4,APPLE INC,equity,4.53
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,5,TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD,equity,4.4
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,6,AMAZON.COM INC,equity,3.01
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,7,ALPHABET INC,equity,2.68
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,8,META PLATFORMS INC,equity,2.51
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,9,ASML HOLDING NV,equity,2.5
+25,富兰克林科技基金,cn-fs-qdur045.pdf,QDUR045USD,2025-12-31,10,MICRON TECHNOLOGY INC,equity,1.98
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,1,Government Of The United States Of America 0.0% 20-may-2021,bond,3.03
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,2,Government Of The United States Of America 0.0% 31-dec-2020,bond,2.93
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,3,Federal Home Loan Bank System 0.0% 07-dec-2020,bond,2.63
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,4,Federal Home Loan Bank System Frn 04-dec-2020,bond,2.54
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,5,Federal Home Loan Bank System 0.0% 16-dec-2020,bond,2.39
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,6,Federal Home Loan Bank System Frn 22-feb-2021,bond,2.35
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,7,Federal Home Loan Bank System 0.0% 09-dec-2020,bond,2.24
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,8,Federal Home Loan Bank System 0.0% 06-jan-2021,bond,2.09
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,9,COCA-COLA CO/THE,equity,2.02
+92,富兰克林美元短期货币市场基金,cn-fs-qdur129.pdf,QDUR129USD,2020-11-30,10,Federal Home Loan Bank System 0.0% 02-dec-2020,bond,2.01
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,1,NVIDIA CORP,equity,9.61
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,2,APPLE INC,equity,6.57
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,3,BROADCOM INC,equity,5.99
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,4,MICROSOFT CORP,equity,5.96
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,5,AMAZON.COM INC,equity,5.55
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,6,META PLATFORMS INC,equity,4.78
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,7,ALPHABET INC,equity,3.98
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,8,TESLA INC,equity,3.08
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,9,ELI LILLY & CO,equity,2.64
+28,富兰克林美国机会基金,cn-fs-qdur050.pdf,"QDUR050USD,QDUR050HKD",2025-12-31,10,AMPHENOL CORP,equity,2.41
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,1,"NextEra Energy, Inc.",equity,2.98
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,2,Williams Cos Inc,equity,2.91
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,3,Apple Inc.,equity,2.61
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,4,Marvell Technology Inc.,equity,2.53
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,5,Alphabet Inc. Class A,equity,2.44
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,6,PPL Corporation,equity,2.25
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,7,JPMorgan Chase & Co.,equity,2.21
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,8,Ares Management,equity,2.09
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,9,"AbbVie, Inc.",equity,2.07
+37,富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金,cn-fs-qdur062.pdf,"QDUR062USD,QDUR062CNY",2025-12-31,10,Union Pacific Corp,equity,2.02
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,1,SSE plc,equity,5.57
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,2,Entergy Corp,equity,4.93
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,3,Severn Trent Plc,equity,4.28
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,4,TC Energy Corp.,equity,4.2
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,5,Williams Cos Inc,equity,4.05
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,6,BROOKFIELD RENEWABLE NPV,equity,3.93
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,7,APA Group NpV,equity,3.83
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,8,E.ON SE,equity,3.71
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,9,Aena SME SA,equity,3.49
+105,富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金,cn-fs-qdur145.pdf,"QDUR145USD,QDUR145CNY",2025-12-31,10,Iberdrola SA,equity,3.45
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,1,Broadcom Inc,equity,7.12
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,2,TE Connectivity PLC,equity,6.24
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,3,Vertex Pharmaceuticals Inc,equity,4.54
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,4,Autodesk Inc,equity,4.5
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,5,TJX Cos Inc/The,equity,3.92
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,6,Johnson Controls International plc,equity,3.71
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,7,Veritiv Holdings Co,equity,3.7
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,8,Crowdstrike Holdings Inc,equity,3.49
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,9,AppLovin Corp,equity,2.81
+26,富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金,cn-fs-qdur046.pdf,QDUR046USD,2025-09-30,10,Robinhood Markets Inc,equity,2.8
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,1,Taiwan Semiconductor Manufacturing Company,equity,6.58
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,2,Samsung Electronics,equity,5.57
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,3,China Construction Bank,equity,2.16
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,4,BHP Group Ltd.,equity,2.13
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,5,Bank of China Ltd.,equity,1.84
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,6,Rio Tinto Ltd.,equity,1.84
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,7,Lite-On Technology,equity,1.79
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,8,Uni-President Enterprises Corp.,equity,1.72
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,9,Infosys Ltd.,equity,1.65
+67,富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金,cn-fs-qdur099.pdf,QDUR099USD,2023-06,10,Power Grid Corporation of India Ltd.,equity,1.59
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,1,MALAYSIA,bond,11.31
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,1,MALAYSIA 4.64% 07/11/2033,bond,11.31
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,2,THAILAND,bond,8.6
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,2,THAILAND 3.30% 17/06/2038,bond,8.6
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,3,AGRICUL DEV BK,bond,7.56
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,3,AGRICUL DEV BK 4.65% 11/05/2028,bond,7.56
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,4,PHILIPPINES,bond,7.41
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,4,PHILIPPINES 6.25% 14/01/2036,bond,7.41
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,5,CHINA,bond,5.37
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,5,CHINA 3.60% 21/05/2030,bond,5.37
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,6,EXPORT-IMPORT BK,bond,4.82
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,6,EXPORT-IMPORT BK 3.23% 23/03/2030,bond,4.82
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,7,CHINA,bond,4.31
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,7,CHINA 3.12% 25/10/2052,bond,4.31
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,8,CREDIT AGRICOLE,bond,3.73
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,8,CREDIT AGRICOLE 3.80% 30/04/2031,bond,3.73
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,9,INDONESIA,bond,3.62
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,9,INDONESIA 7.13% 15/06/2043,bond,3.62
+23,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur041.pdf,"QDUR041USD,QDUR041EUR,QDUR041SGD",2025-12-31,10,KOREA,bond,3.35
+46,富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金,cn-fs-qdur072.pdf,"QDUR072USD,QDUR072CNY",2025-12-31,10,KOREA 1.13% 10/09/2039,bond,3.35
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,1,US TSY 4.63% 30/04/2029,bond,6.88
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,2,US TSY 4.13% 31/10/2027,bond,4.96
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,3,DEUTSCHLAND 2.20% 15/02/2034,bond,3.64
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,4,US TSY 4.00% 31/03/2030,bond,3.28
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,5,FTGF WA India Bd Fd,bond,1.6
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,6,SOUTH AFRICA 6.50% 28/02/2041,bond,1.54
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,7,US TSY 20/11/2025,bond,1.41
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,8,MEXICO 7.75% 13/11/2042,bond,1.22
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,9,POLAND 1.75% 25/04/2032,bond,1.17
+27,富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金,cn-fs-qdur047.pdf,"QDUR047USD,QDUR047EUR",2025-07-31,10,INDONESIA 7.00% 15/05/2027,bond,1.16
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,1,TETRA TECHNOLOGIES INC COMMON,equity,0.88
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,2,NOW Inc,equity,0.87
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,3,CECO Environmental Corp,equity,0.86
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,4,CAPSTONE COPPER C CAD NPV,equity,0.86
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,5,Resideo Technologies Inc,equity,0.85
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,6,Select Water Solutions Inc,equity,0.85
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,7,FormFactor,equity,0.83
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,8,Astronics Corp,equity,0.83
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,9,Orion Group Holdings Inc,equity,0.83
+21,富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金,cn-fs-qdur039.pdf,"QDUR039USD,QDUR039EUR",2025-12-31,10,"BankUnited, Inc.",equity,0.81
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,1,ROLOGIS INC,equity,8.7
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,2,INVITATION HOMES INC,equity,5.8
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,3,PUBLIC STORAGE,equity,5.7
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,4,AMERICAN HOMES 4 RENT,equity,5.2
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,5,DIGITAL RLTY TR INC,equity,5.1
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,6,EQUITY LIFESTYLE PPTY'S INC,equity,5.0
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,7,VONOVA SE,equity,4.8
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,8,CAMDEN PROPERTY TRUST,equity,4.6
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,9,HEALTHPEAK PROPERTIES,equity,4.1
+49,富达基金 - 环球房地产基金,cn-fs-qdur075.pdf,QDUR075USD,2022-09-30,10,MITSUI FUDOSAN CO LTD,equity,4.1
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,1,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,8.7
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,2,MICROSOFT CORP,equity,5.4
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,3,ALPHABET INC,equity,4.7
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,4,APPLE INC,equity,4.7
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,5,AMAZON.COM INC,equity,3.7
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,6,ERICSSON,equity,2.9
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,7,TEXAS INSTRUMENTS INC,equity,2.7
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,8,SAMSUNG ELECTRONICS CO LTD,equity,2.3
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,9,ACCENTURE PLC,equity,2.2
+43,富达基金 - 环球科技基金,cn-fs-qdur069.pdf,QDUR069USD,2026-01-31,10,ORACLE CORP,equity,2.1
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,1,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,7.5
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,2,SAMSUNG ELECTRONICS CO LTD,equity,7.4
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,3,DYNO NOBEL LTD,equity,3.6
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,4,AIA GROUP LTD,equity,3.6
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,5,HKT TRUST AND HKT LTD,equity,3.5
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,6,EVOLUTION MINING LTD,equity,3.2
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,7,BOC AVIATION LTD,equity,3.1
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,8,TECHTRONIC INDUSTRIES CO LTD,equity,3.0
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,9,EMBASSY OFFICE PARKS REIT,equity,2.8
+10,富达基金－亚太股息基金,cn-fs-qdur010.pdf,QDUR010USD,2026-01-31,10,DFI RETAIL GROUP HOLDINGS LTD,equity,2.6
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,1,REPUBLIC OF IND 8.5% 10/35 RGS,bond,2.2
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,2,HANWHA LI 6.3%/VAR 6/24/55 RGS,bond,1.7
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,3,EXPT IMP BK KR 4.375% 01/13/36,bond,1.6
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,4,PETRONAS CAP 5.34% 4/35 RGS,bond,1.6
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,5,INDONESIA GOVT 6.625% 2/37 RGS,bond,1.5
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,6,PHILIPPINE GOVT 3.95% 01/20/40,bond,1.4
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,7,KOREA EAST WEST 4% 5/4/31 RGS,bond,1.2
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,8,SINO CHEM O 2.375% 09/23/31 RGS,bond,1.1
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,9,CNAC HK FIN 3% 09/22/30 RGS,bond,1.0
+66,富达基金－亚洲债券基金,cn-fs-qdur098.pdf,QDUR098USD,2026-01-31,10,BHARTI AIRTEL 3.25% 6/3/31 RGS,bond,1.0
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,1,SAMSUNG ELECTRONICS CO LTD,equity,9.9
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,2,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,9.8
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,3,TENCENT HLDGS LTD,equity,7.6
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,4,ICICI BANK LTD,equity,5.6
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,5,AIA GROUP LTD,equity,3.8
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,6,ALIBABA GROUP HOLDING LTD,equity,3.3
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,7,HDFC BANK LTD,equity,3.0
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,8,SK HYNIX INC,equity,2.9
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,9,DBS GROUP HLDGS LTD,equity,2.6
+137,富达基金－亚洲股票 ESG 基金,cn-fs-qdut011.pdf,"QDUT011USD,QDUT011EUR",2026-01-31,10,TECHTRONIC INDUSTRIES CO LTD,equity,2.1
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,1,ICICI BANK LTD,equity,9.6
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,2,HDFC BANK LTD,equity,9.2
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,3,INFOSYS LTD,equity,5.0
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,4,AXIS BANK LTD,equity,4.2
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,5,FORTIS HEALTHCARE INDIA LTD,equity,3.6
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,6,HCL TECHNOLOGIES LTD,equity,3.5
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,7,BHARTI AIRTEL LTD,equity,3.2
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,8,COGNIZANT TECH SOLUTIONS CORP,equity,2.9
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,9,KOTAK MAHINDRA BANK LTD,equity,2.8
+48,富达基金－印度焦点基金,cn-fs-qdur074.pdf,QDUR074USD,2026-01-31,10,APOLLO HOSPITALS ENTERPRISE LTD,equity,2.4
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,1,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,7.7
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,2,SAMSUNG ELECTRONICS CO LTD,equity,5.0
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,3,TENCENT HLDGS LTD,equity,1.6
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,4,DIALOG AXIATA PLC,equity,1.3
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,5,UNIMICRON TECHNOLOGY CORP,equity,1.3
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,6,FUJIBO HOLDINGS INC,equity,1.2
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,7,ONEVIEW HEALTHCARE PLC,equity,1.1
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,8,PACIFIC BASIN SHIPPING LTD,equity,1.1
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,9,TOYO TANSO CO LTD,equity,1.1
+44,富达基金－太平洋基金,cn-fs-qdur070.pdf,QDUR070USD,2026-01-31,10,WONIK MATERIALS CO LTD,equity,1.0
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,1,NU HOLDINGS LTD/CAYMAN ISLANDS,equity,6.2
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,2,BANCO DO BRASIL SA,equity,5.1
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,3,REGIONAL SAB DE CV,equity,5.0
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,4,BANCO BRADESCO SA,equity,4.7
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,5,GRUPO MEXICO SAB DE CV,equity,4.7
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,6,INTER &CO INC,equity,4.3
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,7,PETROLEO BRASILEIRO-PETROBRAS,equity,4.2
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,8,VALE SA,equity,4.1
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,9,GENTEIRA SAB DE CV,equity,4.0
+138,富达基金－拉丁美洲基金,cn-fs-qdut012.pdf,QDUT012USD,2026-01-31,10,SANEAMENTO BASICO DE SP (CIA),equity,3.2
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,1,EURO-Bobl FUTURE MAR26 OEH6,equity,7.0
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,2,MORGAN STANLEY INVESTMENT FUNDS - EMERGING MARKETS CORPORATE DEBT FUND,equity,2.9
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,3,NINETY ONE GSF - EMERGING MARKETS LOCAL CURRENCY DYNAMIC DEBT FUND,equity,1.6
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,4,TOTALENERGIES SE,equity,1.5
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,5,AIB GROUP PLC,equity,1.3
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,6,ROCHE HOLDING AG,equity,1.2
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,7,INDUSTRIA DE DISENO TXTL IN SA,equity,1.2
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,8,UNICREDIT SPA,equity,1.2
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,9,RECKITT BENCKISER GROUP PLC,equity,1.1
+41,富达基金－欧洲多元收益基金,cn-fs-qdur066.pdf,"QDUR066EUR,QDUR066USD",2026-01-31,10,KONE OYJ,equity,1.1
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,1,MICROSOFT CORP,equity,6.6
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,2,AMAZON.COM INC,equity,6.0
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,3,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,5.9
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,4,NVIDIA CORP,equity,5.6
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,5,ALPHABET INC,equity,5.3
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,6,APPLE INC,equity,4.4
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,7,META PLATFORMS INC,equity,4.0
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,8,BOSTON SCIENTIFIC CORP,equity,3.7
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,9,MORGAN STANLEY,equity,2.9
+83,富达基金－环球人口趋势基金,cn-fs-qdur119.pdf,QDUR119USD,2026-01-31,10,ESSILORLUXOTTICA,equity,2.4
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,1,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,4.0
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,2,ROCHE HOLDING AG,equity,3.8
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,3,RECKITT BENCKISER GROUP PLC,equity,3.4
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,4,INDUSTRIA DE DISENO TXTL IN SA,equity,3.4
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,5,SAMSUNG ELECTRONICS CO LTD,equity,3.2
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,6,NOVARTIS AG,equity,2.9
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,7,DEUTSCHE BOERSE AG,equity,2.8
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,8,KONE OYJ,equity,2.8
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,9,3I GROUP PLC,equity,2.6
+130,富达基金－环球股息优势基金,cn-fs-qdur183.pdf,"QDUR183USD,QDUR183CNY",2026-01-31,10,UNILEVER PLC,equity,2.5
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,1,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,4.2
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,2,ROCHE HOLDING AG,equity,4.0
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,3,UNILEVER PLC,equity,3.8
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,4,NOVARTIS AG,equity,3.6
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,5,NATIONAL GRID PLC,equity,3.5
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,6,VINCI SA,equity,3.4
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,7,DEUTSCHE BOERSE AG,equity,3.0
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,8,LEGRAND SA,equity,3.0
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,9,SAMSUNG ELECTRONICS CO LTD,equity,3.0
+33,富达基金－环球股息基金,cn-fs-qdur056.pdf,"QDUR056USD,QDUR056CNY",2026-01-31,10,IBERDROLA SA,equity,3.0
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,1,USTN 4.25% 01/31/30,bond,9.6
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,1,USTN 4.25% 01/31/30,bond,9.6
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,2,USTN 4.375% 01/31/32,bond,9.1
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,2,USTN 4.375% 01/31/32,bond,9.1
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,3,USTB 4.5% 11/15/54,bond,9.0
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,3,USTB 4.5% 11/15/54,bond,9.0
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,4,USTN 4.25% 11/15/34,bond,8.0
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,4,USTN 4.25% 01/15/34,bond,8.0
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,5,USTN 4% 07/31/29,bond,6.1
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,5,USTN 4% 07/31/29,bond,6.1
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,6,USTN 4.625% 02/15/35,bond,4.9
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,6,USTN 4.625% 02/15/35,bond,4.9
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,7,USTN 4.875% 10/31/28,bond,4.5
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,7,USTN 4.875% 10/31/28,bond,4.5
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,8,USTB 4.625% 05/15/44,bond,2.3
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,8,USTB 4.625% 05/15/44,bond,2.3
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,9,USTN 4.25% 05/15/35,bond,1.6
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,9,USTN 4.25% 05/15/35,bond,1.6
+89,富达基金－美元债券基金,cn-fs-qdur125.pdf,QDUR125USD,2026-01-31,10,USTN 3.75% 08/31/31,bond,1.6
+116,富达基金－美元债券基金,cn-fs-qdur162.pdf,QDUR162CNY,2026-01-31,10,USTN 3.75% 08/31/31,bond,1.6
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,1,ALPHABET INC,equity,5.0
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,2,BERKSHIRE HATHAWAY INC DEL,equity,3.9
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,3,BUNGE GLOBAL SA,equity,3.5
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,4,WELLS FARGO & CO NEW,equity,2.9
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,5,UNION PACIFIC CORP,equity,2.7
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,6,ELEVANCE HEALTH INC,equity,2.6
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,7,MCKESSON CORP,equity,2.6
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,8,TELEDYNE TECHNOLOGIES INC,equity,2.5
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,9,INTERNATIONAL FLAVS & FRAG INC,equity,2.3
+42,富达基金－美国基金,cn-fs-qdur067.pdf,QDUR067USD,2026-01-31,10,L3HARRIS TECHNOLOGIES INC,equity,2.3
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,1,Taiwan Semiconductor Manufacturing,equity,9.9
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,2,Tencent Holdings,equity,7.3
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,3,HDFC Bank,equity,4.0
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,4,Samsung Electronics,equity,3.8
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,5,Alibaba Group Holding,equity,3.2
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,6,Teletra Group,equity,3.1
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,7,AIA Group,equity,2.7
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,8,SK hynix,equity,2.4
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,9,Hong Kong Exchanges & Clearing,equity,2.2
+65,摩根亚洲股息基金,cn-fs-qdur097.pdf,QDUR097USD,2025-12-31,10,Midea Group,equity,1.9
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,1,Taiwan Semiconductor Manufacturing,equity,9.5
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,2,Tencent Holdings,equity,6.9
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,3,Samsung Electronics,equity,3.5
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,4,HDFC Bank,equity,3.2
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,5,Alibaba Group Holding,equity,3.0
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,6,Telstra Group,equity,3.0
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,7,AIA Group,equity,2.6
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,8,SK hynix,equity,2.3
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,9,Hong Kong Exchanges & Clearing,equity,2.1
+120,摩根亚洲股票高息基金,cn-fs-qdur167.pdf,QDUR167USD,2025-12-31,10,Midea Group,equity,1.8
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,1,US Department of The Treasury 3.88% 30/06/30,bond,5.8
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,2,United Kingdom of Great Britain And Northern Ireland 4.50% 07/03/35,bond,5.7
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,3,Republic of Italy 3.65% 01/08/35,bond,4.3
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,4,French Republic 3.50% 25/11/35,bond,2.8
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,5,US Department of The Treasury 3.63% 31/10/30,bond,2.5
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,6,People'S Republic of China 2.04% 25/11/34,bond,2.3
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,7,Government of Japan 2.30% 20/12/54,bond,2.0
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,8,Italy Buoni Poliennali Del Tesoro 4.30% 07/10/54,bond,1.8
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,9,Secretaria General Del Tesoro Y Financiacion Internacional 4.00% 31/10/54,bond,1.6
+4,摩根国际债券基金,cn-fs-qdur159.pdf,"QDUR159USD,QDUR159CNY",2025-11-31,10,US Department of The Treasury 4.25% 15/05/25,bond,1.4
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,1,Tencent Holdings,equity,9.6
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,2,Alibaba Group Holding,equity,9.4
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,3,PDD Holdings,equity,5.0
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,4,Xiaomi,equity,4.8
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,5,Ping An Insurance Group,equity,3.7
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,6,China Merchants Bank,equity,3.7
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,7,NetEase,equity,3.4
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,8,Trip.com Group,equity,2.7
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,9,Contemporary Amperex Technology,equity,2.5
+75,摩根基金 - 中国基金,cn-fs-qdur109.pdf,QDUR109USD,2025-04-15,10,Meituan,equity,2.3
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,1,Taiwan Semiconductor Manufacturing,equity,9.5
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,2,Tencent Holdings,equity,9.2
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,3,Alibaba Group Holding,equity,7.8
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,4,PDD Holdings,equity,2.6
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,5,Delta Electronics,equity,2.5
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,6,China Merchants Bank,equity,2.4
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,7,Xiaomi,equity,2.4
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,8,Elite Material,equity,2.4
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,9,Ping An Insurance Group,equity,2.2
+99,摩根基金 - 大中华基金,cn-fs-qdur138.pdf,QDUR138USD,2025-06-30,10,NetEase,equity,2.2
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,1,Nvidia,equity,6.0
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,2,Apple,equity,6.0
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,3,Microsoft,equity,5.6
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,4,Amazon.Com,equity,4.0
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,5,Johnson & Johnson,equity,3.1
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,6,Alphabet,equity,3.0
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,7,Meta Platforms,equity,2.7
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,8,Exxon Mobil,equity,2.6
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,9,TSMC,equity,2.5
+111,摩根基金 - 环球智选基金,cn-fs-qdur152.pdf,QDUR152USD,2025-11-30,10,Walt Disney,equity,2.3
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,1,Svenska Handelsbanken,bond,5.74
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,2,China Construction Bank,bond,5.09
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,3,Landesbank Baden-Wurttemberg,bond,5.06
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,4,Barton Capital,bond,5.07
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,5,BBG Bank,bond,5.11
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,6,NRW.Bank,bond,5.04
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,7,Credit Industriel Et Commercial,bond,5.42
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,8,Nornchukin Bank,bond,5.22
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,9,Nationwide Building Society,bond,5.06
+93,摩根基金 - 美元浮动净值货币基金,cn-fs-qdur130.pdf,QDUR130USD,2023-07-31,10,Autobahn Funding,bond,5.18
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,1,Wells Fargo,equity,3.6
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,2,Bank of America,equity,3.0
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,3,Alphabet,equity,2.8
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,4,Amazon.com,equity,2.4
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,5,Analog Devices,equity,2.0
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,6,Charles Schwab,equity,2.0
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,7,Chevron,equity,1.9
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,8,Johnson & Johnson,equity,1.9
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,9,Eaton,equity,1.9
+52,摩根基金 - 美国价值基金,cn-fs-qdur078.pdf,QDUR078USD,2025-11-30,10,Carrier Global,equity,1.8
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,1,Nvidia,equity,7.4
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,2,Microsoft,equity,6.6
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,3,Broadcom,equity,5.4
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,4,Alphabet,equity,5.3
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,5,Amazon.com,equity,4.6
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,6,Apple,equity,4.5
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,7,Meta Platforms,equity,3.5
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,8,Loews,equity,3.3
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,9,HCA Healthcare,equity,3.0
+100,摩根基金 - 美国基金,cn-fs-qdur139.pdf,QDUR139USD,2025-11-31,10,Berkshire Hathaway,equity,3.0
+59,摩根基金 - 香港基金,cn-fs-qdur090.pdf,QDUR090USD,2018-09-30,1,Tencent Holdings Ltd.,equity,9.6
+59,摩根基金 - 香港基金,cn-fs-qdur090.pdf,QDUR090USD,2018-09-30,2,HSBC Holdings Plc,equity,8.4
+59,摩根基金 - 香港基金,cn-fs-qdur090.pdf,QDUR090USD,2018-09-30,3,AIA Group Limited,equity,7.9
+59,摩根基金 - 香港基金,cn-fs-qdur090.pdf,QDUR090USD,2018-09-30,4,"Ping An Insurance (Group) Company of China, Ltd.",equity,6.7
+59,摩根基金 - 香港基金,cn-fs-qdur090.pdf,QDUR090USD,2018-09-30,5,"China Merchants Bank Co., Ltd.",equity,5.8
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,1,Microsoft,equity,7.2
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,2,TSMC,equity,5.5
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,3,Broadcom,equity,3.2
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,4,Johnson & Johnson,equity,2.6
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,5,Fidelity National Information Services,equity,2.3
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,6,Tencent,equity,2.3
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,7,Bank of America,equity,2.1
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,8,Analog Devices,equity,2.1
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,9,Morgan Stanley,equity,2.0
+118,摩根基金－环球股息基金,cn-fs-qdur165.pdf,"QDUR165USD,QDUR165CNY,QDUR165EUR",2025-12-31,10,McDonalds,equity,2.0
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,1,Novo Nordisk,equity,3.3
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,1,ASML,equity,3.0
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,2,Novartis,equity,2.5
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,2,Roche,equity,2.4
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,3,Shell,equity,2.4
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,3,Novartis,equity,2.1
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,4,ASML Holding,equity,2.3
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,4,HSBC,equity,1.9
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,5,TotalEnergies,equity,1.7
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,5,Nestle,equity,1.8
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,6,HSBC Holdings,equity,1.7
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,6,Shell,equity,1.7
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,7,GSK,equity,1.3
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,7,AstraZeneca,equity,1.6
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,8,Allianz,equity,1.3
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,8,Banco Santander,equity,1.4
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,9,BP,equity,1.3
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,9,Allianz,equity,1.2
+53,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur080.pdf,"QDUR081USD,QDUR081CNY",2024-06-28,10,Iberdrola,equity,1.2
+54,摩根投资基金 - 欧洲策略股息基金,cn-fs-qdur081.pdf,"QDUR081USD,QDUR081CNY",2025-01-31,10,Deutsche Telekom,equity,1.2
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,1,Microsoft,equity,6.9
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,2,Taiwan Semiconductor Manufacturing,equity,5.4
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,3,Broadcom,equity,3.0
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,4,Johnson & Johnson,equity,2.4
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,5,Fidelity National Info,equity,2.3
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,6,Tencent Holdings,equity,2.2
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,7,Bank of America,equity,2.1
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,8,Morgan Stanley,equity,2.1
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,9,Analog Devices,equity,2.0
+131,摩根环球股票高息基金,cn-fs-qdur184.pdf,"QDUR184USD,QDUR184CNY,QDUR184AUD",2025-12-31,10,McDonald's,equity,1.9
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,1,Nvidia,equity,4.8
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,2,Snowflake,equity,4.4
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,3,Alphabet,equity,4.2
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,4,Broadcom,equity,3.9
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,5,Take-Two Interactive Software,equity,3.9
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,6,Robinhood Markets,equity,3.5
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,7,Tesla,equity,3.5
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,8,Taiwan Semiconductor,equity,3.2
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,9,Oracle,equity,3.1
+82,摩根美国科技基金,cn-fs-qdur118.pdf,"QDUR118USD,QDUR118CNY,QDUR118EUR",2025-11-30,10,Credo Technology,equity,3.0
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,1,黄金,equity,18.87
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,2,西得克萨斯中间基原油,equity,9.77
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,3,银,equity,8.58
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,4,铜,equity,6.65
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,5,天然气,equity,6.65
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,6,大豆,equity,5.19
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,7,布伦特原油,equity,4.84
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,8,玉米,equity,4.51
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,9,活畜,equity,3.43
+143,施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位),cn-fs-qdut024.pdf,"QDUT024USD,QDUT024EUR",2025-05-14,10,铝,equity,3.27
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,1,腾讯,equity,9.67
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,2,阿里巴巴集团,equity,9.55
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,3,中国平安保险,equity,5.03
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,4,Meituan,equity,3.8
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,5,NetEase Inc,equity,3.15
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,6,中国建设银行,equity,2.96
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,7,Trip.com Group Ltd,equity,2.96
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,8,Zijin Mining Group Co Ltd,equity,2.94
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,9,Contemporary Amperex Technology Co Ltd,equity,2.52
+145,施罗德环球基金系列 - 中国优势基金,cn-fs-qdut028.pdf,"QDUT028USD,QDUT028HKD",2025-12-31,10,PetroChina Co Ltd,equity,2.46
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,1,Eli Lilly & Co,equity,7.4
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,2,AbbVie Inc,equity,5.9
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,3,AstraZeneca PLC,equity,5.75
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,4,Thermo Fisher Scientific Inc,equity,4.85
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,5,UnitedHealth Group Inc,equity,4.16
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,6,Teva Pharmaceutical Industries Ltd,equity,4.07
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,7,罗氏大药厂,equity,4.0
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,8,GSK PLC,equity,3.34
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,9,United States Treasury Bill,cash,2.94
+98,施罗德环球基金系列 - 医疗创新股票基金 (A类股份 累积单位),cn-fs-qdur136.pdf,QDUR136USD,2025-12-31,10,Medtronic PLC,equity,2.78
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,1,Mitsubishi UFJ Financial Group Inc,equity,5.49
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,2,Sony Group Corp,equity,5.0
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,3,Mitsubishi Electric Corp,equity,4.63
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,4,ITOCHU Corp,equity,3.62
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,5,Sumitomo Realty & Development Co Ltd,equity,3.4
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,6,ORIX Corp,equity,3.18
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,7,Sumitomo Mitsui Trust Group Inc,equity,2.69
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,8,Tokio Marine Holdings Inc,equity,2.66
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,9,Suzuki Motor Corp,equity,2.56
+50,施罗德环球基金系列 - 日本股票基金 (A类股份 累积单位),cn-fs-qdur076.pdf,QDUR076USD,2025-03-31,10,Hoya Corp,equity,2.55
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,1,BNP Paribas SA,equity,4.09
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,2,Deutsche Bank AG,equity,3.82
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,3,ASML Holding NV,equity,3.45
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,4,历峰集团,equity,3.19
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,5,AXA SA,equity,3.04
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,6,Intesa Sanpaolo SpA,equity,2.77
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,7,SAP SE,equity,2.75
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,8,Knorr-Bremse AG,equity,2.65
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,9,Chemring Group PLC,equity,2.63
+31,施罗德环球基金系列 - 欧元股票基金 (A类股份 累积单位),cn-fs-qdur053.pdf,"QDUR053EUR,QDUR053USD",2025-12-31,10,Deutsche Boerse AG,equity,2.5
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,1,渣打银行,equity,4.36
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,2,ING Groep NV,equity,4.16
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,3,Intesa Sanpaolo SpA,equity,3.95
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,4,Marks & Spencer Group PLC,equity,3.94
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,5,Carrefour SA,equity,3.9
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,6,Etablissements Franz Colruyt NV,equity,3.85
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,7,GSK PLC,equity,3.79
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,8,Sanofi,equity,3.6
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,9,Henkel AG & Co KGaA,equity,3.58
+36,施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位),cn-fs-qdur060.pdf,QDUR060USD,2023-07-31,10,Swiss Re AG,equity,3.5
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,1,BANK OF AMERICA CORP 2.9720 04/02/2033 SERIES MTN,bond,1.32
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,2,JPMORGAN CHASE & CO 2.9630 25/01/2033 SERIES CORP,bond,0.81
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,3,MORGAN STANLEY 5.1920 17/04/2031 SERIES CORP,bond,0.65
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,4,WELLS FARGO & COMPANY 5.4990 23/01/2035 SERIES CORP,bond,0.65
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,5,AMAZON.COM INC 5.4500 20/11/2055 SERIES CORP,bond,0.62
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,6,IBERDROLA INTL BV 1.8740 PERP REGS,bond,0.57
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,7,BOOKING HOLDINGS INC 4.0000 01/03/2044 SERIES CORP,bond,0.51
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,8,ESSENTIAL UTILITIES INCORPORATED 2.4000 01/05/2031,bond,0.51
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,9,COTY INC 5.6000 15/01/2031 SERIES 144A,bond,0.49
+144,施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位),cn-fs-qdut027.pdf,QDUT027USD,2025-12-31,10,GERMANY (FEDERAL REPUBLIC OF) 0.0000 18/03/2026 SERIES 364D,bond,0.49
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,1,GSK PLC,equity,3.54
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,2,Bristol-Myers Squibb Co,equity,3.39
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,3,Leer Corp,equity,3.16
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,4,Vodafone Group PLC,equity,3.16
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,5,渣打银行,equity,3.13
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,6,Sanofi SA,equity,3.0
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,7,Panasonic Holdings Corp,equity,2.99
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,8,法国兴业银行,equity,2.88
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,9,Carrefour SA,equity,2.81
+117,施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位),cn-fs-qdur164.pdf,QDUR164USD,2025-12-31,10,Koninklijke Ahold Delhaize NV,equity,2.76
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,1,微软,equity,6.86
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,2,Alphabet Inc,equity,6.47
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,3,NVIDIA Corp,equity,5.4
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,4,台积电,equity,4.25
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,5,AstraZeneca PLC,equity,3.19
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,6,Morgan Stanley,equity,3.05
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,7,罗氏大药厂,equity,2.93
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,8,ASML Holding NV,equity,2.74
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,9,Hitachi Ltd,equity,2.54
+104,施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位),cn-fs-qdur143.pdf,QDUR143USD,2025-04-30,10,SAP SE,equity,2.5
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,1,ISHARES PHYSICAL GOLD ETC PLC ETF-C,equity,2.12
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,2,ALPHABET INC CLASS A,equity,1.33
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,3,NVIDIA CORP,equity,1.25
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,4,微软,equity,1.11
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,5,APPLE INC,equity,0.87
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,6,AMAZON COM INC,equity,0.68
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,7,BROADCOM INC,equity,0.57
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,8,UMBS 30YR TBA CASH 4.5,bond,0.56
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,9,GNMA2 30YR TBA CASH 5.0 31-DEC-2049,bond,0.56
+79,施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位),cn-fs-qdur113.pdf,"QDUR113USD,QDUR113CNY",2025-06-30,10,AMP BANK LTD 4.2981 19-NOV-2026 (SENIOR UNSECURED),bond,0.54
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,1,渣打银行,equity,3.17
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,2,GSK PLC,equity,3.03
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,3,Continental AG,equity,2.7
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,4,Vodafone Group PLC,equity,2.68
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,5,Repsol SA,equity,2.43
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,6,Bristol-Myers Squibb Co,equity,2.41
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,7,Swatch Group AG/The,equity,2.33
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,8,Halliburton Co,equity,2.31
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,9,法国兴业银行,equity,2.26
+45,施罗德环球基金系列 - 环球股息基金,cn-fs-qdur071.pdf,"QDUR071USD,QDUR071CNY",2025-03-31,10,Pfizer Inc,equity,2.25
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,1,Continental AG,equity,3.52
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,2,Verizon Communications Inc,equity,3.13
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,3,KDDI Corp,equity,2.71
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,4,Stanley Black & Decker Inc,equity,2.6
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,5,Orange SA,equity,2.58
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,6,Dentsu Group Inc,equity,2.52
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,7,乐购,equity,2.48
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,8,NatWest Group PLC,equity,2.48
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,9,Henkel AG & Co KGaA,equity,2.38
+148,施罗德环球基金系列 - 环球股息基金 (A类股份 收息单位),cn-fs-qdut071.pdf,"QDUR071USD,QDUR071CNY",2024-02-29,10,GSK PLC,equity,2.34
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,1,SLB Ltd,equity,4.76
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,2,United States Treasury Bill,bond,4.63
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,3,Coterra Energy Inc,equity,3.44
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,4,Equinor ASA,equity,3.4
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,5,Exxon Mobil Corp,equity,3.19
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,6,EOG Resources Inc,equity,3.0
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,7,Baker Hughes Co,equity,2.81
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,8,Ovintiv Inc,equity,2.65
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,9,Shell PLC,equity,2.54
+147,施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位),cn-fs-qdut037.pdf,QDUT037USD,2025-12-31,10,Repsol SA,equity,2.53
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,1,BARRICK MINING CORP,equity,8.15
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,2,纽蒙特黄金公司,equity,5.2
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,3,EQUINOX GOLD CORP,equity,4.15
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,4,ANGLOGOLD ASHANTI PLC,equity,4.13
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,5,AGNICO EAGLE MINES LTD (ONTARIO),equity,3.91
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,6,PAN AMERICAN SILVER CORP,equity,3.89
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,7,ALAMOS GOLD INC,equity,3.68
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,8,金罗斯黄金公司,equity,3.35
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,9,金田有限公司,equity,3.33
+61,施罗德环球基金系列 - 环球黄金基金,cn-fs-qdur093.pdf,"QDUR093USD,QDUR093EUR",2025-12-31,10,IAMGOLD CORP,equity,3.2
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,1,ICU Medical Inc,equity,3.38
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,2,Balchem Corp,equity,3.24
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,3,Cavco Industries Inc,equity,3.08
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,4,West Pharmaceutical Services Inc,equity,2.84
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,5,Option Care Health Inc,equity,2.82
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,6,Littelfuse Inc,equity,2.64
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,7,Advanced Drainage Systems Inc,equity,2.52
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,8,Repligen Corp,equity,2.51
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,9,Simpson Manufacturing Co Inc,equity,2.44
+88,施罗德环球基金系列 - 美国小型公司影响力基金 (A类股份 累积单位),cn-fs-qdur124.pdf,QDUR124USD,2025-12-31,10,Valmont Industries Inc,equity,2.42
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,1,CCB 4-Mth 5.8% 01/03/2024,bond,5.42
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,2,OCBCSP 2-Mth 4.71% 04/03/2024,bond,5.4
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,3,CCB 2-Mth 5.28% 18/03/2024,bond,5.12
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,4,TREASURY BILL null% 14/03/2024,bond,5.03
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,5,BANK OF CHINA LTD (SYDNEY BRANCH) RegS 5.95% 07/05/2024,bond,4.89
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,6,TREASURY BILL null% 09/04/2024,bond,4.01
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,7,TREASURY BILL null% 23/04/2024,bond,4.0
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,8,AGRICULTURAL BANK OF CHINA LTD (HO RegS 5.5% 04/03/2024,bond,3.83
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,9,MUFG BANK LTD (SYDNEY BRANCH) RegS null% 11/04/2024,bond,3.75
+94,施罗德美元金融基金(累积单位),cn-fs-qdur132.pdf,QDUR132USD,2024-02-29,10,QNB FINANCE LTD MTN RegS 3.5% 28/03/2024,bond,3.13
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,1,Invesco Funds-Invesco Asian Equity Fund,equity,9.4
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,1,Invesco Funds-Invesco Asian Equity Fund,equity,9.4
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,2,Tencent,equity,4.4
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,2,Tencent,equity,4.4
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,3,Taiwan Semiconductor,equity,4.2
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,3,Taiwan Semiconductor,equity,4.2
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,4,Alibaba,equity,3.8
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,4,Alibaba,equity,3.8
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,5,Samsung Electronics,equity,3.0
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,5,Samsung Electronics,equity,3.0
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,6,United States Treasury Bond,bond,2.1
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,6,United States Treasury Bond 3.875 Apr 30 30,bond,2.1
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,7,DBS,equity,2.0
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,7,DBS,equity,2.0
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,8,ICICI Bank,equity,1.7
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,8,ICICI Bank,equity,1.7
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,9,"United States Treasury Note/Bond 4,000 Mar 31 30",bond,1.4
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,9,United States Treasury Note/Bond 4.000 Mar 31 30,bond,1.4
+80,景顺亚洲资产配置基金,cn-fs-qdur114.pdf,QDUR114USD,2025-09-30,10,State Bank of India,equity,1.3
+81,景顺亚洲资产配置基金,cn-fs-qdur115.pdf,QDUR115USD,2025-09-30,10,State Bank of India,equity,1.3
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,1,Invesco US Dollar Liquidity,cash,6.9
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,2,Alibaba 2.700 Feb 09 41,bond,2.4
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,3,Lenovo 6.536 Jul 27 32,bond,2.4
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,4,Media Investment Development 2.880 Feb 24 27,bond,2.3
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,5,ICIL Aero Treasury FRN Jul 07 28,bond,2.1
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,6,Haidilao International 2.150 Jan 14 26,bond,2.1
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,7,State Grid Europe Development 2014 3.250 Apr 07 27,bond,1.9
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,8,Shanghai Commercial Bank 6.375 Feb 28 33,bond,1.8
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,9,YONGDA Investment 4.600 Jun 03 28,bond,1.8
+125,景顺永续性中国债券基金,cn-fs-qdur176.pdf,QDUR176USD,2025-09-30,10,Bocom Leasing Management Hong Kong FRN Jun 26 27,bond,1.8
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,1,Nebius,equity,9.9
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,2,Tesla,equity,9.9
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,3,Amazon,equity,8.4
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,4,Meta Platforms 'A',equity,7.6
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,5,AppLovin 'A',equity,5.0
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,6,CoreWeave 'A',equity,4.2
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,7,Nvidia,equity,4.2
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,8,Shopify 'A',equity,3.6
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,9,DoorDash 'A',equity,3.6
+73,景顺环球消费趋势基金,cn-fs-qdur106.pdf,QDUR106USD,2025-09-30,10,Sea ADR,equity,3.4
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,1,Canadian Pacific Kansas City,equity,6.5
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,2,Rolls-Royce,equity,5.3
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,3,Microsoft,equity,5.0
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,4,Texas Instruments,equity,4.3
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,5,AIA,equity,4.2
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,6,Coca-Cola Europacific Partners,equity,4.0
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,7,ASML,equity,4.0
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,8,East West Bancorp,equity,2.8
+126,景顺环球股票收益基金,cn-fs-qdur177.pdf,"QDUR177USD,QDUR177CNY",2025-09-30,9,Standard Chartered,equity,2.7
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,1,United States Treasury Note/Bond 3.875 Jun 30 30,bond,1.3
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,2,United States Treasury Note/Bond 4.250 May 15 35,bond,1.1
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,3,United Kingdom Gilt 4.125 Jul 22 29,bond,0.9
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,4,Bundesobligation 2.400 Apr 18 30,bond,0.8
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,5,United Kingdom Gilt 0.500 Jan 31 29,bond,0.7
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,6,Meiji Yasuda Life Insurance 5.800 Sep 11 54,bond,0.6
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,7,Dai-ichi Life Insurance 6.200 Perp,bond,0.6
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,8,Bank of New Zealand 5.698 Jan 28 35,bond,0.5
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,9,Pfizer Investment Enterprises 5.300 May 19 53,bond,0.5
+127,景顺环球高评级企业债券基金,cn-fs-qdur178.pdf,"QDUR178USD,QDUR178CNY",2025-09-30,10,Bayer 5.500 Sep 13 54,bond,0.5
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,1,ARPARA TECHNOLOGIES INC,equity,6.22
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,2,SIEMENS ENERGY AG,equity,5.73
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,3,SUNRUN INC,equity,5.66
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,4,NEXTPOWER INC CL A,equity,5.65
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,5,CAMECO CORP,equity,5.33
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,6,NEXGEN ENERGY LTD,equity,4.75
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,7,FIRST SOLAR INC,equity,4.75
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,8,SHOALS TECHNOLOGIES GROUP A,equity,3.84
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,9,CONTEMPORARY AMPEREX TECHN A,equity,3.69
+76,法巴洁净能源基金,cn-fs-qdur110.pdf,QDUR110USD,2026-01-31,10,VERTIV HOLDINGS CO A,equity,3.66
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,1,US T 2.250% 15082027,bond,21.22
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,2,US T 3.875% 31072027,bond,11.57
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,3,US T 1.125% 29022028,bond,10.32
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,4,US T 3.625% 31082029,bond,5.45
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,5,NZ T 1.500% 15052031,bond,4.97
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,6,US T 3.625% 31052028,bond,4.28
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,7,US T 4.250% 31012030,bond,3.96
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,8,FHR FRN 25042054,bond,3.6
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,9,NZ T 4.500% 15052030,bond,2.18
+77,法巴美元短期债券基金,cn-fs-qdur111.pdf,QDUR111USD,2026-01-31,10,FHS FRN 25102053,bond,1.77
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,1,NVIDIA CORP,equity,9.28
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,2,MICROSOFT CORP,equity,8.52
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,3,AMAZON.COM INC,equity,7.39
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,4,META PLATFORMS INC CLASS A,equity,6.04
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,5,APPLE INC,equity,5.95
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,6,ALPHABET INC CL A,equity,4.9
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,7,ADVANCED MICRO DEVICES,equity,3.49
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,8,ELI LILLY & CO,equity,2.74
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,9,BROADCOM INC,equity,2.46
+128,法巴美国增长基金,cn-fs-qdur180.pdf,"QDUR180USD,QDUR180CNY",2026-01-31,10,MASTERCARD INC A,equity,2.3
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,1,TENCENT HOLDINGS LTD,equity,7.9
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,2,RELIANCE INDUSTRIES LTD,equity,7.2
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,3,SINGAPORE TELECOMMUNICATIONS LTD,equity,5.1
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,4,PT T POL,equity,4.2
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,5,HINDALCO INDUSTRIES LTD,equity,3.9
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,6,LOTTE CHEMICAL CORP,equity,3.7
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,7,SK INNOVATION CO LTD,equity,3.7
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,8,FORMOSA PLASTICS CORP,equity,3.7
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,9,UPL LTD,equity,3.5
+136,瀚亚投资—单位信托亚洲基建股票基金,cn-fs-qdut009.pdf,"QDUT009USD,QDUT009EUR,QDUT009SGD",2021-04-30,10,TELKOM INDONESIA PERSERO TBK PT,equity,3.4
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,1,Roche Holding AG,equity,3.84
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,2,Novartis AG,equity,3.53
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,3,Nestle SA,equity,3.42
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,4,Novo Nordisk A/S,equity,3.41
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,5,Sanofi SA,equity,2.66
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,6,Glaxosmithkline plc,equity,2.43
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,7,Rio Tinto PLC,equity,2.23
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,8,SAP SE,equity,2.13
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,9,BAE Systems plc,equity,1.84
+56,美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金,cn-fs-qdur086.pdf,"QDUR086USD,QDUR086CNY",2022-05-31,10,Allianz SE-Alv Gy,equity,1.79
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,1,"Alphabet, Inc.",equity,4.99
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,2,Microsoft Corp.,equity,4.65
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,3,"Apple, Inc.",equity,3.71
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,4,NVIDIA Corp.,equity,3.51
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,5,"Amazon.com, Inc.",equity,2.69
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,6,"Broadcom, Inc.",equity,2.57
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,7,Taiwan Semiconductor Manufacturing,equity,2.2
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,8,McKesson Corp.,equity,1.89
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,9,Oversea-Chinese Banking,equity,1.75
+58,联博 — 低波幅策略股票基金,cn-fs-qdur089.pdf,"QDUR089USD,QDUR089CNY",2026-01-31,10,"Gilead Sciences, Inc.",equity,1.7
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,1,"Alphabet, Inc.",equity,5.03
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,2,Microsoft Corp.,equity,4.68
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,3,"Apple, Inc.",equity,3.74
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,4,NVIDIA Corp.,equity,3.53
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,5,"Amazon.com, Inc.",equity,2.7
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,6,"Broadcom, Inc.",equity,2.56
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,7,Taiwan Semiconductor Manufacturing,equity,2.19
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,8,McKesson Corp.,equity,1.9
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,9,Oversea-Chinese Banking,equity,1.75
+87,联博 — 低波幅股票总回报基金（派息款）,cn-fs-qdur123.pdf,QDUR123USD,2026-01-31,10,"Gilead Sciences, Inc.",equity,1.71
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,1,"Alphabet, Inc.",equity,5.03
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,2,Microsoft Corp.,equity,4.68
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,3,"Apple, Inc.",equity,3.74
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,4,NVIDIA Corp.,equity,3.53
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,5,"Amazon.com, Inc.",equity,2.7
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,6,"Broadcom, Inc.",equity,2.56
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,7,Taiwan Semiconductor Manufacturing,equity,2.19
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,8,McKesson Corp.,equity,1.9
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,9,Oversea-Chinese Banking,equity,1.75
+86,联博 — 低波幅股票总回报基金（累积款）,cn-fs-qdur122.pdf,QDUR122USD,2026-01-31,10,"Gilead Sciences, Inc.",equity,1.71
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,1,Taiwan Semiconductor Manufacturing,equity,7.13
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,1,Taiwan Semiconductor Manufacturing,equity,7.13
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,2,Samsung Electronics,equity,5.16
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,2,Samsung Electronics,equity,5.16
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,3,Tencent Holdings Ltd.,equity,3.97
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,3,Tencent Holdings Ltd.,equity,3.97
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,4,"SK hynix, Inc.",equity,2.46
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,4,"SK hynix, Inc.",equity,2.46
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,5,"Delta Electronics, Inc.",equity,1.77
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,5,"Delta Electronics, Inc.",equity,1.77
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,6,Itau Unibanco Holding SA,equity,1.6
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,6,Itau Unibanco Holding SA,equity,1.6
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,7,Grupo Financiero Banorte SAB de CV,equity,1.52
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,7,Grupo Financiero Banorte SAB de CV,equity,1.52
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,8,Latam Airlines Group SA,equity,1.52
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,8,Latam Airlines Group SA,equity,1.52
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,9,ICICI Bank Ltd.,equity,1.51
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,9,ICICI Bank Ltd.,equity,1.51
+64,联博 — 新兴市场股债基金,cn-fs-qdur096.pdf,QDUR096USD,2026-01-31,10,ORLEN SA,equity,1.48
+70,联博 — 新兴市场股债基金,cn-fs-qdur102.pdf,QDUR102USD,2026-01-31,10,ORLEN SA,equity,1.48
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,1,Shell PLC,equity,3.7
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,2,BAE Systems PLC,equity,3.16
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,3,Airbus SE,equity,3.13
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,4,Roche Holding AG,equity,3.1
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,5,Siemens AG,equity,3.09
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,6,Societe Generale SA,equity,2.94
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,7,Prysmian SpA,equity,2.76
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,8,Enel SpA,equity,2.68
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,9,Barclays PLC,equity,2.53
+102,联博 — 欧洲股票基金,cn-fs-qdur141.pdf,"QDUR141USD,QDUR141EUR",2026-01-31,10,Eurobank SA,equity,2.49
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,1,Taiwan Semiconductor Manufacturing,equity,9.86
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,2,Samsung Electronics,equity,8.31
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,3,"SK Hynix, Inc.",equity,6.15
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,4,Tencent Holdings Ltd.,equity,5.43
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,5,Alibaba Group Holding,equity,5.22
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,6,"KB Financial Group, Inc.",equity,2.75
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,7,King Yuan Electronics,equity,2.74
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,8,Compeq Manufacturing,equity,2.64
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,9,Zijin Mining Group,equity,2.63
+69,联博—亚洲（日本以外）股票基金,cn-fs-qdur101.pdf,QDUR101USD,2026-01-31,10,ASE Technology Holding,equity,2.56
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,1,Johnson & Johnson,equity,9.7
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,2,Eli Lilly & Co.,equity,9.53
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,3,"AbbVie, Inc.",equity,6.2
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,4,Roche Holding AG,equity,5.92
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,5,AstraZeneca PLC,equity,5.62
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,6,Novartis AG,equity,5.31
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,7,"Gilead Sciences, Inc.",equity,4.35
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,8,"UnitedHealth Group, Inc.",equity,3.94
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,9,Stryker Corp.,equity,3.84
+95,联博—国际健康护理基金,cn-fs-qdur133.pdf,QDUR133USD,2026-01-31,10,"Intuitive Surgical, Inc.",equity,3.74
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,1,NVIDIA Corp.,equity,9.94
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,2,"Alphabet, Inc.",equity,8.62
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,3,Microsoft Corp.,equity,7.62
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,4,"Amazon.com, Inc.",equity,7.59
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,5,"Broadcom, Inc.",equity,5.33
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,6,"Meta Platforms, Inc.",equity,4.79
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,7,"Apple, Inc.",equity,3.85
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,8,"Visa, Inc.",equity,3.68
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,9,Eli Lilly & Co.,equity,3.17
+68,联博—美国增长基金,cn-fs-qdur100.pdf,QDUR100USD,2026-01-31,10,"Netflix, Inc.",equity,2.57
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,1,ISHARES MSCI USA UCITS ETF USD ACC,equity,16.72
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,2,ISHARES CORE EUR GOVT BOND UCI EUR,bond,12.33
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,3,ISH S TRES BND 7-10 ETF USD,bond,10.77
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,4,ISHARES EUR CASH UCITS ETF EDA,cash,8.32
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,5,ISHARES $ CORP BOND UCITS ETF USD,bond,7.97
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,6,ISHARES JPM EM LCAL GVT BD ETF DST,bond,6.62
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,7,ISHARES $ TREASURY BOND 1-3YR UCIT,bond,6.53
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,8,ISHARES CORE EURO CORP BOND ETF,bond,4.97
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,9,ISH-S $ TRSY BOND 3-7 YR UCITS ETF,bond,4.48
+107,贝莱德全球基金－MyMap多元保守型基金,cn-fs-qdur148.pdf,"QDUR148USD,QDUR148CNY",2026-01-31,10,ISHARES CORE MSCI EUROPE UCITS ETF,equity,3.28
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,1,ISHARES MSCI USA UCITS ETF USD ACC,equity,16.72
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,2,ISHARES CORE EUR GOVT BOND UCI EUR,bond,12.33
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,3,ISH S TRES BND 7-10 ETF USD,bond,10.77
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,4,ISHARES EUR CASH UCITS ETF EDA,cash,8.32
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,5,ISHARES $ CORP BOND UCITS ETF USD,bond,7.97
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,6,ISHARES JPM EM LCAL GVT BD ETF DST,bond,6.62
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,7,ISHARES $ TREASURY BOND 1-3YR UCIT,bond,6.53
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,8,ISHARES CORE EURO CORP BOND ETF,bond,4.97
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,9,ISH-S $ TRSY BOND 3-7 YR UCITS ETF,bond,4.48
+112,贝莱德全球基金－MyMap多元保守型基金(派息款),cn-fs-qdur156.pdf,"QDUR156USD,QDUR156CNY",2026-01-31,10,ISHARES CORE MSCI EUROPE UCITS ETF,equity,3.28
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,1,ISHARES CORE S&P 500 UCITS ETF USD,equity,16.48
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,2,ISHARES MSCI USA UCITS ETF USD ACC,equity,13.97
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,3,ISH S TRES BND 7-10 ETF USD,bond,11.86
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,4,ISHARES CORE EUR GOVT BOND UCI EUR,bond,10.9
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,5,ISHARES JPM EM LCAL GVT BD ETF DST,bond,6.46
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,6,ISHARES CORE MSCI EUROPE UCITS ETF,equity,5.98
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,7,ISHARES S CORP BOND UCITS ETF USD,bond,5.97
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,8,ISHARES MSCI EMERGING MARKETS UCIT,equity,5.4
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,9,ISHARES CORE EURO CORP BOND ETF,bond,4.14
+108,贝莱德全球基金－MyMap多元均衡基金,cn-fs-qdur149.pdf,"QDUR149USD,QDUR149CNY",2026-01-31,10,ISHARES $ TREASURY BOND 1-3YR UCIT,bond,3.49
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,1,ISHARES CORE S&P 500 UCITS ETF USD,equity,16.48
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,2,ISHARES MSCI USA UCITS ETF USD ACC,equity,13.97
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,3,ISH S TRES BND 7-10 ETF USD,bond,11.86
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,4,ISHARES CORE EUR GOVT BOND UCI EUR,bond,10.9
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,5,ISHARES JPM EM LCAL GVT BD ETF DST,bond,6.46
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,6,ISHARES CORE MSCI EUROPE UCITS ETF,equity,5.98
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,7,ISHARES S CORP BOND UCITS ETF USD,bond,5.97
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,8,ISHARES MSCI EMERGING MARKETS UCIT,equity,5.4
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,9,ISHARES CORE EURO CORP BOND ETF,bond,4.14
+113,贝莱德全球基金－MyMap多元均衡基金（派息款）,cn-fs-qdur157.pdf,"QDUR157USD,QDUR157CNY",2026-01-31,10,ISHARES $ TREASURY BOND 1-3YR UCIT,bond,3.49
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,1,ISHARES S&P 500 SWAP UCITS ETF USD,equity,18.97
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,2,ISHARES CORE S&P 500 UCITS ETF USD,equity,18.97
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,3,ISHARES MSCI USA UCITS ETF USD ACC,equity,18.94
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,4,ISHARES CORE MSCI EUROPE UCITS ETF,equity,10.97
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,5,ISHARES MSCI EMERGING MARKETS UCIT,equity,9.84
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,6,ISHARES MSCI JAPAN UCITS ETF (,equity,4.51
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,7,ISHARES CORE EUR GOVT BOND UCI EUR,bond,2.97
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,8,ISH S TRES BND 7-10 ETF USD,bond,2.59
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,9,ISHARES JPM EM LCAL GVT BD ETF DST,bond,2.48
+109,贝莱德全球基金－MyMap多元增长基金,cn-fs-qdur150.pdf,"QDUR150USD,QDUR150CNY",2026-01-31,10,ISHR EM MKT GOV BD IDX (LU) X2 USD,bond,2.41
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,1,ISHARES S&P 500 SWAP UCITS ETF USD,equity,18.97
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,2,ISHARES CORE S&P 500 UCITS ETF USD,equity,18.97
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,3,ISHARES MSCI USA UCITS ETF USD ACC,equity,18.94
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,4,ISHARES CORE MSCI EUROPE UCITS ETF,equity,10.97
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,5,ISHARES MSCI EMERGING MARKETS UCIT,equity,9.84
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,6,ISHARES MSCI JAPAN UCITS ETF (,equity,4.51
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,7,ISHARES CORE EUR GOVT BOND UCI EUR,bond,2.97
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,8,ISH S TRES BND 7-10 ETF USD,bond,2.59
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,9,ISHARES JPM EM LCAL GVT BD ETF DST,bond,2.48
+114,贝莱德全球基金－MyMap多元增长基金(派息款),cn-fs-qdur158.pdf,"QDUR158USD,QDUR158CNY",2026-01-31,10,ISHR EM MKT GOV BD IDX (LU) X2 USD,bond,2.41
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,1,礼来,equity,9.16
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,2,强生公司,equity,8.91
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,3,阿斯利康,equity,5.63
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,4,罗氏,equity,5.23
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,5,艾伯维,equity,4.43
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,6,诺华,equity,4.17
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,7,联合健康,equity,3.21
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,8,吉利德科学,equity,3.16
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,9,默克,equity,3.03
+34,贝莱德全球基金－世界健康科学基金,cn-fs-qdur057.pdf,"QDUR057USD,QDUR057CNY",2026-01-31,10,美敦力,equity,2.93
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,1,普洛斯公司,equity,7.08
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,2,WELLTOWER INC,equity,6.97
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,3,易昆尼克斯,equity,5.39
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,4,西蒙地产集团,equity,3.59
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,5,EQUITY RESIDENTIAL REIT,equity,3.36
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,6,MITSUI FUDOSAN LTD,equity,2.97
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,7,PUBLIC STORAGE REIT,equity,2.56
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,8,铁山公司,equity,2.39
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,9,AGREE REALTY REIT CORP,equity,2.18
+63,贝莱德全球基金－世界房地产证券基金,cn-fs-qdur095.pdf,QDUR095USD,2026-01-31,10,GOODMAN GROUP UNITS,equity,2.17
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,1,嘉能可,equity,6.93
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,2,巴里克黄金公司,equity,6.11
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,3,伊格尔矿业,equity,5.69
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,4,力拓集团,equity,5.55
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,5,纽蒙特黄金,equity,5.26
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,6,淡水河谷,equity,5.12
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,7,ANGLO AMERICAN PLC,equity,4.66
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,8,惠顿贵金属,equity,4.24
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,9,金罗斯黄金,equity,4.04
+7,贝莱德全球基金－世界矿业基金,cn-fs-qdur004.pdf,"QDUR004USD,QDUR004EUR",2026-01-31,10,费利浦·麦克莫兰铜金公司,equity,3.67
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,1,英伟达,equity,9.95
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,2,博通,equity,8.27
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,3,微软,equity,6.32
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,4,苹果,equity,5.78
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,5,ALPHABET(谷歌母公司),equity,4.74
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,6,泛林集团,equity,4.24
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,7,台积电,equity,4.17
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,8,SK海力士,equity,3.98
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,9,爱德万测试,equity,3.45
+96,贝莱德全球基金－世界科技基金,cn-fs-qdur134.pdf,"QDUR134USD,QDUR134CNY",2026-01-31,10,SAMSUNG ELECTRONICS LTD,equity,3.13
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,1,雪佛龙,equity,9.86
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,2,埃克森美孚,equity,9.75
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,3,壳牌,equity,9.05
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,4,道达尔,equity,8.41
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,5,康菲石油,equity,4.77
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,6,TC ENERGY CORP,equity,4.76
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,7,威廉姆斯公司,equity,4.75
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,8,SUNCOR ENERGY INC (CANADA),equity,4.74
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,9,加拿大自然资源,equity,4.73
+141,贝莱德全球基金－世界能源基金,cn-fs-qdut017.pdf,"QDUT017USD,QDUT017EUR",2026-01-31,10,美国金德摩根公司,equity,4.4
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,1,美国银行,equity,5.91
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,2,花旗集团,equity,4.82
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,3,嘉信理财集团,equity,3.49
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,4,瑞银集团,equity,3.02
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,5,巴克莱银行,equity,2.83
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,6,BNP PARIBAS SA,equity,2.8
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,7,公民金融集团,equity,2.75
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,8,德意志银行,equity,2.66
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,9,法国兴业银行,equity,2.47
+38,贝莱德全球基金－世界金融基金,cn-fs-qdur063.pdf,QDUR063USD,2026-01-31,10,波多黎各大众银行,equity,2.43
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,1,巴里克黄金公司,equity,9.37
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,2,纽蒙特黄金,equity,7.32
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,3,北方之星资源,equity,5.55
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,4,安格鲁阿散蒂黄金有限公司,equity,5.44
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,5,金罗斯黄金,equity,4.86
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,6,埃尔拉多黄金,equity,4.77
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,7,奋进矿业,equity,4.47
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,8,惠顿贵金属,equity,4.39
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,9,伊格尔矿业,equity,4.36
+140,贝莱德全球基金－世界黄金基金,cn-fs-qdut016.pdf,"QDUT016USD,QDUT016EUR",2026-01,10,阿拉莫斯黄金,equity,3.56
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,1,阿里巴巴,equity,9.9
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,2,腾讯,equity,8.96
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,3,中国建设银行,equity,7.33
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,4,平安保险,equity,6.57
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,5,携程,equity,3.92
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,6,洛阳钼业,equity,3.86
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,7,中国宏桥集团,equity,3.69
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,8,网易,equity,3.61
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,9,宁德时代,equity,3.5
+16,贝莱德全球基金－中国基金,cn-fs-qdur029.pdf,QDUR029USD,2026-01-31,10,百度,equity,2.78
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,1,MUMBAI INTERNATIONAL AIRPORT LTD REGS 6.95 07/30/2029,bond,1.19
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,2,PERUSAHAAN LISTRIK NEGARA (PERSERO) MTN REGS 1.875 11/05/2031,bond,0.99
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,3,NATIONAL AUSTRALIA BANK MTN REGS 4.9549 11/14/2035,bond,0.94
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,4,MTR CORPORATION CL LTD NC10.5 MTN REGS 5.625 12/31/2079,bond,0.89
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,5,GREENKO (JPM STRUCTURED) MTN 13 02/03/2028,bond,0.89
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,6,LAUCC 25-1 A REGS,bond,0.87
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,7,RESURGENT TRADE & INVESTMENT LTD REGS 9.52 12/05/2027,bond,0.85
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,8,ACROPOLIS TRADE & INVESTMENTS PIK REGS 11.035 04/02/2028,bond,0.84
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,9,MINOR INTERNATIONAL PCL REGS 2.7 12/31/2079,bond,0.84
+3,贝莱德全球基金－亚洲老虎债券基金,cn-fs-qdur048.pdf,"QDUR048USD,QDUR048CNY",2026-01-31,10,PEPAU 25-1 A1A REGS,bond,0.83
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,1,英伟达,equity,5.75
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,2,微软,equity,4.0
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,3,ALPHABET(谷歌母公司),equity,3.96
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,4,苹果,equity,3.37
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,5,台积电,equity,3.33
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,6,礼来,equity,2.77
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,7,阿斯麦,equity,2.66
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,8,沃尔玛,equity,2.47
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,9,亚马逊,equity,2.45
+139,贝莱德全球基金－可持续环球动力股票基金,cn-fs-qdut015.pdf,"QDUT015USD,QDUT015EUR",2026-01-31,10,博通,equity,2.03
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,1,苏格兰南方能源公司,equity,5.6
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,2,新纪元能源,equity,5.51
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,3,林德集团,equity,4.86
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,4,英国国家电力供应公司,equity,4.78
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,5,NEXTPOWER INC,equity,4.53
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,6,EDP RENOVAVEIS SA,equity,4.35
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,7,第一太阳能,equity,4.14
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,8,维斯塔斯风力系统公司,equity,3.8
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,9,普睿司曼,equity,3.77
+14,贝莱德全球基金－可持续能源基金,cn-fs-qdur021.pdf,"QDUR021USD,QDUR021EUR",2026-01,10,KINGSPAN GROUP PLC,equity,3.76
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,1,淡水河谷,equity,8.87
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,2,巴西石油,equity,6.86
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,3,沃尔玛墨西哥与中美洲,equity,5.75
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,4,北方银行,equity,5.67
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,5,LOCALIZA RENT A CAR SA,equity,5.44
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,6,SOUTHERN COPPER CORP,equity,4.96
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,7,GRUPO AEROPORTUARIO DEL SURESTE SAB DE CV,equity,4.85
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,8,NU HOLDINGS LTD,equity,3.93
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,9,KLABIN SA,equity,3.92
+18,贝莱德全球基金－拉丁美洲基金,cn-fs-qdur031.pdf,"QDUR031USD,QDUR031EUR",2026-01-31,10,BANCO DO BRASIL SA,equity,3.64
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,1,泰科电子,equity,5.1
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,2,施耐德电气,equity,5.01
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,3,宁德时代,equity,4.81
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,4,优步,equity,4.6
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,5,万喜,equity,4.53
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,6,恩智浦半导体,equity,4.47
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,7,EPIROC AB,equity,3.55
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,8,通用汽车,equity,3.48
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,9,LYNAS RARE EARTH LTD,equity,3.26
+101,贝莱德全球基金－新世代交通基金,cn-fs-qdur140.pdf,"QDUR140USD,QDUR140CNY",2026-01-31,10,智利矿业化工,equity,3.26
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,1,台积电,equity,9.62
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,2,SK海力士,equity,5.53
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,3,SAMSUNG ELECTRONICS LTD,equity,4.74
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,4,SK SQUARE LTD,equity,3.24
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,5,马恒达公司,equity,2.5
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,6,SAMSUNG ELECTRONICS GDS REPRESENT,equity,2.48
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,7,WIWYNN CORPORATION CORP,equity,2.41
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,8,OTP银行,equity,2.34
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,9,MEDIATEK INC,equity,1.93
+122,贝莱德全球基金－新兴市场(中国除外)基金,cn-fs-qdur170.pdf,"QDUR170USD,QDUR170EUR",2026-01,10,泛美白银公司,equity,1.92
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,1,台积电,equity,9.78
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,2,腾讯,equity,6.94
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,3,三星电子,equity,4.43
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,4,三一重工,equity,4.01
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,5,SK海力士,equity,3.81
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,6,ZUIN MINING GROUP CO LTD,equity,3.25
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,7,阿里巴巴,equity,3.2
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,8,SK SQUARE CO LTD,equity,3.03
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,9,OTP BANK NYRT,equity,2.33
+11,贝莱德全球基金－新兴市场基金,cn-fs-qdur014.pdf,"QDUR014USD,QDUR014EUR",2026-01-31,10,宁德时代,equity,2.31
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,1,BRAZIL FEDERATIVE REPUBLIC OF (GOV 10 01/01/2029,bond,2.75
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,2,COLOMBIA (REPUBLIC OF) 7 03/26/2031,bond,2.62
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,3,BRAZIL FEDERATIVE REPUBLIC OF (GOV 10 01/01/2031,bond,2.49
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,4,POLAND (REPUBLIC OF) 4.5 01/25/2031,bond,2.45
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,5,MEXICO (UNITED MEXICAN STATES) (GO 8.5 02/28/2030,bond,2.1
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,6,PERU (REPUBLIC OF) 7.3 08/12/2033,bond,1.86
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,7,MEXICO (UNITED MEXICAN STATES) (GO 7.5 05/29/2031,bond,1.79
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,8,SOUTH AFRICA (REPUBLIC OF) 8.25 03/31/2032,bond,1.79
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,9,POLAND (REPUBLIC OF) 5 10/25/2034,bond,1.76
+12,贝莱德全球基金－新兴市场本地货币债券基金,cn-fs-qdur018.pdf,"QDUR018USD,QDUR018EUR",2026-01-31,10,POLAND (REPUBLIC OF) 5 10/25/2035,bond,1.51
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,1,SBERBANK ROSSI,equity,0.01
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,2,GAZPROM,equity,0.01
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,3,TATNEFT,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,4,NOVOLIPETSK STEEL,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,5,NOVATEK,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,6,NK ROSNEFT,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,7,MAGNITOGORSKIY METALLURGICHESKIY K,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,8,NOVABEV GROUP,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,9,TATNEFT PREF,equity,0.0
+13,贝莱德全球基金－新兴欧洲基金,cn-fs-qdur020.pdf,"QDUR020USD,EUR",2026-01-31,10,NK LUKOIL,equity,0.0
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,1,柯蒂斯·莱特,equity,0.98
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,2,博格华纳公司,equity,0.92
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,3,BRIGHT HORIZONS FAMILY SOLUTIONS I,equity,0.81
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,4,SANDISK CORP,equity,0.76
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,5,DONALDSON INC,equity,0.7
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,6,野村房地产,equity,0.68
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,7,伊克赛尔服务,equity,0.63
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,8,皇冠控股,equity,0.6
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,9,IG集团,equity,0.58
+39,贝莱德全球基金－智慧数据环球小型企业基金,cn-fs-qdur064.pdf,QDUR064USD,2026-01-31,10,ITT INC,equity,0.56
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,1,微软,equity,4.35
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,2,ALPHABET(谷歌母公司),equity,4.27
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,3,英伟达,equity,3.79
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,4,苹果,equity,3.41
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,5,威瑞森通信,equity,2.29
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,6,亚马逊,equity,2.19
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,7,开市客,equity,2.18
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,8,芝加哥商品交易所,equity,2.16
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,9,奥驰亚,equity,2.14
+51,贝莱德全球基金－智慧数据环球股票高息基金,cn-fs-qdur077.pdf,"QDUR077USD,QDUR077CNY,QDUR077AUD",2026-01-31,10,ENGIE SA,equity,2.04
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,1,阿斯麦,equity,5.69
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,2,LLOYDS BANKING GROUP PLC,equity,4.32
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,3,裕信银行,equity,4.2
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,4,赛峰集团,equity,3.95
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,5,MTU航空发动机,equity,3.77
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,6,施耐德电气,equity,3.38
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,7,ROLLS-ROYCE HOLDINGS PLC,equity,3.25
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,8,爱尔兰联合银行,equity,2.91
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,9,ABB LTD,equity,2.8
+17,贝莱德全球基金－欧洲基金,cn-fs-qdur030.pdf,"QDUR030USD,QDUR030EUR",2026-01,10,西门子,equity,2.77
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,1,阿斯麦,equity,5.69
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,2,LLOYDS BANKING GROUP PLC,equity,4.32
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,3,裕信银行,equity,4.2
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,4,赛峰集团,equity,3.95
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,5,MTU航空发动机,equity,3.77
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,6,施耐德电气,equity,3.38
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,7,ROLLS-ROYCE HOLDINGS PLC,equity,3.25
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,8,爱尔兰联合银行,equity,2.91
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,9,ABB LTD,equity,2.8
+60,贝莱德全球基金－欧洲基金（美元对冲）,cn-fs-qdur092.pdf,QDUR092USD,2026-01-31,10,西门子,equity,2.77
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,1,印地纺,equity,3.2
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,2,ENGIE SA,equity,3.01
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,3,KBC GROEP NV,equity,2.9
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,4,伟尔集团,equity,2.76
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,5,意大利联合圣保罗银行,equity,2.74
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,6,凯克萨银行,equity,2.73
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,7,阿斯利康,equity,2.71
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,8,达能,equity,2.57
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,9,罗氏,equity,2.56
+47,贝莱德全球基金－欧洲股票收益基金,cn-fs-qdur073.pdf,"QDUR073USD,QDUR073EUR",2026-01,10,伊比德罗拉,equity,2.49
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,1,BEIGNET INVESTOR LLC 144A 6.581 05/30/2049,bond,1.79
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,2,UMBS 30YR TBA(REG A),bond,1.7
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,3,MORGAN STANLEY 5.466 01/18/2035,bond,1.37
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,4,METRO BANK HOLDINGS PLC REGS 12 04/30/2029,bond,1.04
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,5,FOXCONN SINGAPORE PTE LTD MTN REGS 3.125 11/04/2031,bond,1.04
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,6,ISHARES - AAA CLO ACTIVE U EURHA,bond,0.98
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,7,BANK OF AMERICA CORP MTN 5.872 09/15/2034,bond,0.96
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,8,E.ON SE MTN REGS 3.448 01/19/2034,bond,0.94
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,9,BPCE SA MTN REGS 3.625 10/01/2033,bond,0.92
+62,贝莱德全球基金－环球企业债券基金,cn-fs-qdur094.pdf,"QDUR094USD,QDUR094CNY",2026-01,10,CITIGROUP INC 3.493 10/22/2034,bond,0.91
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,1,微软,equity,4.93
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,2,ALPHABET(谷歌母公司),equity,4.63
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,3,台积电,equity,4.06
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,4,博通,equity,3.9
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,5,COCA-COLA,equity,3.19
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,6,阿斯利康,equity,2.92
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,7,CMS ENERGY CORP,equity,2.84
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,8,APPLIED MATERIAL INC,equity,2.78
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,9,ALLIANZ,equity,2.51
+35,贝莱德全球基金－环球股票收益基金,cn-fs-qdur058.pdf,QDUR058USD,2026-01,10,ALIBABA GROUP HOLDING ADR REPRESENTATIVE,equity,2.49
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,1,英伟达,equity,2.7
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,2,ALPHABET(谷歌母公司),equity,2.3
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,3,苹果,equity,1.97
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,4,微软,equity,1.87
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,5,亚马逊,equity,1.84
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,6,GERMANY (FEDERAL REPUBLIC OF) 2.3 02/15/2033,bond,1.76
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,7,台积电,equity,1.23
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,8,UK CONV GILT 1.25 07/22/2027,bond,1.18
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,9,TREASURY NOTE 4.125 07/31/2028,bond,1.1
+1,贝莱德全球基金－环球资产配置基金,cn-fs-qdur003.pdf,"QDUR003USD,QDUR003EUR,QDUR003AUD,QDUR003CNY",2026-01-31,10,AUSTRALIA (COMMONWEALTH OP) 1 11/21/2031,bond,1.06
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,1,TRI-PARTY BOFA SECURITIES INC.,equity,9.54
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,2,TRI-PARTY TD SECURITIES (USA) LLC,equity,6.11
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,3,OESTEREICH KONTROLLBANK,equity,3.66
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,4,BAYERISCHE LANDESBK GIRQ,equity,3.06
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,5,STANDARD CHARTERED BANK (NEW YORK,equity,2.96
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,6,NATIONAL AUSTRALIA BANK LTD,equity,2.66
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,7,TORONTO-DOMINION BANK (NEW YORK BR,equity,2.46
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,8,OMERS FINANCE TRUST,equity,2.44
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,9,NORDEA BANK ABP (NEW YORK BRANCH),equity,2.15
+55,贝莱德全球基金－美元货币基金,cn-fs-qdur082.pdf,QDUR082USD,2022-12-31,10,KBC BANK NV (NEW YORK BRANCH),equity,2.04
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,1,亚马逊,equity,6.66
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,2,英伟达,equity,6.39
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,3,微软,equity,5.47
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,4,ALPHABET(谷歌母公司),equity,5.37
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,5,Meta(脸书母公司),equity,5.37
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,6,CARDINAL HEALTH INC,equity,4.46
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,7,CIENA CORPORATION,equity,3.9
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,8,美国洲际交易所,equity,3.5
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,9,美光科技,equity,3.34
+15,贝莱德全球基金－美国灵活股票基金,cn-fs-qdur022.pdf,"QDUR022USD,QDUR022EUR",2026-01,10,维萨卡,equity,3.3
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,1,第一资本,equity,4.19
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,2,环汇,equity,4.11
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,3,嘉信理财集团,equity,4.05
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,4,BLOCK INC,equity,3.84
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,5,WEX INC,equity,3.83
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,6,MERCADOLIBRE INC,equity,3.38
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,7,借贷俱乐部,equity,3.16
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,8,NU HOLDINGS LTD,equity,2.97
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,9,SEZZLE INC,equity,2.84
+106,贝莱德全球基金－金融科技基金,cn-fs-qdur146.pdf,QDUR146USD,2026-01-31,10,万事达,equity,2.7
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,1,EQUINIX REIT INC,equity,2.95
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,2,NATIONAL GRID PLC,equity,2.49
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,3,CHENIERE ENERGY INC,equity,2.48
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,4,EQUITY RESIDENTIAL REIT,equity,2.43
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,5,TERNA RETE ELETTRICA NAZIONALE,equity,2.34
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,6,UNITIE GROUP PLC,equity,2.32
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,7,IRON MOUNTAIN INC,equity,2.15
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,8,AENA SME SA,equity,2.04
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,9,CARETRUST REIT INC,equity,1.96
+110,贝莱德策略基金－环球不动产证券基金,cn-fs-qdur151.pdf,"QDUR151USD,QDUR151CNY",2026-01,10,ALEXANDRIA REAL ESTATE EQUITIES RE,equity,1.94
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,1,EUSTREAM AS REGS 1.625 06/25/2027,bond,1.85
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,2,CITIGROUP INC 3.493 10/22/2034,bond,1.81
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,3,NATIONWIDE BUILDING SOCIETY 144A 4.302 03/08/2029,bond,1.6
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,4,STANDARD LIFE ABERDEEN PLC REGS 4.25 06/30/2028,bond,1.56
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,5,UBS GROUP AG REGS 3.25 02/12/2034,bond,1.42
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,6,IMCD NV REGS 3.625 04/30/2030,bond,1.28
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,7,BARCLAYS PLC REGS 8.875 12/31/2079,bond,1.15
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,8,DEUTSCHE BANK (NY BRNCH)(FXD-FLT) 5.297 05/09/2031,bond,1.12
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,9,FOXCONN SINGAPORE PTE LTD MTN REGS 3.125 11/04/2031,bond,1.1
+84,贝莱德荟萃基金－环球投资级债券基金,cn-fs-qdur120.pdf,"QDUR120USD,QDUR120CNY",2026-01-31,10,NATIONWIDE BUILDING SOCIETY REGS 5.75 12/31/2079,bond,1.09
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,1,"Malaysia Government Bond, BONDS, Sr Unsecured, 0310, 4.488%, 4/15/30",bond,5.3
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,2,"Philippine Government Bond, BONDS, Sr Unsecured, 0770, 6.375%, 7/27/30",bond,4.32
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,3,"India Government Bond, SR UNSECURED, Sr Unsecured, 7.18%, 8/14/33",bond,5.63
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,4,"Indonesia Treasury Bond, BONDS, Unsecured, FR96, 7.00%, 2/15/33",bond,12.39
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,5,"Korea Treasury Bond, BONDS, Sr Unsecured, 2809, 3.50%, 9/10/28",bond,6.21
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,6,"Malaysia Government Bond, BONDS, Sr Unsecured, 0310, 4.488%, 4/15/30",bond,5.3
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,7,"New South Wales Treasury Corp, LOCAL GOVT GUARN, Sr Unsecured, 2.00%, 3/8/33",bond,4.0
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,8,"Kazakhstan Government Bond - MEUKAM, BONDS, Unsecured, 10YR, 10.30%, 3/17/31",bond,3.97
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,9,"Marshall Islands Government Bond, BONDS, Sr Unsecured, 0316, 3.90%, 11/30/26",bond,17.92
+29,邓普顿亚洲债券基金,cn-fs-qdur051.pdf,"QDUR051USD,QDUR051EUR",2025-12-31,10,"Indonesia Treasury Bond, BONDS, Unsecured, FR96, 7.00%, 2/15/33",bond,12.39
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,1,TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD,equity,10.06
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,2,SAMSUNG ELECTRONICS CO LTD,equity,8.56
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,3,TENCENT HOLDINGS LTD,equity,7.35
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,4,SK HYNIX INC,equity,5.95
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,5,ALIBABA GROUP HOLDING LTD,equity,3.81
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,6,HDFC BANK LTD,equity,3.57
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,7,CONTEMPORARY AMPEREX TECHNOLOGY CO LTD,equity,3.18
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,8,HYUNDAI MOTOR CO,equity,3.13
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,9,ICICI BANK LTD,equity,3.11
+2,邓普顿亚洲增长基金,cn-fs-qdut001.pdf,"QDUT001USD,QDUT001EUR,QDUT001CNY",2025-12-31,10,MEDIATEK INC,equity,2.56
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,1,"Upgraya Government International Bond, 3.875%, 7/02/40",bond,6.2
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,2,"ECUADOR REPUBLIC OF, senior bond, Reg S, 6.90%, 7/31/35",bond,5.14
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,3,"Malaysia Government Bond, BONDS, Sr Unsecured, 0417, 3.899%, 11/16/27",bond,4.56
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,4,"Government of South Africa, 8.75%, 1/31/44",bond,4.24
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,5,"Government of South Africa, 8.00%, 1/31/40",bond,4.19
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,6,"Republic of Kenya Government International Bond, SR UNSECURED, Sr Unsecured, REGS, 9.375%, 2/16/31",bond,3.89
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,7,"European Bank for Reconstruction & Development, SR UNSECURED, Sr Unsecured, EMTN, 8.85%, 10/28/26",bond,3.5
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,8,"Colombian TES, BONDS, Unsecured, 8.325%, 5/28/42",bond,2.84
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,9,"European Investment Bank, SR UNSECURED, Sr Unsecured, Regs, REG S, 6.50%, 7/11/35",bond,2.71
+19,邓普顿新兴市场债券基金,cn-fs-qdur035.pdf,"QDUR035USD,QDUR035EUR",2025-12-31,10,"International Bank for Reconstruction & Development, SR UNSECURED, Sr Unsecured, EMTN, 6.50%, 4/17/30",bond,2.64
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,1,"Brazil Notes do Tesouro Nacional Serie F, NOTES, Unsecured, NTNF, 9.46141%, 10/1/31",bond,6.03
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,2,"Treasury Corp of Victoria, LOCAL GOVT GUARN, Sr Unsecured, MTN, 2.00%, 11/20/37",bond,5.81
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,3,"Malaysia Government Bond, BONDS, Sr Unsecured, D417, 3.899%, 11/16/27",bond,5.04
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,4,"Government of Norwegian, Reg S, 1.75%, 2/17/27",bond,4.89
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,5,"Government of South Africa, 5.00%, 1/31/40",bond,3.82
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,6,"Uruguay Government International Bond, 3.875%, 7/02/40",bond,3.19
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,7,"United States Treasury Note/Bond, Unsecured, 4.25%, 11/15/34",bond,2.86
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,8,"Colombian TES, BONDS, Unsecured, 8.925%, 5/28/42",bond,2.85
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,9,"India Government Bond, SR UNSECURED, Sr Unsecured, 7.18%, 8/14/33",bond,2.56
+146,邓普顿环球债券基金,cn-fs-qdut036.pdf,QDUT036USD,2025-12-31,10,"Spain Government Bond, SR UNSECURED, Sr Unsecured, REG S, 144A, 3.15%, 4/30/35",bond,2.47
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,1,"Malaysia Government Bond, BONDS, Sr.Unsecured, 0417, 3.899%, 11/16/27",bond,6.9
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,1,"Malaysia Government Bond, BONDS, Sr Unsecured, 0417, 3.899%, 11/16/27",bond,6.8
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,2,"ECUADOR REPUBLIC OF, senior bond, Reg S, 6.90%, 7/31/35",bond,4.21
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,2,"ECUADOR REPUBLIC OF, senior bond, Reg S, 6.90%, 7/31/35",bond,4.21
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,3,"India Government Bond, Sr.UNSECURED, Sr.Unsecured, 7.18%, 8/14/33",bond,4.09
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,3,"India Government Bond, SR UNSECURED, Sr Unsecured, 7.18%, 9/14/33",bond,4.09
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,4,"Brazil Notes do Tesouro Nacional Serie F, NOTES, Unsecured, NTNF, 9.46141%, 10/1/33",bond,3.29
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,4,"Brazil Notas do Tesouro Nacional Serie F, NOTES, Unsecured, NTNF, 9.46141%, 10/1/33",bond,3.29
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,5,"Government of South Africa, 9.05%, 15/1/40",bond,3.12
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,5,"Government of South Africa, 9.00%, 1/31/40",bond,3.12
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,6,"Asian Development Bank, Sr.UNSECURED, Sr.Unsecured, EMTN, 10.10%, 12/3/26",bond,3.09
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,6,"Asian Development Bank, SR UNSECURED, Sr Unsecured, EMTN, 10.10%, 12/2/26",bond,3.09
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,7,"India Government Bond, Sr.UNSECURED, Sr.Unsecured, 6.79%, 10/07/34",bond,2.98
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,7,"India Government Bond, SR UNSECURED, Sr Unsecured, 6.70%, 10/07/34",bond,2.96
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,8,"Noda do Tesouro Nacional, 10.00%, 10/1/25",bond,2.89
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,8,"Nota do Tesouro Nacional, 10.00%, 10/1/29",bond,2.89
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,9,"Colombian TES, BONDS, Unsecured, 6.925%, 5/28/42",bond,2.86
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,9,"Colombian TES, BONDS, Unsecured, B, 9.25%, 5/28/42",bond,2.66
+30,邓普顿环球总收益基金,cn-fs-qdur052.pdf,"QDUR052USD,QDUR052EUR,QDUR052AUD,QDUR052CNY",2025-12-31,10,"Brazil Notes do Tesouro Nacional Serie F, NOTES, Unsecured, NTNF, 9.46141%, 10/1/31",bond,2.81
+134,邓普顿环球总收益基金,cn-fs-qdut005.pdf,"QDUT005USD,QDUT005EUR",2025-12-31,10,"Brazil Notas do Tesouro Nacional Serie F, NOTES, Unsecured, NTNF, 9.46141%, 10/1/31",bond,2.61
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,1,SIEMENS AG,equity,9.0
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,2,SAP SE,equity,8.7
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,3,ALLIANZ SE,equity,8.2
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,4,DEUTSCHE TELEKOM AG,equity,5.7
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,5,FRESENIUS MEDICAL CARE AG & CO. KGAA,equity,5.1
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,6,COMMERZBANK AG,equity,4.4
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,7,DEUTSCHE POST AG,equity,4.1
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,8,INFINEON TECHNOLOGIES AG,equity,3.9
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,9,MUENCHENER RUECKVERSICHERUNGS-GESELLSCHAFT AG IN MUENCHEN,equity,3.8
+32,霸菱德国增长基金,cn-fs-qdur054.pdf,"QDUR054EUR,QDUR054USD,QDUR054CNY",2025-11-30,10,E.ON SE,equity,3.3
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,1,Bausch Health Companies Inc.,bond,2.3
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,2,LifePoint Health,bond,1.9
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,3,Herbalife Ltd.,bond,1.8
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,4,Travalex,bond,1.6
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,5,Petroleos Mexicanos,bond,1.5
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,6,"Novolex Holdings, Inc.",bond,1.5
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,7,EchoStar,bond,1.4
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,8,Uniti Group Inc.,bond,1.2
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,9,Radiology Partners,bond,1.2
+24,霸菱成熟及新兴市场高收益债券基金,cn-fs-qdur042.pdf,"QDUR042USD,QDUR042CNY",2026-03-15,10,Sunoco LP,bond,1.1
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,1,SAMSUNG ELECTRONICS CO LTD,equity,9.2
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,2,SK HYNIX INC,equity,9.1
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,3,SK SQUARE CO LTD,equity,8.0
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,4,SAMSUNG ELECTRO-MECHANICS CO LTD,equity,5.0
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,5,KB FINANCIAL GROUP INC,equity,4.3
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,6,SAMSUNG C&T CORP,equity,4.2
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,7,HD HYUNDAI ELECTRIC CO LTD,equity,3.6
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,8,ISUPTASYS CO LTD,equity,2.9
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,9,DOOSAN ENERBILTY CO LTD,equity,2.7
+22,霸菱韩国联接基金,cn-fs-qdur040.pdf,QDUR040USD,2025-11-30,10,HYUNDAI MOTOR CO,equity,2.4
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,1,TENCENT HOLDINGS LTD,equity,9.7
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,2,ALIBABA GROUP HOLDING LTD,equity,9.4
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,3,CHINA CONSTRUCTION BANK CORP,equity,6.5
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,4,PDD HOLDINGS INC,equity,4.1
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,5,XIAOMI CORP,equity,3.7
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,6,PING AN INSURANCE GROUP CO OF CHINA LTD,equity,3.6
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,7,NETEASE INC,equity,2.9
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,8,BAIDU INC,equity,2.4
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,9,CHINA MERCHANTS BANK CO LTD,equity,2.2
+9,霸菱香港中国基金,cn-fs-qdur006.pdf,"QDUR006USD,QDUR006EUR",2026-03-14,10,ALUMINUM CORP OF CHINA LTD,equity,1.8

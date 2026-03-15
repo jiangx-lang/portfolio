@@ -1,0 +1,88 @@
+﻿找到 86 条「应为待审核」的记录：
+
+  ID   5  富兰克林互惠欧洲基金                                null:isin_codes | 不确定:nav,ret_since_inception,top_holdings
+  ID   6  邓普顿亚洲增长基金                                 null:isin_codes | 不确定:nav,top_holdings,dividends
+  ID   7  贝莱德全球基金－世界矿业基金                            校验:[A2美元] ret_ytd=90.59 超出合理范围
+  ID   8  邓普顿环球总收益基金                                null:isin_codes,inception_date | 不确定:inception_date,nav,annualized_std_3y,avg_ytm,avg_duration,top_holdings,sector_allocation,asset_class_allocation
+  ID   9  霸菱香港中国基金                                  null:isin_codes | 不确定:bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y
+  ID  11  贝莱德全球基金－新兴市场基金                            不确定:ret_2020,ret_2019,ret_2018,ret_2017,ret_2016,ret_2015,ret_2014,ret_2013
+  ID  13  贝莱德全球基金－新兴欧洲基金                            不确定:nav,ret_1y,ret_3y,ret_5y,ret_since_inception,bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID  14  贝莱德全球基金－可持续能源基金                           不确定:bench_ret_3m
+  ID  17  贝莱德全球基金－欧洲基金                              不确定:nav,ret_2025
+  ID  19  邓普顿新兴市场债券基金                               不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID  20  邓普顿环球债券基金                                 null:isin_codes | 不确定:nav,ret_2025,ret_2024,ret_2023,ret_2022,ret_2021,ret_2020,ret_2019,ret_2018,ret_2017,ret_2016,ret_2015,ret_2014,ret_2013,bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception,fund_aum_usd,aum_date
+  ID  21  富兰克林邓普顿环球基金系列-FTGF锐思美国小型资本机会基金            不确定:ret_2025,ret_2024,ret_2023,ret_2022,ret_2021,ret_2020,ret_2019,ret_2018,ret_2017,ret_2016,ret_2015,ret_2014,ret_2013,bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID  22  霸菱韩国联接基金                                  null:isin_codes | 不确定:nav,avg_ytm,avg_duration,annualized_std_3y
+  ID  23  富兰克林邓普顿环球基金系列-FTGF西方资产亚洲机会基金              不确定:nav,ret_5y,ret_since_inception
+  ID  24  霸菱成熟及新兴市场高收益债券基金                          null:isin_codes | 不确定:avg_ytm,avg_duration
+  ID  25  富兰克林科技基金                                  不确定:ret_2024,ret_2023
+  ID  27  富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金           不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID  28  富兰克林美国机会基金                                校验:[A (累算) 美元] ret_3m=6.71==ret_1y=6.71，疑似列错位;[A (累算) 港元] ret_3m=6.71==ret_1y=6.71，疑似列错位
+  ID  29  邓普顿亚洲债券基金                                 不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID  30  邓普顿环球总收益基金                                不确定:avg_ytm,avg_duration,annualized_std_3y | 校验:[A (每月派息)] ret_3m=-1.34==ret_1y=-1.34，疑似列错位;[A (每月派息)] ret_3m=0.026==ret_1y=0.026，疑似列错位
+  ID  37  富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金                不确定:ret_5y,ret_since_inception,bench_ret_5y,bench_ret_since_inception
+  ID  40  贝莱德全球基金－营养科学基金                            不确定:top_holdings,nav,ret_2025
+  ID  41  富达基金－欧洲多元收益基金                             不确定:nav,bench_ret_3m
+  ID  44  富达基金－太平洋基金                                不确定:nav
+  ID  48  富达基金－印度焦点基金                               不确定:nav,avg_ytm,avg_duration
+  ID  51  贝莱德全球基金－智慧数据环球股票高息基金                      不确定:bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID  52  摩根基金 - 美国价值基金                             不确定:nav_currency | 校验:[A(累计) - 美元类别] ret_3m=11.1==ret_1y=11.1，疑似列错位
+  ID  54  摩根投资基金 - 欧洲策略股息基金                         不确定:nav_currency
+  ID  55  贝莱德全球基金－美元货币基金                            不确定:nav,ret_2017
+  ID  56  美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金                不确定:nav,annualized_std_3y
+  ID  59  摩根基金 - 香港基金                               null:isin_codes | 不确定:bench_ret_3m
+  ID  61  施罗德环球基金系列 - 环球黄金基金                        校验:[A类累积-美元] ret_ytd=192.12 超出合理范围
+  ID  64  联博 — 新兴市场股债基金                             不确定:nav_currency,bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID  65  摩根亚洲股息基金                                  不确定:ret_3m,ret_6m,bench_ret_3m
+  ID  66  富达基金－亚洲债券基金                               不确定:nav,annualized_std_3y,avg_ytm,avg_duration
+  ID  67  富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基  不确定:nav_currency,ret_5y,ret_since_inception,bench_ret_5y,bench_ret_since_inception
+  ID  70  联博 — 新兴市场股债基金                             不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID  72  安联全球永续发展基金                                不确定:fund_aum_usd,aum_date
+  ID  75  摩根基金 - 中国基金                               不确定:ret_3m,ret_6m
+  ID  76  法巴洁净能源基金                                  不确定:nav_currency,fund_aum_usd
+  ID  77  法巴美元短期债券基金                                不确定:avg_ytm,avg_duration,admin_fee_pct
+  ID  78  宏利环球基金 — 巨龙增长基金                           不确定:nav,annualized_yield_pct
+  ID  79  施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位)          不确定:avg_duration,avg_ytm
+  ID  80  景顺亚洲资产配置基金                                不确定:bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception,ret_since_inception
+  ID  81  景顺亚洲资产配置基金                                不确定:bench_ret_3m,ret_since_inception
+  ID  82  摩根美国科技基金                                  不确定:ret_2025,ret_2024,ret_2023,ret_2022,ret_2021,ret_2020,ret_2019,ret_2018,ret_2017,ret_2016,ret_2015,ret_2014,ret_2013 | 校验:[A(累计) - 美元类别] ret_3m=17.2==ret_1y=17.2，疑似列错位;[A(累计) - 人民币对冲类别] ret_3m=14.3==ret_1y=14.3，疑似列错位
+  ID  84  贝莱德荟萃基金－环球投资级债券基金                         不确定:avg_ytm,avg_duration,benchmark_name
+  ID  85  宏利环球基金 — 亚太房地产投资信托产业基金                    不确定:nav,bench_ret_*
+  ID  87  联博 — 低波幅股票总回报基金（派息款）                      不确定:dividend_per_share,nav_on_ex_date
+  ID  89  富达基金－美元债券基金                               不确定:nav,annualized_std_3y,avg_ytm,avg_duration
+  ID  92  富兰克林美元短期货币市场基金                            不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID  93  摩根基金 - 美元浮动净值货币基金                         不确定:ret_3m,ret_6m,bench_ret_*,dividend_per_share
+  ID  94  施罗德美元金融基金(累积单位)                           不确定:fund_aum_usd,nav
+  ID  97  安联环球智能城市收益基金                              不确定:nav_currency
+  ID  99  摩根基金 - 大中华基金                              不确定:avg_ytm,avg_duration,annualized_std_3y | 校验:[A(累计) - 美元类别] ret_3m=32.3==ret_1y=32.3，疑似列错位
+  ID 100  摩根基金 - 美国基金                               不确定:bench_ret_3m,ret_6m
+  ID 101  贝莱德全球基金－新世代交通基金                           不确定:ret_1y,bench_ret_3m
+  ID 102  联博 — 欧洲股票基金                               不确定:bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID 103  安联多元主题基金                                  不确定:avg_duration,avg_ytm,annualized_std_3y
+  ID 104  施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位)          不确定:fund_aum_usd,ret_2025
+  ID 105  富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金              不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID 107  贝莱德全球基金－MyMap多元保守型基金                      不确定:bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID 108  贝莱德全球基金－MyMap多元均衡基金                       不确定:bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID 115  宏利环球基金 — 投资级优先证券收益基金                      不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID 117  施罗德环球基金系列 - 环球可持续发展价值股票 (A类股份 收息单位)       不确定:avg_ytm,avg_duration,ret_3y,ret_5y,ret_2022,ret_2021,ret_2020,ret_2019,ret_2018,ret_2017,ret_2016,ret_2015,ret_2014,ret_2013
+  ID 118  摩根基金－环球股息基金                               不确定:fund_manager_company,bench_ret_3m
+  ID 119  东方汇理亚洲伞子基金 — CIO 精选保守基金                   不确定:nav,annualized_std_3y,avg_ytm,avg_duration
+  ID 120  摩根亚洲股票高息基金                                不确定:ret_6m,ret_5y,bench_ret_3m
+  ID 121  东方汇理亚洲伞子基金 — CIO 精选保守基金                   不确定:nav,ret_1y,ret_3y
+  ID 123  东方汇理亚洲伞子基金 — CIO 精选保守基金                   不确定:ret_1y,ret_3y,ret_5y,ret_since_inception,nav,benchmark_name,bench_ret_*,annualized_std_3y,avg_ytm,avg_duration
+  ID 124  富敦美国短盈基金                                  不确定:fund_aum_usd,aum_date,nav,ret_3m,ret_1y,ret_3y,ret_5y,ret_since_inception,benchmark_name
+  ID 125  景顺永续性中国债券基金                               不确定:avg_ytm,avg_duration,ret_5y,ret_since_inception,bench_ret_3y,bench_ret_5y,bench_ret_since_inception,ex_div_date,nav_on_ex_date
+  ID 127  景顺环球高评级企业债券基金                             不确定:avg_ytm,avg_duration
+  ID 130  富达基金－环球股息优势基金                             不确定:nav,annualized_std_3y,avg_ytm,avg_duration
+  ID 131  摩根环球股票高息基金                                不确定:ret_3m,ret_6m,ret_1y,ret_3y,ret_5y,ret_since_inception,bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID 133  富兰克林互惠欧洲基金                                不确定:ret_1y,ret_2020 | 校验:[A (累计) 欧元] ret_3m=23.01==ret_1y=23.01，疑似列错位;[A (累计) 美元] ret_3m=30.52==ret_1y=30.52，疑似列错位
+  ID 134  邓普顿环球总收益基金                                不确定:annualized_std_3y,avg_ytm,avg_duration,data_source | 校验:[A (累计) 美元] ret_3m=19.35==ret_1y=19.35，疑似列错位;[A (累计) 欧元] ret_3m=8.42==ret_1y=8.42，疑似列错位
+  ID 137  富达基金－亚洲股票 ESG 基金                          不确定:nav,bench_ret_6m
+  ID 138  富达基金－拉丁美洲基金                               不确定:nav,annualized_std_3y,avg_ytm,avg_duration
+  ID 140  贝莱德全球基金－世界黄金基金                            不确定:ret_since_inception,bench_ret_since_inception | 校验:[A2美元] ret_ytd=156.76 超出合理范围
+  ID 142  富达基金 - 新兴「欧非中东」基金                         null:isin_codes | 不确定:nav,ret_3m,ret_since_inception
+  ID 143  施罗德另类投资方略 - 施罗德商品基金 (A类股份 累积单位)           不确定:fund_aum_usd,aum_date,benchmark_name,bench_ret_3m,bench_ret_1y,bench_ret_3y,bench_ret_5y,bench_ret_since_inception
+  ID 144  施罗德环球基金系列 - 环球企业债券基金 (A类股份 累积单位)          不确定:avg_ytm,avg_duration,annualized_std_3y
+  ID 145  施罗德环球基金系列 - 中国优势基金                        不确定:bench_ret_6m,bench_ret_2025
+  ID 146  邓普顿环球债券基金                                 不确定:avg_ytm,avg_duration,annualized_std_3y | 校验:[A (累计) 美元] ret_3m=16.64==ret_1y=16.64，疑似列错位
+  ID 147  施罗德环球基金系列 - 环球能源基金 (A类股份 累积单位)            不确定:ret_3m
