@@ -1391,7 +1391,7 @@ def _render_daily_reports_tab():
             with pdf_col2:
                 url_open = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
                 # 用 link_button 直接渲染 <a target="_blank">，不依赖被过滤的 <script>，点击即可在新标签打开
-                st.link_button("📖 查看", url=url_open, key=f"pdf_open_{p.name}", use_container_width=True)
+                st.link_button("📖 查看", url=url_open, use_container_width=True)
             if st.session_state.get("notes_upload_unlocked", False):
                 if st.button("🗑️ 删除", key=f"notes_del_tab_{p.name}", type="secondary"):
                     _set_notes_delete_pending(str(p))
