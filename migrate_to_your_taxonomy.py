@@ -110,8 +110,8 @@ YOUR_TAXONOMY: list[tuple] = [
     (84,  "REIT",                  "asset_class",None,  ["real estate investment trust","房地产信托"]),
     (85,  "Money Market",          "asset_class",None,  ["cash fund","货币基金"]),
     # ── Custom ──────────────────────────────────────────────────
-    (100, "halo",                  "custom",     None,  ["halo strategy"]),
-    (110, "HALO",                  "custom",     None,  ["halo strategy","halo portfolio"]),
+    (100, "halo",                  "theme",      None,  ["halo strategy"]),
+    (110, "HALO",                  "theme",      None,  ["halo strategy","halo portfolio"]),
     (101, "core",                  "custom",     None,  ["core holding","核心仓"]),
     (102, "satellite",             "custom",     None,  ["satellite position","卫星仓"]),
     (103, "defensive",             "custom",     None,  ["defense portfolio","防守"]),
