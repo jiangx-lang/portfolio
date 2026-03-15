@@ -1867,6 +1867,22 @@ def _render_qdii_system():
 
     from qdii_portfolio.pages import theme_search, portfolio_builder, nav_chart, miss_log, admin as qdii_admin
 
+    # 基金详情页路由
+    if st.session_state.get("qdii_fund_detail_id"):
+        from qdii_portfolio.pages import fund_detail
+        fund_id = st.session_state["qdii_fund_detail_id"]
+        if not is_mobile:
+            with st.sidebar:
+                if st.button("⬅️ 返回搜索", key="back_from_detail"):
+                    st.session_state["qdii_fund_detail_id"] = None
+                    st.rerun()
+        else:
+            if st.button("⬅️ 返回搜索", key="back_from_detail_m"):
+                st.session_state["qdii_fund_detail_id"] = None
+                st.rerun()
+        fund_detail.render(fund_id=fund_id, is_mobile=is_mobile)
+        return
+
     QDII_PAGES = {
         "🔍  主题基金搜索": theme_search,
         "📐  组合构建器": portfolio_builder,

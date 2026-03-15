@@ -177,6 +177,10 @@ def _render_mobile(funds, active_tags, query, miss_mode):
             if fund["top"]:
                 with st.expander("主要持仓"):
                     st.caption(" · ".join(h[:30] for h in fund["top"]))
+            if st.button("查看详情 →", key=f"m_detail_{fund['fund_id']}",
+                         use_container_width=True):
+                st.session_state["qdii_fund_detail_id"] = fund["fund_id"]
+                st.rerun()
 
 
 # ── 电脑端渲染 ────────────────────────────────────────────────────
@@ -233,14 +237,14 @@ def _render_desktop(funds, active_tags, query, miss_mode):
     scored.sort(key=lambda x: -x[1])
 
     st.markdown(f"**{len(scored)} 只基金**")
-    hcols = st.columns([3, 1.5, 1.2, 3, 2.5])
-    for col, h in zip(hcols, ["基金", "代码", "主题得分", "标签", "主要持仓"]):
+    hcols = st.columns([3, 1.5, 1.2, 3, 2, 1])
+    for col, h in zip(hcols, ["基金", "代码", "主题得分", "标签", "主要持仓", ""]):
         col.markdown(f"<span style='font-size:12px;color:gray'>{h}</span>",
                      unsafe_allow_html=True)
     st.divider()
 
     for fund, total_score in scored[:30]:
-        c1, c2, c3, c4, c5 = st.columns([3, 1.5, 1.2, 3, 2.5])
+        c1, c2, c3, c4, c5, c6 = st.columns([3, 1.5, 1.2, 3, 2, 1])
         risk_color = RISK_COLORS.get(fund["risk"], "#888")
         with c1:
             st.markdown(
@@ -273,6 +277,11 @@ def _render_desktop(funds, active_tags, query, miss_mode):
             st.markdown(" ".join(chip_parts), unsafe_allow_html=True)
         with c5:
             st.caption(" · ".join(h[:25] for h in fund["top"][:2]))
+        with c6:
+            if st.button("详情", key=f"detail_{fund['fund_id']}",
+                         use_container_width=True):
+                st.session_state["qdii_fund_detail_id"] = fund["fund_id"]
+                st.rerun()
         st.divider()
 
 
