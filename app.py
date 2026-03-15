@@ -1860,6 +1860,11 @@ def _render_qdii_system():
         st.info(f"数据库路径：{FUND_TAGGING_DB}")
         return
 
+    # 根目录运行时让 qdii_portfolio/pages 里的 from data.xxx 能找到 qdii_portfolio/data/
+    qdii_dir = str(Path(__file__).parent / "qdii_portfolio")
+    if qdii_dir not in sys.path:
+        sys.path.insert(0, qdii_dir)
+
     from qdii_portfolio.pages import theme_search, portfolio_builder, nav_chart, miss_log, admin as qdii_admin
 
     QDII_PAGES = {
