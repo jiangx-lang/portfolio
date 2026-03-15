@@ -320,7 +320,7 @@ def _render_holdings_desktop(holdings: pd.DataFrame):
         st.info("暂无持仓数据")
         return
     display = holdings.copy()
-    display["持仓名称"] = (display.get("holding_name_raw") or display["holding_name_std"]).astype(str).str[:45]
+    display["持仓名称"] = display["holding_name_raw"].fillna(display["holding_name_std"]).astype(str).str[:45]
     display["类型"] = display["holding_type"].astype(str).str.upper()
     display["权重%"] = display["weight_pct"].round(2)
     display["排名"] = display["rank"]
