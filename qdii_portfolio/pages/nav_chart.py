@@ -17,7 +17,11 @@ import streamlit as st
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
-NAV_DB_LOCAL = os.environ.get("NAV_HISTORY_DB", r"E:\FinancialData\nav_history.db")
+try:
+    from config import NAV_HISTORY_DB as _NAV_DB_CONFIG
+    NAV_DB_LOCAL = str(_NAV_DB_CONFIG)
+except ImportError:
+    NAV_DB_LOCAL = os.environ.get("NAV_HISTORY_DB", str(Path(__file__).resolve().parent.parent.parent / "data" / "nav_history.db"))
 
 PERIOD_OPTIONS = {
     "1个月": 30, "3个月": 90, "6个月": 180,

@@ -22,18 +22,27 @@ import plotly.graph_objects as go
 NAV_DATA_DIR = Path(__file__).resolve().parent / "data" / "nav"
 GITHUB_RAW_BASE = "https://raw.githubusercontent.com/jiangx-lang/portfolio/master/data/nav/"
 
-# 每日报告 PDF / 市场播客 目录（服务器 /root/market_files，本地为项目下 market_files）
+# 每日报告 PDF / 市场播客：路径统一从 config 读取
 import os
+import sys
 import threading
-if os.path.exists("/root/market_files"):
-    MARKET_FILES_BASE = Path("/root/market_files")
-else:
-    MARKET_FILES_BASE = Path(__file__).resolve().parent / "market_files"
-MARKET_PDFS = MARKET_FILES_BASE / "pdfs"
-MARKET_PODCASTS = MARKET_FILES_BASE / "podcasts"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from config import FUND_TAGGING_DB, NAV_HISTORY_DB, MARKET_FILES_BASE, MARKET_PDFS, MARKET_PODCASTS
 MARKET_FILES_BASE.mkdir(parents=True, exist_ok=True)
 MARKET_PDFS.mkdir(exist_ok=True)
 MARKET_PODCASTS.mkdir(exist_ok=True)
+
+# QDII 标签库：启动时配置路径并初始化表结构
+try:
+    import fund_tagging.db as ftdb
+    ftdb.configure(str(FUND_TAGGING_DB))
+    ftdb.init_schema()
+    QDII_AVAILABLE = True
+    _QDII_ERROR = None
+except Exception as _e:
+    QDII_AVAILABLE = False
+    _QDII_ERROR = str(_e)
 # 静态文件服务 base URL（PDF 链接用），服务器可设环境变量 FILE_SERVER_BASE_URL
 FILE_SERVER_BASE_URL = os.environ.get("FILE_SERVER_BASE_URL", "http://43.161.234.75:8504")
 FILE_SERVER_PORT = 8504
@@ -191,7 +200,7 @@ if "entry" not in st.session_state:
 def set_device(device_type, entry_type="config"):
     st.session_state.device = device_type
     st.session_state.entry = entry_type
-    if entry_type != "admin":
+    if entry_type not in ("admin", "qdii"):
         threading.Thread(target=track_page_entry, args=(entry_type,), daemon=True).start()
     st.rerun()
 
@@ -1819,23 +1828,77 @@ def _render_admin_dashboard():
         st.rerun()
 
 
+# ══════════════════════════════════════════════════════════════════
+#  QDII 系统渲染函数
+# ══════════════════════════════════════════════════════════════════
+def _render_qdii_system():
+    """QDII Portfolio System 主渲染入口"""
+    is_mobile = st.session_state.get("device") == "mobile"
+
+    if is_mobile:
+        st.button("⬅️ 返回首页", on_click=back_to_landing, key="qdii_back_top")
+    else:
+        with st.sidebar:
+            st.button("⬅️ 返回首页", on_click=back_to_landing, key="qdii_back_side")
+            st.divider()
+            st.markdown("<p style='font-size:11px;color:gray'>显示模式</p>", unsafe_allow_html=True)
+            dc1, dc2 = st.columns(2)
+            with dc1:
+                st.button("📱 手机", key="qdii_sw_m",
+                         type="primary" if is_mobile else "secondary",
+                         on_click=set_device, args=("mobile", "qdii"),
+                         use_container_width=True)
+            with dc2:
+                st.button("💻 电脑", key="qdii_sw_d",
+                         type="primary" if not is_mobile else "secondary",
+                         on_click=set_device, args=("desktop", "qdii"),
+                         use_container_width=True)
+            st.divider()
+            st.markdown("<p style='font-size:11px;color:gray'>QDII 功能导航</p>", unsafe_allow_html=True)
+
+    if not QDII_AVAILABLE:
+        st.error(f"QDII 数据库未就绪：{_QDII_ERROR}")
+        st.info(f"数据库路径：{FUND_TAGGING_DB}")
+        return
+
+    from qdii_portfolio.pages import theme_search, portfolio_builder, nav_chart, miss_log, admin as qdii_admin
+
+    QDII_PAGES = {
+        "🔍  主题基金搜索": theme_search,
+        "📐  组合构建器": portfolio_builder,
+        "📈  历史业绩曲线": nav_chart,
+        "📋  未命中记录": miss_log,
+        "⚙️  管理后台": qdii_admin,
+    }
+
+    if is_mobile:
+        st.markdown("**QDII 功能**")
+        qdii_choice = st.selectbox("选择功能", list(QDII_PAGES.keys()), label_visibility="collapsed")
+    else:
+        with st.sidebar:
+            qdii_choice = st.radio("QDII导航", list(QDII_PAGES.keys()), label_visibility="collapsed")
+
+    QDII_PAGES[qdii_choice].render(is_mobile=is_mobile)
+
+
 # ─────────────────────────────────────────────
 #  引导页
-# ─────────────────────────────────────────────
 # ─────────────────────────────────────────────
 if st.session_state.device is None:
     st.title("🎯 锦城轮动系统 · JinCity Rotation Engine")
     st.write("请选择入口与设备：")
 
+    # QDII 系统入口（合并进本 app，同一端口）
     st.subheader("📊 锦城轮动系统 QDII · JinCity Rotation Engine")
-    _sep = "&" if "?" in QDII_APP_URL else "?"
-    qdii_mobile_url = QDII_APP_URL + _sep + "device=mobile"
-    qdii_desktop_url = QDII_APP_URL + _sep + "device=desktop"
     qdii_c1, qdii_c2 = st.columns(2)
     with qdii_c1:
-        st.link_button("📱 手机", url=qdii_mobile_url, use_container_width=True)
+        st.button("📱 手机", key="qdii_mobile",
+                  on_click=set_device, args=("mobile", "qdii"),
+                  use_container_width=True)
     with qdii_c2:
-        st.link_button("💻 电脑", url=qdii_desktop_url, use_container_width=True)
+        st.button("💻 电脑", key="qdii_desktop",
+                  on_click=set_device, args=("desktop", "qdii"),
+                  use_container_width=True)
 
     st.write("")
     st.subheader("锦城轮动系统 · JinCity Rotation Engine")
@@ -1875,6 +1938,11 @@ if st.session_state.device is None:
         """,
         unsafe_allow_html=True
     )
+    st.stop()
+
+# ── QDII 系统（合并进本 app，同一端口）─────────────────────────────
+if st.session_state.entry == "qdii":
+    _render_qdii_system()
     st.stop()
 
 # ─────────────────────────────────────────────

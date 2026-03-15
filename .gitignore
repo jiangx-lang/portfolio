@@ -21,9 +21,22 @@ Thumbs.db
 # 本地密钥（勿提交）
 .env
 
+# 数据库文件（放腾讯云本地，不推 GitHub）
+*.db
+*.sqlite
+*.sqlite3
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 日志
+*.log
+streamlit_*.log
+
 # 本地数据/临时
 _fee_names.txt
-*.db
 wmp_nav_*.txt
 wmp_table_preview.txt
 data/*.bak
