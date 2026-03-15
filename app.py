@@ -37,6 +37,8 @@ MARKET_PODCASTS.mkdir(exist_ok=True)
 # 静态文件服务 base URL（PDF 链接用），服务器可设环境变量 FILE_SERVER_BASE_URL
 FILE_SERVER_BASE_URL = os.environ.get("FILE_SERVER_BASE_URL", "http://43.161.234.75:8504")
 FILE_SERVER_PORT = 8504
+# QDII 系统地址（MRF 首页「锦城轮动系统 QDII」跳转用，可设环境变量 QDII_APP_URL）
+QDII_APP_URL = os.environ.get("QDII_APP_URL", "http://43.161.234.75:8502")
 
 
 def _start_static_file_server():
@@ -1380,16 +1382,8 @@ def _render_daily_reports_tab():
                 st.markdown(html, unsafe_allow_html=True)
             with pdf_col2:
                 url_open = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
-                if st.button("📖 查看", key=f"pdf_open_{p.name}", use_container_width=True):
-                    threading.Thread(
-                        target=track_file_click,
-                        args=(p.name, "pdf"),
-                        daemon=True,
-                    ).start()
-                    st.markdown(
-                        f'<script>window.open("{url_open}", "_blank")</script>',
-                        unsafe_allow_html=True,
-                    )
+                # 用 link_button 直接渲染 <a target="_blank">，不依赖被过滤的 <script>，点击即可在新标签打开
+                st.link_button("📖 查看", url=url_open, key=f"pdf_open_{p.name}", use_container_width=True)
             if st.session_state.get("notes_upload_unlocked", False):
                 if st.button("🗑️ 删除", key=f"notes_del_tab_{p.name}", type="secondary"):
                     _set_notes_delete_pending(str(p))
@@ -1833,6 +1827,17 @@ if st.session_state.device is None:
     st.title("🎯 锦城轮动系统 · JinCity Rotation Engine")
     st.write("请选择入口与设备：")
 
+    st.subheader("📊 锦城轮动系统 QDII · JinCity Rotation Engine")
+    _sep = "&" if "?" in QDII_APP_URL else "?"
+    qdii_mobile_url = QDII_APP_URL + _sep + "device=mobile"
+    qdii_desktop_url = QDII_APP_URL + _sep + "device=desktop"
+    qdii_c1, qdii_c2 = st.columns(2)
+    with qdii_c1:
+        st.link_button("📱 手机", url=qdii_mobile_url, use_container_width=True)
+    with qdii_c2:
+        st.link_button("💻 电脑", url=qdii_desktop_url, use_container_width=True)
+
+    st.write("")
     st.subheader("锦城轮动系统 · JinCity Rotation Engine")
     r1c1, r1c2 = st.columns(2)
     with r1c1:

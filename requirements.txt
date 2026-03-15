@@ -1,10 +1,7 @@
-streamlit
-pandas
-akshare
-plotly
-numpy
-scipy
-requests
-beautifulsoup4
-playwright
-supabase
+streamlit>=1.32.0
+pandas>=2.0.0
+plotly>=5.18.0
+yfinance>=0.2.36
+supabase>=2.3.0
+openai>=1.0.0
+openpyxl>=3.1.0

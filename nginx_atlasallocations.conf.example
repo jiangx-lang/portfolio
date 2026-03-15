@@ -1,0 +1,41 @@
+# nginx 配置示例：atlasallocations.com 反代 MRF(8501) + QDII(8502) + PDF(8504)
+# 用法：复制到 /etc/nginx/sites-available/ 或合并进现有 server 块，然后：
+#   nginx -t && systemctl reload nginx
+
+server {
+    listen 80;
+    server_name atlasallocations.com www.atlasallocations.com;
+
+    # 修复通过域名上传文件失败：默认 1MB 限制
+    client_max_body_size 500M;
+
+    # MRF 系统（主入口）
+    location / {
+        proxy_pass http://127.0.0.1:8501;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_read_timeout 86400;
+    }
+
+    # QDII 系统（子路径）
+    location /qdii/ {
+        proxy_pass http://127.0.0.1:8502/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_read_timeout 86400;
+    }
+
+    # PDF 静态文件服务（每日报告「查看」打开的链接走域名，不暴露 8504）
+    location /files/ {
+        proxy_pass http://127.0.0.1:8504/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        client_max_body_size 500M;
+    }
+}

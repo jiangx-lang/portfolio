@@ -1,0 +1,65 @@
+tag_id,tag_name,category,parent_tag_id,aliases,is_active
+1,US,region,,"usa,united states,american,美国,美股",1
+2,Europe,region,,"eu,eurozone,欧洲",1
+3,Asia,region,,"apac,asia pacific,亚洲",1
+4,China,region,3,"china mainland,中国,A股",1
+5,Japan,region,3,"japan,日本,日股",1
+6,Global,region,,"world,global markets,全球",1
+7,Emerging Markets,region,,"emerging markets,em,新兴市场",1
+20,Technology,sector,,"tech,it,科技",1
+21,Financials,sector,,"finance,banking,金融",1
+22,Healthcare,sector,,"health,biotech,医疗",1
+23,Industrials,sector,,"industrial,manufacturing,工业",1
+24,Consumer,sector,,"consumer discretionary,consumer staples,消费",1
+25,Energy,sector,,"oil,gas,能源",1
+26,Materials,sector,,"basic materials,metals,材料",1
+27,Utilities,sector,,"power,electricity,公用事业",1
+28,Real Estate,sector,,"reit,property,房地产",1
+29,Communication Services,sector,,"media,telecom,通信",1
+40,AI,theme,,"artificial intelligence,人工智能,生成式AI",1
+41,SaaS,theme,,"software as a service,cloud software,云软件",1
+42,Semiconductor,theme,,"chips,semis,半导体",1
+43,Cloud,theme,,"cloud computing,云计算",1
+44,Internet,theme,,"internet platform,在线平台",1
+45,Robotics,theme,,"robot,automation,机器人",1
+46,Cybersecurity,theme,,"security software,网络安全",1
+47,Gold,theme,,"gold miners,precious metals,黄金",1
+48,Infrastructure,theme,,"infrastructure,基建",1
+49,Defense,theme,,"defense,aerospace,军工",1
+60,Value,style,,"value investing,价值",1
+61,Growth,style,,"growth investing,成长",1
+62,Blend,style,,"core blend,混合",1
+63,Quality,style,,"high quality,高质量",1
+64,Low Vol,style,,"low volatility,低波动",1
+65,Income,style,,"income strategy,收益型",1
+66,Broad Market,style,,"index market,broad exposure,宽基",1
+67,Concentrated,style,,"high conviction,集中持仓",1
+68,Mega Cap,style,,"mega cap,mega-cap,large cap,超大市值",1
+80,Equity,asset_class,,"stocks,股票",1
+81,Bond,asset_class,,"fixed income,债券",1
+82,Multi Asset,asset_class,,"balanced,multi asset,多资产",1
+83,Commodity,asset_class,,"commodities,大宗商品",1
+84,REIT,asset_class,,"real estate investment trust,房地产信托",1
+85,Money Market,asset_class,,"cash fund,货币基金",1
+86,Investment Grade,asset_class,81,"投资级别,IG,investment grade",1
+87,Non-Investment Grade,asset_class,81,"非投资级别,高收益,垃圾债,high yield,HY,non-investment grade",1
+100,halo,custom,,halo strategy,1
+101,core,custom,,"core holding,核心仓",1
+102,satellite,custom,,"satellite position,卫星仓",1
+103,defensive,custom,,"defense portfolio,防守",1
+104,aggressive,custom,,"aggressive strategy,进攻",1
+105,watchlist,custom,,"watch list,观察池",1
+110,HALO,custom,,"halo strategy,halo portfolio",1
+111,AI Software,theme,40,"ai software,ai application,ai platform",1
+112,AI Hardware,theme,40,"ai hardware,ai chips,ai infrastructure",1
+113,AI Infrastructure,theme,40,"ai infrastructure,datacenter,ai datacenter",1
+114,Semiconductor Equipment,theme,,"semi equipment,semiconductor equipment",1
+115,AI Datacenter,theme,113,"ai datacenter,data center",1
+116,Datacenter,theme,,"datacenter,data center,数据中心",1
+117,China Internet,theme,4,"china internet,中国互联网",1
+118,Enterprise Software,theme,,"enterprise software,企业软件",1
+119,Energy Transition,theme,,"energy transition,clean energy,能源转型",1
+120,EV,theme,,"ev,electric vehicle,电动车",1
+121,Logistics,theme,,"logistics,物流",1
+122,Insurance,theme,,"insurance,保险",1
+123,Asset Management,theme,,"asset management,资产管理",1

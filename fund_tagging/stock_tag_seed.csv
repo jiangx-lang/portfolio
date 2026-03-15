@@ -1,0 +1,153 @@
+ticker,company,tags
+NVDA,NVIDIA,HALO;AI Hardware;AI Infrastructure;Semiconductor;US
+MSFT,Microsoft,HALO;AI Software;Cloud;SaaS;Mega Cap;Quality;US
+AMZN,Amazon,HALO;Cloud;AI Software;Internet;Mega Cap;US
+GOOGL,Alphabet,HALO;AI Software;Cloud;Internet;Mega Cap;US
+META,Meta Platforms,HALO;AI Software;Internet;Mega Cap;US
+AAPL,Apple,HALO;Mega Cap;Quality;US
+TSM,TSMC,HALO;AI Hardware;Semiconductor;Asia
+ASML,ASML,HALO;Semiconductor Equipment;Europe
+AVGO,Broadcom,HALO;AI Hardware;Semiconductor;US
+AMD,AMD,HALO;AI Hardware;Semiconductor;US
+INTC,Intel,AI Hardware;Semiconductor;US
+QCOM,Qualcomm,AI Hardware;Semiconductor;US
+MRVL,Marvell,AI Hardware;Semiconductor;US
+MU,Micron,AI Hardware;Semiconductor;US
+ARM,ARM Holdings,AI Hardware;Semiconductor;Europe
+KLAC,KLA,Semiconductor Equipment;US
+LRCX,Lam Research,Semiconductor Equipment;US
+AMAT,Applied Materials,Semiconductor Equipment;US
+TER,Teradyne,Semiconductor Equipment;US
+SMCI,Super Micro Computer,AI Infrastructure;US
+ANET,Arista Networks,AI Infrastructure;US
+DELL,Dell Technologies,AI Infrastructure;US
+HPE,Hewlett Packard Enterprise,AI Infrastructure;US
+VRT,Vertiv,AI Infrastructure;Datacenter;US
+EQIX,Equinix,Datacenter;US
+DLR,Digital Realty,Datacenter;US
+SNOW,Snowflake,AI Software;Cloud;US
+DDOG,Datadog,AI Software;Cloud;US
+MDB,MongoDB,AI Software;Cloud;US
+PLTR,Palantir,AI Software;US
+CRM,Salesforce,AI Software;SaaS;US
+ADBE,Adobe,AI Software;US
+NOW,ServiceNow,AI Software;SaaS;US
+TEAM,Atlassian,SaaS;US
+WDAY,Workday,SaaS;US
+HUBS,HubSpot,SaaS;US
+SHOP,Shopify,SaaS;Internet
+ZS,Zscaler,Cybersecurity;US
+CRWD,Crowdstrike,Cybersecurity;US
+PANW,Palo Alto Networks,Cybersecurity;US
+FTNT,Fortinet,Cybersecurity;US
+OKTA,Okta,Cybersecurity;US
+CHKP,Check Point,Cybersecurity
+S,SentinelOne,Cybersecurity
+ORCL,Oracle,Cloud;US
+IBM,IBM,Cloud;US
+SAP,SAP,Enterprise Software;Europe
+INTU,Intuit,SaaS;US
+NET,Cloudflare,Cloud;Cybersecurity;US
+FSLY,Fastly,Cloud;US
+TWLO,Twilio,Cloud;US
+NFLX,Netflix,Internet;US
+UBER,Uber,Internet;US
+ABNB,Airbnb,Internet;US
+BKNG,Booking Holdings,Internet;US
+DASH,DoorDash,Internet;US
+SPOT,Spotify,Internet;Europe
+BABA,Alibaba,China Internet;Asia
+TCEHY,Tencent,China Internet;Asia
+PDD,PDD Holdings,China Internet;Asia
+JD,JD.com,China Internet;Asia
+BIDU,Baidu,China Internet;AI Software;Asia
+MEITUAN,Meituan,China Internet;Asia
+FANUY,Fanuc,Robotics;Japan
+KYCCF,Keyence,Robotics;Japan
+YASKY,Yaskawa,Robotics;Japan
+ABB,ABB,Robotics;Europe
+ROK,Rockwell Automation,Robotics;US
+V,Visa,Quality;US
+MA,Mastercard,Quality;US
+COST,Costco,Quality;US
+BRK.B,Berkshire Hathaway,Quality;US
+PG,Procter & Gamble,Quality;US
+KO,Coca Cola,Quality;US
+PEP,PepsiCo,Quality;US
+JNJ,Johnson & Johnson,Quality;US
+XOM,Exxon Mobil,Energy;US
+CVX,Chevron,Energy;US
+COP,ConocoPhillips,Energy;US
+SLB,Schlumberger,Energy;US
+HAL,Halliburton,Energy;US
+NEE,NextEra Energy,Energy Transition;US
+TSLA,Tesla,Energy Transition;EV;US
+ENPH,Enphase Energy,Energy Transition;US
+FSLR,First Solar,Energy Transition;US
+VWS,Vestas Wind Systems,Energy Transition;Europe
+LMT,Lockheed Martin,Defense;US
+RTX,RTX Corp,Defense;US
+NOC,Northrop Grumman,Defense;US
+BAE,BAE Systems,Defense;Europe
+GD,General Dynamics,Defense;US
+LHX,L3Harris,Defense;US
+UNH,UnitedHealth,Healthcare;US
+LLY,Eli Lilly,Healthcare;US
+PFE,Pfizer,Healthcare;US
+ABBV,AbbVie,Healthcare;US
+NVO,Novo Nordisk,Healthcare;Europe
+AZN,AstraZeneca,Healthcare;Europe
+RHHBY,Roche,Healthcare;Europe
+MRK,Merck,Healthcare;US
+BSX,Boston Scientific,Healthcare;US
+MDT,Medtronic,Healthcare;US
+SYK,Stryker,Healthcare;US
+ISRG,Intuitive Surgical,Healthcare;Robotics;US
+CAT,Caterpillar,Industrials;US
+DE,Deere,Industrials;US
+HON,Honeywell,Industrials;US
+MMM,3M,Industrials;US
+UNP,Union Pacific,Industrials;US
+CSX,CSX,Industrials;US
+NSC,Norfolk Southern,Industrials;US
+UPS,UPS,Logistics;US
+FDX,FedEx,Logistics;US
+NKE,Nike,Consumer;US
+MCD,McDonalds,Consumer;US
+SBUX,Starbucks,Consumer;US
+HD,Home Depot,Consumer;US
+LOW,Lowes,Consumer;US
+WMT,Walmart,Consumer;US
+TGT,Target,Consumer;US
+LVMUY,LVMH,Consumer;Europe
+HESAY,Hermes,Consumer;Europe
+ADS,Adidas,Consumer;Europe
+BAC,Bank of America,Financials;US
+JPM,JPMorgan,Financials;US
+GS,Goldman Sachs,Financials;US
+MS,Morgan Stanley,Financials;US
+WFC,Wells Fargo,Financials;US
+C,Citigroup,Financials;US
+AXP,American Express,Financials;US
+SCHW,Charles Schwab,Financials;US
+BLK,BlackRock,Financials;US
+SPGI,S&P Global,Financials;US
+ICE,Intercontinental Exchange,Financials;US
+CME,CME Group,Financials;US
+CB,Chubb,Insurance;US
+AIG,AIG,Insurance;US
+PGR,Progressive,Insurance;US
+TRV,Travelers,Insurance;US
+ALL,Allstate,Insurance;US
+MET,MetLife,Insurance;US
+PRU,Prudential,Insurance;US
+TROW,T Rowe Price,Asset Management;US
+KKR,KKR,Asset Management;US
+BX,Blackstone,Asset Management;US
+APO,Apollo Global,Asset Management;US
+ARES,Ares Management,Asset Management;US
+OWL,Blue Owl Capital,Asset Management;US
+AMP,Ameriprise,Asset Management;US
+AON,AON,Insurance;US
+MMC,Marsh McLennan,Insurance;US
+WTW,Willis Towers Watson,Insurance;US

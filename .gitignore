@@ -18,6 +18,9 @@ env/
 .DS_Store
 Thumbs.db
 
+# 本地密钥（勿提交）
+.env
+
 # 本地数据/临时
 _fee_names.txt
 *.db
