@@ -112,13 +112,25 @@ def load_nav_history(isin: str, ccy: str, start_date: str) -> pd.Series:
         try:
             from supabase import create_client
             client = create_client(supabase_url, supabase_key)
-            resp = (client.table("nav_history")
-                    .select("nav_date,nav")
-                    .eq("isin", isin).eq("ccy", ccy)
-                    .gte("nav_date", start_date)
-                    .order("nav_date").execute())
-            if resp.data:
-                df = pd.DataFrame(resp.data)
+            all_data = []
+            page_size = 1000
+            offset = 0
+            while True:
+                resp = (client.table("nav_history")
+                        .select("nav_date,nav")
+                        .eq("isin", isin).eq("ccy", ccy)
+                        .gte("nav_date", start_date)
+                        .order("nav_date")
+                        .range(offset, offset + page_size - 1)
+                        .execute())
+                if not resp.data:
+                    break
+                all_data.extend(resp.data)
+                if len(resp.data) < page_size:
+                    break
+                offset += page_size
+            if all_data:
+                df = pd.DataFrame(all_data)
                 df["nav_date"] = pd.to_datetime(df["nav_date"])
                 return df.set_index("nav_date")["nav"].astype(float)
         except Exception:
