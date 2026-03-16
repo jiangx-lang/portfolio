@@ -171,7 +171,7 @@ def get_isin_from_code(code: str) -> tuple[str, str]:
 
 
 def calc_period_return(series: pd.Series, days: int | None, label: str) -> dict:
-    """计算区间收益率"""
+    """计算区间收益率；数据不足（实际起始日晚于目标区间起始+30天）时返回 —"""
     if series.empty:
         return {"区间": label, "收益率": "—", "起始净值": "—", "结束净值": "—"}
     today = date.today()
@@ -186,6 +186,15 @@ def calc_period_return(series: pd.Series, days: int | None, label: str) -> dict:
     sub = series[series.index >= start]
     if len(sub) < 2:
         return {"区间": label, "收益率": "—", "起始净值": "—", "结束净值": "—"}
+
+    # 有明确天数时：若实际起始日比目标区间起始日晚超过 30 天，视为数据不足
+    if days is not None:
+        target_start = pd.Timestamp(today - timedelta(days=days))
+        actual_start = sub.index[0]
+        if hasattr(actual_start, "tz") and actual_start.tz is not None:
+            target_start = target_start.tz_localize(actual_start.tz)
+        if actual_start > target_start + timedelta(days=30):
+            return {"区间": label, "收益率": "—", "起始净值": "—", "结束净值": "—"}
 
     ret = (sub.iloc[-1] / sub.iloc[0] - 1) * 100
     return {
