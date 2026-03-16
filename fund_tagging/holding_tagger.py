@@ -116,6 +116,22 @@ def _build_rules() -> None:
         (r"AIRPORT|HIGHWAY|PIPELINE|UTILITY|ELECTRIC|POWER|WATER",
                                             "Infrastructure", 0.90),
         (r"\bREIT\b|REAL ESTATE|PROPERTY",  "Real Estate",  0.90),
+        # ── 高股息 HighDividend（无规则则不会有任何股票被打上该标签）──
+        (r"\bREIT\b|REAL ESTATE|PROPERTY",  "HighDividend", 0.85),
+        (r"UTILITY|UTILITIES|ELECTRIC\s+POWER|WATER\s+CO|POWER\s+GRID",
+                                            "HighDividend", 0.85),
+        (r"TELECOM|VERIZON|AT\s*&\s*T|\bVODAFONE\b|BRITISH\s+TELECOM|TELSTRA",
+                                            "HighDividend", 0.80),
+        (r"PHILIP\s+MORRIS|BRITISH\s+AMERICAN\s+TOBACCO|ALTRIA|\bPMI\b|BAT\b",
+                                            "HighDividend", 0.90),
+        (r"ARAMCO|SHELL\b|BP\b|EXXON|CHEVRON|TOTAL\s+ENERGIES|ENI\b|PETROLEUM",
+                                            "HighDividend", 0.75),
+        (r"DIVIDEND|HIGH\s+YIELD\s+EQUITY|EQUITY\s+INCOME|DISTRIBUTION",
+                                            "HighDividend", 0.90),
+        (r"ISHARES.*DIVIDEND|VANGUARD.*DIVIDEND|SCHD|DVY|HDV|SDY",
+                                            "HighDividend", 0.95),
+        (r"CAPITALAND|KEPPEL\s+REIT|MAPLETREE|FRASERS\s+LOGISTICS",
+                                            "HighDividend", 0.85),
         # ── HALO themes ──────────────────────────────────────────
         (r"AIRPORT|PIPELINE|UTILITY|ELECTRIC|WATER|TOLL|\bREIT\b"
          r"|INFRASTRUCTURE|GREENKO|MUMBAI.*AIRPORT",
