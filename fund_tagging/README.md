@@ -22,8 +22,45 @@ Tag **holdings** first; fund-level tags are aggregated from top-10 exposure. Sea
 # From project root
 py -m fund_tagging.run --db fund_tagging.db ingest --csv top_holdings_detail.csv
 py -m fund_tagging.run --db fund_tagging.db seed          # taxonomy + example holding tags
+py -m fund_tagging.run --db fund_tagging.db migrate       # 旧库补列/补标签（见下方 Workflow）
+py -m fund_tagging.run --db fund_tagging.db tag
 py -m fund_tagging.run --db fund_tagging.db aggregate
 py -m fund_tagging.run --db fund_tagging.db search --themes "AI,Technology" --limit 10
+```
+
+---
+
+## 云端 / 旧库迁移 (Workflow)
+
+**问题所在**：腾讯云或历史环境里的 `fund_tagging.db` 可能是旧 schema 或不同 seed，会出现：
+
+| 现象 | 原因 |
+|------|------|
+| `sqlite3.OperationalError: no such column: calculated_at` | `fund_tag_map` 表缺少列 `calculated_at`（当前 schema 要求有该列） |
+| `sqlite3.OperationalError: no such column: tagged_at` | `holding_tag_map` 表缺少列 `tagged_at` |
+| 主题「高股息」无结果、搜索为空 | `tag_taxonomy` 里没有 `HighDividend` 标签（部分 seed 未包含） |
+
+**解决步骤**（在服务器或本机，对目标 DB 执行）：
+
+1. **先迁移再打标与聚合**（推荐每次部署/换库后跑一次）：
+   ```bash
+   python3 -m fund_tagging.run --db /path/to/fund_tagging.db migrate
+   python3 -m fund_tagging.run --db /path/to/fund_tagging.db tag
+   python3 -m fund_tagging.run --db /path/to/fund_tagging.db aggregate
+   ```
+2. `migrate` 会自动：为 `fund_tag_map` 补 `calculated_at`、为 `holding_tag_map` 补 `tagged_at`、若缺少则插入 `HighDividend`（theme）到 `tag_taxonomy`。已存在则跳过。
+3. 若之前已手动加过列/标签，再跑 `migrate` 不会重复操作，可放心执行。
+
+**腾讯云示例**（DB 在 `/root/data/fund_tagging.db`）：
+
+```bash
+cd /root/portfolio
+git pull origin master
+python3 -m fund_tagging.run --db /root/data/fund_tagging.db migrate
+python3 -m fund_tagging.run --db /root/data/fund_tagging.db tag
+python3 -m fund_tagging.run --db /root/data/fund_tagging.db aggregate
+kill $(pgrep -f streamlit)
+bash start.sh
 ```
 
 ## Python API

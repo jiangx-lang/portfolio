@@ -6,6 +6,7 @@ Usage:
   python -m fund_tagging.run --db fund_tagging.db seed
   python -m fund_tagging.run --db fund_tagging.db tag
   python -m fund_tagging.run --db fund_tagging.db aggregate
+  python -m fund_tagging.run --db fund_tagging.db migrate   # add missing columns + HighDividend tag
   python -m fund_tagging.run --db fund_tagging.db search --themes "AI,Technology" --limit 10
   python -m fund_tagging.run --db fund_tagging.db search --region "US" --themes "SaaS"
   python -m fund_tagging.run --db fund_tagging.db fund --id 25
@@ -49,6 +50,9 @@ def _build_parser() -> argparse.ArgumentParser:
 
     # aggregate
     sub.add_parser("aggregate", help="Recalculate fund_tag_map for all funds")
+
+    # migrate (add missing columns / HighDividend tag for older DBs)
+    sub.add_parser("migrate", help="Add missing columns and HighDividend tag to existing DB")
 
     # search
     srch = sub.add_parser("search", help="Search funds by tag criteria")
@@ -119,6 +123,43 @@ def main(argv: list[str] | None = None) -> None:
         from fund_tagging.aggregation import recalculate_all_funds
         total = recalculate_all_funds()
         print(f"✅  Aggregation complete — {total} fund_tag_map rows written")
+
+    # ── migrate ───────────────────────────────────────────────────
+    elif args.command == "migrate":
+        from fund_tagging.db import get_conn
+        conn = get_conn()
+        try:
+            changes = []
+            # fund_tag_map.calculated_at (older schema may lack it)
+            try:
+                conn.execute("SELECT calculated_at FROM fund_tag_map LIMIT 1")
+            except Exception:
+                conn.execute("ALTER TABLE fund_tag_map ADD COLUMN calculated_at TEXT")
+                conn.commit()
+                changes.append("fund_tag_map.calculated_at")
+            # holding_tag_map.tagged_at
+            try:
+                conn.execute("SELECT tagged_at FROM holding_tag_map LIMIT 1")
+            except Exception:
+                conn.execute("ALTER TABLE holding_tag_map ADD COLUMN tagged_at TEXT")
+                conn.commit()
+                changes.append("holding_tag_map.tagged_at")
+            # HighDividend tag (some seeds don't include it)
+            cur = conn.execute(
+                "SELECT tag_id FROM tag_taxonomy WHERE tag_name = 'HighDividend'"
+            ).fetchone()
+            if not cur:
+                conn.execute(
+                    "INSERT INTO tag_taxonomy (tag_name, category) VALUES ('HighDividend', 'theme')"
+                )
+                conn.commit()
+                changes.append("tag_taxonomy: HighDividend")
+            if changes:
+                print("✅  Migrated:", ", ".join(changes))
+            else:
+                print("✅  Nothing to migrate (DB already up to date)")
+        finally:
+            conn.close()
 
     # ── search ────────────────────────────────────────────────────
     elif args.command == "search":
