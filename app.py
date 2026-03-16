@@ -2162,3 +2162,41 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+# ── patch: override load_fund_nav to use Supabase ──
+def load_fund_nav(fund_name: str) -> pd.DataFrame:
+    try:
+        url = os.environ.get("SUPABASE_URL", "")
+        key = os.environ.get("SUPABASE_KEY", "")
+        if url and key:
+            from supabase import create_client
+            sb = create_client(url, key)
+            # 先从 fund_list 查 isin
+            r = sb.table("fund_list").select("isin,ccy").eq("code", fund_name).execute()
+            if r.data:
+                isin = r.data[0]["isin"]
+                ccy = r.data[0]["ccy"]
+                r2 = sb.table("nav_history").select("nav_date,nav").eq("isin", isin).eq("ccy", ccy).order("nav_date").execute()
+                if r2.data:
+                    df = pd.DataFrame(r2.data)
+                    df = df.rename(columns={"nav_date": "date"})
+                    df["date"] = pd.to_datetime(df["date"])
+                    df["nav"] = pd.to_numeric(df["nav"], errors="coerce")
+                    return df.dropna().sort_values("date").reset_index(drop=True)
+    except Exception as e:
+        pass
+    # fallback: CSV
+    local_path = NAV_DATA_DIR / f"{fund_name}.csv"
+    try:
+        if local_path.exists():
+            df = pd.read_csv(local_path, encoding="utf-8")
+        else:
+            import urllib.parse
+            url2 = GITHUB_RAW_BASE + urllib.parse.quote(fund_name) + ".csv"
+            df = pd.read_csv(url2)
+        if "csvdate" in df.columns and "date" not in df.columns:
+            df = df.rename(columns={"csvdate": "date"})
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        df["nav"] = pd.to_numeric(df["nav"], errors="coerce")
+        return df.dropna(subset=["date","nav"]).sort_values("date").reset_index(drop=True)
+    except Exception:
+        return pd.DataFrame()
