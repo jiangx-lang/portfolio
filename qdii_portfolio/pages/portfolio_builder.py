@@ -11,7 +11,7 @@ TAG_COLORS = {
     "HALO":"#185FA5","AI Hardware":"#534AB7","AI Software":"#7F77DD",
     "AI Infrastructure":"#534AB7","Semiconductor":"#7F77DD",
     "Cloud/SaaS":"#AFA9EC","China Internet":"#993C1D","Asia":"#0F6E56",
-    "US":"#185FA5","Income/Dividend":"#854F0B","Quality":"#3B6D11",
+    "US":"#185FA5","Income/Dividend":"#854F0B","HighDividend":"#854F0B","Quality":"#3B6D11",
     "Mega Cap":"#444441","Technology":"#185FA5","Bond":"#888780",
     "Low Vol":"#0F6E56",
 }

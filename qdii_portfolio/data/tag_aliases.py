@@ -92,21 +92,21 @@ TAG_ALIASES: dict[str, list[str]] = {
     "日本":                      ["Japan"],
     "japan":                    ["Japan"],
 
-    # ── 高股息 / 收益 ────────────────────────────────────────────
-    "高股息":                    ["Income/Dividend"],
-    "股息":                      ["Income/Dividend"],
-    "dividend":                 ["Income/Dividend"],
-    "high dividend":            ["Income/Dividend"],
-    "income":                   ["Income/Dividend"],
-    "yield":                    ["Income/Dividend"],
-    "收益型":                    ["Income/Dividend"],
+    # ── 高股息 / 收益（与 fund_tagging tag_taxonomy 的 tag_name 一致：HighDividend）──
+    "高股息":                    ["HighDividend"],
+    "股息":                      ["HighDividend"],
+    "dividend":                 ["HighDividend"],
+    "high dividend":            ["HighDividend"],
+    "income":                   ["HighDividend"],
+    "yield":                    ["HighDividend"],
+    "收益型":                    ["HighDividend"],
 
     # ── 房地产 / REIT ────────────────────────────────────────────
-    "reit":                     ["Real Estate", "Income/Dividend"],
+    "reit":                     ["Real Estate", "HighDividend"],
     "房地产":                    ["Real Estate"],
     "real estate":              ["Real Estate"],
     "property":                 ["Real Estate"],
-    "房地产信托":                 ["Real Estate", "Income/Dividend"],
+    "房地产信托":                 ["Real Estate", "HighDividend"],
 
     # ── 基础设施 ─────────────────────────────────────────────────
     "基础设施":                  ["Infrastructure"],
@@ -193,7 +193,7 @@ PRESET_THEMES: list[dict] = [
     {"label": "半导体",      "tags": ["Semiconductor"]},
     {"label": "亚洲科技",    "tags": ["AI Hardware", "Asia"]},
     {"label": "中国互联网",  "tags": ["China Internet"]},
-    {"label": "高股息",      "tags": ["Income/Dividend"]},
+    {"label": "高股息",      "tags": ["HighDividend"]},
     {"label": "美国科技",    "tags": ["US", "Technology"]},
     {"label": "新兴市场",    "tags": ["Emerging Markets"]},
     {"label": "基础设施",    "tags": ["Infrastructure", "Real Estate"]},
