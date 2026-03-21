@@ -79,6 +79,9 @@ export async function fetchQuote(ticker: string): Promise<QuoteResult> {
     ELV: 440.0, MDT: 87.0, BSX: 90.0, MCK: 680.0, TMO: 490.0, VRTX: 465.0, SAP: 240.0, ABB: 55.0, ING: 18.0,
     VALE: 11.0, GOLD: 19.0, NEM: 51.0, WPM: 57.0, PAAS: 22.0, KGC: 10.0, AEM: 85.0, UBS: 28.0, DB: 19.0,
     BCS: 11.0, MS: 125.0, BAC: 44.0, C: 73.0, AXP: 290.0, SCHW: 77.0,
+    "0700.HK": 508.0,
+    "000660.KS": 1007000.0,
+    "300308.SZ": 420.0,
   };
 
   const t = ticker.toUpperCase();

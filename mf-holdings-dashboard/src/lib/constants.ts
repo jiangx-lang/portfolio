@@ -19,3 +19,31 @@ export function isUsStock(ticker: string): boolean {
   const t = (ticker || "").trim().toUpperCase();
   return US_STOCK_TICKERS.includes(t) || looksLikeUsTicker(t);
 }
+
+/** 港股 / A 股 / 韩股 / 日股 / 欧股等 Yahoo 后缀（用于 MRF Top10 跳转 /stock，避免误判为 QDII） */
+const GLOBAL_EXCHANGE_SUFFIXES = new Set([
+  "HK",
+  "SS",
+  "SH",
+  "SZ",
+  "KS",
+  "KQ",
+  "TW",
+  "T",
+  "L",
+  "SI",
+  "MC",
+  "PA",
+  "AS",
+  "AX",
+  "NS",
+  "TO",
+]);
+
+export function isGlobalEquityTicker(ticker: string): boolean {
+  const u = (ticker || "").trim().toUpperCase();
+  if (!u.includes(".")) return false;
+  if (isUsStock(u)) return false;
+  const suf = u.split(".").pop() ?? "";
+  return GLOBAL_EXCHANGE_SUFFIXES.has(suf);
+}

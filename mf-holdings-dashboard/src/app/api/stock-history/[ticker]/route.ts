@@ -142,6 +142,9 @@ const MOCK_PRICES: Record<string, number> = {
   C: 73.0,
   AXP: 290.0,
   SCHW: 77.0,
+  "0700.HK": 508.0,
+  "000660.KS": 1007000.0,
+  "300308.SZ": 420.0,
 };
 
 export async function GET(req: Request, { params }: { params: { ticker: string } }) {

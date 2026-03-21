@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { QdAISignalBox } from "@/components/QdAISignalBox";
+import HoldingsDeepAnalysis from "@/components/HoldingsDeepAnalysis";
 import { NavChart } from "@/components/NavChart";
 import { getTickerFromHolding, isClickable } from "@/lib/holdingTickerMap";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -55,7 +55,6 @@ function classifyHoldingTypeByTags(tags?: string[]): "EQUITY" | "BOND" | "MIXED"
 }
 
 export default function QdPage() {
-  const router = useRouter();
   const { isMobile } = useIsMobile();
   const [funds, setFunds] = useState<QdFund[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +63,6 @@ export default function QdPage() {
   const [selectedTag, setSelectedTag] = useState<string>("全部");
   const [holdingType, setHoldingType] = useState<HoldingTypeFilter>("ALL");
   const [selected, setSelected] = useState<QdFund | null>(null);
-  const [notice, setNotice] = useState<string>("");
   const [fundNav, setFundNav] = useState<FundNav | null>(null);
   const [fundNavLoading, setFundNavLoading] = useState(false);
 
@@ -117,7 +115,6 @@ export default function QdPage() {
   }, [funds, search, selectedTag, holdingType]);
 
   const handleRowClick = async (fund: QdFund) => {
-    setNotice("");
     if (selected?.fund_id === fund.fund_id) {
       setSelected(null);
       setFundNav(null);
@@ -635,12 +632,6 @@ export default function QdPage() {
                 Top 10 Holdings
               </div>
 
-              {notice && (
-                <div style={{ fontSize: 12, color: "#BA7517", marginBottom: 8 }}>
-                  {notice}
-                </div>
-              )}
-
               {selected.holdingsLoading && <div style={{ color: "#9CA3AF", fontSize: 12 }}>Loading holdings...</div>}
               {selected.holdings && selected.holdings.length > 0 && (
                 isMobile ? (
@@ -649,37 +640,37 @@ export default function QdPage() {
                       const nameKey = String(h.holding_name_std || h.holding_name_raw || "").trim();
                       const ticker = getTickerFromHolding(nameKey);
                       const canClick = Boolean(ticker && isClickable(nameKey));
-                      const isEquity = String(h.holding_type || "").toLowerCase().includes("equity");
-                      const go = () => {
-                        if (!(ticker && isEquity)) return;
-                        if (canClick) router.push(`/stock/${ticker}`);
-                        else setNotice(`已识别为 ${ticker}，当前暂无该标的详情页`);
-                      };
+                      const href = canClick && ticker ? `/stock/${encodeURIComponent(ticker)}` : undefined;
                       return (
                         <div
                           key={i}
-                          role={canClick && isEquity ? "button" : undefined}
-                          onClick={go}
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
                             padding: "10px 0",
                             borderBottom: "1px solid rgba(255,255,255,0.05)",
-                            cursor: canClick && isEquity ? "pointer" : "default",
                           }}
                         >
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <span style={{ fontSize: 13, marginRight: 6, color: "#6B7280" }}>{h.rank ?? i + 1}.</span>
-                            <span
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 500,
-                                color: canClick && isEquity ? "#60A5FA" : "#F9FAFB",
-                              }}
-                            >
-                              {h.holding_name_std || h.holding_name_raw}
-                            </span>
+                            {href ? (
+                              <Link
+                                href={href}
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: 500,
+                                  color: "#60A5FA",
+                                  textDecoration: "none",
+                                }}
+                              >
+                                {h.holding_name_std || h.holding_name_raw}
+                              </Link>
+                            ) : (
+                              <span style={{ fontSize: 13, fontWeight: 500, color: "#F9FAFB" }}>
+                                {h.holding_name_std || h.holding_name_raw}
+                              </span>
+                            )}
                             {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
                               <span style={{ fontSize: 10, color: "#6B7280", marginLeft: 4 }}>{ticker}</span>
                             )}
@@ -708,31 +699,35 @@ export default function QdPage() {
                       const nameKey = String(h.holding_name_std || h.holding_name_raw || "").trim();
                       const ticker = getTickerFromHolding(nameKey);
                       const canClick = Boolean(ticker && isClickable(nameKey));
-                      const isEquity = String(h.holding_type || "").toLowerCase().includes("equity");
+                      const href = canClick && ticker ? `/stock/${encodeURIComponent(ticker)}` : undefined;
                       return (
                         <tr key={i} style={{ borderTop: "0.5px solid rgba(255,255,255,0.05)" }}>
                           <td style={{ padding: "5px 8px", color: "#6B7280" }}>{h.rank ?? i + 1}</td>
                           <td style={{ padding: "5px 8px" }}>
-                            <span
-                              style={{
-                                fontWeight: 500,
-                                color: canClick && isEquity ? "#60A5FA" : "#F9FAFB",
-                                cursor: canClick && isEquity ? "pointer" : "default",
-                              }}
-                              onClick={() => {
-                                if (!(ticker && isEquity)) return;
-                                if (canClick) router.push(`/stock/${ticker}`);
-                                else setNotice(`已识别为 ${ticker}，当前暂无该标的详情页`);
-                              }}
-                              title={ticker && isEquity ? (canClick ? `查看公开市场数据：${ticker}` : `标的：${ticker}（无详情页）`) : undefined}
-                            >
-                              {h.holding_name_std || h.holding_name_raw}
-                            </span>
-                            {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                              <span style={{ fontSize: 11, marginLeft: 6, color: canClick && isEquity ? "#60A5FA" : "#4B5563" }}>
-                                {ticker}
-                                {canClick && isEquity ? " →" : ""}
-                              </span>
+                            {href ? (
+                              <Link
+                                href={href}
+                                style={{ fontWeight: 500, color: "#60A5FA", textDecoration: "none" }}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={`查看公开市场数据：${ticker}`}
+                              >
+                                {h.holding_name_std || h.holding_name_raw}
+                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#60A5FA" }}>
+                                    {ticker} ↗
+                                  </span>
+                                )}
+                              </Link>
+                            ) : (
+                              <>
+                                <span style={{ fontWeight: 500, color: "#F9FAFB" }}>
+                                  {h.holding_name_std || h.holding_name_raw}
+                                </span>
+                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#4B5563" }}>{ticker}</span>
+                                )}
+                              </>
                             )}
                           </td>
                           <td style={{ padding: "5px 8px", color: "#9CA3AF" }}>{h.holding_type}</td>
@@ -749,6 +744,25 @@ export default function QdPage() {
                 <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>暂无底层持仓数据</div>
               )}
             </div>
+
+            {selected.holdings && selected.holdings.length > 0 && (
+              <HoldingsDeepAnalysis
+                fundName={selected.fund_name_cn}
+                holdings={selected.holdings.slice(0, 10).map((h) => {
+                  const name = String(h.holding_name_std || h.holding_name_raw || "").trim();
+                  const rawTicker = getTickerFromHolding(name);
+                  const skip = new Set(["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"]);
+                  const ticker = rawTicker && !skip.has(rawTicker) ? rawTicker : undefined;
+                  const type = String(h.holding_type || "").toLowerCase().includes("equity") ? "equity" : "other";
+                  return {
+                    name,
+                    ticker,
+                    weight: Number(h.weight_pct) / 100,
+                    type,
+                  };
+                })}
+              />
+            )}
 
             {/* Block 3：Groq AI 分析（缓存优先） */}
             <div id={`ai-box-${selected.fund_id}`}>

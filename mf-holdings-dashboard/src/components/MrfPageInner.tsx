@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import MrfAISignalBox from "@/components/MrfAISignalBox";
+import HoldingsDeepAnalysis from "@/components/HoldingsDeepAnalysis";
 import { getTickerFromHolding, isClickable } from "@/lib/holdingTickerMap";
 import {
   PieChart,
@@ -59,7 +60,6 @@ function getRiskLabel(equity: number): { label: string; color: string } {
 }
 
 export default function MrfPageInner() {
-  const router = useRouter();
   const { isMobile } = useIsMobile();
   const [funds, setFunds] = useState<MrfFund[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,14 +108,18 @@ export default function MrfPageInner() {
     if (matched) {
       autoOpenDone.current = true;
       handleRowClick(matched);
-      // 滚动到展开的基金行，避免只在折叠区中可见导致“看不到自动展开”
+      // 等行内持仓面板挂载 + holdings fetch 后再滚动（面板紧跟选中行，不在表格末尾）
       setTimeout(() => {
-        const rowId = `mrf-row-${matched.sc_product_code?.trim() || matched.fund_name?.trim()}`;
-        const el = document.getElementById(rowId);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        const rowKey = matched.sc_product_code || matched.fund_name;
+        const rowId = `mrf-row-${rowKey}`;
+        const panel = document.getElementById("mrf-holdings-panel");
+        const rowEl = document.getElementById(rowId);
+        if (panel) {
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else if (rowEl) {
+          rowEl.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 800); // 等待展开面板渲染后再滚动
+      }, 1500);
     }
   }, [funds, searchParams]);
 
@@ -158,6 +162,223 @@ export default function MrfPageInner() {
         cash: Math.round(filtered.reduce((s, f) => s + f.cash_pct, 0) / filtered.length),
       }
     : { equity: 0, fixed: 0, cash: 0 };
+
+  /** 持仓展开区：必须用当前 `selected`（含 fetch 后的 holdings），紧贴选中行渲染 */
+  const renderHoldingsPanelBelowRow = () => {
+    if (!selected) return null;
+    const sel = selected;
+    return (
+      <div
+        id="mrf-holdings-panel"
+        style={{
+          marginTop: 0,
+          padding: "1rem",
+          background: "#1F2937",
+          borderRadius: 8,
+          borderLeft: `2px solid ${BRAND_COLORS[sel.brand] ?? "#888"}`,
+        }}
+      >
+        <div style={{ fontSize: 12, fontWeight: 500, color: "#F9FAFB", marginBottom: 8 }}>{sel.fund_name}</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)",
+            gap: 8,
+          }}
+        >
+          {[
+            ["配置", `股票${sel.equity_pct}% / 债${sel.fixed_income_pct}% / 现金${sel.cash_pct}%`],
+            ["申购费率", `${sel.fee_rate.toFixed(1)}%`],
+            ["风险等级", getRiskLabel(sel.equity_pct).label],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 2 }}>{k}</div>
+              <div style={{ fontSize: 13, color: "#F9FAFB" }}>{v}</div>
+            </div>
+          ))}
+        </div>
+        {sel.holdingsLoading && (
+          <div style={{ color: "#9CA3AF", fontSize: 12, marginTop: 8 }}>Loading holdings...</div>
+        )}
+        {sel.holdings && sel.holdings.length > 0 && (
+          <div style={{ marginTop: "1rem" }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: "#9CA3AF",
+                marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Top {sel.holdings.length} Holdings
+            </div>
+            {isMobile ? (
+              <div>
+                {sel.holdings.map((h, i) => {
+                  const nameKey = (h.holding_name_std || h.holding_name_raw || "").trim();
+                  const ticker = getTickerFromHolding(nameKey);
+                  const canClick = Boolean(ticker && isClickable(nameKey));
+                  const href = canClick && ticker ? `/stock/${encodeURIComponent(ticker)}` : undefined;
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "10px 0",
+                        borderBottom: "1px solid rgba(255,255,255,0.05)",
+                      }}
+                    >
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <span style={{ fontSize: 13, marginRight: 6, color: "#6B7280" }}>{h.rank ?? i + 1}.</span>
+                        {href ? (
+                          <Link
+                            href={href}
+                            style={{
+                              fontSize: 13,
+                              color: "#60A5FA",
+                              fontWeight: 500,
+                              textDecoration: "none",
+                            }}
+                          >
+                            {h.holding_name_std || h.holding_name_raw}
+                          </Link>
+                        ) : (
+                          <span style={{ fontSize: 13, color: "#F9FAFB", fontWeight: 500 }}>
+                            {h.holding_name_std || h.holding_name_raw}
+                          </span>
+                        )}
+                        {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                          <span style={{ fontSize: 10, color: "#6B7280", marginLeft: 4 }}>{ticker}</span>
+                        )}
+                      </div>
+                      <div style={{ textAlign: "right", marginLeft: 8 }}>
+                        <div style={{ fontSize: 13, color: "#1D9E75" }}>{Number(h.weight_pct).toFixed(2)}%</div>
+                        <div style={{ fontSize: 10, color: "#6B7280" }}>{h.holding_type}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 12 }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>#</th>
+                    <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>持仓名称</th>
+                    <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>类型</th>
+                    <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>权重%</th>
+                    <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>截至日期</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sel.holdings.map((h, i) =>
+                    (() => {
+                      const nameKey = (h.holding_name_std || h.holding_name_raw || "").trim();
+                      const ticker = getTickerFromHolding(nameKey);
+                      const canClick = Boolean(ticker && isClickable(nameKey));
+                      const href = canClick && ticker ? `/stock/${encodeURIComponent(ticker)}` : undefined;
+                      return (
+                        <tr
+                          key={i}
+                          style={{
+                            borderTop: "0.5px solid rgba(255,255,255,0.05)",
+                          }}
+                          title={
+                            canClick
+                              ? `查看公开市场数据：${ticker}`
+                              : ticker
+                                ? `已识别：${ticker}（暂无标的详情）`
+                                : undefined
+                          }
+                        >
+                          <td style={{ padding: "5px 8px", color: "#6B7280" }}>{h.rank ?? i + 1}</td>
+                          <td style={{ padding: "5px 8px" }}>
+                            {href ? (
+                              <Link
+                                href={href}
+                                style={{ fontWeight: 500, color: "#60A5FA", textDecoration: "none" }}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {h.holding_name_std || h.holding_name_raw}
+                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#60A5FA" }}>
+                                    {ticker} ↗
+                                  </span>
+                                )}
+                              </Link>
+                            ) : (
+                              <>
+                                <span style={{ fontWeight: 500, color: "#F9FAFB" }}>
+                                  {h.holding_name_std || h.holding_name_raw}
+                                </span>
+                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#4B5563" }}>{ticker}</span>
+                                )}
+                              </>
+                            )}
+                          </td>
+                          <td style={{ padding: "5px 8px", color: "#9CA3AF" }}>{h.holding_type}</td>
+                          <td style={{ padding: "5px 8px", color: "#1D9E75", textAlign: "right" }}>
+                            {Number(h.weight_pct).toFixed(2)}%
+                          </td>
+                          <td style={{ padding: "5px 8px", color: "#6B7280", textAlign: "right" }}>{h.as_of_date}</td>
+                        </tr>
+                      );
+                    })()
+                  )}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+        {!sel.sc_product_code?.trim() && (
+          <div style={{ marginTop: 8, fontSize: 12, color: "#BA7517" }}>
+            请先配置产品代码（Supabase mrf_funds.sc_product_code）
+          </div>
+        )}
+        {sel.sc_product_code?.trim() && sel.holdings && sel.holdings.length === 0 && !sel.holdingsLoading && (
+          <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>
+            暂无底层持仓数据（PDF 尚未解析此基金）
+          </div>
+        )}
+
+        {sel.holdings && sel.holdings.length > 0 && (
+          <HoldingsDeepAnalysis
+            fundName={sel.fund_name}
+            holdings={sel.holdings.slice(0, 10).map((h) => {
+              const name = String(h.holding_name_std || h.holding_name_raw || "").trim();
+              const rawTicker = getTickerFromHolding(name);
+              const skip = new Set(["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"]);
+              const ticker = rawTicker && !skip.has(rawTicker) ? rawTicker : undefined;
+              const type = String(h.holding_type || "").toLowerCase().includes("equity") ? "equity" : "other";
+              return {
+                name,
+                ticker,
+                weight: Number(h.weight_pct) / 100,
+                type,
+              };
+            })}
+          />
+        )}
+
+        <MrfAISignalBox
+          fund={{
+            fund_name: sel.fund_name,
+            brand: sel.brand,
+            equity_pct: sel.equity_pct,
+            fixed_income_pct: sel.fixed_income_pct,
+            cash_pct: sel.cash_pct,
+            fee_rate: sel.fee_rate,
+            holdings: sel.holdings,
+          }}
+        />
+      </div>
+    );
+  };
 
   const s: Record<string, React.CSSProperties> = {
     page: {
@@ -321,84 +542,86 @@ export default function MrfPageInner() {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
                 return (
-                  <div
-                    key={f.fund_name}
-                    id={`mrf-row-${f.sc_product_code || f.fund_name}`}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => handleRowClick(f)}
-                    onKeyDown={(e) => e.key === "Enter" && handleRowClick(f)}
-                    style={{
-                      background: "#111827",
-                      border: isSelected ? "1px solid rgba(24,95,165,0.5)" : "1px solid rgba(255,255,255,0.07)",
-                      borderRadius: 10,
-                      padding: "12px 14px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 6, color: "#F9FAFB" }}>
-                      {f.fund_name}
-                    </div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                      <span
-                        style={{
-                          fontSize: 11,
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          background: (BRAND_COLORS[f.brand] ?? "#888") + "22",
-                          color: BRAND_COLORS[f.brand] ?? "#9CA3AF",
-                        }}
-                      >
-                        {f.brand}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: 11,
-                          color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
-                        }}
-                      >
-                        手续费 {f.fee_rate.toFixed(1)}%
-                      </span>
-                      <span style={{ fontSize: 11, color: "#6B7280" }}>
-                        股票 {f.equity_pct}% · 固收 {f.fixed_income_pct}%
-                      </span>
-                      <span
-                        style={{
-                          fontSize: 11,
-                          padding: "2px 6px",
-                          borderRadius: 4,
-                          background: risk.color + "22",
-                          color: risk.color,
-                        }}
-                      >
-                        {risk.label}
-                      </span>
-                    </div>
+                  <Fragment key={f.fund_name}>
                     <div
-                      onClick={(e) => e.stopPropagation()}
-                      style={{ marginTop: "6px", textAlign: "right" }}
+                      id={`mrf-row-${f.sc_product_code || f.fund_name}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleRowClick(f)}
+                      onKeyDown={(e) => e.key === "Enter" && handleRowClick(f)}
+                      style={{
+                        background: "#111827",
+                        border: isSelected ? "1px solid rgba(24,95,165,0.5)" : "1px solid rgba(255,255,255,0.07)",
+                        borderRadius: 10,
+                        padding: "12px 14px",
+                        cursor: "pointer",
+                      }}
                     >
-                      <a
-                        href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "inline-block",
-                          padding: "3px 10px",
-                          background: "#0f2744",
-                          color: "#60a5fa",
-                          border: "1px solid #3b82f6",
-                          borderRadius: "5px",
-                          fontSize: "11px",
-                          textDecoration: "none",
-                          whiteSpace: "nowrap",
-                        }}
+                      <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 6, color: "#F9FAFB" }}>
+                        {f.fund_name}
+                      </div>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            padding: "2px 8px",
+                            borderRadius: 4,
+                            background: (BRAND_COLORS[f.brand] ?? "#888") + "22",
+                            color: BRAND_COLORS[f.brand] ?? "#9CA3AF",
+                          }}
+                        >
+                          {f.brand}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
+                          }}
+                        >
+                          手续费 {f.fee_rate.toFixed(1)}%
+                        </span>
+                        <span style={{ fontSize: 11, color: "#6B7280" }}>
+                          股票 {f.equity_pct}% · 固收 {f.fixed_income_pct}%
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            background: risk.color + "22",
+                            color: risk.color,
+                          }}
+                        >
+                          {risk.label}
+                        </span>
+                      </div>
+                      <div
                         onClick={(e) => e.stopPropagation()}
+                        style={{ marginTop: "6px", textAlign: "right" }}
                       >
-                        深度分析 →
-                      </a>
+                        <a
+                          href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "inline-block",
+                            padding: "3px 10px",
+                            background: "#0f2744",
+                            color: "#60a5fa",
+                            border: "1px solid #3b82f6",
+                            borderRadius: "5px",
+                            fontSize: "11px",
+                            textDecoration: "none",
+                            whiteSpace: "nowrap",
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          深度分析 →
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                    {isSelected && renderHoldingsPanelBelowRow()}
+                  </Fragment>
                 );
               })}
             </div>
@@ -421,252 +644,88 @@ export default function MrfPageInner() {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
                 return (
-                  <tr
-                    key={f.fund_name}
-                    id={`mrf-row-${f.sc_product_code || f.fund_name}`}
-                    onClick={() => handleRowClick(f)}
-                    style={{ background: isSelected ? "rgba(24,95,165,0.12)" : "transparent" }}
-                  >
-                    <td style={s.td}>
-                      <div style={{ fontWeight: 500, fontSize: 13 }}>{f.fund_name}</div>
-                    </td>
-                    <td style={s.td}>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          fontSize: 11,
-                          background: (BRAND_COLORS[f.brand] ?? "#888") + "22",
-                          color: BRAND_COLORS[f.brand] ?? "#9CA3AF",
-                        }}
-                      >
-                        {f.brand}
-                      </span>
-                    </td>
-                    <td style={s.tdr}>{f.equity_pct}%</td>
-                    <td style={s.tdr}>{f.fixed_income_pct}%</td>
-                    <td style={s.tdr}>{f.cash_pct}%</td>
-                    <td
-                      style={{
-                        ...s.tdr,
-                        color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
-                      }}
+                  <Fragment key={f.fund_name}>
+                    <tr
+                      id={`mrf-row-${f.sc_product_code || f.fund_name}`}
+                      onClick={() => handleRowClick(f)}
+                      style={{ background: isSelected ? "rgba(24,95,165,0.12)" : "transparent" }}
                     >
-                      {f.fee_rate.toFixed(1)}%
-                    </td>
-                    <td style={s.tdr}>
-                      <span
+                      <td style={s.td}>
+                        <div style={{ fontWeight: 500, fontSize: 13 }}>{f.fund_name}</div>
+                      </td>
+                      <td style={s.td}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "2px 8px",
+                            borderRadius: 4,
+                            fontSize: 11,
+                            background: (BRAND_COLORS[f.brand] ?? "#888") + "22",
+                            color: BRAND_COLORS[f.brand] ?? "#9CA3AF",
+                          }}
+                        >
+                          {f.brand}
+                        </span>
+                      </td>
+                      <td style={s.tdr}>{f.equity_pct}%</td>
+                      <td style={s.tdr}>{f.fixed_income_pct}%</td>
+                      <td style={s.tdr}>{f.cash_pct}%</td>
+                      <td
                         style={{
-                          display: "inline-block",
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          fontSize: 11,
-                          background: risk.color + "22",
-                          color: risk.color,
+                          ...s.tdr,
+                          color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
                         }}
                       >
-                        {risk.label}
-                      </span>
-                    </td>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <a
-                        href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "inline-block",
-                          padding: "3px 10px",
-                          background: "#0f2744",
-                          color: "#60a5fa",
-                          border: "1px solid #3b82f6",
-                          borderRadius: "5px",
-                          fontSize: "11px",
-                          textDecoration: "none",
-                          whiteSpace: "nowrap",
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        深度分析 →
-                      </a>
-                    </td>
-                  </tr>
+                        {f.fee_rate.toFixed(1)}%
+                      </td>
+                      <td style={s.tdr}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "2px 8px",
+                            borderRadius: 4,
+                            fontSize: 11,
+                            background: risk.color + "22",
+                            color: risk.color,
+                          }}
+                        >
+                          {risk.label}
+                        </span>
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <a
+                          href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "inline-block",
+                            padding: "3px 10px",
+                            background: "#0f2744",
+                            color: "#60a5fa",
+                            border: "1px solid #3b82f6",
+                            borderRadius: "5px",
+                            fontSize: "11px",
+                            textDecoration: "none",
+                            whiteSpace: "nowrap",
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          深度分析 →
+                        </a>
+                      </td>
+                    </tr>
+                    {isSelected && (
+                      <tr style={{ background: "rgba(24,95,165,0.06)" }}>
+                        <td colSpan={8} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
+                          {renderHoldingsPanelBelowRow()}
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 );
               })}
             </tbody>
           </table>
-          )}
-
-          {selected && (
-            <div
-              style={{
-                marginTop: "1rem",
-                padding: "1rem",
-                background: "#1F2937",
-                borderRadius: 8,
-                borderLeft: `2px solid ${BRAND_COLORS[selected.brand] ?? "#888"}`,
-              }}
-            >
-              <div style={{ fontSize: 12, fontWeight: 500, color: "#F9FAFB", marginBottom: 8 }}>{selected.fund_name}</div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)",
-                  gap: 8,
-                }}
-              >
-                {[
-                  ["配置", `股票${selected.equity_pct}% / 债${selected.fixed_income_pct}% / 现金${selected.cash_pct}%`],
-                  ["申购费率", `${selected.fee_rate.toFixed(1)}%`],
-                  ["风险等级", getRiskLabel(selected.equity_pct).label],
-                ].map(([k, v]) => (
-                  <div key={k}>
-                    <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 2 }}>{k}</div>
-                    <div style={{ fontSize: 13, color: "#F9FAFB" }}>{v}</div>
-                  </div>
-                ))}
-              </div>
-              {selected.holdingsLoading && (
-                <div style={{ color: "#9CA3AF", fontSize: 12, marginTop: 8 }}>Loading holdings...</div>
-              )}
-              {selected.holdings && selected.holdings.length > 0 && (
-                <div style={{ marginTop: "1rem" }}>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: "#9CA3AF",
-                      marginBottom: 6,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    Top {selected.holdings.length} Holdings
-                  </div>
-                  {isMobile ? (
-                    <div>
-                      {selected.holdings.map((h, i) => {
-                        const nameKey = (h.holding_name_std || h.holding_name_raw || "").trim();
-                        const ticker = getTickerFromHolding(nameKey);
-                        const canClick = Boolean(ticker && isClickable(nameKey));
-                        return (
-                          <div
-                            key={i}
-                            role={canClick ? "button" : undefined}
-                            onClick={canClick && ticker ? () => router.push(`/stock/${ticker}`) : undefined}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              padding: "10px 0",
-                              borderBottom: "1px solid rgba(255,255,255,0.05)",
-                              cursor: canClick ? "pointer" : "default",
-                            }}
-                          >
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <span style={{ fontSize: 13, marginRight: 6, color: "#6B7280" }}>{h.rank ?? i + 1}.</span>
-                              <span
-                                style={{
-                                  fontSize: 13,
-                                  color: canClick ? "#60A5FA" : "#F9FAFB",
-                                  fontWeight: 500,
-                                }}
-                              >
-                                {h.holding_name_std || h.holding_name_raw}
-                              </span>
-                              {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                                <span style={{ fontSize: 10, color: "#6B7280", marginLeft: 4 }}>{ticker}</span>
-                              )}
-                            </div>
-                            <div style={{ textAlign: "right", marginLeft: 8 }}>
-                              <div style={{ fontSize: 13, color: "#1D9E75" }}>{Number(h.weight_pct).toFixed(2)}%</div>
-                              <div style={{ fontSize: 10, color: "#6B7280" }}>{h.holding_type}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                  <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 12 }}>
-                    <thead>
-                      <tr>
-                        <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>#</th>
-                        <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>持仓名称</th>
-                        <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>类型</th>
-                        <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>权重%</th>
-                        <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>截至日期</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selected.holdings.map((h, i) => (
-                        (() => {
-                          const nameKey = (h.holding_name_std || h.holding_name_raw || "").trim();
-                          const ticker = getTickerFromHolding(nameKey);
-                          const canClick = Boolean(ticker && isClickable(nameKey));
-                          return (
-                            <tr
-                              key={i}
-                              style={{
-                                borderTop: "0.5px solid rgba(255,255,255,0.05)",
-                                cursor: canClick ? "pointer" : "default",
-                              }}
-                              onClick={canClick && ticker ? () => router.push(`/stock/${ticker}`) : undefined}
-                              title={
-                                canClick
-                                  ? `查看公开市场数据：${ticker}`
-                                  : ticker
-                                    ? `已识别：${ticker}（暂无标的详情）`
-                                  : undefined
-                              }
-                            >
-                          <td style={{ padding: "5px 8px", color: "#6B7280" }}>{h.rank ?? i + 1}</td>
-                              <td style={{ padding: "5px 8px" }}>
-                                <span style={{ fontWeight: 500, color: canClick ? "#60A5FA" : "#F9FAFB" }}>
-                                  {h.holding_name_std || h.holding_name_raw}
-                                </span>
-                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                                  <span style={{ fontSize: 11, marginLeft: 6, color: canClick ? "#60A5FA" : "#4B5563" }}>
-                                    {ticker}
-                                    {canClick ? " →" : ""}
-                                  </span>
-                                )}
-                              </td>
-                          <td style={{ padding: "5px 8px", color: "#9CA3AF" }}>{h.holding_type}</td>
-                          <td style={{ padding: "5px 8px", color: "#1D9E75", textAlign: "right" }}>
-                            {Number(h.weight_pct).toFixed(2)}%
-                          </td>
-                          <td style={{ padding: "5px 8px", color: "#6B7280", textAlign: "right" }}>{h.as_of_date}</td>
-                            </tr>
-                          );
-                        })()
-                      ))}
-                    </tbody>
-                  </table>
-                  )}
-                </div>
-              )}
-              {!selected.sc_product_code?.trim() && (
-                <div style={{ marginTop: 8, fontSize: 12, color: "#BA7517" }}>
-                  请先配置产品代码（Supabase mrf_funds.sc_product_code）
-                </div>
-              )}
-              {selected.sc_product_code?.trim() && selected.holdings && selected.holdings.length === 0 && !selected.holdingsLoading && (
-                <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>
-                  暂无底层持仓数据（PDF 尚未解析此基金）
-                </div>
-              )}
-
-              <MrfAISignalBox
-                fund={{
-                  fund_name: selected.fund_name,
-                  brand: selected.brand,
-                  equity_pct: selected.equity_pct,
-                  fixed_income_pct: selected.fixed_income_pct,
-                  cash_pct: selected.cash_pct,
-                  fee_rate: selected.fee_rate,
-                  holdings: selected.holdings,
-                }}
-              />
-            </div>
           )}
         </div>
 

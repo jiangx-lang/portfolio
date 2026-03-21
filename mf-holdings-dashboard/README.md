@@ -41,6 +41,19 @@ Open [http://localhost:3000](http://localhost:3000). Works with mock data withou
 - `POST /api/analyze` — **Groq** AI: `{ ticker, context, analysisType }` → JSON (signal, thesis, keyRisks, optionsStrategy)
 - `GET /api/iv/[ticker]` — IV 30d, IV Rank, IV Percentile (Yahoo or mock)
 - `GET /api/mrf/funds` — MRF 基金池（Supabase mrf_funds 表）
+- `POST /api/market-data` — Python `yfinance` 拉取持仓 PE/PB/IV/PCR（见下）
+- `POST /api/fund-deep-analysis` — Groq 对 `marketData` JSON 做组合级摘要
+- `POST /api/holdings-analysis` — 一次请求：Python 抓数 + Groq（MRF/QD 页「持仓深度分析」）
+
+### Top 10 持仓深度分析（yfinance + Groq）
+
+1. 安装 Python 依赖（与 Node 分离）：
+
+   `pip install -r scripts/requirements-market.txt`
+
+2. 服务器需可用 `py -3`（Windows）或 `python3`（Linux/macOS）执行 `scripts/fetch_market_data.py`。
+
+3. 非美股常无期权链 → IV 为 `—`，`data_quality` 为 `partial` / `insufficient_options`；Put/Call 无成交时可用 **beta 启发式 proxy**（脚本内已写）。
 
 ## Environment Variables
 

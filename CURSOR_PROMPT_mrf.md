@@ -60,3 +60,13 @@ Supabase
 - 品牌筛选 tabs
 - 完整基金表（点击行展示详情）
 - 费率颜色编码：红≥3% / 黄≥2% / 绿<2%
+
+## 股票数据 · Top10 跳转 · 深度分析（阶段性更新）
+
+- **Python 多源估值**：`mf-holdings-dashboard/scripts/fetch_market_data.py`（港 AkShare、韩 Naver、美 yfinance+期权等）；依赖 `scripts/requirements-market.txt`。
+- **名称 → 代码**：`src/lib/holdingTickerMap.ts`；`isClickable()` 已对 **美股 + 带 `.HK/.KS/.SZ/...` 的全球标的** 开放，MRF Top Holdings 名称链到 `/stock/{ticker}`（见 `MrfPageInner.tsx`）。
+- **全球标的页**：`src/app/stock/[ticker]/page.tsx` 中 `isGlobalEquityTicker` 分支 → `GlobalEquityView`（简版 + mock 走势）；勿与 QDII 净值页混淆。
+- **深度分析**：`POST /api/holdings-analysis` 使用上述 Python 返回的 `market`、`data_source`、`pe_ttm`、`pb` 等写入 Groq prompt（`fundDeepAnalysisGroq.ts`）；前端 `HoldingsDeepAnalysis` 展示数据源列与「打开」详情链接。
+- **维护说明全文**：`mf-holdings-dashboard/docs/MARKET_DATA_MRF.md`
+
+验证：`cd mf-holdings-dashboard && npm run dev` → **`/mrf` 或 `/qd`** 展开基金 → 点击映射到的标的 → 「持仓深度分析」→ 运行分析（与 MRF 同一套 `HoldingsDeepAnalysis` + Python 多源数据）。

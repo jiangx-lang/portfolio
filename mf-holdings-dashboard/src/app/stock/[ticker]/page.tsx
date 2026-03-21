@@ -3,9 +3,11 @@ import { getQuote, getIVStats, getOptionsChain } from "@/lib/publiccom";
 import { buildStrategyCards } from "@/lib/strategies";
 import { notFound } from "next/navigation";
 import { StockDetailClient } from "@/components/StockDetailClient";
+import { GlobalEquityView } from "@/components/GlobalEquityView";
 import { QdiiFundView } from "@/components/QdiiFundView";
-import { isUsStock } from "@/lib/constants";
+import { isGlobalEquityTicker, isUsStock } from "@/lib/constants";
 import { getFundByCode, getNavHistory, isSupabaseConfigured } from "@/lib/supabase";
+import { fetchQuote } from "@/lib/yahoo";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
@@ -141,6 +143,29 @@ export default async function StockDetailPage({ params }: PageProps) {
             optionsChain={optionsChain}
             strategyCards={strategyCards}
           />
+        </main>
+      </div>
+    );
+  }
+
+  // 港股 / A 股 / 韩股 / 日欧等（MRF Top10 映射）：简版标的页，避免落入 QDII 分支 404
+  if (isGlobalEquityTicker(tickerUpper)) {
+    const quote = await fetchQuote(tickerUpper);
+    return (
+      <div className="min-h-screen bg-navy">
+        <header className="border-b border-white/10 px-4 py-4 md:px-6">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <Link href="/mrf" className="text-sm text-sky-400 hover:underline">
+              ← MRF
+            </Link>
+            <h1 className="text-lg font-semibold text-white">{tickerUpper}</h1>
+            <Link href="/" className="text-sm text-sky-400 hover:underline">
+              Portfolio →
+            </Link>
+          </div>
+        </header>
+        <main className="mx-auto max-w-7xl py-4 md:py-6">
+          <GlobalEquityView ticker={tickerUpper} quote={quote} />
         </main>
       </div>
     );

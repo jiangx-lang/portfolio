@@ -21,6 +21,7 @@ UPDATE mrf_funds SET sc_product_code = '968010' WHERE fund_name = '摩根太平�
 UPDATE mrf_funds SET sc_product_code = '968011' WHERE fund_name = '摩根亚洲股息';
 UPDATE mrf_funds SET sc_product_code = '968000' WHERE fund_name = '摩根亚洲总收益';
 UPDATE mrf_funds SET sc_product_code = '968013' WHERE fund_name = '瑞士百达策略收益基金';
-UPDATE mrf_funds SET sc_product_code = '968014' WHERE fund_name = '中银香港环球股票基金';
-UPDATE mrf_funds SET sc_product_code = '968015' WHERE fund_name = '中银香港香港股票基金';
+-- 中银：与 scripts/mrf_akshare_mapping.csv 一致（上交所 968 代码）；若你渠道为 968014/968015 请改 holdings 与 funds 同步
+UPDATE mrf_funds SET sc_product_code = '968031' WHERE fund_name = '中银香港环球股票基金';
+UPDATE mrf_funds SET sc_product_code = '968030' WHERE fund_name = '中银香港香港股票基金';
 UPDATE mrf_funds SET sc_product_code = '968013' WHERE fund_name = '施罗德亚洲高息股债基金M类别(人民币派息)';

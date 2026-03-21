@@ -53,6 +53,28 @@ if not ONEPAGE.exists():
 # 默认存储位置：项目 data 目录下
 DEFAULT_CSV_PATH = PROJECT_ROOT / "data" / "mrf_top10_holdings.csv"
 
+# 规范基金中文名 → 968 产品代码（与 scripts/mrf_akshare_mapping.csv 一致，写入 mrf_holdings.sc_product_code）
+_AKSHARE_MAP_PATH = PROJECT_ROOT / "scripts" / "mrf_akshare_mapping.csv"
+
+
+def _load_fund_name_to_sc_code() -> dict:
+    out: dict[str, str] = {}
+    p = _AKSHARE_MAP_PATH
+    if not p.exists():
+        return out
+    import csv as _csv
+
+    with open(p, "r", encoding="utf-8-sig") as f:
+        for row in _csv.DictReader(f):
+            code = (row.get("基金代码") or row.get("code") or "").strip()
+            name = (row.get("display_name") or row.get("fund_name") or "").strip()
+            if code and name:
+                out[name] = code
+    return out
+
+
+FUND_NAME_TO_SC_CODE = _load_fund_name_to_sc_code()
+
 # PDF 解析出的基金名（原始或清洗后）→ mrf_funds.fund_name（规范名称，写入 Supabase 用）
 # 带后缀的 PDF 文件名由 clean_fund_name 先清洗再查表
 MRF_NAME_TO_CODE = {
@@ -164,7 +186,7 @@ def main():
         for i, h in enumerate(bond_holdings):
             rows.append({
                 "fund_name": code,
-                "sc_product_code": code,
+                "sc_product_code": sc_product,
                 "rank": getattr(h, "rank", len(equity_holdings) + i + 1),
                 "holding_name": getattr(h, "name", str(h)),
                 "holding_type": "bond",

@@ -1,6 +1,8 @@
 // Auto-generated: 100% coverage of all QD + MRF equity holdings
 // 797 unique holding names → standard tickers
 
+import { isGlobalEquityTicker } from "@/lib/constants";
+
 export const HOLDING_TICKER_MAP: Record<string, string> = {
   '\"AbbVie, Inc.\"': 'ABBV',
   '\"Amazon.com, Inc.\"': 'AMZN',
@@ -701,6 +703,10 @@ export const HOLDING_TICKER_MAP: Record<string, string> = {
   'Xiaomi Corporation': '1810.HK',
   'ZUIN MINING GROUP CO LTD': '2899.HK',
   'Zhongji Innolight': '300308.SZ',
+  'Zhongji Innolight Co., Ltd.': '300308.SZ',
+  'INNOLIGHT': '300308.SZ',
+  '中际旭创': '300308.SZ',
+  '中際旭創': '300308.SZ',
   'Zijin Mining Group': '2899.HK',
   'Zijin Mining Group Co Ltd': '2899.HK',
   '万事达': 'MA',
@@ -955,10 +961,13 @@ export function isUSStock(ticker: string | null): boolean {
   return true
 }
 
+const NON_NAV_TICKERS = new Set(["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"]);
+
 export function isClickable(holdingName: string): boolean {
-  const ticker = getTickerFromHolding(holdingName)
-  if (!ticker) return false
-  // 只有 US_STOCK_TICKERS 里的“纯美股 ticker”才可点击跳转
-  return isUSStock(ticker)
+  const ticker = getTickerFromHolding(holdingName);
+  if (!ticker || NON_NAV_TICKERS.has(ticker)) return false;
+  if (isUSStock(ticker)) return true;
+  if (isGlobalEquityTicker(ticker)) return true;
+  return false;
 }
 
