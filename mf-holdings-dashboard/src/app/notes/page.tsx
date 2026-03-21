@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
+
+export type DailyReportRow = {
+  id: number;
+  title: string;
+  date: string;
+  file_url: string;
+  created_at?: string;
+};
 
 export type MarketNoteRow = {
   id: number;
@@ -14,8 +22,11 @@ export type MarketNoteRow = {
 };
 
 export default function NotesPage() {
+  const [tab, setTab] = useState<"reports" | "notes">("reports");
+  const [reports, setReports] = useState<DailyReportRow[]>([]);
   const [notes, setNotes] = useState<MarketNoteRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,15 +41,24 @@ export default function NotesPage() {
       setErr("无法初始化 Supabase 客户端");
       return;
     }
-    void supabase
-      .from("market_notes")
-      .select("id,title,content,date,created_at")
-      .order("date", { ascending: false })
-      .then(({ data, error }) => {
-        if (error) setErr(error.message);
-        else setNotes((data as MarketNoteRow[]) ?? []);
-        setLoading(false);
-      });
+    void Promise.all([
+      supabase
+        .from("daily_reports")
+        .select("id,title,date,file_url,created_at")
+        .order("date", { ascending: false }),
+      supabase
+        .from("market_notes")
+        .select("id,title,content,date,created_at")
+        .order("date", { ascending: false }),
+    ]).then(([r1, r2]) => {
+      const parts: string[] = [];
+      if (r1.error) parts.push(`每日报告: ${r1.error.message}`);
+      if (r2.error) parts.push(`市场笔记: ${r2.error.message}`);
+      if (parts.length) setErr(parts.join("；"));
+      setReports((r1.data as DailyReportRow[]) ?? []);
+      setNotes((r2.data as MarketNoteRow[]) ?? []);
+      setLoading(false);
+    });
   }, []);
 
   const s = {
@@ -48,55 +68,165 @@ export default function NotesPage() {
       color: "#e2e8f0",
       padding: "40px 24px",
     },
+    tab: (active: boolean) =>
+      ({
+        background: active ? "#1e3a5f" : "transparent",
+        color: active ? "#60a5fa" : "#64748b",
+        border: "1px solid #1e3a5f",
+        borderRadius: "8px",
+        padding: "8px 20px",
+        cursor: "pointer",
+        marginRight: "8px",
+        fontSize: "14px",
+        fontFamily: "inherit",
+      }) as CSSProperties,
     card: {
       background: "#0d1b2e",
       border: "1px solid #1e3a5f",
       borderRadius: "12px",
-      padding: "24px",
-      marginBottom: "16px",
+      padding: "20px",
+      marginBottom: "12px",
+    },
+    input: {
+      width: "100%",
+      background: "#0f2744",
+      color: "#e2e8f0",
+      border: "1px solid #1e3a5f",
+      borderRadius: "8px",
+      padding: "10px 14px",
+      fontSize: "14px",
+      marginBottom: "20px",
+      boxSizing: "border-box" as const,
+      fontFamily: "inherit",
+    },
+    pdfBtn: {
+      background: "#0f2744",
+      color: "#60a5fa",
+      border: "1px solid #3b82f6",
+      borderRadius: "8px",
+      padding: "6px 14px",
+      fontSize: "13px",
+      textDecoration: "none",
+      display: "inline-block",
+      whiteSpace: "nowrap" as const,
     },
   };
+
+  const q = search.trim().toLowerCase();
+  const filteredReports = reports.filter((r) =>
+    (r.title || "").toLowerCase().includes(q)
+  );
+  const filteredNotes = notes.filter((n) =>
+    (n.title || "").toLowerCase().includes(q)
+  );
 
   return (
     <div style={s.page}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-        <div style={{ marginBottom: "24px" }}>
-          <Link
-            href="/"
-            style={{ color: "#60a5fa", fontSize: 13, textDecoration: "none" }}
-          >
-            ← 返回首页
-          </Link>
-        </div>
-        <h1 style={{ color: "#e2e8f0", marginBottom: "8px" }}>📝 市场笔记</h1>
-        <p style={{ color: "#64748b", marginBottom: "32px", fontSize: "13px" }}>
-          市场观察与分析 · 仅供参考
+        <Link href="/" style={{ color: "#64748b", fontSize: "13px", textDecoration: "none" }}>
+          ← 返回首页
+        </Link>
+        <h1 style={{ color: "#e2e8f0", margin: "16px 0 8px" }}>📚 市场资讯</h1>
+        <p style={{ color: "#64748b", fontSize: "13px", marginBottom: "24px" }}>
+          每日报告 · 市场笔记 · 仅供参考
         </p>
+
+        <div style={{ marginBottom: "20px" }}>
+          <button
+            type="button"
+            style={s.tab(tab === "reports")}
+            onClick={() => setTab("reports")}
+          >
+            📄 每日报告 ({reports.length})
+          </button>
+          <button
+            type="button"
+            style={s.tab(tab === "notes")}
+            onClick={() => setTab("notes")}
+          >
+            📝 市场笔记 ({notes.length})
+          </button>
+        </div>
+
+        <input
+          placeholder="搜索标题…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={s.input}
+        />
+
         {loading && <p style={{ color: "#64748b" }}>加载中...</p>}
         {err && !loading && (
-          <p style={{ color: "#f87171", fontSize: 14 }}>{err}</p>
+          <p style={{ color: "#f87171", fontSize: 14, marginBottom: 16 }}>{err}</p>
         )}
-        {!loading && !err && notes.length === 0 && (
-          <p style={{ color: "#64748b" }}>暂无笔记</p>
+
+        {tab === "reports" && !loading && (
+          <>
+            {filteredReports.length === 0 ? (
+              <p style={{ color: "#64748b" }}>暂无报告</p>
+            ) : (
+              filteredReports.map((r) => (
+                <div
+                  key={r.id}
+                  style={{
+                    ...s.card,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "16px",
+                  }}
+                >
+                  <div style={{ fontSize: "28px" }}>📄</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: "#64748b", fontSize: "12px" }}>{r.date}</div>
+                    <div
+                      style={{
+                        color: "#e2e8f0",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                        marginTop: "4px",
+                      }}
+                    >
+                      {r.title}
+                    </div>
+                  </div>
+                  <a
+                    href={r.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={s.pdfBtn}
+                  >
+                    查看 PDF →
+                  </a>
+                </div>
+              ))
+            )}
+          </>
         )}
-        {notes.map((note) => (
-          <div key={note.id} style={s.card}>
-            <div style={{ color: "#64748b", fontSize: "12px", marginBottom: "8px" }}>
-              {note.date}
-            </div>
-            <h3 style={{ color: "#e2e8f0", marginBottom: "16px" }}>{note.title}</h3>
-            <div
-              style={{
-                color: "#cbd5e1",
-                fontSize: "14px",
-                lineHeight: "1.7",
-              }}
-              className="markdown-notes"
-            >
-              <ReactMarkdown>{note.content}</ReactMarkdown>
-            </div>
-          </div>
-        ))}
+
+        {tab === "notes" && !loading && (
+          <>
+            {filteredNotes.length === 0 ? (
+              <p style={{ color: "#64748b" }}>暂无笔记</p>
+            ) : (
+              filteredNotes.map((n) => (
+                <div key={n.id} style={s.card}>
+                  <div style={{ color: "#64748b", fontSize: "12px" }}>{n.date}</div>
+                  <h3 style={{ color: "#e2e8f0", margin: "8px 0" }}>{n.title}</h3>
+                  <div
+                    style={{
+                      color: "#cbd5e1",
+                      fontSize: "14px",
+                      lineHeight: "1.7",
+                    }}
+                    className="markdown-notes"
+                  >
+                    <ReactMarkdown>{n.content}</ReactMarkdown>
+                  </div>
+                </div>
+              ))
+            )}
+          </>
+        )}
       </div>
     </div>
   );

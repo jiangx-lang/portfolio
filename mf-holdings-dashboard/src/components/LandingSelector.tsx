@@ -9,7 +9,7 @@ const STREAMLIT_HREF = (
   process.env.NEXT_PUBLIC_STREAMLIT_URL?.trim() || "https://streamlit.atlasallocations.com"
 ).replace(/\/$/, "");
 
-/** Streamlit app.py 深链：?entry=notes|podcast|admin|wmp|qdii|mrf */
+/** Streamlit app.py 深链：?entry=wmp|qdii|mrf|… */
 function streamlitWithEntry(entry: string) {
   const base = STREAMLIT_HREF.includes("://")
     ? STREAMLIT_HREF
@@ -272,12 +272,12 @@ export default function LandingSelector() {
                   市场观察与分析
                 </div>
               </div>
-              <a
-                href={streamlitWithEntry("notes")}
+              <Link
+                href="/notes"
                 style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 进入市场笔记 →
-              </a>
+              </Link>
             </div>
             <div>
               <div style={bottomCard}>
