@@ -63,8 +63,14 @@ export default function QdPage() {
   const [selectedTag, setSelectedTag] = useState<string>("全部");
   const [holdingType, setHoldingType] = useState<HoldingTypeFilter>("ALL");
   const [selected, setSelected] = useState<QdFund | null>(null);
-  const [fundNav, setFundNav] = useState<FundNav | null>(null);
-  const [fundNavLoading, setFundNavLoading] = useState(false);
+  /** 全量净值：用于分阶段收益率（不受图表范围影响） */
+  const [fundNavFull, setFundNavFull] = useState<FundNav | null>(null);
+  /** 按时间范围截断：用于 NavChart */
+  const [fundNavChart, setFundNavChart] = useState<FundNav | null>(null);
+  const [navMeta, setNavMeta] = useState<{ isin: string; ccy: string } | null>(null);
+  const [navRangeDays, setNavRangeDays] = useState(365);
+  const [navFullLoading, setNavFullLoading] = useState(false);
+  const [navChartLoading, setNavChartLoading] = useState(false);
 
   useEffect(() => {
     fetch("/api/qd/funds")
@@ -117,8 +123,12 @@ export default function QdPage() {
   const handleRowClick = async (fund: QdFund) => {
     if (selected?.fund_id === fund.fund_id) {
       setSelected(null);
-      setFundNav(null);
-      setFundNavLoading(false);
+      setNavMeta(null);
+      setFundNavFull(null);
+      setFundNavChart(null);
+      setNavFullLoading(false);
+      setNavChartLoading(false);
+      setNavRangeDays(365);
       return;
     }
     setSelected({ ...fund, holdingsLoading: true });
@@ -151,23 +161,22 @@ export default function QdPage() {
     }
   };
 
-  // 展开基金后拉取净值历史，用于 NavChart 与分阶段收益率
+  // 解析 ISIN / 币种；换基金时重置图表范围为 1Y
   useEffect(() => {
     let cancelled = false;
 
-    async function loadFundNav() {
+    async function resolveNavMeta() {
       if (!selected) {
-        setFundNav(null);
-        setFundNavLoading(false);
+        setNavMeta(null);
+        setNavRangeDays(365);
         return;
       }
+
+      setNavRangeDays(365);
 
       const candidates = [selected.primary_code, selected.sc_product_code, selected.code]
         .map((x) => String(x || "").trim())
         .filter(Boolean);
-
-      setFundNavLoading(true);
-      setFundNav(null);
 
       let isin = "";
       let ccy = "USD";
@@ -187,42 +196,103 @@ export default function QdPage() {
         }
       }
 
-      if (!isin) {
-        if (!cancelled) setFundNavLoading(false);
-        return;
-      }
-
-      try {
-        const navRes = await fetch(`/api/nav/${encodeURIComponent(isin)}?ccy=${encodeURIComponent(ccy)}`);
-        const d = await navRes.json();
-        if (cancelled) return;
-
-        const dates = Array.isArray(d?.dates) ? d.dates.map((x: any) => String(x)) : [];
-        const navs = Array.isArray(d?.navs) ? d.navs.map((x: any) => Number(x)) : [];
-
-        setFundNav({
-          isin,
-          ccy,
-          dates,
-          navs,
-        });
-      } catch {
-        if (!cancelled) setFundNav(null);
-      } finally {
-        if (!cancelled) setFundNavLoading(false);
+      if (!cancelled) {
+        setNavMeta(isin ? { isin, ccy } : null);
       }
     }
 
-    loadFundNav();
+    resolveNavMeta();
     return () => {
       cancelled = true;
     };
   }, [selected?.fund_id, selected?.primary_code, selected?.sc_product_code, selected?.code]);
 
+  // 全量净值（days=0）→ 分阶段收益率
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadFull() {
+      if (!navMeta) {
+        setFundNavFull(null);
+        setNavFullLoading(false);
+        return;
+      }
+
+      setNavFullLoading(true);
+      try {
+        const navRes = await fetch(
+          `/api/nav/${encodeURIComponent(navMeta.isin)}?ccy=${encodeURIComponent(navMeta.ccy)}&days=0`
+        );
+        const d = await navRes.json();
+        if (cancelled) return;
+
+        const dates = Array.isArray(d?.dates) ? d.dates.map((x: unknown) => String(x)) : [];
+        const navs = Array.isArray(d?.navs) ? d.navs.map((x: unknown) => Number(x)) : [];
+
+        setFundNavFull({
+          isin: navMeta.isin,
+          ccy: navMeta.ccy,
+          dates,
+          navs,
+        });
+      } catch {
+        if (!cancelled) setFundNavFull(null);
+      } finally {
+        if (!cancelled) setNavFullLoading(false);
+      }
+    }
+
+    loadFull();
+    return () => {
+      cancelled = true;
+    };
+  }, [navMeta]);
+
+  // 按范围净值（?days=）→ NavChart
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadChart() {
+      if (!navMeta) {
+        setFundNavChart(null);
+        setNavChartLoading(false);
+        return;
+      }
+
+      setNavChartLoading(true);
+      try {
+        const navRes = await fetch(
+          `/api/nav/${encodeURIComponent(navMeta.isin)}?ccy=${encodeURIComponent(navMeta.ccy)}&days=${navRangeDays}`
+        );
+        const d = await navRes.json();
+        if (cancelled) return;
+
+        const dates = Array.isArray(d?.dates) ? d.dates.map((x: unknown) => String(x)) : [];
+        const navs = Array.isArray(d?.navs) ? d.navs.map((x: unknown) => Number(x)) : [];
+
+        setFundNavChart({
+          isin: navMeta.isin,
+          ccy: navMeta.ccy,
+          dates,
+          navs,
+        });
+      } catch {
+        if (!cancelled) setFundNavChart(null);
+      } finally {
+        if (!cancelled) setNavChartLoading(false);
+      }
+    }
+
+    loadChart();
+    return () => {
+      cancelled = true;
+    };
+  }, [navMeta, navRangeDays]);
+
   const stageReturns = useMemo(() => {
-    if (!fundNav?.navs?.length || !fundNav.dates.length) return null;
-    const dates = fundNav.dates;
-    const navs = fundNav.navs;
+    if (!fundNavFull?.navs?.length || !fundNavFull.dates.length) return null;
+    const dates = fundNavFull.dates;
+    const navs = fundNavFull.navs;
     const latest = navs[navs.length - 1] ?? 0;
     if (!latest) return null;
 
@@ -268,7 +338,7 @@ export default function QdPage() {
       "1Y": pctFrom(y1),
       YTD: pctFrom(ytdStartNav),
     } as const;
-  }, [fundNav]);
+  }, [fundNavFull]);
 
   const typeTabs: { id: HoldingTypeFilter; label: string }[] = [
     { id: "ALL", label: "全部" },
@@ -576,7 +646,15 @@ export default function QdPage() {
                   <div style={{ fontSize: 11, color: "#9CA3AF", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                     历史净值曲线
                   </div>
-                  <NavChart dates={fundNav?.dates ?? []} navs={fundNav?.navs ?? []} isin={fundNav?.isin} height={isMobile ? 240 : 280} />
+                  <NavChart
+                    dates={fundNavChart?.dates ?? []}
+                    navs={fundNavChart?.navs ?? []}
+                    isin={fundNavChart?.isin}
+                    height={isMobile ? 240 : 280}
+                    rangeDays={navRangeDays}
+                    onRangeChange={setNavRangeDays}
+                    rangeLoading={navChartLoading}
+                  />
                 </div>
 
                 <div>
@@ -585,7 +663,7 @@ export default function QdPage() {
                   </div>
 
                   <div style={{ display: "grid", gap: 8 }}>
-                    {fundNavLoading ? (
+                    {navFullLoading ? (
                       <div style={{ padding: 12, borderRadius: 10, border: "0.5px solid rgba(255,255,255,0.08)", background: "#111827", color: "#9CA3AF", fontSize: 12 }}>
                         加载净值数据...
                       </div>
