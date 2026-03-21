@@ -1,10 +1,38 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-const STREAMLIT_URL =
-  process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
+/** 构建期注入；勿与 Next 本站同 URL，否则当前页跳转等于无反应 */
+const STREAMLIT_HREF = (
+  process.env.NEXT_PUBLIC_STREAMLIT_URL?.trim() || "https://streamlit.atlasallocations.com"
+).replace(/\/$/, "");
+
+/** Streamlit app.py 深链：?entry=notes|podcast|admin|wmp|qdii|mrf */
+function streamlitWithEntry(entry: string) {
+  const base = STREAMLIT_HREF.includes("://")
+    ? STREAMLIT_HREF
+    : `https://${STREAMLIT_HREF.replace(/^\/+/, "")}`;
+  try {
+    const u = new URL(base);
+    u.searchParams.set("entry", entry);
+    return u.toString();
+  } catch {
+    const join = STREAMLIT_HREF.includes("?") ? "&" : "?";
+    return `${STREAMLIT_HREF}${join}entry=${encodeURIComponent(entry)}`;
+  }
+}
+
+const streamlitLinkStyle = (
+  base: React.CSSProperties
+): React.CSSProperties => ({
+  ...base,
+  display: "inline-block",
+  boxSizing: "border-box",
+  textAlign: "center",
+  textDecoration: "none",
+});
 
 /** 与 Streamlit `app.py` → `render_landing_page` 版式对齐；设备切换在 Next 侧用路由/新标签近似 */
 export default function LandingSelector() {
@@ -57,11 +85,6 @@ export default function LandingSelector() {
     padding: "20px",
     textAlign: "center",
     marginBottom: 8,
-  };
-
-  /** 仅打开锦城 Streamlit（WMP/笔记/播客/管理员模块在 Streamlit 内） */
-  const openStreamlit = () => {
-    window.location.href = STREAMLIT_URL;
   };
 
   return (
@@ -220,23 +243,15 @@ export default function LandingSelector() {
               maxWidth: isMobile ? "100%" : 480,
             }}
           >
-            <button
-              type="button"
-              style={deviceBtn}
-              onClick={openStreamlit}
-            >
+            <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
               📱 手机端
-            </button>
-            <button
-              type="button"
-              style={deviceBtn}
-              onClick={openStreamlit}
-            >
+            </a>
+            <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
               🖥️ 电脑端
-            </button>
+            </a>
           </div>
           <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-            将打开锦城 Streamlit，请在应用内选择 WMP 净值入口
+            直达锦城 Streamlit · WMP 净值
           </p>
         </div>
 
@@ -257,13 +272,12 @@ export default function LandingSelector() {
                   市场观察与分析
                 </div>
               </div>
-              <button
-                type="button"
-                style={{ ...deviceBtn, marginTop: 4 }}
-                onClick={openStreamlit}
+              <a
+                href={streamlitWithEntry("notes")}
+                style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 进入市场笔记 →
-              </button>
+              </a>
             </div>
             <div>
               <div style={bottomCard}>
@@ -273,13 +287,12 @@ export default function LandingSelector() {
                   音频市场解读
                 </div>
               </div>
-              <button
-                type="button"
-                style={{ ...deviceBtn, marginTop: 4 }}
-                onClick={openStreamlit}
+              <Link
+                href="/podcast"
+                style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 进入播客 →
-              </button>
+              </Link>
             </div>
             <div>
               <div style={bottomCard}>
@@ -289,13 +302,12 @@ export default function LandingSelector() {
                   内容管理后台
                 </div>
               </div>
-              <button
-                type="button"
-                style={{ ...deviceBtn, marginTop: 4 }}
-                onClick={openStreamlit}
+              <Link
+                href="/admin"
+                style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 🔐 管理员
-              </button>
+              </Link>
             </div>
           </div>
         </div>

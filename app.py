@@ -2282,6 +2282,45 @@ def render_landing_page():
 # ─────────────────────────────────────────────
 _inject_theme()
 
+
+def _apply_entry_deep_link_from_query():
+    """URL ?entry=notes|podcast|admin|wmp|qdii|mrf 深链，跳过落地页（需 Streamlit>=1.30 query_params）。"""
+    if st.session_state.get("device") is not None:
+        return
+    try:
+        raw = st.query_params.get("entry")
+    except Exception:
+        return
+    if raw is None:
+        return
+    if isinstance(raw, (list, tuple)):
+        entry_key = (raw[0] or "").strip().lower() if raw else ""
+    else:
+        entry_key = str(raw).strip().lower()
+    if not entry_key:
+        return
+    entry_map = {
+        "notes": ("notes", "desktop"),
+        "podcast": ("podcast", "desktop"),
+        "admin": ("admin", "desktop"),
+        "wmp": ("wmp", "desktop"),
+        "qdii": ("qdii", "mobile"),
+        "mrf": ("config", "desktop"),
+    }
+    if entry_key not in entry_map:
+        return
+    e, d = entry_map[entry_key]
+    st.session_state.entry = e
+    st.session_state.device = d
+    if e not in ("admin", "qdii"):
+        threading.Thread(target=track_page_entry, args=(e,), daemon=True).start()
+
+
+# ─────────────────────────────────────────────
+#  深链（须在引导页判断之前）
+# ─────────────────────────────────────────────
+_apply_entry_deep_link_from_query()
+
 # ─────────────────────────────────────────────
 #  引导页
 # ─────────────────────────────────────────────

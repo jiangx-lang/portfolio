@@ -35,3 +35,35 @@ a {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* 市场笔记 Markdown */
+.markdown-notes h1,
+.markdown-notes h2,
+.markdown-notes h3 {
+  color: #e2e8f0;
+  margin: 1rem 0 0.5rem;
+  font-weight: 600;
+}
+.markdown-notes p {
+  margin: 0.5rem 0;
+}
+.markdown-notes a {
+  color: #60a5fa;
+}
+.markdown-notes code {
+  background: #0f2744;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.markdown-notes pre {
+  background: #0f2744;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.markdown-notes ul,
+.markdown-notes ol {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
