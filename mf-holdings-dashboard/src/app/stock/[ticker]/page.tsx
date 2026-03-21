@@ -127,7 +127,7 @@ export default async function StockDetailPage({ params }: PageProps) {
               </div>
 
               <div className="mt-2 text-sm md:ml-auto md:mt-0">
-                <Link href="/" className="text-info hover:underline">
+                <Link href="/portfolio" className="text-info hover:underline">
                   ← 返回 Portfolio
                 </Link>
               </div>
@@ -159,7 +159,7 @@ export default async function StockDetailPage({ params }: PageProps) {
               ← MRF
             </Link>
             <h1 className="text-lg font-semibold text-white">{tickerUpper}</h1>
-            <Link href="/" className="text-sm text-sky-400 hover:underline">
+            <Link href="/portfolio" className="text-sm text-sky-400 hover:underline">
               Portfolio →
             </Link>
           </div>
@@ -187,7 +187,7 @@ export default async function StockDetailPage({ params }: PageProps) {
     <div className="min-h-screen bg-navy">
       <header className="border-b border-white/10 px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/" className="text-info hover:underline">
+          <Link href="/portfolio" className="text-info hover:underline">
             ← Portfolio
           </Link>
           <h1 className="text-xl font-semibold text-white">

@@ -401,7 +401,7 @@ export default function QdPage() {
       <div className="min-h-screen bg-navy">
         <header className="border-b border-white/10 px-6 py-4">
           <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <Link href="/" className="text-info hover:underline">
+            <Link href="/portfolio" className="text-info hover:underline">
               ← Portfolio
             </Link>
             <h1 className="text-xl font-semibold text-white">QD 基金池</h1>
@@ -417,7 +417,7 @@ export default function QdPage() {
     <div className="min-h-screen bg-navy">
       <header className="border-b border-white/10 px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/" className="text-info hover:underline">
+          <Link href="/portfolio" className="text-info hover:underline">
             ← Portfolio
           </Link>
           <h1 className="text-xl font-semibold text-white">QD 基金池</h1>

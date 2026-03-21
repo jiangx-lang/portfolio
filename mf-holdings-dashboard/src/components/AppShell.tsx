@@ -5,8 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
+const STREAMLIT_URL =
+  process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
+
 const NAV_ITEMS = [
-  { href: "/", label: "Portfolio" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/qd", label: "QD基金" },
   { href: "/mrf", label: "MRF" },
   { href: "/signals", label: "市场资讯" },
@@ -14,7 +17,7 @@ const NAV_ITEMS = [
 ];
 
 const BOTTOM_TABS = [
-  { href: "/", label: "Portfolio", icon: "📊" },
+  { href: "/portfolio", label: "Portfolio", icon: "📊" },
   { href: "/qd", label: "QD", icon: "📁" },
   { href: "/mrf", label: "MRF", icon: "🏦" },
   { href: "/signals", label: "资讯", icon: "📰" },
@@ -27,7 +30,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "/";
 
   const navActive = (href: string) =>
-    href === "/" ? pathname === "/" || pathname === "" : pathname.startsWith(href);
+    pathname === href || pathname.startsWith(`${href}/`);
 
   const bottomPad = isMobile
     ? "calc(56px + env(safe-area-inset-bottom, 0px))"
@@ -94,7 +97,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
             <a
-              href="https://atlasallocations.com"
+              href={STREAMLIT_URL}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -220,7 +223,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               }}
             >
               <a
-                href="https://atlasallocations.com"
+                href={STREAMLIT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ fontSize: 13, color: "#6B7280", textDecoration: "none" }}
