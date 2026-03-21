@@ -11,6 +11,14 @@
    - 请在 Supabase 对 `mrf_funds` 执行 `mrf_funds_sc_product_code_updates.sql`（中银两行已改为 968031/968030）。  
    - `mrf_scan_to_holdings.py` 写入 `mrf_holdings` 时会用该映射填 **数字代码**，与按代码查询的 API 一致。
 
+## 繁体 / 简体统一（强烈建议）
+
+若 `mrf_holdings.fund_name` 为繁体（如「中銀香港環球股票基金」），而 `mrf_funds` 为简体，会导致按 `968031` 或基金名查持仓失败。请在 Supabase **SQL Editor** 执行：
+
+- **`scripts/mrf_supabase_normalize_zh_cn.sql`**（将 `mrf_holdings` / `mrf_funds` 相关中银基金名与港股 Top10 持仓名改为**简体中文**，与前端、种子数据一致）
+
+执行后无需再手改简繁混用。
+
 ## 你在 Supabase 里先跑诊断
 
 将 `scripts/diagnose_mrf_boc_holdings.sql` 复制到 **SQL Editor** 执行，看：

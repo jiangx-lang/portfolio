@@ -39,6 +39,14 @@ export interface MrfFund {
   sc_product_code?: string | null;
   holdings?: HoldingRow[];
   holdingsLoading?: boolean;
+  /** 持仓接口返回的提示（如未配置 Supabase） */
+  holdingsFetchMessage?: string;
+}
+
+/** Supabase 可能把 sc_product_code 序列化成 number，直接 .trim() 会抛错 */
+function mrfProductCodeStr(v: unknown): string {
+  if (v == null) return "";
+  return String(v).trim();
 }
 
 const BRAND_COLORS: Record<string, string> = {
@@ -73,18 +81,32 @@ export default function MrfPageInner() {
       return;
     }
     // 用 sc_product_code 或 fund_name 查持仓（API 支持按两者查 Supabase mrf_holdings）
-    const code = fund.sc_product_code?.trim() || fund.fund_name?.trim();
+    const code = mrfProductCodeStr(fund.sc_product_code) || fund.fund_name?.trim() || "";
     if (!code) {
-      setSelected({ ...fund, holdings: [], holdingsLoading: false });
+      setSelected({ ...fund, holdings: [], holdingsLoading: false, holdingsFetchMessage: undefined });
       return;
     }
-    setSelected({ ...fund, holdingsLoading: true });
+    setSelected({ ...fund, holdingsLoading: true, holdingsFetchMessage: undefined });
     try {
       const res = await fetch(`/api/mrf/holdings/${encodeURIComponent(code)}`);
-      const data = await res.json();
-      setSelected({ ...fund, holdings: data.holdings ?? [], holdingsLoading: false });
+      const data = (await res.json().catch(() => ({}))) as {
+        holdings?: HoldingRow[];
+        message?: string;
+      };
+      const msg = typeof data.message === "string" ? data.message : undefined;
+      setSelected({
+        ...fund,
+        holdings: Array.isArray(data.holdings) ? data.holdings : [],
+        holdingsLoading: false,
+        holdingsFetchMessage: msg,
+      });
     } catch {
-      setSelected({ ...fund, holdings: [], holdingsLoading: false });
+      setSelected({
+        ...fund,
+        holdings: [],
+        holdingsLoading: false,
+        holdingsFetchMessage: "FETCH_FAILED",
+      });
     }
   };
 
@@ -103,14 +125,16 @@ export default function MrfPageInner() {
       decoded = fundParam;
     }
     console.log("[autoOpen] decoded:", decoded);
-    const matched = funds.find((f) => f.fund_name === decoded || f.sc_product_code === decoded);
+    const matched = funds.find(
+      (f) => f.fund_name === decoded || mrfProductCodeStr(f.sc_product_code) === decoded
+    );
     console.log("[autoOpen] matched:", matched?.fund_name);
     if (matched) {
       autoOpenDone.current = true;
       handleRowClick(matched);
       // 等行内持仓面板挂载 + holdings fetch 后再滚动（面板紧跟选中行，不在表格末尾）
       setTimeout(() => {
-        const rowKey = matched.sc_product_code || matched.fund_name;
+        const rowKey = mrfProductCodeStr(matched.sc_product_code) || matched.fund_name;
         const rowId = `mrf-row-${rowKey}`;
         const panel = document.getElementById("mrf-holdings-panel");
         const rowEl = document.getElementById(rowId);
@@ -335,12 +359,32 @@ export default function MrfPageInner() {
             )}
           </div>
         )}
-        {!sel.sc_product_code?.trim() && (
+        {!mrfProductCodeStr(sel.sc_product_code) && (
           <div style={{ marginTop: 8, fontSize: 12, color: "#BA7517" }}>
             请先配置产品代码（Supabase mrf_funds.sc_product_code）
           </div>
         )}
-        {sel.sc_product_code?.trim() && sel.holdings && sel.holdings.length === 0 && !sel.holdingsLoading && (
+        {sel.holdingsFetchMessage === "SUPABASE_NOT_CONFIGURED" && (
+          <div style={{ marginTop: 8, fontSize: 12, color: "#F87171", lineHeight: 1.5 }}>
+            当前运行环境未配置 Supabase（需设置 <code>SUPABASE_URL</code>、<code>SUPABASE_KEY</code>
+            ）。列表可能来自本地 Mock，但 MRF 持仓只从数据库读取，故显示为空。请在 Vercel / 服务器环境变量中配置后重新部署。
+          </div>
+        )}
+        {sel.holdingsFetchMessage === "NO_MRF_HOLDINGS_ROWS" && mrfProductCodeStr(sel.sc_product_code) && (
+          <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>
+            数据库中未找到该代码/名称对应的持仓行，请核对 mrf_holdings.sc_product_code 与 mrf_funds 是否一致。
+          </div>
+        )}
+        {sel.holdingsFetchMessage === "FETCH_FAILED" && (
+          <div style={{ marginTop: 8, fontSize: 12, color: "#F87171" }}>
+            加载持仓失败（网络或接口异常），请打开开发者工具查看 /api/mrf/holdings/ 请求。
+          </div>
+        )}
+        {mrfProductCodeStr(sel.sc_product_code) &&
+          sel.holdings &&
+          sel.holdings.length === 0 &&
+          !sel.holdingsLoading &&
+          !sel.holdingsFetchMessage && (
           <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>
             暂无底层持仓数据（PDF 尚未解析此基金）
           </div>
@@ -544,7 +588,7 @@ export default function MrfPageInner() {
                 return (
                   <Fragment key={f.fund_name}>
                     <div
-                      id={`mrf-row-${f.sc_product_code || f.fund_name}`}
+                      id={`mrf-row-${mrfProductCodeStr(f.sc_product_code) || f.fund_name}`}
                       role="button"
                       tabIndex={0}
                       onClick={() => handleRowClick(f)}
@@ -646,7 +690,7 @@ export default function MrfPageInner() {
                 return (
                   <Fragment key={f.fund_name}>
                     <tr
-                      id={`mrf-row-${f.sc_product_code || f.fund_name}`}
+                      id={`mrf-row-${mrfProductCodeStr(f.sc_product_code) || f.fund_name}`}
                       onClick={() => handleRowClick(f)}
                       style={{ background: isSelected ? "rgba(24,95,165,0.12)" : "transparent" }}
                     >

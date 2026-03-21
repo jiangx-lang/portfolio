@@ -60,9 +60,18 @@ Open [http://localhost:3000](http://localhost:3000). Works with mock data withou
 | Key | Purpose |
 |-----|---------|
 | `GROQ_API_KEY` | Free at console.groq.com — required for /api/analyze |
+| `SUPABASE_URL` / `SUPABASE_KEY` | MRF/QD 数据（生产必填） |
+| `NEXT_PUBLIC_STREAMLIT_URL` | `/signals` 跳转锦城 Streamlit（默认示例见 `.env.local.example`） |
 | `NEXT_PUBLIC_APP_NAME` | App title |
 | `ANTHROPIC_API_KEY` | (Optional) Upgrade: swap in claude.ts and /api/analyze |
 | `PUBLICCOM_API_KEY` | (Optional) Live holdings/options later |
+
+## 生产部署（腾讯云 / 同机 Python）
+
+1. 在 `mf-holdings-dashboard` 配置 `.env.local`（含 `GROQ_API_KEY`、`SUPABASE_*`、`NEXT_PUBLIC_STREAMLIT_URL` 等）。
+2. 安装 Python：`pip3 install -r scripts/requirements-market.txt`。
+3. 仓库根目录执行：`bash scripts/deploy-nextjs.sh`（默认 `DEPLOY_REPO_ROOT=/root/portfolio`，可 `export DEPLOY_REPO_ROOT=...` 覆盖）。
+4. PM2：`cd mf-holdings-dashboard && pm2 start ecosystem.config.js`（默认 **PORT=3001**，前面用 Nginx 反代）。
 
 ## File Structure
 

@@ -37,7 +37,22 @@ export async function GET() {
     if (error || !data || data.length === 0) {
       return NextResponse.json(MRF_MOCK);
     }
-    return NextResponse.json(data);
+    // 与 getMrfFunds 一致：避免 PostgREST 把代码序列化成 number 导致前端 .trim() 抛错
+    const normalized = (data ?? []).map((r) => ({
+      fund_name: String((r as { fund_name?: string }).fund_name ?? ""),
+      brand: String((r as { brand?: string }).brand ?? ""),
+      equity_pct: Number((r as { equity_pct?: number }).equity_pct ?? 0),
+      fixed_income_pct: Number((r as { fixed_income_pct?: number }).fixed_income_pct ?? 0),
+      cash_pct: Number((r as { cash_pct?: number }).cash_pct ?? 0),
+      fee_rate: Number((r as { fee_rate?: number }).fee_rate ?? 0),
+      sc_product_code: (() => {
+        const c = (r as { sc_product_code?: string | number | null }).sc_product_code;
+        if (c == null) return null;
+        const s = String(c).trim();
+        return s.length ? s : null;
+      })(),
+    }));
+    return NextResponse.json(normalized);
   } catch (err) {
     console.error("[MRF] API error:", err);
     return NextResponse.json(MRF_MOCK);
