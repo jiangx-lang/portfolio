@@ -29,8 +29,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const { isMobile } = useIsMobile();
   const pathname = usePathname() || "/";
 
-  const navActive = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
+  /** 精确匹配或子路径（必须带 / 分隔，避免 /qd 与 /portfolio 等误判） */
+  const navActive = (href: string) => {
+    if (!href.startsWith("/")) return false;
+    if (pathname === href) return true;
+    return pathname.startsWith(`${href}/`);
+  };
 
   const bottomPad = isMobile
     ? "calc(56px + env(safe-area-inset-bottom, 0px))"

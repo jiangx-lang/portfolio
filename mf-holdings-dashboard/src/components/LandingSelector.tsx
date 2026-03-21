@@ -1,47 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 const STREAMLIT_URL =
   process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
 
-const STORAGE_SKIP = "atlas_landing_skip";
-const STORAGE_REDIRECT = "atlas_home_redirect";
-
-const VALID_REDIRECTS = ["/portfolio", "/mrf", "/qd"] as const;
-
-function persistAndGo(redirectPath: string, navigate: () => void) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_SKIP, "1");
-  localStorage.setItem(STORAGE_REDIRECT, redirectPath);
-  navigate();
-}
-
 /** 与 Streamlit `app.py` → `render_landing_page` 版式对齐；设备切换在 Next 侧用路由/新标签近似 */
 export default function LandingSelector() {
   const router = useRouter();
   const { isMobile } = useIsMobile();
-  const [phase, setPhase] = useState<"checking" | "show">("checking");
-
-  useEffect(() => {
-    try {
-      const skip = localStorage.getItem(STORAGE_SKIP);
-      const path = localStorage.getItem(STORAGE_REDIRECT);
-      if (
-        skip === "1" &&
-        path &&
-        (VALID_REDIRECTS as readonly string[]).includes(path)
-      ) {
-        router.replace(path);
-        return;
-      }
-    } catch {
-      /* ignore */
-    }
-    setPhase("show");
-  }, [router]);
 
   const cardInner = {
     background: "#0d1b2e",
@@ -92,24 +60,9 @@ export default function LandingSelector() {
   };
 
   /** 仅打开锦城 Streamlit（WMP/笔记/播客/管理员模块在 Streamlit 内） */
-  const openStreamlit = (afterPersist?: string) => {
-    const p = afterPersist ?? "/portfolio";
-    persistAndGo(p, () => {
-      window.open(STREAMLIT_URL, "_blank", "noopener,noreferrer");
-      router.push(p);
-    });
+  const openStreamlit = () => {
+    window.open(STREAMLIT_URL, "_blank", "noopener,noreferrer");
   };
-
-  if (phase === "checking") {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#0a0f1e",
-        }}
-      />
-    );
-  }
 
   return (
     <div
@@ -198,21 +151,17 @@ export default function LandingSelector() {
               <button
                 type="button"
                 style={deviceBtn}
-                onClick={() =>
-                  persistAndGo("/qd", () => router.push("/qd"))
-                }
+                onClick={() => router.push("/qd")}
               >
                 📱 手机端
               </button>
               <button
                 type="button"
                 style={deviceBtn}
-                onClick={() =>
-                  persistAndGo("/qd", () => {
-                    window.open(STREAMLIT_URL, "_blank", "noopener,noreferrer");
-                    router.push("/qd");
-                  })
-                }
+                onClick={() => {
+                  window.open(STREAMLIT_URL, "_blank", "noopener,noreferrer");
+                  router.push("/qd");
+                }}
               >
                 🖥️ 电脑端
               </button>
@@ -241,18 +190,14 @@ export default function LandingSelector() {
               <button
                 type="button"
                 style={deviceBtn}
-                onClick={() =>
-                  persistAndGo("/mrf", () => router.push("/mrf"))
-                }
+                onClick={() => router.push("/mrf")}
               >
                 📱 手机端
               </button>
               <button
                 type="button"
                 style={deviceBtn}
-                onClick={() =>
-                  persistAndGo("/portfolio", () => router.push("/portfolio"))
-                }
+                onClick={() => router.push("/portfolio")}
               >
                 🖥️ 电脑端
               </button>
@@ -281,14 +226,14 @@ export default function LandingSelector() {
             <button
               type="button"
               style={deviceBtn}
-              onClick={() => openStreamlit("/portfolio")}
+              onClick={openStreamlit}
             >
               📱 手机端
             </button>
             <button
               type="button"
               style={deviceBtn}
-              onClick={() => openStreamlit("/portfolio")}
+              onClick={openStreamlit}
             >
               🖥️ 电脑端
             </button>
@@ -318,7 +263,7 @@ export default function LandingSelector() {
               <button
                 type="button"
                 style={{ ...deviceBtn, marginTop: 4 }}
-                onClick={() => openStreamlit("/portfolio")}
+                onClick={openStreamlit}
               >
                 进入市场笔记 →
               </button>
@@ -334,7 +279,7 @@ export default function LandingSelector() {
               <button
                 type="button"
                 style={{ ...deviceBtn, marginTop: 4 }}
-                onClick={() => openStreamlit("/portfolio")}
+                onClick={openStreamlit}
               >
                 进入播客 →
               </button>
@@ -350,7 +295,7 @@ export default function LandingSelector() {
               <button
                 type="button"
                 style={{ ...deviceBtn, marginTop: 4 }}
-                onClick={() => openStreamlit("/portfolio")}
+                onClick={openStreamlit}
               >
                 🔐 管理员
               </button>
@@ -374,9 +319,7 @@ export default function LandingSelector() {
           </span>
           <button
             type="button"
-            onClick={() =>
-              persistAndGo("/portfolio", () => router.push("/portfolio"))
-            }
+            onClick={() => router.push("/portfolio")}
             style={{
               background: "none",
               border: "none",
