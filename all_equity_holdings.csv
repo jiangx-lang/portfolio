@@ -1,0 +1,725 @@
+﻿holding_name_std,holding_name_raw,type,fund_count
+NVIDIA CORP,NVIDIA CORP,equity,11
+AMAZON.COM INC,AMAZON.COM INC,equity,10
+Taiwan Semiconductor Manufacturing,Taiwan Semiconductor Manufacturing,equity,10
+APPLE INC,APPLE INC,equity,9
+MICROSOFT CORP,MICROSOFT CORP,equity,9
+BROADCOM INC,BROADCOM INC,equity,8
+SAMSUNG ELECTRONICS CO LTD,SAMSUNG ELECTRONICS CO LTD,equity,8
+Samsung Electronics,Samsung Electronics,equity,8
+微软,微软,equity,8
+TAIWAN SEMICONDUCTOR MFG CO LTD,TAIWAN SEMICONDUCTOR MFG CO LTD,equity,7
+台积电,台积电,equity,7
+ALPHABET(谷歌母公司),ALPHABET(谷歌母公司),equity,6
+ISHARES CORE MSCI EUROPE UCITS ETF,ISHARES CORE MSCI EUROPE UCITS ETF,equity,6
+ISHARES MSCI USA UCITS ETF USD ACC,ISHARES MSCI USA UCITS ETF USD ACC,equity,6
+ALPHABET INC,ALPHABET INC,equity,5
+Alibaba Group Holding,Alibaba Group Holding,equity,5
+GSK PLC,GSK PLC,equity,5
+Johnson & Johnson,Johnson & Johnson,equity,5
+Microsoft,Microsoft,equity,5
+ROCHE HOLDING AG,ROCHE HOLDING AG,equity,5
+Tencent Holdings,Tencent Holdings,equity,5
+英伟达,英伟达,equity,5
+ALPHABET INC-CL A,ALPHABET INC-CL A,equity,4
+Alphabet,Alphabet,equity,4
+"Alphabet, Inc.","Alphabet, Inc.",equity,4
+"Amazon.com, Inc.","Amazon.com, Inc.",equity,4
+"Apple, Inc.","Apple, Inc.",equity,4
+Broadcom,Broadcom,equity,4
+"Broadcom, Inc.","Broadcom, Inc.",equity,4
+ELI LILLY & CO,ELI LILLY & CO,equity,4
+"Gilead Sciences, Inc.","Gilead Sciences, Inc.",equity,4
+ISHARES CORE S&P 500 UCITS ETF USD,ISHARES CORE S&P 500 UCITS ETF USD,equity,4
+ISHARES MSCI EMERGING MARKETS UCIT,ISHARES MSCI EMERGING MARKETS UCIT,equity,4
+Microsoft Corp.,Microsoft Corp.,equity,4
+NOVARTIS AG,NOVARTIS AG,equity,4
+NVIDIA Corp.,NVIDIA Corp.,equity,4
+Nvidia,Nvidia,equity,4
+RECKITT BENCKISER GROUP PLC,RECKITT BENCKISER GROUP PLC,equity,4
+SAP SE,SAP SE,equity,4
+TAIWAN SEMICONDUCTOR-SP ADR,TAIWAN SEMICONDUCTOR-SP ADR,equity,4
+Tencent Holdings Ltd.,Tencent Holdings Ltd.,equity,4
+亚马逊,亚马逊,equity,4
+苹果,苹果,equity,4
+ALIBABA GROUP HOLDING LTD,ALIBABA GROUP HOLDING LTD,equity,3
+Analog Devices,Analog Devices,equity,3
+AstraZeneca PLC,AstraZeneca PLC,equity,3
+BNP PARIBAS SA,BNP PARIBAS SA,equity,3
+Bank of America,Bank of America,equity,3
+HDFC BANK LTD,HDFC BANK LTD,equity,3
+ICICI BANK LTD,ICICI BANK LTD,equity,3
+META PLATFORMS INC,META PLATFORMS INC,equity,3
+McKesson Corp.,McKesson Corp.,equity,3
+Morgan Stanley,Morgan Stanley,equity,3
+Oversea-Chinese Banking,Oversea-Chinese Banking,equity,3
+Roche Holding AG,Roche Holding AG,equity,3
+SK HYNIX INC,SK HYNIX INC,equity,3
+SK海力士,SK海力士,equity,3
+TENCENT HOLDINGS LTD,TENCENT HOLDINGS LTD,equity,3
+Taiwan Semiconductor,Taiwan Semiconductor,equity,3
+Tencent,Tencent,equity,3
+UNICREDIT SPA,UNICREDIT SPA,equity,3
+博通,博通,equity,3
+宁德时代,宁德时代,equity,3
+施耐德电气,施耐德电气,equity,3
+法国兴业银行,法国兴业银行,equity,3
+渣打银行,渣打银行,equity,3
+腾讯,腾讯,equity,3
+阿斯利康,阿斯利康,equity,3
+阿斯麦,阿斯麦,equity,3
+ABB LTD,ABB LTD,equity,2
+AERCAP HOLDINGS NV,AERCAP HOLDINGS NV,equity,2
+AIA GROUP LTD,AIA GROUP LTD,equity,2
+AIA Group,AIA Group,equity,2
+AIA Group Limited,AIA Group Limited,equity,2
+ALLIANZ GLOBAL FLOAT RT NTS + WT USD,ALLIANZ GLOBAL FLOAT RT NTS + WT USD,equity,2
+AM FLOAT RAT US CORP UC ETF (C),AM FLOAT RAT US CORP UC ETF (C),equity,2
+AMPHENOL CORP-CL A,AMPHENOL CORP-CL A,equity,2
+AMUNDI MON MKT SHT TERM (USD)-OV,AMUNDI MON MKT SHT TERM (USD)-OV,equity,2
+ASML,ASML,equity,2
+ASML Holding NV,ASML Holding NV,equity,2
+ASR NEDERLAND NV,ASR NEDERLAND NV,equity,2
+"AbbVie, Inc.","AbbVie, Inc.",equity,2
+Alibaba,Alibaba,equity,2
+Allianz,Allianz,equity,2
+Amazon.com,Amazon.com,equity,2
+Apple,Apple,equity,2
+BANCO DO BRASIL SA,BANCO DO BRASIL SA,equity,2
+BP PLC,BP PLC,equity,2
+Bristol-Myers Squibb Co,Bristol-Myers Squibb Co,equity,2
+CAIXABANK SA,CAIXABANK SA,equity,2
+CF Industries Holdings Inc (Fertilizers & Agricultural Chemicals),CF Industries Holdings Inc (Fertilizers & Agricultural Chemicals),equity,2
+CMS ENERGY CORP,CMS ENERGY CORP,equity,2
+Carrefour SA,Carrefour SA,equity,2
+China Merchants Bank,China Merchants Bank,equity,2
+"China Merchants Bank Co., Ltd.","China Merchants Bank Co., Ltd.",equity,2
+Continental AG,Continental AG,equity,2
+Corteva Inc (Fertilizers & Agricultural Chemicals),Corteva Inc (Fertilizers & Agricultural Chemicals),equity,2
+DBS,DBS,equity,2
+DEUTSCHE BANK AG,DEUTSCHE BANK AG,equity,2
+DEUTSCHE BOERSE AG,DEUTSCHE BOERSE AG,equity,2
+"Delta Electronics, Inc.","Delta Electronics, Inc.",equity,2
+E.ON SE,E.ON SE,equity,2
+ENGIE SA,ENGIE SA,equity,2
+EQUITY RESIDENTIAL REIT,EQUITY RESIDENTIAL REIT,equity,2
+Eli Lilly & Co.,Eli Lilly & Co.,equity,2
+Grupo Financiero Banorte SAB de CV,Grupo Financiero Banorte SAB de CV,equity,2
+HDFC Bank,HDFC Bank,equity,2
+HYUNDAI MOTOR CO,HYUNDAI MOTOR CO,equity,2
+Henkel AG & Co KGaA,Henkel AG & Co KGaA,equity,2
+Hong Kong Exchanges & Clearing,Hong Kong Exchanges & Clearing,equity,2
+ICICI Bank,ICICI Bank,equity,2
+ICICI Bank Ltd.,ICICI Bank Ltd.,equity,2
+INDUSTRIA DE DISENO TXTL IN SA,INDUSTRIA DE DISENO TXTL IN SA,equity,2
+ING GROEP NV,ING GROEP NV,equity,2
+ISHARES $ FLOATING RATE BD UCITS ETF USD,ISHARES $ FLOATING RATE BD UCITS ETF USD,equity,2
+ISHARES $ SHT DURATION HY CRP BD UCITS E,ISHARES $ SHT DURATION HY CRP BD UCITS E,equity,2
+ISHARES $ ULTRASHORT BOND UCITS ETF USD,ISHARES $ ULTRASHORT BOND UCITS ETF USD,equity,2
+ISHARES CORP BD 0-3YR ESG SRI ETF ACC,ISHARES CORP BD 0-3YR ESG SRI ETF ACC,equity,2
+ISHARES MSCI JAPAN UCITS ETF (,ISHARES MSCI JAPAN UCITS ETF (,equity,2
+ISHARES S&P 500 SWAP UCITS ETF USD,ISHARES S&P 500 SWAP UCITS ETF USD,equity,2
+Intesa Sanpaolo SpA,Intesa Sanpaolo SpA,equity,2
+Invesco Funds-Invesco Asian Equity Fund,Invesco Funds-Invesco Asian Equity Fund,equity,2
+Itau Unibanco Holding SA,Itau Unibanco Holding SA,equity,2
+JPMORGAN CHASE & CO,JPMORGAN CHASE & CO,equity,2
+KONE OYJ,KONE OYJ,equity,2
+LLOYDS BANKING GROUP PLC,LLOYDS BANKING GROUP PLC,equity,2
+Latam Airlines Group SA,Latam Airlines Group SA,equity,2
+MEDIATEK INC,MEDIATEK INC,equity,2
+MEDTRONIC PLC,MEDTRONIC PLC,equity,2
+MORGAN STANLEY,MORGAN STANLEY,equity,2
+MTU航空发动机,MTU航空发动机,equity,2
+Meituan,Meituan,equity,2
+Meta Platforms,Meta Platforms,equity,2
+Midea Group,Midea Group,equity,2
+NATIONAL GRID PLC,NATIONAL GRID PLC,equity,2
+NU HOLDINGS LTD,NU HOLDINGS LTD,equity,2
+NetEase,NetEase,equity,2
+Novartis,Novartis,equity,2
+Novartis AG,Novartis AG,equity,2
+Nutrien Ltd (Fertilizers & Agricultural Chemicals),Nutrien Ltd (Fertilizers & Agricultural Chemicals),equity,2
+ORLEN SA,ORLEN SA,equity,2
+PDD Holdings,PDD Holdings,equity,2
+PRINCIPAL GI FIN UNCON EM FX INC I2 ACC,PRINCIPAL GI FIN UNCON EM FX INC I2 ACC,equity,2
+"Ping An Insurance (Group) Company of China, Ltd.","Ping An Insurance (Group) Company of China, Ltd.",equity,2
+Ping An Insurance Group,Ping An Insurance Group,equity,2
+RENTOKIL INITIAL PLC,RENTOKIL INITIAL PLC,equity,2
+ROLLS-ROYCE HOLDINGS PLC,ROLLS-ROYCE HOLDINGS PLC,equity,2
+Repsol SA,Repsol SA,equity,2
+SAMSUNG ELECTRONICS LTD,SAMSUNG ELECTRONICS LTD,equity,2
+SK SQUARE CO LTD,SK SQUARE CO LTD,equity,2
+SK hynix,SK hynix,equity,2
+"SK hynix, Inc.","SK hynix, Inc.",equity,2
+Sanofi SA,Sanofi SA,equity,2
+Shell,Shell,equity,2
+Shell PLC,Shell PLC,equity,2
+State Bank of India,State Bank of India,equity,2
+TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD,TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD,equity,2
+TECHTRONIC INDUSTRIES CO LTD,TECHTRONIC INDUSTRIES CO LTD,equity,2
+TENCENT HLDGS LTD,TENCENT HLDGS LTD,equity,2
+TESLA INC,TESLA INC,equity,2
+TSMC,TSMC,equity,2
+Tesla,Tesla,equity,2
+Tyson Foods Inc (Packaged Foods & Meat),Tyson Foods Inc (Packaged Foods & Meat),equity,2
+UNILEVER PLC,UNILEVER PLC,equity,2
+VANGUARD USD CORPO 1-3 YEAR BD UCITS ETF,VANGUARD USD CORPO 1-3 YEAR BD UCITS ETF,equity,2
+Vodafone Group PLC,Vodafone Group PLC,equity,2
+WSP GLOBAL INC,WSP GLOBAL INC,equity,2
+Williams Cos Inc,Williams Cos Inc,equity,2
+Xiaomi,Xiaomi,equity,2
+中国建设银行,中国建设银行,equity,2
+伊格尔矿业,伊格尔矿业,equity,2
+嘉信理财集团,嘉信理财集团,equity,2
+巴里克黄金公司,巴里克黄金公司,equity,2
+惠顿贵金属,惠顿贵金属,equity,2
+淡水河谷,淡水河谷,equity,2
+爱尔兰联合银行,爱尔兰联合银行,equity,2
+礼来,礼来,equity,2
+纽蒙特黄金,纽蒙特黄金,equity,2
+罗氏,罗氏,equity,2
+罗氏大药厂,罗氏大药厂,equity,2
+裕信银行,裕信银行,equity,2
+西门子,西门子,equity,2
+赛峰集团,赛峰集团,equity,2
+金罗斯黄金,金罗斯黄金,equity,2
+阿里巴巴,阿里巴巴,equity,2
+3I GROUP PLC,3I GROUP PLC,equity,1
+ABB LTD-REG,ABB LTD-REG,equity,1
+ACCENTURE PLC,ACCENTURE PLC,equity,1
+ADVANCED MICRO DEVICES,ADVANCED MICRO DEVICES,equity,1
+AENA SME SA,AENA SME SA,equity,1
+AGCO Corp (Agricultural & Farm Machinery),AGCO Corp (Agricultural & Farm Machinery),equity,1
+AGNICO EAGLE MINES LTD (ONTARIO),AGNICO EAGLE MINES LTD (ONTARIO),equity,1
+AGREE REALTY REIT CORP,AGREE REALTY REIT CORP,equity,1
+AIA,AIA,equity,1
+AIB GROUP PLC,AIB GROUP PLC,equity,1
+ALAMOS GOLD INC,ALAMOS GOLD INC,equity,1
+ALEXANDER FUND TRUST,ALEXANDER FUND TRUST,equity,1
+ALEXANDRIA REAL ESTATE EQUITIES RE,ALEXANDRIA REAL ESTATE EQUITIES RE,equity,1
+ALIBABA GROUP HOLDING ADR REPRESENTATIVE,ALIBABA GROUP HOLDING ADR REPRESENTATIVE,equity,1
+ALLIANZ,ALLIANZ,equity,1
+ALLIANZ SE,ALLIANZ SE,equity,1
+ALPHABET INC CL A,ALPHABET INC CL A,equity,1
+ALPHABET INC CLASS A,ALPHABET INC CLASS A,equity,1
+ALUMINUM CORP OF CHINA LTD,ALUMINUM CORP OF CHINA LTD,equity,1
+AMAZON COM INC,AMAZON COM INC,equity,1
+AMERICAN ELECTRIC POWER,AMERICAN ELECTRIC POWER,equity,1
+AMERICAN EXPRESS CO,AMERICAN EXPRESS CO,equity,1
+AMERICAN HOMES 4 RENT,AMERICAN HOMES 4 RENT,equity,1
+AMPHENOL CORP,AMPHENOL CORP,equity,1
+AMPHENOL CORP-CL A (美国),AMPHENOL CORP-CL A (美国),equity,1
+ANGLO AMERICAN PLC,ANGLO AMERICAN PLC,equity,1
+ANGLOGOLD ASHANTI PLC,ANGLOGOLD ASHANTI PLC,equity,1
+APA Group NpV,APA Group NpV,equity,1
+APOLLO DEBT SOLUTIONS BD,APOLLO DEBT SOLUTIONS BD,equity,1
+APOLLO HOSPITALS ENTERPRISE LTD,APOLLO HOSPITALS ENTERPRISE LTD,equity,1
+APPLIED MATERIAL INC,APPLIED MATERIAL INC,equity,1
+ARPARA TECHNOLOGIES INC,ARPARA TECHNOLOGIES INC,equity,1
+ASE Technology Holding,ASE Technology Holding,equity,1
+ASML HOLDING NV,ASML HOLDING NV,equity,1
+ASML HOLDING NV-NY REG SHS (荷兰),ASML HOLDING NV-NY REG SHS (荷兰),equity,1
+ASML Holding,ASML Holding,equity,1
+AXA SA,AXA SA,equity,1
+AXIS BANK LTD,AXIS BANK LTD,equity,1
+AbbVie Inc,AbbVie Inc,equity,1
+Advanced Drainage Systems Inc,Advanced Drainage Systems Inc,equity,1
+Aena SME SA,Aena SME SA,equity,1
+Airbus SE,Airbus SE,equity,1
+Alibaba Group Holding Limited,Alibaba Group Holding Limited,equity,1
+Allianz SE-Alv Gy,Allianz SE-Alv Gy,equity,1
+Alphabet Inc,Alphabet Inc,equity,1
+Alphabet Inc. Class A,Alphabet Inc. Class A,equity,1
+Amazon,Amazon,equity,1
+Amazon.Com,Amazon.Com,equity,1
+AppLovin 'A',AppLovin 'A',equity,1
+AppLovin Corp,AppLovin Corp,equity,1
+Apple Inc.,Apple Inc.,equity,1
+Ares Management,Ares Management,equity,1
+AstraZeneca,AstraZeneca,equity,1
+Astronics Corp,Astronics Corp,equity,1
+Autodesk Inc,Autodesk Inc,equity,1
+BAE Systems PLC,BAE Systems PLC,equity,1
+BAE Systems plc,BAE Systems plc,equity,1
+BAIDU INC,BAIDU INC,equity,1
+BANCO BRADESCO SA,BANCO BRADESCO SA,equity,1
+BARRICK MINING CORP,BARRICK MINING CORP,equity,1
+BAYERISCHE LANDESBK GIRQ,BAYERISCHE LANDESBK GIRQ,equity,1
+BERKSHIRE HATHAWAY INC DEL,BERKSHIRE HATHAWAY INC DEL,equity,1
+BHARTI AIRTEL LTD,BHARTI AIRTEL LTD,equity,1
+BHP Group Ltd.,BHP Group Ltd.,equity,1
+BLOCK INC,BLOCK INC,equity,1
+BNP Paribas SA,BNP Paribas SA,equity,1
+BOC AVIATION LTD,BOC AVIATION LTD,equity,1
+BOSTON SCIENTIFIC CORP,BOSTON SCIENTIFIC CORP,equity,1
+BP,BP,equity,1
+BRIGHT HORIZONS FAMILY SOLUTIONS I,BRIGHT HORIZONS FAMILY SOLUTIONS I,equity,1
+BROOKFIELD RENEWABLE NPV,BROOKFIELD RENEWABLE NPV,equity,1
+BUNGE GLOBAL SA,BUNGE GLOBAL SA,equity,1
+Baker Hughes Co,Baker Hughes Co,equity,1
+Balchem Corp,Balchem Corp,equity,1
+Banco Santander,Banco Santander,equity,1
+Bank of China Ltd.,Bank of China Ltd.,equity,1
+"BankUnited, Inc.","BankUnited, Inc.",equity,1
+Barclays PLC,Barclays PLC,equity,1
+Berkshire Hathaway,Berkshire Hathaway,equity,1
+Broadcom Inc,Broadcom Inc,equity,1
+CAMDEN PROPERTY TRUST,CAMDEN PROPERTY TRUST,equity,1
+CAMECO CORP,CAMECO CORP,equity,1
+CAPSTONE COPPER C CAD NPV,CAPSTONE COPPER C CAD NPV,equity,1
+CARDINAL HEALTH INC,CARDINAL HEALTH INC,equity,1
+CARETRUST REIT INC,CARETRUST REIT INC,equity,1
+CATerpillAR INC,CATerpillAR INC,equity,1
+CECO Environmental Corp,CECO Environmental Corp,equity,1
+CENTERPPOINT ENERGY INC,CENTERPPOINT ENERGY INC,equity,1
+CHENIERE ENERGY INC,CHENIERE ENERGY INC,equity,1
+CHINA CONSTRUCTION BANK CORP,CHINA CONSTRUCTION BANK CORP,equity,1
+CHINA MERCHANTS BANK CO LTD,CHINA MERCHANTS BANK CO LTD,equity,1
+CIENA CORPORATION,CIENA CORPORATION,equity,1
+CITIGROUP INC,CITIGROUP INC,equity,1
+COCA-COLA,COCA-COLA,equity,1
+COCA-COLA CO/THE,COCA-COLA CO/THE,equity,1
+COGNIZANT TECH SOLUTIONS CORP,COGNIZANT TECH SOLUTIONS CORP,equity,1
+COHERENT CORP (美国),COHERENT CORP (美国),equity,1
+COMMERZBANK AG,COMMERZBANK AG,equity,1
+CONTEMPORARY AMPEREX TECHN A,CONTEMPORARY AMPEREX TECHN A,equity,1
+CONTEMPORARY AMPEREX TECHNOLOGY CO LTD,CONTEMPORARY AMPEREX TECHNOLOGY CO LTD,equity,1
+CORNING INC (美国),CORNING INC (美国),equity,1
+Canadian Pacific Kansas City,Canadian Pacific Kansas City,equity,1
+Capitaland Ascendas REIT,Capitaland Ascendas REIT,equity,1
+Capitaland Integrated Commercial Trust,Capitaland Integrated Commercial Trust,equity,1
+Carrier Global,Carrier Global,equity,1
+Cavco Industries Inc,Cavco Industries Inc,equity,1
+Charles Schwab,Charles Schwab,equity,1
+Chemring Group PLC,Chemring Group PLC,equity,1
+Chevron,Chevron,equity,1
+China Construction Bank,China Construction Bank,equity,1
+China Construction Bank Corporation,China Construction Bank Corporation,equity,1
+Coca-Cola Europacific Partners,Coca-Cola Europacific Partners,equity,1
+Compeq Manufacturing,Compeq Manufacturing,equity,1
+Contemporary Amperex Technology,Contemporary Amperex Technology,equity,1
+Contemporary Amperex Technology Co Ltd,Contemporary Amperex Technology Co Ltd,equity,1
+CoreWeave 'A',CoreWeave 'A',equity,1
+Coterra Energy Inc,Coterra Energy Inc,equity,1
+Credo Technology,Credo Technology,equity,1
+Crowdstrike Holdings Inc,Crowdstrike Holdings Inc,equity,1
+DBS GROUP HLDGS LTD,DBS GROUP HLDGS LTD,equity,1
+DEUTSCHE POST AG,DEUTSCHE POST AG,equity,1
+DEUTSCHE TELEKOM AG,DEUTSCHE TELEKOM AG,equity,1
+DFI RETAIL GROUP HOLDINGS LTD,DFI RETAIL GROUP HOLDINGS LTD,equity,1
+DIALOG AXIATA PLC,DIALOG AXIATA PLC,equity,1
+DIGITAL RLTY TR INC,DIGITAL RLTY TR INC,equity,1
+DONALDSON INC,DONALDSON INC,equity,1
+DOOSAN ENERBILTY CO LTD,DOOSAN ENERBILTY CO LTD,equity,1
+DYNO NOBEL LTD,DYNO NOBEL LTD,equity,1
+Danone SA (Packaged Foods & Meat),Danone SA (Packaged Foods & Meat),equity,1
+Deere & Co (Agricultural & Farm Machinery),Deere & Co (Agricultural & Farm Machinery),equity,1
+Delta Electronics,Delta Electronics,equity,1
+Dentsu Group Inc,Dentsu Group Inc,equity,1
+Deutsche Bank AG,Deutsche Bank AG,equity,1
+Deutsche Boerse AG,Deutsche Boerse AG,equity,1
+Deutsche Telekom,Deutsche Telekom,equity,1
+DoorDash 'A',DoorDash 'A',equity,1
+EDP RENOVAVEIS SA,EDP RENOVAVEIS SA,equity,1
+ELEVANCE HEALTH INC,ELEVANCE HEALTH INC,equity,1
+EMBASSY OFFICE PARKS REIT,EMBASSY OFFICE PARKS REIT,equity,1
+EOG Resources Inc,EOG Resources Inc,equity,1
+EPIROC AB,EPIROC AB,equity,1
+EQUINIX REIT INC,EQUINIX REIT INC,equity,1
+EQUINOX GOLD CORP,EQUINOX GOLD CORP,equity,1
+EQUITY LIFESTYLE PPTY'S INC,EQUITY LIFESTYLE PPTY'S INC,equity,1
+ERICSSON,ERICSSON,equity,1
+ESSILORLUXOTTICA,ESSILORLUXOTTICA,equity,1
+EURO-Bobl FUTURE MAR26 OEH6,EURO-Bobl FUTURE MAR26 OEH6,equity,1
+EVOLUTION MINING LTD,EVOLUTION MINING LTD,equity,1
+East West Bancorp,East West Bancorp,equity,1
+Eaton,Eaton,equity,1
+Eli Lilly & Co,Eli Lilly & Co,equity,1
+Elite Material,Elite Material,equity,1
+Embassy Office Parks REIT,Embassy Office Parks REIT,equity,1
+Enel SpA,Enel SpA,equity,1
+Entergy Corp,Entergy Corp,equity,1
+Equinor ASA,Equinor ASA,equity,1
+Etablissements Franz Colruyt NV,Etablissements Franz Colruyt NV,equity,1
+Eurobank SA,Eurobank SA,equity,1
+Exxon Mobil,Exxon Mobil,equity,1
+Exxon Mobil Corp,Exxon Mobil Corp,equity,1
+FIRST SOLAR INC,FIRST SOLAR INC,equity,1
+FLEX LTD,FLEX LTD,equity,1
+FMC Corp (Fertilizers & Agricultural Chemicals),FMC Corp (Fertilizers & Agricultural Chemicals),equity,1
+FORMOSA PLASTICS CORP,FORMOSA PLASTICS CORP,equity,1
+FORTIS HEALTHCARE INDIA LTD,FORTIS HEALTHCARE INDIA LTD,equity,1
+FRESENIUS MEDICAL CARE AG & CO. KGAA,FRESENIUS MEDICAL CARE AG & CO. KGAA,equity,1
+FUJIBO HOLDINGS INC,FUJIBO HOLDINGS INC,equity,1
+Fidelity National Info,Fidelity National Info,equity,1
+Fidelity National Information Services,Fidelity National Information Services,equity,1
+FormFactor,FormFactor,equity,1
+Frasers Centrepoint Trust,Frasers Centrepoint Trust,equity,1
+GARTNER INC,GARTNER INC,equity,1
+GAZPROM,GAZPROM,equity,1
+GENTEIRA SAB DE CV,GENTEIRA SAB DE CV,equity,1
+GOODMAN GROUP UNITS,GOODMAN GROUP UNITS,equity,1
+GRUPO AEROPORTUARIO DEL SURESTE SAB DE CV,GRUPO AEROPORTUARIO DEL SURESTE SAB DE CV,equity,1
+GRUPO MEXICO SAB DE CV,GRUPO MEXICO SAB DE CV,equity,1
+GSK,GSK,equity,1
+Glaxosmithkline plc,Glaxosmithkline plc,equity,1
+HCA Healthcare,HCA Healthcare,equity,1
+HCL TECHNOLOGIES LTD,HCL TECHNOLOGIES LTD,equity,1
+HD HYUNDAI ELECTRIC CO LTD,HD HYUNDAI ELECTRIC CO LTD,equity,1
+HEALTHPEAK PROPERTIES,HEALTHPEAK PROPERTIES,equity,1
+HINDALCO INDUSTRIES LTD,HINDALCO INDUSTRIES LTD,equity,1
+HITACHI LTD (日本),HITACHI LTD (日本),equity,1
+HKT TRUST AND HKT LTD,HKT TRUST AND HKT LTD,equity,1
+HSBC,HSBC,equity,1
+HSBC Holdings,HSBC Holdings,equity,1
+HSBC Holdings Plc,HSBC Holdings Plc,equity,1
+Halliburton Co,Halliburton Co,equity,1
+Hitachi Ltd,Hitachi Ltd,equity,1
+Hong Kong Exchanges & Clearing Ltd.,Hong Kong Exchanges & Clearing Ltd.,equity,1
+Hoya Corp,Hoya Corp,equity,1
+IAMGOLD CORP,IAMGOLD CORP,equity,1
+IBERDROLA SA,IBERDROLA SA,equity,1
+ICU Medical Inc,ICU Medical Inc,equity,1
+IG集团,IG集团,equity,1
+INFINEON TECHNOLOGIES AG,INFINEON TECHNOLOGIES AG,equity,1
+INFOSYS LTD,INFOSYS LTD,equity,1
+ING Groep NV,ING Groep NV,equity,1
+INTER &CO INC,INTER &CO INC,equity,1
+INTERNATIONAL FLAVS & FRAG INC,INTERNATIONAL FLAVS & FRAG INC,equity,1
+INVERCO US TRS BD 1-3 YR ETF USD ACC,INVERCO US TRS BD 1-3 YR ETF USD ACC,equity,1
+INVESCO US TRS BD 1-3 YR ETF USD ACC,INVESCO US TRS BD 1-3 YR ETF USD ACC,equity,1
+INVITATION HOMES INC,INVITATION HOMES INC,equity,1
+IRON MOUNTAIN INC,IRON MOUNTAIN INC,equity,1
+ISHARES PHYSICAL GOLD ETC PLC ETF-C,ISHARES PHYSICAL GOLD ETC PLC ETF-C,equity,1
+ISUPTASYS CO LTD,ISUPTASYS CO LTD,equity,1
+ITOCHU Corp,ITOCHU Corp,equity,1
+ITT INC,ITT INC,equity,1
+Iberdrola,Iberdrola,equity,1
+Iberdrola SA,Iberdrola SA,equity,1
+Infosys Ltd.,Infosys Ltd.,equity,1
+"Intuitive Surgical, Inc.","Intuitive Surgical, Inc.",equity,1
+JPMorgan Chase & Co.,JPMorgan Chase & Co.,equity,1
+Johnson Controls International plc,Johnson Controls International plc,equity,1
+KB FINANCIAL GROUP INC,KB FINANCIAL GROUP INC,equity,1
+"KB Financial Group, Inc.","KB Financial Group, Inc.",equity,1
+KBC BANK NV (NEW YORK BRANCH),KBC BANK NV (NEW YORK BRANCH),equity,1
+KBC GROEP NV,KBC GROEP NV,equity,1
+KDDI Corp,KDDI Corp,equity,1
+KEYSIGHT TECHNOLOGIES IN (美国),KEYSIGHT TECHNOLOGIES IN (美国),equity,1
+KINGSPAN GROUP PLC,KINGSPAN GROUP PLC,equity,1
+KLABIN SA,KLABIN SA,equity,1
+KOTAK MAHINDRA BANK LTD,KOTAK MAHINDRA BANK LTD,equity,1
+Keppel DC REIT,Keppel DC REIT,equity,1
+King Yuan Electronics,King Yuan Electronics,equity,1
+Kingboard Laminates Holdings Limited,Kingboard Laminates Holdings Limited,equity,1
+Knorr-Bremse AG,Knorr-Bremse AG,equity,1
+Koninklijke Ahold Delhaize NV,Koninklijke Ahold Delhaize NV,equity,1
+Koninklijke Ahold Delhaize NV (Food Retail),Koninklijke Ahold Delhaize NV (Food Retail),equity,1
+Kubota Corp (Agricultural & Farm Machinery),Kubota Corp (Agricultural & Farm Machinery),equity,1
+L3HARRIS TECHNOLOGIES INC,L3HARRIS TECHNOLOGIES INC,equity,1
+LAM RESEARCH CORP,LAM RESEARCH CORP,equity,1
+LEGRAND SA,LEGRAND SA,equity,1
+LOCALIZA RENT A CAR SA,LOCALIZA RENT A CAR SA,equity,1
+LOTTE CHEMICAL CORP,LOTTE CHEMICAL CORP,equity,1
+LYNAS RARE EARTH LTD,LYNAS RARE EARTH LTD,equity,1
+Leer Corp,Leer Corp,equity,1
+Link Real Estate Investment Trust,Link Real Estate Investment Trust,equity,1
+Lite-On Technology,Lite-On Technology,equity,1
+Littelfuse Inc,Littelfuse Inc,equity,1
+Loews,Loews,equity,1
+MAGNITOGORSKIY METALLURGICHESKIY K,MAGNITOGORSKIY METALLURGICHESKIY K,equity,1
+MASTERCARD INC A,MASTERCARD INC A,equity,1
+MCKESSON CORP,MCKESSON CORP,equity,1
+MERCADOLIBRE INC,MERCADOLIBRE INC,equity,1
+META PLATFORMS INC CLASS A,META PLATFORMS INC CLASS A,equity,1
+META PLATFORMS INC-CLASS A,META PLATFORMS INC-CLASS A,equity,1
+MICRON TECHNOLOGY INC,MICRON TECHNOLOGY INC,equity,1
+MITSUI FUDOSAN CO LTD,MITSUI FUDOSAN CO LTD,equity,1
+MITSUI FUDOSAN LTD,MITSUI FUDOSAN LTD,equity,1
+MONOLITHIC POWER SYSTEMS INC (美国),MONOLITHIC POWER SYSTEMS INC (美国),equity,1
+MORGAN STANLEY INVESTMENT FUNDS - EMERGING MARKETS CORPORATE DEBT FUND,MORGAN STANLEY INVESTMENT FUNDS - EMERGING MARKETS CORPORATE DEBT FUND,equity,1
+MUENCHENER RUECKVERSICHERUNGS-GESELLSCHAFT AG IN MUENCHEN,MUENCHENER RUECKVERSICHERUNGS-GESELLSCHAFT AG IN MUENCHEN,equity,1
+Mapletree Industrial Trust,Mapletree Industrial Trust,equity,1
+Mapletree Logistics Trust,Mapletree Logistics Trust,equity,1
+Mapletree Pan Asia Commercial Trust,Mapletree Pan Asia Commercial Trust,equity,1
+Marks & Spencer Group PLC,Marks & Spencer Group PLC,equity,1
+Marvell Technology Inc.,Marvell Technology Inc.,equity,1
+McDonald's,McDonald's,equity,1
+McDonald's Corp (Restaurants),McDonald's Corp (Restaurants),equity,1
+McDonalds,McDonalds,equity,1
+Medtronic PLC,Medtronic PLC,equity,1
+Meituan (Restaurants),Meituan (Restaurants),equity,1
+Meta Platforms 'A',Meta Platforms 'A',equity,1
+"Meta Platforms, Inc.","Meta Platforms, Inc.",equity,1
+Meta(脸书母公司),Meta(脸书母公司),equity,1
+Mitsubishi Electric Corp,Mitsubishi Electric Corp,equity,1
+Mitsubishi UFJ Financial Group Inc,Mitsubishi UFJ Financial Group Inc,equity,1
+Mowi ASA (Packaged Foods & Meat),Mowi ASA (Packaged Foods & Meat),equity,1
+NATIONAL AUSTRALIA BANK LTD,NATIONAL AUSTRALIA BANK LTD,equity,1
+NETEASE INC,NETEASE INC,equity,1
+NEXGEN ENERGY LTD,NEXGEN ENERGY LTD,equity,1
+NEXTPOWER INC,NEXTPOWER INC,equity,1
+NEXTPOWER INC CL A,NEXTPOWER INC CL A,equity,1
+NINETY ONE GSF - EMERGING MARKETS LOCAL CURRENCY DYNAMIC DEBT FUND,NINETY ONE GSF - EMERGING MARKETS LOCAL CURRENCY DYNAMIC DEBT FUND,equity,1
+NK LUKOIL,NK LUKOIL,equity,1
+NK ROSNEFT,NK ROSNEFT,equity,1
+NORDEA BANK ABP (NEW YORK BRANCH),NORDEA BANK ABP (NEW YORK BRANCH),equity,1
+NOVABEV GROUP,NOVABEV GROUP,equity,1
+NOVATEK,NOVATEK,equity,1
+NOVOLIPETSK STEEL,NOVOLIPETSK STEEL,equity,1
+NOW Inc,NOW Inc,equity,1
+NU HOLDINGS LTD/CAYMAN ISLANDS,NU HOLDINGS LTD/CAYMAN ISLANDS,equity,1
+NVIDIA Corp,NVIDIA Corp,equity,1
+NatWest Group PLC,NatWest Group PLC,equity,1
+Nebius,Nebius,equity,1
+Nestle,Nestle,equity,1
+Nestle SA,Nestle SA,equity,1
+Nestle SA (Packaged Foods & Meat),Nestle SA (Packaged Foods & Meat),equity,1
+NetEase Inc,NetEase Inc,equity,1
+"Netflix, Inc.","Netflix, Inc.",equity,1
+"NextEra Energy, Inc.","NextEra Energy, Inc.",equity,1
+Novo Nordisk,Novo Nordisk,equity,1
+Novo Nordisk A/S,Novo Nordisk A/S,equity,1
+OESTEREICH KONTROLLBANK,OESTEREICH KONTROLLBANK,equity,1
+OMERS FINANCE TRUST,OMERS FINANCE TRUST,equity,1
+ONEVIEW HEALTHCARE PLC,ONEVIEW HEALTHCARE PLC,equity,1
+OPEN TEXT CORP,OPEN TEXT CORP,equity,1
+ORACLE CORP,ORACLE CORP,equity,1
+ORIX Corp,ORIX Corp,equity,1
+OTP BANK NYRT,OTP BANK NYRT,equity,1
+OTP银行,OTP银行,equity,1
+Option Care Health Inc,Option Care Health Inc,equity,1
+Oracle,Oracle,equity,1
+Orange SA,Orange SA,equity,1
+Orion Group Holdings Inc,Orion Group Holdings Inc,equity,1
+Ovintiv Inc,Ovintiv Inc,equity,1
+PACIFIC BASIN SHIPPING LTD,PACIFIC BASIN SHIPPING LTD,equity,1
+PAN AMERICAN SILVER CORP,PAN AMERICAN SILVER CORP,equity,1
+PDD HOLDINGS INC,PDD HOLDINGS INC,equity,1
+PETROLEO BRASILEIRO-PETROBRAS,PETROLEO BRASILEIRO-PETROBRAS,equity,1
+PING AN INSURANCE GROUP CO OF CHINA LTD,PING AN INSURANCE GROUP CO OF CHINA LTD,equity,1
+PPL Corporation,PPL Corporation,equity,1
+PRYSMIAN SPA,PRYSMIAN SPA,equity,1
+PT T POL,PT T POL,equity,1
+PUBLIC STORAGE,PUBLIC STORAGE,equity,1
+PUBLIC STORAGE REIT,PUBLIC STORAGE REIT,equity,1
+Panasonic Holdings Corp,Panasonic Holdings Corp,equity,1
+PetroChina Co Ltd,PetroChina Co Ltd,equity,1
+Pfizer Inc,Pfizer Inc,equity,1
+Power Grid Corporation of India Ltd.,Power Grid Corporation of India Ltd.,equity,1
+Prysmian SpA,Prysmian SpA,equity,1
+REGIONAL SAB DE CV,REGIONAL SAB DE CV,equity,1
+RELIANCE INDUSTRIES LTD,RELIANCE INDUSTRIES LTD,equity,1
+ROLOGIS INC,ROLOGIS INC,equity,1
+Repligen Corp,Repligen Corp,equity,1
+Resideo Technologies Inc,Resideo Technologies Inc,equity,1
+Rio Tinto Ltd.,Rio Tinto Ltd.,equity,1
+Rio Tinto PLC,Rio Tinto PLC,equity,1
+Robinhood Markets,Robinhood Markets,equity,1
+Robinhood Markets Inc,Robinhood Markets Inc,equity,1
+Roche,Roche,equity,1
+Rolls-Royce,Rolls-Royce,equity,1
+SAMSUNG C&T CORP,SAMSUNG C&T CORP,equity,1
+SAMSUNG ELECTRO-MECHANICS CO LTD,SAMSUNG ELECTRO-MECHANICS CO LTD,equity,1
+SAMSUNG ELECTRONICS GDS REPRESENT,SAMSUNG ELECTRONICS GDS REPRESENT,equity,1
+SANDISK CORP,SANDISK CORP,equity,1
+SANEAMENTO BASICO DE SP (CIA),SANEAMENTO BASICO DE SP (CIA),equity,1
+SBERBANK ROSSI,SBERBANK ROSSI,equity,1
+SEZZLE INC,SEZZLE INC,equity,1
+SHOALS TECHNOLOGIES GROUP A,SHOALS TECHNOLOGIES GROUP A,equity,1
+SIEMENS AG,SIEMENS AG,equity,1
+SIEMENS ENERGY AG,SIEMENS ENERGY AG,equity,1
+SINGAPORE TELECOMMUNICATIONS LTD,SINGAPORE TELECOMMUNICATIONS LTD,equity,1
+"SK Hynix, Inc.","SK Hynix, Inc.",equity,1
+SK INNOVATION CO LTD,SK INNOVATION CO LTD,equity,1
+SK SQUARE LTD,SK SQUARE LTD,equity,1
+SLB Ltd,SLB Ltd,equity,1
+SOUTHERN COPPER CORP,SOUTHERN COPPER CORP,equity,1
+SSE plc,SSE plc,equity,1
+STANDARD CHARTERED BANK (NEW YORK,STANDARD CHARTERED BANK (NEW YORK,equity,1
+SUNCOR ENERGY INC (CANADA),SUNCOR ENERGY INC (CANADA),equity,1
+SUNRUN INC,SUNRUN INC,equity,1
+Sanofi,Sanofi,equity,1
+Sea ADR,Sea ADR,equity,1
+Select Water Solutions Inc,Select Water Solutions Inc,equity,1
+Severn Trent Plc,Severn Trent Plc,equity,1
+Shopify 'A',Shopify 'A',equity,1
+Siemens AG,Siemens AG,equity,1
+Simpson Manufacturing Co Inc,Simpson Manufacturing Co Inc,equity,1
+Snowflake,Snowflake,equity,1
+Societe Generale SA,Societe Generale SA,equity,1
+Sony Group Corp,Sony Group Corp,equity,1
+Standard Chartered,Standard Chartered,equity,1
+Stanley Black & Decker Inc,Stanley Black & Decker Inc,equity,1
+Stryker Corp.,Stryker Corp.,equity,1
+Sumitomo Mitsui Trust Group Inc,Sumitomo Mitsui Trust Group Inc,equity,1
+Sumitomo Realty & Development Co Ltd,Sumitomo Realty & Development Co Ltd,equity,1
+Suntec Real Estate Investment Trust,Suntec Real Estate Investment Trust,equity,1
+Suzuki Motor Corp,Suzuki Motor Corp,equity,1
+Swatch Group AG/The,Swatch Group AG/The,equity,1
+Swiss Re AG,Swiss Re AG,equity,1
+T-MOBILE USA INC,T-MOBILE USA INC,equity,1
+TATNEFT,TATNEFT,equity,1
+TATNEFT PREF,TATNEFT PREF,equity,1
+TAWAN SEMICONDUCTOR-SP ADR,TAWAN SEMICONDUCTOR-SP ADR,equity,1
+TC ENERGY CORP,TC ENERGY CORP,equity,1
+TC Energy Corp.,TC Energy Corp.,equity,1
+TE Connectivity PLC,TE Connectivity PLC,equity,1
+TELEDYNE TECHNOLOGIES INC,TELEDYNE TECHNOLOGIES INC,equity,1
+TELKOM INDONESIA PERSERO TBK PT,TELKOM INDONESIA PERSERO TBK PT,equity,1
+TERNA RETE ELETTRICA NAZIONALE,TERNA RETE ELETTRICA NAZIONALE,equity,1
+TETRA TECHNOLOGIES INC COMMON,TETRA TECHNOLOGIES INC COMMON,equity,1
+TEXAS INSTRUMENTS INC,TEXAS INSTRUMENTS INC,equity,1
+TJX Cos Inc/The,TJX Cos Inc/The,equity,1
+TORONTO-DOMINION BANK (NEW YORK BR,TORONTO-DOMINION BANK (NEW YORK BR,equity,1
+TOTALENERGIES SE,TOTALENERGIES SE,equity,1
+TOYO TANSO CO LTD,TOYO TANSO CO LTD,equity,1
+TRI-PARTY BOFA SECURITIES INC.,TRI-PARTY BOFA SECURITIES INC.,equity,1
+TRI-PARTY TD SECURITIES (USA) LLC,TRI-PARTY TD SECURITIES (USA) LLC,equity,1
+Taiwan Semiconductor Manufacturing Company,Taiwan Semiconductor Manufacturing Company,equity,1
+Take-Two Interactive Software,Take-Two Interactive Software,equity,1
+Takeaway.com NV (Internet Retail),Takeaway.com NV (Internet Retail),equity,1
+Teletra Group,Teletra Group,equity,1
+Telstra Group,Telstra Group,equity,1
+Tencent Holdings Ltd,Tencent Holdings Ltd,equity,1
+Teva Pharmaceutical Industries Ltd,Teva Pharmaceutical Industries Ltd,equity,1
+Texas Instruments,Texas Instruments,equity,1
+Thermo Fisher Scientific Inc,Thermo Fisher Scientific Inc,equity,1
+Tokio Marine Holdings Inc,Tokio Marine Holdings Inc,equity,1
+TotalEnergies,TotalEnergies,equity,1
+Trip.com Group,Trip.com Group,equity,1
+Trip.com Group Ltd,Trip.com Group Ltd,equity,1
+Trip.com Group Ltd.,Trip.com Group Ltd.,equity,1
+UNIMICRON TECHNOLOGY CORP,UNIMICRON TECHNOLOGY CORP,equity,1
+UNION PACIFIC CORP,UNION PACIFIC CORP,equity,1
+UNITIE GROUP PLC,UNITIE GROUP PLC,equity,1
+UPL LTD,UPL LTD,equity,1
+Uni-President Enterprises Corp.,Uni-President Enterprises Corp.,equity,1
+Union Pacific Corp,Union Pacific Corp,equity,1
+UnitedHealth Group Inc,UnitedHealth Group Inc,equity,1
+"UnitedHealth Group, Inc.","UnitedHealth Group, Inc.",equity,1
+VALE SA,VALE SA,equity,1
+VERTIV HOLDINGS CO A,VERTIV HOLDINGS CO A,equity,1
+VINCI SA,VINCI SA,equity,1
+VONOVA SE,VONOVA SE,equity,1
+Valmont Industries Inc,Valmont Industries Inc,equity,1
+Veritiv Holdings Co,Veritiv Holdings Co,equity,1
+Verizon Communications Inc,Verizon Communications Inc,equity,1
+Vertex Pharmaceuticals Inc,Vertex Pharmaceuticals Inc,equity,1
+"Visa, Inc.","Visa, Inc.",equity,1
+WELLS FARGO & CO NEW,WELLS FARGO & CO NEW,equity,1
+WELLTOWER INC,WELLTOWER INC,equity,1
+WEX INC,WEX INC,equity,1
+WIWYNN CORPORATION CORP,WIWYNN CORPORATION CORP,equity,1
+WONIK MATERIALS CO LTD,WONIK MATERIALS CO LTD,equity,1
+Walt Disney,Walt Disney,equity,1
+Waste Management Inc (Environmental & Facilities Services),Waste Management Inc (Environmental & Facilities Services),equity,1
+Wells Fargo,Wells Fargo,equity,1
+West Pharmaceutical Services Inc,West Pharmaceutical Services Inc,equity,1
+XIAOMI CORP,XIAOMI CORP,equity,1
+Xiaomi Corporation,Xiaomi Corporation,equity,1
+ZUIN MINING GROUP CO LTD,ZUIN MINING GROUP CO LTD,equity,1
+Zijin Mining Group,Zijin Mining Group,equity,1
+Zijin Mining Group Co Ltd,Zijin Mining Group Co Ltd,equity,1
+万事达,万事达,equity,1
+万喜,万喜,equity,1
+三一重工,三一重工,equity,1
+三星电子,三星电子,equity,1
+中国宏桥集团,中国宏桥集团,equity,1
+中国平安保险,中国平安保险,equity,1
+乐购,乐购,equity,1
+伊克赛尔服务,伊克赛尔服务,equity,1
+伊比德罗拉,伊比德罗拉,equity,1
+优步,优步,equity,1
+伟尔集团,伟尔集团,equity,1
+借贷俱乐部,借贷俱乐部,equity,1
+公民金融集团,公民金融集团,equity,1
+凯克萨银行,凯克萨银行,equity,1
+力拓集团,力拓集团,equity,1
+加拿大自然资源,加拿大自然资源,equity,1
+北方之星资源,北方之星资源,equity,1
+北方银行,北方银行,equity,1
+博格华纳公司,博格华纳公司,equity,1
+印地纺,印地纺,equity,1
+历峰集团,历峰集团,equity,1
+吉利德科学,吉利德科学,equity,1
+嘉能可,嘉能可,equity,1
+埃克森美孚,埃克森美孚,equity,1
+埃尔拉多黄金,埃尔拉多黄金,equity,1
+壳牌,壳牌,equity,1
+大豆,大豆,equity,1
+天然气,天然气,equity,1
+奋进矿业,奋进矿业,equity,1
+奥驰亚,奥驰亚,equity,1
+威廉姆斯公司,威廉姆斯公司,equity,1
+威瑞森通信,威瑞森通信,equity,1
+安格鲁阿散蒂黄金有限公司,安格鲁阿散蒂黄金有限公司,equity,1
+巴克莱银行,巴克莱银行,equity,1
+巴西石油,巴西石油,equity,1
+布伦特原油,布伦特原油,equity,1
+平安保险,平安保险,equity,1
+康菲石油,康菲石油,equity,1
+开市客,开市客,equity,1
+强生公司,强生公司,equity,1
+德意志银行,德意志银行,equity,1
+恩智浦半导体,恩智浦半导体,equity,1
+意大利联合圣保罗银行,意大利联合圣保罗银行,equity,1
+携程,携程,equity,1
+新纪元能源,新纪元能源,equity,1
+易昆尼克斯,易昆尼克斯,equity,1
+普洛斯公司,普洛斯公司,equity,1
+普睿司曼,普睿司曼,equity,1
+智利矿业化工,智利矿业化工,equity,1
+林德集团,林德集团,equity,1
+柯蒂斯·莱特,柯蒂斯·莱特,equity,1
+沃尔玛,沃尔玛,equity,1
+沃尔玛墨西哥与中美洲,沃尔玛墨西哥与中美洲,equity,1
+泛林集团,泛林集团,equity,1
+泛美白银公司,泛美白银公司,equity,1
+波多黎各大众银行,波多黎各大众银行,equity,1
+泰科电子,泰科电子,equity,1
+洛阳钼业,洛阳钼业,equity,1
+活畜,活畜,equity,1
+爱德万测试,爱德万测试,equity,1
+玉米,玉米,equity,1
+环汇,环汇,equity,1
+瑞银集团,瑞银集团,equity,1
+百度,百度,equity,1
+皇冠控股,皇冠控股,equity,1
+第一太阳能,第一太阳能,equity,1
+第一资本,第一资本,equity,1
+纽蒙特黄金公司,纽蒙特黄金公司,equity,1
+维斯塔斯风力系统公司,维斯塔斯风力系统公司,equity,1
+维萨卡,维萨卡,equity,1
+网易,网易,equity,1
+美光科技,美光科技,equity,1
+美国洲际交易所,美国洲际交易所,equity,1
+美国金德摩根公司,美国金德摩根公司,equity,1
+美国银行,美国银行,equity,1
+美敦力,美敦力,equity,1
+联合健康,联合健康,equity,1
+艾伯维,艾伯维,equity,1
+芝加哥商品交易所,芝加哥商品交易所,equity,1
+花旗集团,花旗集团,equity,1
+苏格兰南方能源公司,苏格兰南方能源公司,equity,1
+英国国家电力供应公司,英国国家电力供应公司,equity,1
+西得克萨斯中间基原油,西得克萨斯中间基原油,equity,1
+西蒙地产集团,西蒙地产集团,equity,1
+诺华,诺华,equity,1
+费利浦·麦克莫兰铜金公司,费利浦·麦克莫兰铜金公司,equity,1
+达能,达能,equity,1
+通用汽车,通用汽车,equity,1
+道达尔,道达尔,equity,1
+野村房地产,野村房地产,equity,1
+金田有限公司,金田有限公司,equity,1
+金罗斯黄金公司,金罗斯黄金公司,equity,1
+铁山公司,铁山公司,equity,1
+铜,铜,equity,1
+铝,铝,equity,1
+银,银,equity,1
+阿拉莫斯黄金,阿拉莫斯黄金,equity,1
+阿里巴巴集团,阿里巴巴集团,equity,1
+雪佛龙,雪佛龙,equity,1
+马恒达公司,马恒达公司,equity,1
+黄金,黄金,equity,1
+默克,默克,equity,1

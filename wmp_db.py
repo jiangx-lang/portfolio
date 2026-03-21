@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-渣打 WMP 净值历史存储与年化收益率计算
+ WMP 净值历史存储与年化收益率计算
 数据源：data/wmp_history.csv（兼容 GitHub Actions 定时抓取 + 自动提交）。
 时间序列回溯 T-1/T-7/T-30/T-90，假期/周末无抓取时顺延填充前一日的净值（bfill）。
 """
@@ -51,14 +51,14 @@ def get_wmp_display_data() -> pd.DataFrame:
     """
     从 data/wmp_history.csv 读取净值历史，计算每只产品的最新净值及 T-1/T-7/T-30/T-90 年化收益率。
     若历史不足则对应单元格为 "N/A"（防崩溃容错）。
-    返回列：产品销售代码, 产品名称, 渣打产品风险评级, 投资期限, 最新净值,
+    返回列：产品销售代码, 产品名称, 产品风险评级, 投资期限, 最新净值,
            daily% 【年化】, 1W收益率% 【年化】, 1M收益率% 【年化】, 3M收益率% 【年化】
     """
     init_db()
     df_all = read_wmp_csv()
     if df_all.empty:
         return pd.DataFrame(columns=[
-            "产品销售代码", "产品名称", "渣打产品风险评级", "投资期限", "最新净值",
+            "产品销售代码", "产品名称", "产品风险评级", "投资期限", "最新净值",
             "daily% 【年化】", "1W收益率% 【年化】", "1M收益率% 【年化】", "3M收益率% 【年化】",
         ])
 
@@ -119,7 +119,7 @@ def get_wmp_display_data() -> pd.DataFrame:
         rows_out.append({
             "产品销售代码": code,
             "产品名称": name,
-            "渣打产品风险评级": risk,
+            "产品风险评级": risk,
             "投资期限": term,
             "最新净值": nav_t0,
             "daily% 【年化】": annualized_daily(nav_t0, nav_1),

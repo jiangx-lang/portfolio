@@ -1,7 +1,7 @@
 """
 sc_fund_parser.py
 ═════════════════════════════════════════════════════════════════
-渣打 QDII 基金 PDF → SQLite 解析器
+ QDII 基金 PDF → SQLite 解析器
 - 用 Claude API 做结构化提取（准确率远高于正则）
 - 遇到新字段/新术语 → 写入 pending_new_fields 表并提示
 - 支持批量扫描整个目录，重复运行自动跳过已解析文件
@@ -258,7 +258,7 @@ def pdf_to_images_b64(pdf_path: Path, max_pages: int = MAX_PAGES) -> list[str]:
 # ══════════════════════════════════════════════════════════════════
 # 3. Claude 提取结构化数据
 # ══════════════════════════════════════════════════════════════════
-EXTRACTION_PROMPT = """你是一个专业的基金数据提取专家。请从这份渣打银行 QDII 基金说明书 PDF 图片中，提取所有结构化数据。
+EXTRACTION_PROMPT = """你是一个专业的基金数据提取专家。请从这份银行 QDII 基金说明书 PDF 图片中，提取所有结构化数据。
 
 请严格按照以下 JSON 格式返回，不要添加任何额外文字。数字字段去掉%符号只保留数值（如 1.35% → 1.35）。日期统一用 YYYY-MM-DD 格式。找不到的字段用 null。
 
@@ -713,7 +713,7 @@ def print_summary(conn):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="渣打 QDII 基金 PDF 解析器")
+    parser = argparse.ArgumentParser(description=" QDII 基金 PDF 解析器")
     parser.add_argument("--dir",     default=None,  help="PDF 目录路径")
     parser.add_argument("--file",    default=None,  help="单个 PDF 文件路径")
     parser.add_argument("--db",      default=str(DB_PATH), help="数据库路径")

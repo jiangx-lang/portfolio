@@ -3,7 +3,7 @@
 机构标准 vs 个人配置：双饼图对比、备注穿透、关联观点
 - 左：机构标准配比（portfolio_templates 平衡型）
 - 右：个人持仓聚合饼图 + 年化收入测算 + 穿透明细（remarks）
-- 合规：页面标题/描述中「渣打」动态替换为「机构」
+- 展示文案使用中性表述
 """
 from __future__ import annotations
 
@@ -27,8 +27,8 @@ ASSET_CLASS_TAGS: dict[str, list[str]] = {
 
 
 def _t(s: str) -> str:
-    """合规脱敏：渣打 -> 机构"""
-    return (s or "").replace("渣打", "机构")
+    """页面文案透传（保留函数便于统一改标题/副标题）。"""
+    return s or ""
 
 
 def get_conn():

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-渣打 WMP 净值历史 CSV 存储（兼容 GitHub Actions 自动提交与 Streamlit 热更新）
+ WMP 净值历史 CSV 存储（兼容 GitHub Actions 自动提交与 Streamlit 热更新）
 data/wmp_history.csv：追加写入，按 (date, product_code) 去重。
 """
 from __future__ import annotations

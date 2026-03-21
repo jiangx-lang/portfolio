@@ -41,7 +41,7 @@ COLORS = ["#185FA5", "#993C1D", "#0F6E56", "#534AB7", "#854F0B",
 # ── 数据加载 ──────────────────────────────────────────────────────
 @st.cache_data(ttl=300)
 def load_fund_meta(fund_id: int) -> dict:
-    """从 fund_meta 加载基金元信息（优先 fund_meta.csv，否则 fund_meta_builder）"""
+    """从 fund_meta.csv / fund_meta_builder / fund_tagging.db 加载基金元信息。"""
     try:
         meta_path = Path(__file__).resolve().parent.parent / "data" / "fund_meta.csv"
         if meta_path.exists():
@@ -52,17 +52,50 @@ def load_fund_meta(fund_id: int) -> dict:
         from data.fund_meta_builder import _load_fund_meta
         meta_map = _load_fund_meta()
         m = meta_map.get(fund_id, {})
-        if m:
+        if m and (m.get("name") or m.get("code")):
             return {
                 "fund_id": fund_id,
-                "fund_name_cn": m.get("name", f"Fund #{fund_id}"),
+                "fund_name_cn": m.get("name") or f"Fund #{fund_id}",
                 "sc_product_codes": m.get("code", ""),
                 "sc_risk_rating": m.get("risk", ""),
             }
     except Exception:
         pass
-    return {"fund_id": fund_id, "fund_name_cn": f"Fund #{fund_id}",
-            "sc_product_codes": "", "sc_risk_rating": ""}
+
+    # 与主题搜索一致：fund_meta.csv 未收录时，从 fund_holding_exposure 取名称与产品代码
+    try:
+        conn = sqlite3.connect(TAG_DB)
+        row = conn.execute(
+            """
+            SELECT fund_id,
+                   MIN(fund_name_cn) AS fund_name_cn,
+                   MIN(primary_code) AS primary_code,
+                   MIN(sc_product_code) AS sc_product_code
+            FROM fund_holding_exposure
+            WHERE fund_id = ?
+            GROUP BY fund_id
+            """,
+            (fund_id,),
+        ).fetchone()
+        conn.close()
+        if row and (row[1] or row[2] or row[3]):
+            parts = [x for x in (row[2], row[3]) if x]
+            code_join = ",".join(dict.fromkeys(parts))
+            return {
+                "fund_id": fund_id,
+                "fund_name_cn": (row[1] or "").strip() or f"Fund #{fund_id}",
+                "sc_product_codes": code_join,
+                "sc_risk_rating": "",
+            }
+    except Exception:
+        pass
+
+    return {
+        "fund_id": fund_id,
+        "fund_name_cn": f"Fund #{fund_id}",
+        "sc_product_codes": "",
+        "sc_risk_rating": "",
+    }
 
 
 @st.cache_data(ttl=300)
@@ -98,6 +131,8 @@ def load_fund_tags(fund_id: int) -> pd.DataFrame:
             ORDER BY ftm.aggregated_score DESC
         """, conn, params=(fund_id,))
         conn.close()
+        if not df.empty:
+            df["aggregated_score"] = pd.to_numeric(df["aggregated_score"], errors="coerce").fillna(0.0)
         return df
     except Exception:
         return pd.DataFrame()
@@ -152,19 +187,32 @@ def load_nav_history(isin: str, ccy: str, start_date: str) -> pd.Series:
 
 
 def get_isin_from_code(code: str) -> tuple[str, str]:
-    """从 fund_list 获取 ISIN 和 CCY"""
+    """从 nav_history.db 的 fund_list 按产品代码查 ISIN、CCY（与净值表 nav_history 一致）。"""
     if not (code or str(code).strip()):
+        return "", "USD"
+    if not os.path.isfile(NAV_DB):
         return "", "USD"
     try:
         conn = sqlite3.connect(f"file:{NAV_DB}?mode=ro", uri=True)
         clean_code = str(code).split(",")[0].strip()
         row = conn.execute(
             "SELECT isin, ccy FROM fund_list WHERE code=? LIMIT 1",
-            (clean_code,)
+            (clean_code,),
         ).fetchone()
+        if not row:
+            # 部分库用带币种后缀代码登记
+            for alt in {clean_code, clean_code.upper(), clean_code.split("USD")[0], clean_code.split("CNY")[0]}:
+                if not alt:
+                    continue
+                row = conn.execute(
+                    "SELECT isin, ccy FROM fund_list WHERE code=? LIMIT 1",
+                    (alt.strip(),),
+                ).fetchone()
+                if row:
+                    break
         conn.close()
-        if row:
-            return row[0], row[1]
+        if row and row[0]:
+            return row[0], (row[1] or "USD")
     except Exception:
         pass
     return "", "USD"
@@ -208,14 +256,18 @@ def calc_period_return(series: pd.Series, days: int | None, label: str) -> dict:
 # ── 主渲染函数 ────────────────────────────────────────────────────
 def render(fund_id: int, is_mobile: bool = False):
     meta = load_fund_meta(fund_id)
-    name = meta.get("fund_name_cn", f"Fund #{fund_id}")
-    code = meta.get("sc_product_codes", "")
+    name = (
+        meta.get("fund_name_cn")
+        or meta.get("fund_name")
+        or f"Fund #{fund_id}"
+    )
+    code = meta.get("sc_product_codes", "") or meta.get("primary_code", "") or meta.get("sc_product_code", "")
     risk = meta.get("sc_risk_rating", "")
     tags_df = load_fund_tags(fund_id)
     holdings = load_top_holdings(fund_id)
 
     # ── 标题 ─────────────────────────────────────────────────────
-    st.title(f"📋 {name}")
+    st.title(f"📋 {name.strip() if isinstance(name, str) else name}")
     if code or risk:
         st.caption(f"{code}  ·  {risk}")
 
@@ -225,7 +277,7 @@ def render(fund_id: int, is_mobile: bool = False):
         tag_html = " ".join([
             f"<span style='background:#185FA522;color:#185FA5;"
             f"padding:2px 10px;border-radius:12px;font-size:12px'>"
-            f"{r['tag_name']} {r['aggregated_score']:.1f}%</span>"
+            f"{r['tag_name']} {float(r['aggregated_score']):.1f}%</span>"
             for _, r in top_tags.iterrows()
         ])
         st.markdown(tag_html, unsafe_allow_html=True)
@@ -237,7 +289,18 @@ def render(fund_id: int, is_mobile: bool = False):
     isin, ccy = get_isin_from_code(code)
 
     if not isin:
-        st.info("净值数据未关联（nav_history 中未找到对应 ISIN）。其他持仓与标签数据正常显示。")
+        if not os.path.isfile(NAV_DB):
+            st.info(
+                "净值数据未关联：**本地未找到 nav_history.db**（路径见 `NAV_HISTORY_DB` / `config.NAV_HISTORY_DB`）。"
+                " 部署环境需放置该库并在其中维护 `fund_list`（code → isin, ccy），净值才会与曲线联动。"
+            )
+        elif not (code or "").strip():
+            st.info("净值数据未关联：该基金暂无产品代码，无法在 `fund_list` 中匹配 ISIN。")
+        else:
+            st.info(
+                f"净值数据未关联：在 **nav_history.db → fund_list** 中未找到代码 `{code.split(',')[0].strip()}` 对应的 **ISIN**。"
+                " 其他持仓与标签数据可正常显示。"
+            )
     else:
         period_label = st.radio(
             "区间",

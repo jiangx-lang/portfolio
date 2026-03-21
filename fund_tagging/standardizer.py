@@ -55,7 +55,6 @@ _CN_TO_EN: dict[str, str] = {
     "SK海力士": "SK HYNIX",
     "三星":     "SAMSUNG ELECTRONICS",
     "宁德时代": "CATL",
-    "渣打银行": "STANDARD CHARTERED",
     "平安保险": "PING AN INSURANCE",
     "施耐德":   "SCHNEIDER ELECTRIC",
     "阿斯利康": "ASTRAZENECA",

@@ -1,7 +1,12 @@
 """
 pages/theme_search.py
 主题基金搜索 — 手机/电脑双布局
+
+基金列表数据源与 Next.js /api/qd/funds 对齐：以 fund_holding_exposure 为基准；
+fund_tag_map 仅补充主题得分（无打标时仍展示基金，主题得分为空）。
 """
+
+import sqlite3
 
 import streamlit as st
 from fund_tagging.db import get_conn
@@ -28,15 +33,69 @@ RISK_COLORS = {
 @st.cache_data(ttl=300)
 def load_funds() -> list[dict]:
     from data.fund_meta_builder import _load_fund_meta
+
     conn = get_conn()
-    rows = conn.execute("""
+    fund_meta = _load_fund_meta()
+
+    # ── 与 mf-holdings-dashboard /api/qd/funds 一致：基金清单来自持仓表 ──
+    _base_sql = """
+        SELECT fund_id,
+               fund_name_cn,
+               MIN(COALESCE(primary_code, sc_product_code)) AS code,
+               MIN(primary_code) AS primary_code,
+               MIN(sc_product_code) AS sc_product_code
+        FROM fund_holding_exposure
+        WHERE fund_name_cn IS NOT NULL
+          AND (primary_code IS NOT NULL OR sc_product_code IS NOT NULL)
+        GROUP BY fund_id, fund_name_cn
+        ORDER BY fund_name_cn
+    """
+    try:
+        base_rows = list(conn.execute(_base_sql))
+    except sqlite3.OperationalError:
+        # 旧库无 fund_name_cn / primary_code 等列时退回
+        base_rows = list(
+            conn.execute(
+                "SELECT DISTINCT fund_id AS fund_id FROM fund_holding_exposure ORDER BY fund_id"
+            )
+        )
+
+    print(f"[theme_search] load_funds: fund_holding_exposure 基准行数 = {len(base_rows)}")
+
+    # 按 fund_id 去重（同一 id 多行时保留首条）
+    by_fid: dict[int, sqlite3.Row] = {}
+    for row in base_rows:
+        fid = int(row["fund_id"])
+        if fid not in by_fid:
+            by_fid[fid] = row
+    base_list = list(by_fid.values())
+
+    # ── 主题得分仅来自 fund_tag_map（可能为空，与「0 只基金」根因无关）──
+    _tag_sql_active = """
         SELECT ftm.fund_id,
                GROUP_CONCAT(DISTINCT tt.tag_name) AS tags,
                GROUP_CONCAT(tt.tag_name||'='||ROUND(ftm.aggregated_score,2),'|') AS score_pairs
         FROM fund_tag_map ftm
-        JOIN tag_taxonomy tt ON tt.tag_id=ftm.tag_id
+        JOIN tag_taxonomy tt ON tt.tag_id = ftm.tag_id AND COALESCE(tt.is_active, 1) = 1
         GROUP BY ftm.fund_id
-    """).fetchall()
+    """
+    _tag_sql_plain = """
+        SELECT ftm.fund_id,
+               GROUP_CONCAT(DISTINCT tt.tag_name) AS tags,
+               GROUP_CONCAT(tt.tag_name||'='||ROUND(ftm.aggregated_score,2),'|') AS score_pairs
+        FROM fund_tag_map ftm
+        JOIN tag_taxonomy tt ON tt.tag_id = ftm.tag_id
+        GROUP BY ftm.fund_id
+    """
+    try:
+        tag_rows = list(conn.execute(_tag_sql_active))
+    except sqlite3.OperationalError:
+        tag_rows = list(conn.execute(_tag_sql_plain))
+
+    print(f"[theme_search] load_funds: fund_tag_map 有标签的基金数 = {len(tag_rows)}")
+
+    tag_by_fid = {int(r["fund_id"]): r for r in tag_rows}
+
     holding_rows = conn.execute("""
         SELECT fund_id, holding_name_std, weight_pct
         FROM fund_holding_exposure fhe
@@ -45,29 +104,62 @@ def load_funds() -> list[dict]:
         ORDER BY fund_id, weight_pct DESC
     """).fetchall()
     conn.close()
+
+    print(f"[theme_search] load_funds: holding 辅助行数 = {len(holding_rows)}")
+
     top_map: dict[int, list] = {}
     for h in holding_rows:
         top_map.setdefault(h["fund_id"], []).append(f"{h['holding_name_std']} {h['weight_pct']:.1f}%")
-    fund_meta = _load_fund_meta()
-    funds = []
-    for r in rows:
-        fid = r["fund_id"]
+
+    def _row_name_code(r: sqlite3.Row, fid: int) -> tuple[str, str]:
         meta = fund_meta.get(fid, {})
-        score_pairs = {}
-        for pair in (r["score_pairs"] or "").split("|"):
-            if "=" in pair:
-                k, v = pair.split("=", 1)
-                try: score_pairs[k.strip()] = float(v)
-                except ValueError: pass
+        keys = r.keys()
+        name = (
+            (r["fund_name_cn"] if "fund_name_cn" in keys and r["fund_name_cn"] else None)
+            or meta.get("name")
+            or f"Fund #{fid}"
+        )
+        code = ""
+        if "code" in keys and r["code"]:
+            code = str(r["code"])
+        elif "primary_code" in keys and r["primary_code"]:
+            code = str(r["primary_code"])
+        elif "sc_product_code" in keys and r["sc_product_code"]:
+            code = str(r["sc_product_code"])
+        else:
+            code = meta.get("code", "") or ""
+        return name, code
+
+    funds: list[dict] = []
+    for r in sorted(
+        base_list,
+        key=lambda x: _row_name_code(x, int(x["fund_id"]))[0].lower(),
+    ):
+        fid = int(r["fund_id"])
+        meta = fund_meta.get(fid, {})
+        name, code = _row_name_code(r, fid)
+        tr = tag_by_fid.get(fid)
+        tags_raw = (tr["tags"] if tr else "") or ""
+        score_pairs: dict[str, float] = {}
+        if tr and tr["score_pairs"]:
+            for pair in str(tr["score_pairs"]).split("|"):
+                if "=" in pair:
+                    k, v = pair.split("=", 1)
+                    try:
+                        score_pairs[k.strip()] = float(v)
+                    except ValueError:
+                        pass
         funds.append({
             "fund_id": fid,
-            "name":    meta.get("name", f"Fund #{fid}"),
-            "code":    meta.get("code", ""),
-            "risk":    meta.get("risk", ""),
-            "tags":    [t.strip() for t in (r["tags"] or "").split(",") if t.strip()],
-            "scores":  score_pairs,
-            "top":     top_map.get(fid, [])[:3],
+            "name": name,
+            "code": code,
+            "risk": meta.get("risk", ""),
+            "tags": [t.strip() for t in tags_raw.split(",") if t.strip()],
+            "scores": score_pairs,
+            "top": top_map.get(fid, [])[:3],
         })
+
+    print(f"[theme_search] load_funds: 最终返回 funds 长度 = {len(funds)}")
     return funds
 
 
@@ -287,10 +379,19 @@ def _render_desktop(funds, active_tags, query, miss_mode):
 
 # ── 主入口 ────────────────────────────────────────────────────────
 def render(is_mobile: bool = False):
+    st.markdown(
+        '<style>[data-testid="baseButton-secondary"],[data-testid="baseButton-primary"]'
+        "{background:#0f2744!important;color:#60a5fa!important;border:1px solid #3b82f6!important}"
+        "</style>",
+        unsafe_allow_html=True,
+    )
     st.title("🔍 主题基金搜索")
 
-    funds      = load_funds()
-    query      = st.session_state.get("search_query", "")
+    funds = load_funds()
+    st.caption(
+        f"已加载 **{len(funds)}** 只基金（分步计数见运行 Streamlit 的终端：`[theme_search] load_funds:`）"
+    )
+    query = st.session_state.get("search_query", "")
     active_tags = st.session_state.get("active_tags", [])
     miss_mode  = st.session_state.get("miss_mode", False)
 

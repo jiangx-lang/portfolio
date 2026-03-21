@@ -1,6 +1,6 @@
 """
 data/benchmarks.py
-渣打 Model Portfolio 三档基准配置
+ Model Portfolio 三档基准配置
 （用于组合构建器的偏差对比）
 
 替换为你们真实的 CIO 数据即可，结构保持不变：
@@ -10,7 +10,7 @@ data/benchmarks.py
 
 BENCHMARKS: dict[str, dict[str, float]] = {
 
-    "渣打保守型 Conservative": {
+    "保守型 Conservative": {
         "Bond":            50.0,
         "Low Vol":         40.0,
         "Income/Dividend": 15.0,
@@ -19,7 +19,7 @@ BENCHMARKS: dict[str, dict[str, float]] = {
         "US":              30.0,
     },
 
-    "渣打稳健型 Balanced": {
+    "稳健型 Balanced": {
         "Bond":            35.0,
         "Equity":          50.0,
         "AI Hardware":      8.0,
@@ -32,7 +32,7 @@ BENCHMARKS: dict[str, dict[str, float]] = {
         "US":              25.0,
     },
 
-    "渣打成长型 Growth": {
+    "成长型 Growth": {
         "AI Hardware":     15.0,
         "AI Software":     12.0,
         "Technology":      22.0,

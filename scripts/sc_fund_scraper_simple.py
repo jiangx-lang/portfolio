@@ -1,5 +1,5 @@
 """
-渣打 QDII 基金 PDF 简单爬虫
+ QDII 基金 PDF 简单爬虫
 ============================
 URL 规律：https://av.sc.com/cn/content/docs/cn-fs-{qdur|qdut}{三位数字}.pdf
 直接枚举 qdur001~qdur200、qdut001~qdut200，HEAD 探测存在则下载，无需 Playwright。

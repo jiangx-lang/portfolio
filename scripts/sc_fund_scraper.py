@@ -1,5 +1,5 @@
 """
-渣打银行 QDII 全球基金系列 PDF 爬虫
+银行 QDII 全球基金系列 PDF 爬虫
 =====================================
 策略：
   1. 先用 Playwright 渲染页面，抓取所有 PDF 链接（动态加载内容）
@@ -181,7 +181,7 @@ def download_all(urls: set, output_dir: Path):
 
 async def main(probe_only: bool = False):
     print("=" * 55)
-    print("  渣打银行 QDII 全球基金 PDF 下载器")
+    print("  银行 QDII 全球基金 PDF 下载器")
     print("=" * 55)
     print(f"  输出目录: {OUTPUT_DIR.resolve()}\n")
 
@@ -216,7 +216,7 @@ async def main(probe_only: bool = False):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="渣打 QDII 基金 PDF 爬虫")
+    parser = argparse.ArgumentParser(description=" QDII 基金 PDF 爬虫")
     parser.add_argument(
         "--probe-only",
         action="store_true",

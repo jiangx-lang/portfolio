@@ -48,6 +48,9 @@ def get_parser_for_file(file_path: str | Path) -> BaseFundParser | None:
         return ValuePartnersFundParser()
     if any(kw in name_lower or kw in name_raw for kw in BOCI_KEYWORDS):
         return BOCIFundParser()
+    if "施罗德" in name_raw or "schroders" in name_lower:
+        # 先用摩根解析器尝试（表格结构相近）；效果不好再单独写 SchrodersParser
+        return JPMFundParser()
 
     return None
 
@@ -73,7 +76,7 @@ def parse_fund_pdf(file_path: str | Path) -> FundData:
     parser = get_parser_for_file(path)
     if parser is None:
         raise ValueError(
-        f"未找到适用于该文件的解析器: {path.stem}，请将文件命名包含支持的基金公司关键字（如：摩根、百达、东亚、联丰、东方汇理、惠理、中银）。"
+        f"未找到适用于该文件的解析器: {path.stem}，请将文件命名包含支持的基金公司关键字（如：摩根、百达、东亚、联丰、东方汇理、惠理、中银、施罗德）。"
     )
 
     return parser.parse(path)

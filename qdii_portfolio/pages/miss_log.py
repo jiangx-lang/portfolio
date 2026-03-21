@@ -32,7 +32,7 @@ def render(is_mobile: bool = False):
             st.session_state["_ai_prompt"] = (
                 f"以下是用户搜索但未匹配到标签的主题关键词：【{keywords}】\n\n"
                 "请分析：\n"
-                "1. 这些主题各对应哪些渣打QDII基金（从已有基金库中匹配）？\n"
+                "1. 这些主题各对应哪些QDII基金（从已有基金库中匹配）？\n"
                 "2. 建议新增哪些条目到 tag_taxonomy？（tag_name, category, aliases）\n"
                 "3. 对应的 holding_tag_map 规则（regex pattern → tag_name）是什么？\n"
                 "4. 哪些主题确实没有匹配基金，需要产品层面补充？"

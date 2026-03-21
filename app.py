@@ -65,7 +65,7 @@ def _start_static_file_server():
         pass
 
 
-# 渣打 WMP 数据模块（导入失败时仍显示 Tab，便于排查）
+#  WMP 数据模块（导入失败时仍显示 Tab，便于排查）
 WMP_AVAILABLE = False
 WMP_ERROR = None
 try:
@@ -187,6 +187,52 @@ def track_page_entry(entry_name: str):
         pass
 
 
+def _inject_theme():
+    """全局深色组件样式（与 config.toml / ATLAS 对齐）；须在 set_page_config 之后调用。"""
+    st.markdown(
+        """<style>
+    /* 主背景 */
+    .stApp,[data-testid="stAppViewContainer"],[data-testid="stMain"],
+    .main,.main .block-container{background:#0a0f1e!important}
+    /* 侧栏 */
+    [data-testid="stSidebar"],[data-testid="stSidebar"]>div{background:#0d1b2e!important}
+    /* 所有白色卡片容器 */
+    [data-testid="stVerticalBlock"],[data-testid="element-container"],
+    div[class*="stContainer"]{background:transparent!important}
+    /* dataframe/表格 */
+    [data-testid="stDataFrame"]>div,[data-testid="stDataFrame"] iframe{background:#0d1b2e!important}
+    /* expander */
+    [data-testid="stExpander"]{background:#0d1b2e!important;border:1px solid #1e3a5f!important;border-radius:8px!important}
+    [data-testid="stExpander"] summary{color:#e2e8f0!important}
+    /* tabs */
+    [data-testid="stTabs"]{background:transparent!important}
+    button[data-baseweb="tab"]{color:#94a3b8!important;background:transparent!important}
+    button[data-baseweb="tab"][aria-selected="true"]{color:#60a5fa!important;border-bottom:2px solid #3b82f6!important}
+    /* 输入框 */
+    input,textarea,[data-testid="stTextInput"] input,
+    [data-testid="stNumberInput"] input{background:#0f2744!important;color:#e2e8f0!important;border-color:#1e3a5f!important}
+    /* selectbox */
+    [data-testid="stSelectbox"]>div>div{background:#0f2744!important;color:#e2e8f0!important;border-color:#1e3a5f!important}
+    /* 按钮（含 BaseWeb primary/secondary，避免 QDII 搜索钮偏红） */
+    .stButton>button,[data-testid="baseButton-primary"],[data-testid="baseButton-secondary"]{
+        background:#0f2744!important;color:#60a5fa!important;border:1px solid #3b82f6!important;border-radius:8px!important}
+    .stButton>button:hover{background:#1e3a5f!important}
+    /* metric */
+    [data-testid="stMetric"]{background:#0d1b2e!important;border:1px solid #1e3a5f!important;border-radius:8px!important;padding:12px!important}
+    /* alert/warning */
+    [data-testid="stAlert"]{background:#0f2744!important;border-color:#1e3a5f!important}
+    /* progress bar */
+    [data-testid="stProgressBar"]>div{background:#1e3a5f!important}
+    [data-testid="stProgressBar"]>div>div{background:#3b82f6!important}
+    /* divider */
+    hr{border-color:#1e2d45!important}
+    /* 隐藏默认元素 */
+    #MainMenu,footer{visibility:hidden}
+    </style>""",
+        unsafe_allow_html=True,
+    )
+
+
 st.set_page_config(page_title="锦城轮动系统 · JinCity Rotation Engine", layout="wide", initial_sidebar_state="collapsed")
 
 # --- 0. 状态管理 ---
@@ -201,13 +247,13 @@ def set_device(device_type, entry_type="config"):
     st.session_state.entry = entry_type
     if entry_type not in ("admin", "qdii"):
         threading.Thread(target=track_page_entry, args=(entry_type,), daemon=True).start()
-    st.rerun()
+    # 勿在 on_click 回调里 st.rerun()，Streamlit 会在回调后自动重跑脚本
 
 
 def back_to_landing():
     st.session_state.device = None
     st.session_state.entry = None
-    st.rerun()
+    # 同上，供 st.button(..., on_click=back_to_landing) 使用
 
 
 def _notes_request_upload():
@@ -228,13 +274,13 @@ def _do_notes_delete(path_str):
         p.unlink(missing_ok=True)
     if "notes_delete_pending" in st.session_state:
         del st.session_state.notes_delete_pending
-    st.rerun()
+    # on_click 回调内勿 rerun
 
 
 def _clear_notes_delete_pending():
     if "notes_delete_pending" in st.session_state:
         del st.session_state.notes_delete_pending
-    st.rerun()
+    # on_click 回调内勿 rerun
 
 
 def _set_podcast_delete_pending(path_str):
@@ -247,13 +293,13 @@ def _do_podcast_delete(path_str):
         p.unlink(missing_ok=True)
     if "podcast_delete_pending" in st.session_state:
         del st.session_state.podcast_delete_pending
-    st.rerun()
+    # on_click 回调内勿 rerun
 
 
 def _clear_podcast_delete_pending():
     if "podcast_delete_pending" in st.session_state:
         del st.session_state.podcast_delete_pending
-    st.rerun()
+    # on_click 回调内勿 rerun
 
 
 # ─────────────────────────────────────────────
@@ -384,9 +430,25 @@ MRF_POOL = {
     "中银香港香港股票基金":           {"brand": "BOC",   "股票": 95, "固定收益": 0,  "现金": 5, "fee_rate": 1.5},
     "施罗德亚洲高息股债基金M类别(人民币派息)": {"brand": "Schroders", "股票": 64, "固定收益": 23, "现金": 13, "fee_rate": 2.0},
 }
+# 优先从 Supabase mrf_funds 表加载，无则用上表
+try:
+    from scripts.load_mrf_pool_from_supabase import load_mrf_pool_from_supabase
+    _mrf_loaded = load_mrf_pool_from_supabase()
+    if _mrf_loaded:
+        MRF_POOL = _mrf_loaded
+except Exception:
+    pass
 # 未来接 DB：fund_fees 表 (fund_name TEXT PRIMARY KEY, fee_rate REAL, updated_at TEXT)
 
-# 渣打铁律：垃圾债占比不超限。东亚联丰亚洲债券为纯垃圾债，算法中排除，用其他固收产品替代。
+# Next.js 深度分析系统地址（本地开发用 localhost:3001）
+NEXTJS_BASE_URL = os.environ.get("NEXTJS_BASE_URL", "http://localhost:3001")
+
+def get_mrf_analysis_url(fund_name: str) -> str:
+    """MRF 基金 → Next.js /mrf?fund=<encoded fund_name>"""
+    encoded = urllib.parse.quote(fund_name, safe="")
+    return f"{NEXTJS_BASE_URL}/mrf?fund={encoded}"
+
+# 铁律：垃圾债占比不超限。东亚联丰亚洲债券为纯垃圾债，算法中排除，用其他固收产品替代。
 EXCLUDED_FUNDS = {"东亚联丰亚洲债券及货币基金"}
 # Tab1 最高费率方案：候选为申购费 >= 该值的基金（多基金公司 2.5%～3% 一起优化）；Tab3 补充方案申购费放宽至 1.5%～3%
 FEE_FIRST_MIN_FEE = 2.5
@@ -618,7 +680,7 @@ def render_standard_portfolio_table(risk_level: str, target_alloc: dict):
     - 二级细分明细（来自 SCB_DETAIL）
     """
     st.markdown("### 📊 标准组合构成")
-    st.caption(f"渣打 SCB Foundation — **{risk_level}**")
+    st.caption(f" SCB Foundation — **{risk_level}**")
 
     detail = SCB_DETAIL.get(risk_level, {})
 
@@ -1079,15 +1141,41 @@ def _render_custom_portfolio_builder(
                 fd = MRF_POOL[f]
                 short = f"股{fd['股票']}% 债{fd['固定收益']}% 现{fd['现金']}%"
                 cb_key = f"custom_cb_{rk}_{tab_name}_{_key_safe(f)}"
-                if st.checkbox(f"{f}（{short}）", key=cb_key):
-                    selected_funds.append(f)
+                col_info, col_btn = st.columns([6, 1])
+                with col_info:
+                    if st.checkbox(f"{f}（{short}）", key=cb_key):
+                        selected_funds.append(f)
+                with col_btn:
+                    st.markdown(
+                        f'<a href="{get_mrf_analysis_url(f)}" target="_blank" '
+                        f'style="display:inline-block;padding:3px 10px;margin-top:8px;'
+                        f'background:#0f2744;color:#60a5fa;'
+                        f'border:1px solid #3b82f6;border-radius:5px;'
+                        f'font-size:11px;text-decoration:none;white-space:nowrap;">'
+                        f'深度分析 →</a>',
+                        unsafe_allow_html=True
+                    )
         else:
-            selected_funds = st.multiselect(
-                "从基金池中选择（可多选）",
-                options=list(MRF_POOL.keys()),
-                default=[],
-                key=f"custom_funds_{rk}_{tab_name}",
-            )
+            st.caption("逐行勾选要纳入组合的基金（可多选）")
+            selected_funds = []
+            for f in MRF_POOL.keys():
+                fd = MRF_POOL[f]
+                short = f"股{fd['股票']}% 债{fd['固定收益']}% 现{fd['现金']}%"
+                cb_key = f"custom_cb_{rk}_{tab_name}_{_key_safe(f)}"
+                col_info, col_btn = st.columns([6, 1])
+                with col_info:
+                    if st.checkbox(f"{f}（{short}）", key=cb_key):
+                        selected_funds.append(f)
+                with col_btn:
+                    st.markdown(
+                        f'<a href="{get_mrf_analysis_url(f)}" target="_blank" '
+                        f'style="display:inline-block;padding:3px 10px;margin-top:8px;'
+                        f'background:#0f2744;color:#60a5fa;'
+                        f'border:1px solid #3b82f6;border-radius:5px;'
+                        f'font-size:11px;text-decoration:none;white-space:nowrap;">'
+                        f'深度分析 →</a>',
+                        unsafe_allow_html=True
+                    )
 
         if not selected_funds:
             st.caption("请至少选择一只基金后分配权重。")
@@ -1329,49 +1417,51 @@ def _month_label(ym: str) -> str:
 
 
 def _render_daily_reports_tab():
-    """每日报告：卡片式 UI，按月分组，搜索，查看报告外链；登录后可删除、上传。"""
+    """每日报告：卡片式 UI，按月分组，搜索，查看报告外链；登录后可删除、上传。
+
+    注意：无 PDF 时也不得提前 return，否则「上传内容 / 密码」永远不会渲染。
+    """
     st.markdown(MEDIA_PAGE_CSS, unsafe_allow_html=True)
     st.markdown("### 📄 每日报告")
-    if not MARKET_PDFS.exists():
-        st.info("暂无报告，敬请期待。")
-        return
+    MARKET_PDFS.mkdir(parents=True, exist_ok=True)
+
     all_pdfs = sorted(
         MARKET_PDFS.glob("*.pdf"),
         key=lambda p: (_parse_date_from_filename(p.name) or "00000000", p.name),
         reverse=True,
     )
+
     if not all_pdfs:
         st.info("暂无报告，敬请期待。")
-        return
-    search = st.text_input("🔍 搜索报告名称", placeholder="输入关键词…", label_visibility="collapsed", key="notes_tab_search")
-    months = sorted({_yyyymm_from_filename(p.name) for p in all_pdfs if _yyyymm_from_filename(p.name)}, reverse=True)
-    col_f, col_count = st.columns([3, 1])
-    with col_f:
-        sel_month = st.selectbox("月份", ["全部"] + months, key="notes_tab_month", label_visibility="collapsed")
-    pdfs = all_pdfs
-    if sel_month != "全部":
-        pdfs = [p for p in pdfs if _yyyymm_from_filename(p.name) == sel_month]
-    if search:
-        pdfs = [p for p in pdfs if search.lower() in _title_from_filename(p.name).lower()]
-    with col_count:
-        st.markdown(f"<div style='padding-top:8px;color:#888;font-size:13px;'>共 {len(pdfs)} 份</div>", unsafe_allow_html=True)
-    if not pdfs:
-        st.info("没有符合条件的报告")
-        return
-    groups = {}
-    for p in pdfs:
-        ym = _yyyymm_from_filename(p.name) or "其他"
-        groups.setdefault(ym, []).append(p)
-    for ym in sorted(groups.keys(), reverse=True):
-        group = groups[ym]
-        st.markdown(f'<div class="month-header">📅 {_month_label(ym)} · {len(group)} 份</div>', unsafe_allow_html=True)
-        for p in group:
-            title = _title_from_filename(p.name)
-            date_str = _parse_date_from_filename(p.name)
-            date_label = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}" if date_str and len(date_str) >= 8 else "—"
-            size_mb = p.stat().st_size / (1024 * 1024)
-            url = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
-            html = f"""
+    else:
+        search = st.text_input("🔍 搜索报告名称", placeholder="输入关键词…", label_visibility="collapsed", key="notes_tab_search")
+        months = sorted({_yyyymm_from_filename(p.name) for p in all_pdfs if _yyyymm_from_filename(p.name)}, reverse=True)
+        col_f, col_count = st.columns([3, 1])
+        with col_f:
+            sel_month = st.selectbox("月份", ["全部"] + months, key="notes_tab_month", label_visibility="collapsed")
+        pdfs = all_pdfs
+        if sel_month != "全部":
+            pdfs = [p for p in pdfs if _yyyymm_from_filename(p.name) == sel_month]
+        if search:
+            pdfs = [p for p in pdfs if search.lower() in _title_from_filename(p.name).lower()]
+        with col_count:
+            st.markdown(f"<div style='padding-top:8px;color:#888;font-size:13px;'>共 {len(pdfs)} 份</div>", unsafe_allow_html=True)
+        if not pdfs:
+            st.info("没有符合条件的报告")
+        else:
+            groups = {}
+            for p in pdfs:
+                ym = _yyyymm_from_filename(p.name) or "其他"
+                groups.setdefault(ym, []).append(p)
+            for ym in sorted(groups.keys(), reverse=True):
+                group = groups[ym]
+                st.markdown(f'<div class="month-header">📅 {_month_label(ym)} · {len(group)} 份</div>', unsafe_allow_html=True)
+                for p in group:
+                    title = _title_from_filename(p.name)
+                    date_str = _parse_date_from_filename(p.name)
+                    date_label = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}" if date_str and len(date_str) >= 8 else "—"
+                    size_mb = p.stat().st_size / (1024 * 1024)
+                    html = f"""
             <div class="media-card">
                 <div class="media-icon pdf">📄</div>
                 <div class="media-info">
@@ -1385,17 +1475,17 @@ def _render_daily_reports_tab():
                 <div class="media-actions"></div>
             </div>
             """
-            pdf_col1, pdf_col2 = st.columns([4, 1])
-            with pdf_col1:
-                st.markdown(html, unsafe_allow_html=True)
-            with pdf_col2:
-                url_open = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
-                # 用 link_button 直接渲染 <a target="_blank">，不依赖被过滤的 <script>，点击即可在新标签打开
-                st.link_button("📖 查看", url=url_open, use_container_width=True)
-            if st.session_state.get("notes_upload_unlocked", False):
-                if st.button("🗑️ 删除", key=f"notes_del_tab_{p.name}", type="secondary"):
-                    _set_notes_delete_pending(str(p))
-                    st.rerun()
+                    pdf_col1, pdf_col2 = st.columns([4, 1])
+                    with pdf_col1:
+                        st.markdown(html, unsafe_allow_html=True)
+                    with pdf_col2:
+                        url_open = f"{FILE_SERVER_BASE_URL}/pdfs/{urllib.parse.quote(p.name)}"
+                        st.link_button("📖 查看", url=url_open, use_container_width=True)
+                    if st.session_state.get("notes_upload_unlocked", False):
+                        if st.button("🗑️ 删除", key=f"notes_del_tab_{p.name}", type="secondary"):
+                            _set_notes_delete_pending(str(p))
+                            st.rerun()
+
     st.markdown("---")
     st.button("上传内容", key="notes_tab_upload_btn", on_click=_notes_request_upload)
     if st.session_state.get("notes_show_pwd", False):
@@ -1420,54 +1510,57 @@ def _render_daily_reports_tab():
 
 
 def _render_podcast_tab():
-    """市场播客：卡片式 UI，按月分组，搜索；点击「播放」才展开 st.audio（懒加载）；登录后可删除、上传。"""
+    """市场播客：卡片式 UI，按月分组，搜索；点击「播放」才展开 st.audio（懒加载）；登录后可删除、上传。
+
+    无音频文件时也不得提前 return，否则上传入口不显示。
+    """
     st.markdown(MEDIA_PAGE_CSS, unsafe_allow_html=True)
     st.markdown("### 🎙️ 市场播客")
-    if not MARKET_PODCASTS.exists():
-        st.info("暂无播客，敬请期待。")
-        return
+    MARKET_PODCASTS.mkdir(parents=True, exist_ok=True)
+
     exts = (".mp3", ".m4a", ".wav")
     all_audios = sorted(
         [p for p in MARKET_PODCASTS.iterdir() if p.suffix.lower() in exts],
         key=lambda p: (_parse_date_from_filename(p.name) or "00000000", p.name),
         reverse=True,
     )
+
     if not all_audios:
         st.info("暂无播客，敬请期待。")
-        return
-    search = st.text_input("🔍 搜索播客名称", placeholder="输入关键词…", label_visibility="collapsed", key="podcast_tab_search")
-    months = sorted({_yyyymm_from_filename(p.name) for p in all_audios if _yyyymm_from_filename(p.name)}, reverse=True)
-    col_f, col_count = st.columns([3, 1])
-    with col_f:
-        sel_month = st.selectbox("月份", ["全部"] + months, key="podcast_tab_month", label_visibility="collapsed")
-    audios = all_audios
-    if sel_month != "全部":
-        audios = [p for p in audios if _yyyymm_from_filename(p.name) == sel_month]
-    if search:
-        audios = [p for p in audios if search.lower() in _title_from_filename(p.name).lower()]
-    with col_count:
-        st.markdown(f"<div style='padding-top:8px;color:#888;font-size:13px;'>共 {len(audios)} 集</div>", unsafe_allow_html=True)
-    if not audios:
-        st.info("没有符合条件的播客")
-        return
-    if "podcast_expanded" not in st.session_state:
-        st.session_state.podcast_expanded = set()
-    groups = {}
-    for p in audios:
-        ym = _yyyymm_from_filename(p.name) or "其他"
-        groups.setdefault(ym, []).append(p)
-    for ym in sorted(groups.keys(), reverse=True):
-        group = groups[ym]
-        st.markdown(f'<div class="month-header">🎙️ {_month_label(ym)} · {len(group)} 集</div>', unsafe_allow_html=True)
-        for p in group:
-            title = _title_from_filename(p.name)
-            date_str = _parse_date_from_filename(p.name)
-            date_label = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}" if date_str and len(date_str) >= 8 else "—"
-            size_mb = p.stat().st_size / (1024 * 1024)
-            ext = p.suffix.lower().lstrip(".")
-            is_expanded = p.name in st.session_state.podcast_expanded
-            toggle_label = "⏸ 收起" if is_expanded else "▶ 播放"
-            html = f"""
+    else:
+        search = st.text_input("🔍 搜索播客名称", placeholder="输入关键词…", label_visibility="collapsed", key="podcast_tab_search")
+        months = sorted({_yyyymm_from_filename(p.name) for p in all_audios if _yyyymm_from_filename(p.name)}, reverse=True)
+        col_f, col_count = st.columns([3, 1])
+        with col_f:
+            sel_month = st.selectbox("月份", ["全部"] + months, key="podcast_tab_month", label_visibility="collapsed")
+        audios = all_audios
+        if sel_month != "全部":
+            audios = [p for p in audios if _yyyymm_from_filename(p.name) == sel_month]
+        if search:
+            audios = [p for p in audios if search.lower() in _title_from_filename(p.name).lower()]
+        with col_count:
+            st.markdown(f"<div style='padding-top:8px;color:#888;font-size:13px;'>共 {len(audios)} 集</div>", unsafe_allow_html=True)
+        if not audios:
+            st.info("没有符合条件的播客")
+        else:
+            if "podcast_expanded" not in st.session_state:
+                st.session_state.podcast_expanded = set()
+            groups = {}
+            for p in audios:
+                ym = _yyyymm_from_filename(p.name) or "其他"
+                groups.setdefault(ym, []).append(p)
+            for ym in sorted(groups.keys(), reverse=True):
+                group = groups[ym]
+                st.markdown(f'<div class="month-header">🎙️ {_month_label(ym)} · {len(group)} 集</div>', unsafe_allow_html=True)
+                for p in group:
+                    title = _title_from_filename(p.name)
+                    date_str = _parse_date_from_filename(p.name)
+                    date_label = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}" if date_str and len(date_str) >= 8 else "—"
+                    size_mb = p.stat().st_size / (1024 * 1024)
+                    ext = p.suffix.lower().lstrip(".")
+                    is_expanded = p.name in st.session_state.podcast_expanded
+                    toggle_label = "⏸ 收起" if is_expanded else "▶ 播放"
+                    html = f"""
             <div class="media-card">
                 <div class="media-icon podcast">🎙️</div>
                 <div class="media-info">
@@ -1480,29 +1573,30 @@ def _render_podcast_tab():
                 </div>
             </div>
             """
-            st.markdown(html, unsafe_allow_html=True)
-            btn_cols = st.columns([1, 1, 4] if st.session_state.get("podcast_upload_unlocked", False) else [1, 5])
-            with btn_cols[0]:
-                if st.button(toggle_label, key=f"podcast_play_{p.name}", use_container_width=True):
+                    st.markdown(html, unsafe_allow_html=True)
+                    btn_cols = st.columns([1, 1, 4] if st.session_state.get("podcast_upload_unlocked", False) else [1, 5])
+                    with btn_cols[0]:
+                        if st.button(toggle_label, key=f"podcast_play_{p.name}", use_container_width=True):
+                            if is_expanded:
+                                st.session_state.podcast_expanded.discard(p.name)
+                            else:
+                                st.session_state.podcast_expanded.add(p.name)
+                                threading.Thread(
+                                    target=track_file_click,
+                                    args=(p.name, "podcast"),
+                                    daemon=True,
+                                ).start()
+                            st.rerun()
+                    if st.session_state.get("podcast_upload_unlocked", False):
+                        with btn_cols[1]:
+                            if st.button("🗑️ 删除", key=f"podcast_del_tab_{p.name}", type="secondary", use_container_width=True):
+                                _set_podcast_delete_pending(str(p))
+                                st.rerun()
                     if is_expanded:
-                        st.session_state.podcast_expanded.discard(p.name)
-                    else:
-                        st.session_state.podcast_expanded.add(p.name)
-                        threading.Thread(
-                            target=track_file_click,
-                            args=(p.name, "podcast"),
-                            daemon=True,
-                        ).start()
-                    st.rerun()
-            if st.session_state.get("podcast_upload_unlocked", False):
-                with btn_cols[1]:
-                    if st.button("🗑️ 删除", key=f"podcast_del_tab_{p.name}", type="secondary", use_container_width=True):
-                        _set_podcast_delete_pending(str(p))
-                        st.rerun()
-            if is_expanded:
-                with open(p, "rb") as f:
-                    audio_bytes = f.read()
-                st.audio(audio_bytes, format=f"audio/{ext}")
+                        with open(p, "rb") as f:
+                            audio_bytes = f.read()
+                        st.audio(audio_bytes, format=f"audio/{ext}")
+
     st.markdown("---")
     st.button("上传内容", key="podcast_tab_upload_btn", on_click=_podcast_request_upload)
     if st.session_state.get("podcast_show_pwd", False):
@@ -1901,63 +1995,298 @@ def _render_qdii_system():
     QDII_PAGES[qdii_choice].render(is_mobile=is_mobile)
 
 
+def render_landing_page():
+    """系统选择入口页：深色主题，与 Next.js ATLAS 风格对齐。"""
+    st.markdown(
+        """
+        <style>
+        /* 强制深色背景 - 多层选择器覆盖 */
+        .stApp,
+        .stApp > div,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stAppViewContainer"] > div,
+        [data-testid="stMain"],
+        [data-testid="stMainBlockContainer"],
+        section.main,
+        .main .block-container {
+            background-color: #0a0f1e !important;
+            background: #0a0f1e !important;
+        }
+
+        /* 顶栏 */
+        [data-testid="stHeader"],
+        [data-testid="stToolbar"] {
+            background-color: #0a0f1e !important;
+        }
+
+        /* 侧边栏（如果有） */
+        [data-testid="stSidebar"] {
+            background-color: #0d1b2e !important;
+        }
+
+        /* 所有文字默认浅色 */
+        .stApp * {
+            color: #e2e8f0;
+        }
+
+        /* 按钮样式 */
+        .stButton > button {
+            background: #0f2744 !important;
+            color: #60a5fa !important;
+            border: 1px solid #3b82f6 !important;
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            padding: 8px 20px !important;
+            width: 100% !important;
+        }
+        .stButton > button:hover {
+            background: #1e3a5f !important;
+            border-color: #60a5fa !important;
+            color: #93c5fd !important;
+        }
+
+        /* 隐藏默认元素 */
+        #MainMenu { visibility: hidden; }
+        footer { visibility: hidden; }
+
+        /* 落地页内容区宽度与间距 */
+        .main .block-container {
+            max-width: 900px !important;
+            padding-top: 1rem !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        div[data-testid="column"] .stButton { margin-top: 4px; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div style="text-align:center; padding: 24px 0 8px 0;">
+            <div style="font-size:13px; color:#3b82f6; letter-spacing:3px; margin-bottom:8px;">
+                ◆ ATLAS
+            </div>
+            <h1 style="color:#e2e8f0; font-size:32px; font-weight:700; margin:0;">
+                Market Portfolio
+            </h1>
+            <p style="color:#94a3b8; font-size:14px; margin-top:8px;">
+                 Model Portfolio 数据展示 · 市场资讯分享 · 不构成任何投资建议
+            </p>
+        </div>
+        <p style="text-align:center; color:#94a3b8; font-size:13px; margin-bottom:20px;">
+            请选择入口与设备
+        </p>
+        <hr style="border:none; border-top:1px solid #1e3a5f; margin:0 0 28px 0;">
+        """,
+        unsafe_allow_html=True,
+    )
+
+    col1, col2 = st.columns(2, gap="medium")
+
+    with col1:
+        st.markdown(
+            """
+            <div style="background:#0d1b2e; border:1px solid #1e3a5f; border-radius:12px;
+                        padding:24px; margin-bottom:12px;">
+                <div style="color:#60a5fa; font-size:12px; letter-spacing:2px; margin-bottom:8px;">
+                    QDII PORTFOLIO
+                </div>
+                <div style="color:#e2e8f0; font-size:18px; font-weight:600; margin-bottom:8px;">
+                    🏦 锦城轮动 · QDII
+                </div>
+                <div style="color:#94a3b8; font-size:13px;">
+                    QDII 基金组合构建器 · 主题搜索 · 历史业绩
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        q1, q2 = st.columns(2)
+        with q1:
+            st.button(
+                "📱 手机端",
+                key="qdii_mobile",
+                on_click=set_device,
+                args=("mobile", "qdii"),
+                use_container_width=True,
+            )
+        with q2:
+            st.button(
+                "🖥️ 电脑端",
+                key="qdii_desktop",
+                on_click=set_device,
+                args=("desktop", "qdii"),
+                use_container_width=True,
+            )
+
+    with col2:
+        st.markdown(
+            """
+            <div style="background:#0d1b2e; border:1px solid #1e3a5f; border-radius:12px;
+                        padding:24px; margin-bottom:12px;">
+                <div style="color:#60a5fa; font-size:12px; letter-spacing:2px; margin-bottom:8px;">
+                    MRF PORTFOLIO
+                </div>
+                <div style="color:#e2e8f0; font-size:18px; font-weight:600; margin-bottom:8px;">
+                    🌐 锦城轮动 · MRF
+                </div>
+                <div style="color:#94a3b8; font-size:13px;">
+                    MRF 基金池 · SCB 组合构建 · 穿透分析
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        m1, m2 = st.columns(2)
+        with m1:
+            st.button(
+                "📱 手机端",
+                key="cfg_mobile",
+                on_click=set_device,
+                args=("mobile", "config"),
+                use_container_width=True,
+            )
+        with m2:
+            st.button(
+                "🖥️ 电脑端",
+                key="cfg_desktop",
+                on_click=set_device,
+                args=("desktop", "config"),
+                use_container_width=True,
+            )
+
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div style="background:#0d1b2e; border:1px solid #1e3a5f; border-radius:12px;
+                    padding:24px; margin-bottom:8px;">
+            <div style="color:#60a5fa; font-size:12px; letter-spacing:2px; margin-bottom:8px;">
+                WMP NAV
+            </div>
+            <div style="color:#e2e8f0; font-size:18px; font-weight:600; margin-bottom:8px;">
+                🏦  WMP 净值
+            </div>
+            <div style="color:#94a3b8; font-size:13px;">
+                抓取与查看 WMP 净值数据
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    w1, w2 = st.columns(2)
+    with w1:
+        st.button(
+            "📱 手机端",
+            key="wmp_mobile",
+            on_click=set_device,
+            args=("mobile", "wmp"),
+            use_container_width=True,
+        )
+    with w2:
+        st.button(
+            "🖥️ 电脑端",
+            key="wmp_desktop",
+            on_click=set_device,
+            args=("desktop", "wmp"),
+            use_container_width=True,
+        )
+
+    st.markdown("<div style='margin-top:16px'></div>", unsafe_allow_html=True)
+    col3, col4, col5 = st.columns(3, gap="medium")
+
+    with col3:
+        st.markdown(
+            """
+            <div style="background:#0d1b2e; border:1px solid #1e3a5f; border-radius:12px;
+                        padding:20px; text-align:center; margin-bottom:8px;">
+                <div style="font-size:24px; margin-bottom:8px;">📝</div>
+                <div style="color:#e2e8f0; font-size:15px; font-weight:600;">市场笔记</div>
+                <div style="color:#94a3b8; font-size:12px; margin-top:4px;">市场观察与分析</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.button(
+            "进入市场笔记 →",
+            key="notes_enter",
+            on_click=set_device,
+            args=("desktop", "notes"),
+            use_container_width=True,
+        )
+
+    with col4:
+        st.markdown(
+            """
+            <div style="background:#0d1b2e; border:1px solid #1e3a5f; border-radius:12px;
+                        padding:20px; text-align:center; margin-bottom:8px;">
+                <div style="font-size:24px; margin-bottom:8px;">🎙️</div>
+                <div style="color:#e2e8f0; font-size:15px; font-weight:600;">播客</div>
+                <div style="color:#94a3b8; font-size:12px; margin-top:4px;">音频市场解读</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.button(
+            "进入播客 →",
+            key="podcast_enter",
+            on_click=set_device,
+            args=("desktop", "podcast"),
+            use_container_width=True,
+        )
+
+    with col5:
+        st.markdown(
+            """
+            <div style="background:#0d1b2e; border:1px solid #1e3a5f; border-radius:12px;
+                        padding:20px; text-align:center; margin-bottom:8px;">
+                <div style="font-size:24px; margin-bottom:8px;">🔐</div>
+                <div style="color:#e2e8f0; font-size:15px; font-weight:600;">管理员</div>
+                <div style="color:#94a3b8; font-size:12px; margin-top:4px;">内容管理后台</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.button(
+            "🔐 管理员",
+            key="admin_enter",
+            on_click=set_device,
+            args=("desktop", "admin"),
+            use_container_width=True,
+        )
+
+    quote_text, quote_author = get_daily_quote()
+    st.markdown(
+        f"""
+        <div style="text-align:center; margin-top:36px; padding-top:20px;
+                    border-top:1px solid #1e3a5f;">
+            <p style="font-style:italic; font-size:14px; color:#94a3b8; margin-bottom:8px;">
+                "{quote_text}"
+            </p>
+            <p style="font-size:12px; color:#64748b; letter-spacing:1px;">— {quote_author}</p>
+            <p style="color:#475569; font-size:12px; margin-top:20px; line-height:1.6;">
+                本平台所有内容仅为市场数据展示与资讯分享，不构成任何投资建议。<br>
+                投资涉及风险，请咨询持牌理财顾问后自行决策。
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# ─────────────────────────────────────────────
+#  全局主题（所有入口共用，须在引导页与各分支之前）
+# ─────────────────────────────────────────────
+_inject_theme()
+
 # ─────────────────────────────────────────────
 #  引导页
 # ─────────────────────────────────────────────
 if st.session_state.device is None:
-    st.title("🎯 锦城轮动系统 · JinCity Rotation Engine")
-    st.write("请选择入口与设备：")
-
-    # QDII 系统入口（合并进本 app，同一端口）
-    st.subheader("📊 锦城轮动系统 QDII · JinCity Rotation Engine")
-    qdii_c1, qdii_c2 = st.columns(2)
-    with qdii_c1:
-        st.button("📱 手机", key="qdii_mobile",
-                  on_click=set_device, args=("mobile", "qdii"),
-                  use_container_width=True)
-    with qdii_c2:
-        st.button("💻 电脑", key="qdii_desktop",
-                  on_click=set_device, args=("desktop", "qdii"),
-                  use_container_width=True)
-
-    st.write("")
-    st.subheader("锦城轮动系统 · JinCity Rotation Engine")
-    r1c1, r1c2 = st.columns(2)
-    with r1c1:
-        st.button("📱 手机", key="cfg_mobile", on_click=set_device, args=("mobile", "config"), use_container_width=True)
-    with r1c2:
-        st.button("💻 电脑", key="cfg_desktop", on_click=set_device, args=("desktop", "config"), use_container_width=True)
-
-    st.write("")
-    st.subheader("WMP NAV")
-    r2c1, r2c2 = st.columns(2)
-    with r2c1:
-        st.button("📱 手机", key="wmp_mobile", on_click=set_device, args=("mobile", "wmp"), use_container_width=True)
-    with r2c2:
-        st.button("💻 电脑", key="wmp_desktop", on_click=set_device, args=("desktop", "wmp"), use_container_width=True)
-
-    st.write("")
-    st.subheader("📝 市场笔记")
-    st.button("进入市场笔记 →", key="notes_enter", on_click=set_device, args=("desktop", "notes"), use_container_width=True)
-
-    st.write("")
-    st.subheader("🎙️ 播客")
-    st.button("进入播客 →", key="podcast_enter", on_click=set_device, args=("desktop", "podcast"), use_container_width=True)
-
-    st.write("")
-    st.button("🔐 管理员", key="admin_enter", on_click=set_device, args=("desktop", "admin"), use_container_width=False)
-
-    st.markdown("---")
-    quote_text, quote_author = get_daily_quote()
-    st.markdown(
-        f"""
-        <div style='text-align:center; padding: 20px 40px; color: #aaa;'>
-            <p style='font-style:italic; font-size:15px; margin-bottom:6px;'>"{quote_text}"</p>
-            <p style='font-size:12px; letter-spacing:1px;'>— {quote_author}</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    render_landing_page()
     st.stop()
 
 # ── QDII 系统（合并进本 app，同一端口）─────────────────────────────
@@ -1987,14 +2316,14 @@ if st.session_state.entry == "wmp":
             st.button("⬅️ 返回首页", on_click=back_to_landing)
     else:
         st.button("⬅️ 返回首页", on_click=back_to_landing)
-    st.subheader("🏦 渣打 WMP 净值")
+    st.subheader("🏦  WMP 净值")
     if not WMP_AVAILABLE:
         st.error("**WMP 模块未加载**。请安装依赖后重启：`pip install requests beautifulsoup4`")
         if WMP_ERROR:
             st.code(WMP_ERROR, language="text")
     else:
         if st.button("🔄 抓取今日净值并写入 CSV"):
-            with st.spinner("正在抓取渣打 WMP 页面…"):
+            with st.spinner("正在抓取 WMP 页面…"):
                 records = scrape_wmp()
             if records:
                 init_db()
@@ -2074,7 +2403,7 @@ target_alloc = SCB_TARGET[risk_level]
 
 # 当前基准一行摘要
 st.write(
-    f"当前基准：**渣打 - {risk_level}** "
+    f"当前基准：** - {risk_level}** "
     f"(股{target_alloc['股票']}% / 债{target_alloc['固定收益']}% / 金{target_alloc['黄金']}% / 现{target_alloc['现金']}%)"
 )
 st.divider()

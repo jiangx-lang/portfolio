@@ -1,5 +1,5 @@
 """
-渣打 QDII 基金 PDF 爬虫 v2
+ QDII 基金 PDF 爬虫 v2
 - 用 Playwright 打开页面、滚动触发懒加载，从 DOM 抓取所有 av.sc.com 的 .pdf 链接
 - 用 requests 顺序下载，随机延迟 1.5~3.5s，降低并发求稳
 - 输出目录：项目根目录下 sc_funds_pdf_v2/

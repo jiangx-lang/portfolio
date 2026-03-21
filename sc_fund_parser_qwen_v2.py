@@ -1,7 +1,7 @@
 """
 sc_fund_parser_qwen_v2.py
 ══════════════════════════════════════════════════════════════════
-渣打 QDII 基金 PDF → SQLite  |  v2  |  Qwen-VL 驱动
+ QDII 基金 PDF → SQLite  |  v2  |  Qwen-VL 驱动
 目标：精准解析 · 异常捕获 · 人机协同验证
 
 新增（v2）：
@@ -13,7 +13,7 @@ sc_fund_parser_qwen_v2.py
   • jsonschema 校验（失败自动重试一次）
   • CLI 三色汇总：[OK] 成功 / [!] 需审核 / [ERR] 失败
   • --audit 命令：逐条审核 needs_review 记录（y/n 确认入库）
-  • 文件错误时自动重新下载一次：PDF 缺失、损坏或 0 页时，会从渣打 CDN 重下再重试（仅 cn-fs-qdur/qdut）
+  • 文件错误时自动重新下载一次：PDF 缺失、损坏或 0 页时，会从 CDN 重下再重试（仅 cn-fs-qdur/qdut）
 
 用法：
   python sc_fund_parser_qwen_v2.py --dir ./sc_funds_qdii
@@ -64,7 +64,7 @@ MAX_PAGES     = 6      # 每份 PDF 最多渲染前 N 页
 DPI           = 150    # 渲染分辨率
 MAX_RETRIES   = 1      # JSON 校验失败后重试次数
 
-# 文件错误时自动重新下载一次（渣打 PDF 的 CDN 地址）
+# 文件错误时自动重新下载一次（ PDF 的 CDN 地址）
 REDOWNLOAD_BASE_URL = "https://av.sc.com/cn/content/docs/"
 REDOWNLOAD_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36",
@@ -75,7 +75,7 @@ REDOWNLOAD_HEADERS = {
 
 def redownload_pdf_once(pdf_path: Path) -> bool:
     """
-    当 PDF 无法打开或页数为 0 时，尝试从渣打 CDN 重新下载一次（仅支持 cn-fs-qdur*.pdf / cn-fs-qdut*.pdf）。
+    当 PDF 无法打开或页数为 0 时，尝试从 CDN 重新下载一次（仅支持 cn-fs-qdur*.pdf / cn-fs-qdut*.pdf）。
     返回 True 表示已成功下载并覆盖本地文件。
     """
     if not requests:
@@ -183,7 +183,7 @@ MATURITY_ALIASES = ("到日期日分布", "到期日分布", "期限分布")
 # 行业区域分布：解析「类别: 比例」写入 sector_allocation（与行业分布同表）
 SECTOR_ALLOCATION_ALIASES = ("行业区域分布",)
 
-# CIP 渣打风险评级：1-6 对应备注，方便阅读
+# CIP 风险评级：1-6 对应备注，方便阅读
 SC_RISK_RATING_CIP_MAP = {
     "风险规避型": 1, "保守型": 2, "稳健型": 3,
     "适度积极型": 4, "积极型": 5, "非常积极型": 6,
@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS funds (
     other_fees_note      TEXT,
     -- 风险
     sc_risk_rating       TEXT,
-    sc_risk_rating_cip   INTEGER,  -- CIP 渣打风险评级 1-6，见备注
+    sc_risk_rating_cip   INTEGER,  -- CIP 风险评级 1-6，见备注
     annualized_std_3y    REAL,
     avg_ytm              REAL,
     avg_duration         REAL,
@@ -460,7 +460,7 @@ SELECT f.id AS fund_id, f.fund_name_cn, f.sc_product_codes,
 FROM funds f
 JOIN fund_performance p ON p.fund_id = f.id;
 
--- CIP 渣打风险评级：数字 1-6 + 备注，方便阅读
+-- CIP 风险评级：数字 1-6 + 备注，方便阅读
 CREATE VIEW IF NOT EXISTS v_fund_risk_cip AS
 SELECT f.id AS fund_id, f.fund_name_cn, f.sc_product_codes,
        f.sc_risk_rating_cip AS cip,
@@ -586,7 +586,7 @@ EXTRACTION_PROMPT_V2 = """
 - 下列格式说明中的 <...> 仅为字段含义提示，请用图中实际内容或 null 填充，禁止直接输出 <...> 这段提示文字本身。
 ════════════════════════════════════════════════════════════════
 
-你是专业的基金数据提取专家。从渣打银行 QDII 基金说明书 PDF 图片中提取结构化数据。
+你是专业的基金数据提取专家。从银行 QDII 基金说明书 PDF 图片中提取结构化数据。
 
 规则：
 - 数字去掉%只保留数值（1.35%→1.35）
@@ -1328,8 +1328,8 @@ def handle_unknown_fields(conn, source_file, unknown_fields, fund_id=None, as_of
             except Exception as e:
                 print(f"    [WARN] sector_allocation (行业区域分布) from text: {e}")
             continue
-        # 渣打风险评级 -> CIP 1-6 + sc_risk_rating 备注
-        if term == "渣打风险评级" and fund_id is not None:
+        # 风险评级 -> CIP 1-6 + sc_risk_rating 备注
+        if term == "风险评级" and fund_id is not None:
             try:
                 cip_val = None
                 label = None
@@ -1447,7 +1447,7 @@ def parse_pdf(conn, pdf_path: Path, api_key: str,
     retry_count = 0
     usage_total = {"input_tokens": 0, "output_tokens": 0}
 
-    # 文件错误时自动重新下载一次（仅一次，仅支持渣打 cn-fs-qdur/qdut 命名）
+    # 文件错误时自动重新下载一次（仅一次，仅支持 cn-fs-qdur/qdut 命名）
     if not _redownload_done:
         need_redownload = False
         try:
@@ -1465,7 +1465,7 @@ def parse_pdf(conn, pdf_path: Path, api_key: str,
             if redownload_pdf_once(pdf_path):
                 print(f"  [OK] 重新下载成功，重试解析", flush=True)
                 return parse_pdf(conn, pdf_path, api_key, force=force, _redownload_done=True)
-            print(f"  [WARN] 重新下载失败或非渣打 PDF，继续解析（可能失败）", flush=True)
+            print(f"  [WARN] 重新下载失败或非 PDF，继续解析（可能失败）", flush=True)
 
     try:
         print(f"  -> render {min(MAX_PAGES, fitz.open(str(pdf_path)).page_count)} pages...", flush=True)
@@ -1721,7 +1721,7 @@ def print_summary(conn, results: dict = None, usage_total: dict = None):
 # ══════════════════════════════════════════════════════════════════
 def main():
     global QWEN_MODEL
-    ap = argparse.ArgumentParser(description="渣打 QDII 基金 PDF 解析器 v2")
+    ap = argparse.ArgumentParser(description=" QDII 基金 PDF 解析器 v2")
     ap.add_argument("--dir",     help="PDF 目录路径")
     ap.add_argument("--file",    help="单个 PDF 路径")
     ap.add_argument("--db",      default=str(DB_PATH), help="数据库路径")

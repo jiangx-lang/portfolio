@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-渣打银行境内理财产品 (WMP) 每日净值抓取器
+银行境内理财产品 (WMP) 每日净值抓取器
 优先尝试 XHR/API 或 requests 解析；无公开 API 时使用 Playwright 无头浏览器。
 """
 from __future__ import annotations
@@ -97,7 +97,7 @@ def scrape_via_requests() -> list[dict[str, Any]] | None:
         except ValueError:
             continue
         idx_name = header_texts.index("产品名称") if "产品名称" in header_texts else idx_code + 1
-        idx_risk = header_texts.index("渣打产品风险评级") if "渣打产品风险评级" in header_texts else -1
+        idx_risk = next((i for i, h in enumerate(header_texts) if "产品风险评级" in h), -1)
         idx_term = header_texts.index("投资期限") if "投资期限" in header_texts else -1
         idx_nav = header_texts.index("产品净值")
         idx_date = header_texts.index("产品净值日期") if "产品净值日期" in header_texts else -1
@@ -169,7 +169,7 @@ def scrape_via_playwright() -> list[dict[str, Any]] | None:
         except ValueError:
             continue
         idx_name = header_texts.index("产品名称") if "产品名称" in header_texts else idx_code + 1
-        idx_risk = header_texts.index("渣打产品风险评级") if "渣打产品风险评级" in header_texts else -1
+        idx_risk = next((i for i, h in enumerate(header_texts) if "产品风险评级" in h), -1)
         idx_term = header_texts.index("投资期限") if "投资期限" in header_texts else -1
         idx_nav = header_texts.index("产品净值")
         idx_date = header_texts.index("产品净值日期") if "产品净值日期" in header_texts else -1
