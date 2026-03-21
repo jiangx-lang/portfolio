@@ -61,7 +61,7 @@ export default function LandingSelector() {
 
   /** 仅打开锦城 Streamlit（WMP/笔记/播客/管理员模块在 Streamlit 内） */
   const openStreamlit = () => {
-    window.open(STREAMLIT_URL, "_blank", "noopener,noreferrer");
+    window.location.href = STREAMLIT_URL;
   };
 
   return (
@@ -158,16 +158,13 @@ export default function LandingSelector() {
               <button
                 type="button"
                 style={deviceBtn}
-                onClick={() => {
-                  window.open(STREAMLIT_URL, "_blank", "noopener,noreferrer");
-                  router.push("/qd");
-                }}
+                onClick={() => router.push("/qd")}
               >
                 🖥️ 电脑端
               </button>
             </div>
             <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-              手机端：Next QD 基金池；电脑端：另开锦城 Streamlit（组合构建器等全功能）
+              手机端与电脑端均进入 Next QD 基金池
             </p>
           </div>
 
