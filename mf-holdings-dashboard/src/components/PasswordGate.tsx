@@ -7,6 +7,22 @@ import { useEffect, useState } from "react";
 const VALID_PASSWORDS = new Set(["fs123", "cd123"]);
 const STORAGE_UNLOCKED = "atlas_gate_content_v1";
 
+/** 全角/大小写/零宽字符等规范化后再比对，避免输入法导致 fs123、cd123 误判失败 */
+function normalizeContentGatePassword(raw: string): string {
+  let s = raw.trim().normalize("NFC");
+  s = s.replace(/[\u200B-\u200D\uFEFF]/g, "");
+  let out = "";
+  for (const ch of s) {
+    const c = ch.codePointAt(0)!;
+    if (c >= 0xff01 && c <= 0xff5e) {
+      out += String.fromCodePoint(c - 0xfee0);
+    } else {
+      out += ch;
+    }
+  }
+  return out.toLowerCase();
+}
+
 type Props = {
   /** 锁屏页标题 */
   title: string;
@@ -30,7 +46,7 @@ export default function PasswordGate({ title, children }: Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (VALID_PASSWORDS.has(input.trim())) {
+    if (VALID_PASSWORDS.has(normalizeContentGatePassword(input))) {
       try {
         sessionStorage.setItem(STORAGE_UNLOCKED, "1");
       } catch {

@@ -25,6 +25,7 @@ GITHUB_RAW_BASE = "https://raw.githubusercontent.com/jiangx-lang/portfolio/maste
 # 每日报告 PDF / 市场播客：路径统一从 config 读取
 import os
 import sys
+import unicodedata
 import threading
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -260,6 +261,21 @@ def back_to_landing():
 _STREAMLIT_CONTENT_GATE_PASSWORDS = frozenset({"fs123", "cd123"})
 
 
+def _normalize_content_gate_password(s: str) -> str:
+    """全角/大小写/零宽字符规范化，避免输入法导致口令误判。"""
+    t = unicodedata.normalize("NFC", (s or "").strip())
+    for z in ("\u200b", "\u200c", "\u200d", "\ufeff"):
+        t = t.replace(z, "")
+    out: list[str] = []
+    for ch in t:
+        o = ord(ch)
+        if 0xFF01 <= o <= 0xFF5E:
+            out.append(chr(o - 0xFEE0))
+        else:
+            out.append(ch)
+    return "".join(out).lower()
+
+
 def _ensure_streamlit_content_gate() -> bool:
     """未通过验证时渲染密码表单并返回 False（调用方应 st.stop()）。"""
     if st.session_state.get("streamlit_content_gate_ok") or st.session_state.get(
@@ -270,7 +286,7 @@ def _ensure_streamlit_content_gate() -> bool:
     st.caption("市场笔记与播客：输入 fs123 或 cd123 任一口令均可继续。")
     pw = st.text_input("密码", type="password", key="streamlit_gate_content_pw")
     if st.button("确认进入", key="streamlit_gate_content_btn"):
-        if (pw or "").strip() in _STREAMLIT_CONTENT_GATE_PASSWORDS:
+        if _normalize_content_gate_password(pw) in _STREAMLIT_CONTENT_GATE_PASSWORDS:
             st.session_state.streamlit_content_gate_ok = True
             st.rerun()
         else:
