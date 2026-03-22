@@ -20,13 +20,14 @@
 
 `MRF_POOL` 是基金池的核心数据结构（基金名 → brand/股债现/fee_rate），并且**启动时优先从 Supabase `mrf_funds` 拉取**，失败才回退到硬编码。
 
-```324:413:d:\portoflio for mrf\app.py
-SCB_TARGET = {
+```371:418:d:\portoflio for mrf\app.py
+MODEL_TARGET = {
     "平稳 (Income)":     {"股票": 33, "固定收益": 58, "黄金": 6, "现金": 3},
     "均衡 (Balanced)":   {"股票": 54, "固定收益": 38, "黄金": 6, "现金": 2},
     "进取 (Aggressive)": {"股票": 74, "固定收益": 17, "黄金": 6, "现金": 3},
 }
 
+# 标准组合的二级细分见 MODEL_DETAIL（略）
 # fee_rate 来自爬虫 updated_funds_fees.xlsx（小数 0.02 表示 2%，已转为百分点 2.0）
 MRF_POOL = {
     "东方汇理香港组合-灵活配置增长": {"brand": "Amundi", "股票": 70, "固定收益": 25, "现金": 5, "fee_rate": 3.0},
@@ -48,21 +49,21 @@ except Exception:
 
 ### 1.2 左侧风险级别选择（平稳/均衡/进取）
 
-风险档位在 `SCB_TARGET` 中定义，UI 用 `st.selectbox` 选择，之后拿到 `target_alloc`：
+风险档位在 `MODEL_TARGET` 中定义，UI 用 `st.selectbox` 选择，之后拿到 `target_alloc`：
 
-```2070:2088:d:\portoflio for mrf\app.py
+```2430:2442:d:\portoflio for mrf\app.py
 if st.session_state.device == "mobile":
     st.subheader("⚙️ 资产配置参数")
-    risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
+    risk_level = st.selectbox("投资目标（基准）", list(MODEL_TARGET.keys()), index=0)
     capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
 else:
     with st.sidebar:
         st.button("⬅️ 返回首页", on_click=back_to_landing)
         st.header("⚙️ 引擎控制台")
-        risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
+        risk_level = st.selectbox("投资目标（基准）", list(MODEL_TARGET.keys()), index=0)
         capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
 
-target_alloc = SCB_TARGET[risk_level]
+target_alloc = MODEL_TARGET[risk_level]
 ```
 
 ### 1.3 三个 Portfolio Tab 的逻辑（Tab1 精选 / Tab2 Model / Tab3 补充）
@@ -162,27 +163,27 @@ def render_fund_penetration_table(funds, weights, capital, weighted_avg_fee=None
 
 ---
 
-## 2) 渣打 House View / Model Portfolio 数据（SCB 基准在哪里定义？）
+## 2) House View / Model Portfolio 数据（目标基准在哪里定义？）
 
 ### 2.1 在根目录 `app.py` 中的定义（MRF 资产配置引擎使用）
 
-`SCB_TARGET`（顶层 股票/债券/黄金/现金）与 `SCB_DETAIL`（二级细分）是**硬编码在根目录 `app.py`**：
+`MODEL_TARGET`（顶层 股票/债券/黄金/现金）与 `MODEL_DETAIL`（二级细分）是**硬编码在根目录 `app.py`**：
 
-```324:366:d:\portoflio for mrf\app.py
-SCB_TARGET = {
+```371:412:d:\portoflio for mrf\app.py
+MODEL_TARGET = {
     "平稳 (Income)":     {"股票": 33, "固定收益": 58, "黄金": 6, "现金": 3},
     "均衡 (Balanced)":   {"股票": 54, "固定收益": 38, "黄金": 6, "现金": 2},
     "进取 (Aggressive)": {"股票": 74, "固定收益": 17, "黄金": 6, "现金": 3},
 }
 
-SCB_DETAIL = {
+MODEL_DETAIL = {
     "平稳 (Income)": {...},
     "均衡 (Balanced)": {...},
     "进取 (Aggressive)": {...},
 }
 ```
 
-**结论**：当前 SCB 基准与目标比例是硬编码，不在数据库。
+**结论**：当前目标基准与比例是硬编码，不在数据库。
 
 ### 2.2 在 `qdii_portfolio/data/benchmarks.py` 中的定义（QDII 组合构建器用）
 
@@ -244,7 +245,7 @@ fee 的使用点包括：
 
 用户选择 `risk_level`（平稳/均衡/进取）后：
 
-- `target_alloc = SCB_TARGET[risk_level]`
+- `target_alloc = MODEL_TARGET[risk_level]`
 - 三个组合函数都接收 `target_alloc`，用同一个 3D 拟合器 `_minimize_weights_3d(...)` 去匹配目标的股/债/现比例。
 
 ---
@@ -351,7 +352,7 @@ def load_fund_nav(fund_name: str) -> pd.DataFrame:
 
 ### 目标用户路径
 
-1) 用户在 Streamlit（`app.py`）选择风险档位（SCB 基准）  
+1) 用户在 Streamlit（`app.py`）选择风险档位（目标基准）  
 2) Tab1/Tab2/Tab3 得到“建议落地基金”  
 3) 对某只基金点击“查看详细分析”  
 4) 跳转到 Next.js：

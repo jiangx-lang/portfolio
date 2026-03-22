@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-scb_reports.db 架构升级：用户持仓穿透、机构配比模板、主题标签
+组合报告 SQLite 库架构升级：用户持仓穿透、机构配比模板、主题标签
+（默认文件路径见 DB_PATH，可与本地实际文件名一致）
 - 执行前自动备份原库
 - 新增 user_portfolio_holdings / portfolio_templates，为 report_segments 增加 tags
 - 费率空值按 0.5% 处理；tags 逗号分隔便于 LIKE 查询
@@ -12,14 +13,15 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-DB_PATH = Path(r"d:\house view\scb_reports.db")
+# 若本地仍为旧库文件，可复制/重命名为 portfolio_reports.db，或改此路径
+DB_PATH = Path(r"d:\house view\portfolio_reports.db")
 BACKUP_DIR = DB_PATH.parent
 
 
 def backup_db() -> Path:
     """备份当前 .db 文件，返回备份路径。"""
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    backup_path = BACKUP_DIR / f"scb_reports_backup_{stamp}.db"
+    backup_path = BACKUP_DIR / f"portfolio_reports_backup_{stamp}.db"
     shutil.copy2(DB_PATH, backup_path)
     print(f"已备份: {backup_path}")
     return backup_path

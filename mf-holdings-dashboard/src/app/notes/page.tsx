@@ -5,6 +5,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
 import { trackAnalytics } from "@/lib/analytics-client";
+import PasswordGate from "@/components/PasswordGate";
 
 export type DailyReportRow = {
   id: number;
@@ -73,6 +74,14 @@ function TrackedNoteCard({
 }
 
 export default function NotesPage() {
+  return (
+    <PasswordGate title="市场资讯">
+      <NotesPageInner />
+    </PasswordGate>
+  );
+}
+
+function NotesPageInner() {
   const [tab, setTab] = useState<"reports" | "notes">("reports");
   const [reports, setReports] = useState<DailyReportRow[]>([]);
   const [notes, setNotes] = useState<MarketNoteRow[]>([]);

@@ -25,6 +25,8 @@ Thumbs.db
 
 # 数据库文件（放腾讯云本地，不推 GitHub）
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 

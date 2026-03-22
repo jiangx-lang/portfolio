@@ -197,7 +197,7 @@ export default function LandingSelector() {
               <div style={tagStyle}>MRF PORTFOLIO</div>
               <div style={titleStyle}>🌐 锦城轮动 · MRF</div>
               <div style={descStyle}>
-                MRF 基金池 · SCB 组合构建 · 穿透分析
+                MRF 基金池 · 组合构建 · 穿透分析
               </div>
             </div>
             <div
@@ -223,7 +223,7 @@ export default function LandingSelector() {
               </button>
             </div>
             <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-              手机端：MRF 列表与穿透；电脑端：Next Model Portfolio（SCB 标准组合）
+              手机端：MRF 列表与穿透；电脑端：Next Model Portfolio（标准组合）
             </p>
           </div>
         </div>
@@ -365,7 +365,7 @@ export default function LandingSelector() {
               fontFamily: "inherit",
             }}
           >
-            📊 Model Portfolio（SCB 标准组合）
+            📊 Model Portfolio（标准组合）
           </button>
         </div>
 

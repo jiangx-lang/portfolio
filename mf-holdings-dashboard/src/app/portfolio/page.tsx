@@ -20,13 +20,13 @@ const STREAMLIT_URL =
   process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
 
 // ── 数据 ────────────────────────────────────────
-const SCB_TARGET = {
+const MODEL_TARGET = {
   "平稳 (Income)": { equity: 33, bond: 58, gold: 6, cash: 3 },
   "均衡 (Balanced)": { equity: 54, bond: 38, gold: 6, cash: 2 },
   "进取 (Aggressive)": { equity: 74, bond: 17, gold: 6, cash: 3 },
 } as const;
 
-const SCB_DETAIL = {
+const MODEL_DETAIL = {
   "平稳 (Income)": {
     equity: {
       "North America": 14,
@@ -111,7 +111,7 @@ const MRF_POOL: Record<string, MrfPoolEntry> = {
   "摩根国际债": { brand: "JPM", equity: 0, bond: 95, cash: 5, fee: 2.0 },
 };
 
-type RiskKey = keyof typeof SCB_TARGET;
+type RiskKey = keyof typeof MODEL_TARGET;
 type ComputeResult = {
   funds: string[];
   weights: number[];
@@ -125,7 +125,7 @@ function computePortfolio(
   mode: "fee_first" | "optimal" | "diversify",
   usedFunds: Set<string> = new Set()
 ): ComputeResult {
-  const target = SCB_TARGET[riskLevel as RiskKey];
+  const target = MODEL_TARGET[riskLevel as RiskKey];
   if (!target) {
     return { funds: [], weights: [], achieved: { equity: 0, bond: 0, cash: 0 }, avgFee: 0 };
   }
@@ -243,7 +243,7 @@ export default function PortfolioPage() {
     return computePortfolio(riskLevel, "diversify", used);
   }, [riskLevel, res1.funds, res2.funds]);
 
-  const target = SCB_TARGET[riskLevel];
+  const target = MODEL_TARGET[riskLevel];
   const activeRes = activeTab === "t1" ? res1 : activeTab === "t2" ? res2 : res3;
 
   const allocationData = [
@@ -271,7 +271,7 @@ export default function PortfolioPage() {
     },
   ];
 
-  const detail = SCB_DETAIL[riskLevel];
+  const detail = MODEL_DETAIL[riskLevel];
 
   const s = {
     page: {
@@ -390,10 +390,10 @@ export default function PortfolioPage() {
 
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>
-              选择 SCB 投资目标基准：
+              选择投资目标基准：
             </div>
             <div style={s.riskBar}>
-              {(Object.keys(SCB_TARGET) as RiskKey[]).map((level) => (
+              {(Object.keys(MODEL_TARGET) as RiskKey[]).map((level) => (
                 <button
                   key={level}
                   type="button"
@@ -438,7 +438,7 @@ export default function PortfolioPage() {
       <div style={s.body}>
         <div style={s.grid2}>
           <div style={s.card}>
-            <div style={s.cardTitle}>SCB 标准配置</div>
+            <div style={s.cardTitle}>标准配置</div>
             <div
               style={{
                 display: "flex",
@@ -512,7 +512,7 @@ export default function PortfolioPage() {
               </div>
               <details style={{ marginTop: 12, fontSize: 11, color: "#6B7280" }}>
                 <summary style={{ cursor: "pointer", color: "#9CA3AF" }}>
-                  股票地区 / 债券分类明细（SCB）
+                  股票地区 / 债券分类明细（目标基准）
                 </summary>
                 <div style={{ marginTop: 8, lineHeight: 1.6 }}>
                   <div style={{ marginBottom: 6 }}>股票地区：</div>

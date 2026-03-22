@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import sys
-p = r"d:\house view\scb_reports.db"
+p = r"d:\house view\portfolio_reports.db"
 if len(sys.argv) > 1:
     p = sys.argv[1]
 c = sqlite3.connect(p)

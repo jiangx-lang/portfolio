@@ -256,6 +256,28 @@ def back_to_landing():
     # 同上，供 st.button(..., on_click=back_to_landing) 使用
 
 
+# 市场笔记 / 播客（Streamlit 入口）；与 Next PasswordGate 一致：fs123 / cd123 任一口令均可
+_STREAMLIT_CONTENT_GATE_PASSWORDS = frozenset({"fs123", "cd123"})
+
+
+def _ensure_streamlit_content_gate() -> bool:
+    """未通过验证时渲染密码表单并返回 False（调用方应 st.stop()）。"""
+    if st.session_state.get("streamlit_content_gate_ok") or st.session_state.get(
+        "streamlit_media_gate_ok"
+    ):
+        return True
+    st.markdown("### 🔒 访问验证")
+    st.caption("市场笔记与播客：输入 fs123 或 cd123 任一口令均可继续。")
+    pw = st.text_input("密码", type="password", key="streamlit_gate_content_pw")
+    if st.button("确认进入", key="streamlit_gate_content_btn"):
+        if (pw or "").strip() in _STREAMLIT_CONTENT_GATE_PASSWORDS:
+            st.session_state.streamlit_content_gate_ok = True
+            st.rerun()
+        else:
+            st.error("密码错误")
+    return False
+
+
 def _notes_request_upload():
     st.session_state.notes_show_pwd = True
 
@@ -368,14 +390,14 @@ def get_daily_quote():
 
 
 # --- 1. 核心数据 ---
-SCB_TARGET = {
+MODEL_TARGET = {
     "平稳 (Income)":     {"股票": 33, "固定收益": 58, "黄金": 6, "现金": 3},
     "均衡 (Balanced)":   {"股票": 54, "固定收益": 38, "黄金": 6, "现金": 2},
     "进取 (Aggressive)": {"股票": 74, "固定收益": 17, "黄金": 6, "现金": 3},
 }
 
 # 标准组合的二级细分（对应图片 Fig.3 Foundation Balanced 细项）
-SCB_DETAIL = {
+MODEL_DETAIL = {
     "平稳 (Income)": {
         "股票": {
             "North America": 14, "Europe ex-UK": 3, "UK": 1, "Japan": 1, "Asia ex-Japan": 4
@@ -677,12 +699,12 @@ def render_standard_portfolio_table(risk_level: str, target_alloc: dict):
     """
     渲染标准组合构成表：
     - 顶层四类汇总（股票/固定收益/黄金/现金）
-    - 二级细分明细（来自 SCB_DETAIL）
+    - 二级细分明细（来自 MODEL_DETAIL）
     """
     st.markdown("### 📊 标准组合构成")
-    st.caption(f" SCB Foundation — **{risk_level}**")
+    st.caption(f" 目标基准 — **{risk_level}**")
 
-    detail = SCB_DETAIL.get(risk_level, {})
+    detail = MODEL_DETAIL.get(risk_level, {})
 
     rows = []
     for asset_class, target_pct in target_alloc.items():
@@ -1019,7 +1041,7 @@ def render_desktop_ui(
 
         with right_col:
             st.markdown("### 🔍 穿透汇总 vs 标准基准")
-            st.caption("各基金底层持仓加权后 vs SCB 目标")
+            st.caption("各基金底层持仓加权后 vs 目标配置")
             render_penetration_metrics(achieved, target_alloc, device="desktop")
             st.write("")
             render_penetration_summary(achieved, target_alloc)
@@ -2135,7 +2157,7 @@ def render_landing_page():
                     🌐 锦城轮动 · MRF
                 </div>
                 <div style="color:#94a3b8; font-size:13px;">
-                    MRF 基金池 · SCB 组合构建 · 穿透分析
+                    MRF 基金池 · 组合构建 · 穿透分析
                 </div>
             </div>
             """,
@@ -2397,6 +2419,8 @@ if st.session_state.entry == "wmp":
 # ─────────────────────────────────────────────
 if st.session_state.entry == "notes":
     st.button("⬅️ 返回首页", on_click=back_to_landing)
+    if not _ensure_streamlit_content_gate():
+        st.stop()
     if st.session_state.get("notes_delete_pending"):
         st.warning("确认删除该文件？此操作不可恢复。")
         c1, c2 = st.columns(2)
@@ -2413,6 +2437,8 @@ if st.session_state.entry == "notes":
 # ─────────────────────────────────────────────
 if st.session_state.entry == "podcast":
     st.button("⬅️ 返回首页", on_click=back_to_landing)
+    if not _ensure_streamlit_content_gate():
+        st.stop()
     if st.session_state.get("podcast_delete_pending"):
         st.warning("确认删除该文件？此操作不可恢复。")
         c1, c2 = st.columns(2)
@@ -2429,16 +2455,16 @@ if st.session_state.entry == "podcast":
 # ─────────────────────────────────────────────
 if st.session_state.device == "mobile":
     st.subheader("⚙️ 资产配置参数")
-    risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
+    risk_level = st.selectbox("投资目标（基准）", list(MODEL_TARGET.keys()), index=0)
     capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
 else:
     with st.sidebar:
         st.button("⬅️ 返回首页", on_click=back_to_landing)
         st.header("⚙️ 引擎控制台")
-        risk_level = st.selectbox("投资目标 (SCB基准)", list(SCB_TARGET.keys()), index=0)
+        risk_level = st.selectbox("投资目标（基准）", list(MODEL_TARGET.keys()), index=0)
         capital = st.number_input("投资金额 (元)", min_value=10000, value=1000000, step=10000)
 
-target_alloc = SCB_TARGET[risk_level]
+target_alloc = MODEL_TARGET[risk_level]
 
 # 当前基准一行摘要
 st.write(

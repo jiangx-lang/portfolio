@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-基于 scb_reports.db 的数据增强：自动打标签 + 模拟持仓录入 + 控制台验证
+组合报告 SQLite 库数据增强：自动打标签 + 模拟持仓录入 + 控制台验证（路径见 DB_PATH）
 """
 from __future__ import annotations
 
@@ -9,7 +9,8 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-DB_PATH = Path(r"d:\house view\scb_reports.db")
+# 若本地仍为旧库文件，可复制/重命名为 portfolio_reports.db，或改此路径
+DB_PATH = Path(r"d:\house view\portfolio_reports.db")
 
 # 关键词 -> tag（中英文均支持，当前库为英文内容故英文命中多）
 KEYWORD_TAGS = [

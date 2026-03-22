@@ -14,7 +14,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-DB_PATH = Path(r"d:\house view\scb_reports.db")
+# 若本地仍为旧库文件，可复制/重命名为 portfolio_reports.db，或改此路径
+DB_PATH = Path(r"d:\house view\portfolio_reports.db")
 PORTFOLIO_TYPE = "平衡型"
 FEE_DEFAULT = 0.005
 
@@ -113,7 +114,7 @@ def main():
         conn.close()
 
     if bench.empty:
-        st.warning("未找到机构标准配比（平衡型），请先执行 scb_db_migrate.py 初始化。")
+        st.warning("未找到机构标准配比（平衡型），请先执行 portfolio_reports_migrate.py 初始化。")
         return
 
     col_left, col_right = st.columns([1, 1])

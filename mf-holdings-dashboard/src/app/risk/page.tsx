@@ -1,5 +1,6 @@
 "use client";
 
+import PasswordGate from "@/components/PasswordGate";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type ReportItem = {
@@ -11,6 +12,14 @@ type ReportItem = {
 };
 
 export default function RiskPage() {
+  return (
+    <PasswordGate title="宏观风险监控">
+      <RiskPageInner />
+    </PasswordGate>
+  );
+}
+
+function RiskPageInner() {
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [listError, setListError] = useState(false);

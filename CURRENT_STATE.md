@@ -146,9 +146,9 @@ with st.sidebar:
 PAGES[choice].render(is_mobile=is_mobile)
 ```
 
-### 1.3 “MRF 推荐算法 / Tab1/2/3 / 手续费 / benchmark / SCB” 关键字检索
+### 1.3 “MRF 推荐算法 / Tab1/2/3 / 手续费 / benchmark / MODEL_TARGET” 关键字检索
 
-对 `qdii_portfolio/app.py` 进行关键字检索（`精选|Tab1|Tab2|Tab3|手续费|fee_rate|benchmark|SCB`）结果为：**No matches found**。  
+对 `qdii_portfolio/app.py` 进行关键字检索（`精选|Tab1|Tab2|Tab3|手续费|fee_rate|benchmark|MODEL_TARGET`）结果为：**No matches found**。  
 （这表示这些逻辑可能在 `qdii_portfolio/pages/*` 或其它模块中，而不在 `app.py` 顶部入口文件里。）
 
 ### 1.4 Benchmarks（`qdii_portfolio/data/benchmarks.py`）

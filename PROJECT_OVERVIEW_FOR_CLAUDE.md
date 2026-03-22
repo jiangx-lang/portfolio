@@ -194,8 +194,8 @@ scan_bea.py
 scan_boci.py
 scan_pictet.py
 scan_valuepartners.py
-scb_db_enrich.py
-scb_db_migrate.py
+portfolio_reports_enrich.py
+portfolio_reports_migrate.py
 scripts/check_fund_tagging_db.py
 scripts/download_mrf_nav_akshare.py
 scripts/list_968_funds.py

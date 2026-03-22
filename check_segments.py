@@ -7,7 +7,7 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-DB = Path(r"d:\house view\scb_reports.db")
+DB = Path(r"d:\house view\portfolio_reports.db")
 conn = sqlite3.connect(DB)
 cur = conn.cursor()
 cur.execute("SELECT COUNT(*) FROM report_segments")
