@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -15,9 +16,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-
-const STREAMLIT_URL =
-  process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
 
 // ── 数据 ────────────────────────────────────────
 const MODEL_TARGET = {
@@ -369,13 +367,13 @@ export default function PortfolioPage() {
       }) as React.CSSProperties,
   };
 
-  const externalLinks = [
+  const quickLinks = [
     { label: "🏦 MRF 基金", href: "/mrf" },
     { label: "📁 QD 基金", href: "/qd" },
-    { label: "📰 市场资讯", href: STREAMLIT_URL, external: true },
+    { label: "📰 市场资讯", href: "/notes" },
     { label: "📈 Risk", href: "/risk" },
-    { label: "🎙️ 播客", href: STREAMLIT_URL, external: true },
-    { label: "📝 笔记", href: STREAMLIT_URL, external: true },
+    { label: "🎙️ 播客", href: "/podcast" },
+    { label: "📝 笔记", href: "/notes?tab=notes" },
   ];
 
   return (
@@ -541,12 +539,10 @@ export default function PortfolioPage() {
                 gap: 8,
               }}
             >
-              {externalLinks.map(({ label, href, external }) => (
-                <a
+              {quickLinks.map(({ label, href }) => (
+                <Link
                   key={label}
                   href={href}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noopener noreferrer" : undefined}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -566,7 +562,7 @@ export default function PortfolioPage() {
                   }}
                 >
                   <span>{label}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

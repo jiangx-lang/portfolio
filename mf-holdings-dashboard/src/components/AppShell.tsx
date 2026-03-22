@@ -6,19 +6,16 @@ import { usePathname } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePageTracking } from "@/hooks/usePageTracking";
 
-const STREAMLIT_URL =
-  process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
-
 type NavLink = { label: string; href: string; external?: boolean };
 
 const navLinks: NavLink[] = [
   { label: "Portfolio", href: "/" },
   { label: "QD基金", href: "/qd" },
   { label: "MRF", href: "/mrf" },
+  { label: "WMP", href: "/wmp" },
   { label: "市场笔记", href: "/notes" },
   { label: "播客", href: "/podcast" },
   { label: "Risk", href: "/risk" },
-  { label: "锦城系统 ↗", href: STREAMLIT_URL, external: true },
 ];
 
 const BOTTOM_TABS = [

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
 import { trackAnalytics } from "@/lib/analytics-client";
@@ -82,12 +83,19 @@ export default function NotesPage() {
 }
 
 function NotesPageInner() {
+  const searchParams = useSearchParams();
   const [tab, setTab] = useState<"reports" | "notes">("reports");
   const [reports, setReports] = useState<DailyReportRow[]>([]);
   const [notes, setNotes] = useState<MarketNoteRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    const t = searchParams.get("tab");
+    if (t === "notes") setTab("notes");
+    else if (t === "reports") setTab("reports");
+  }, [searchParams]);
 
   useEffect(() => {
     if (!isBrowserSupabaseConfigured()) {

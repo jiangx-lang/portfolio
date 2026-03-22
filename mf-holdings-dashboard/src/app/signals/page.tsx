@@ -1,8 +1,19 @@
 "use client";
 
-/** 锦城 Streamlit；生产环境在 .env.local 设置 NEXT_PUBLIC_STREAMLIT_URL */
-const STREAMLIT_URL =
-  process.env.NEXT_PUBLIC_STREAMLIT_URL ?? "https://atlasallocations.com";
+import type { CSSProperties } from "react";
+import Link from "next/link";
+
+const btn: CSSProperties = {
+  display: "inline-block",
+  padding: "10px 28px",
+  background: "#0f2744",
+  color: "#60a5fa",
+  border: "1px solid #3b82f6",
+  borderRadius: "8px",
+  fontSize: "14px",
+  textDecoration: "none",
+  textAlign: "center" as const,
+};
 
 export default function SignalsPage() {
   return (
@@ -27,29 +38,20 @@ export default function SignalsPage() {
           color: "#64748b",
           fontSize: "13px",
           textAlign: "center",
-          maxWidth: "320px",
+          maxWidth: "360px",
           lineHeight: 1.5,
         }}
       >
-        市场笔记、播客与每日报告由锦城系统提供
+        市场笔记、每日报告与播客已在本站提供，与 Model Portfolio 共用同一套入口。
       </p>
-      <a
-        href={STREAMLIT_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: "inline-block",
-          padding: "10px 28px",
-          background: "#0f2744",
-          color: "#60a5fa",
-          border: "1px solid #3b82f6",
-          borderRadius: "8px",
-          fontSize: "14px",
-          textDecoration: "none",
-        }}
-      >
-        进入锦城系统 →
-      </a>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+        <Link href="/notes" style={btn}>
+          进入市场资讯与报告 →
+        </Link>
+        <Link href="/podcast" style={btn}>
+          进入播客 →
+        </Link>
+      </div>
     </div>
   );
 }

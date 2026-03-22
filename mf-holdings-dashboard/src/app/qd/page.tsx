@@ -18,6 +18,7 @@ import {
   type QdBondSpectrumOption,
   type QdTagRow,
 } from "@/data/qdiiFundFilterConfig";
+import { qdTagLabelZh, qdTagsJoinZh } from "@/data/qdiiTagLabelsZh";
 
 interface QdFund {
   fund_id: number;
@@ -478,7 +479,7 @@ export default function QdPage() {
             <span />
           </div>
         </header>
-        <div style={{ ...s.page, textAlign: "center", paddingTop: "4rem", color: "#9CA3AF" }}>Loading QD funds...</div>
+        <div style={{ ...s.page, textAlign: "center", paddingTop: "4rem", color: "#9CA3AF" }}>加载 QD 基金中…</div>
       </div>
     );
   }
@@ -525,7 +526,7 @@ export default function QdPage() {
             <p style={{ fontSize: 11, color: "#6B7280", margin: 0, maxWidth: 560, lineHeight: 1.55 }}>
               地域、行业、主题、策略与固收谱系可同时限定，逻辑为 <strong>且（AND）</strong>。基金侧使用{" "}
               <strong>Top 3</strong> 标签，各维度任命中一条即视为满足该维。固收谱系对应{" "}
-              <code style={{ color: "#60A5FA" }}>tag_taxonomy</code> 中 Gov/HY/Corp 等；与根目录{" "}
+              <code style={{ color: "#60A5FA" }}>tag_taxonomy</code> 中利率/主权、高收益、信用债等；与根目录{" "}
               <code style={{ color: "#60A5FA" }}>qdiiTagMap.ts</code> 持仓层债券分类概念对齐。
             </p>
             <input
@@ -553,7 +554,7 @@ export default function QdPage() {
                   onClick={() => setSelectedRegion(tag)}
                   style={selectedRegion === tag ? s.tabA : s.tab}
                 >
-                  {tag}
+                  {qdTagLabelZh(tag)}
                 </button>
               ))}
             </div>
@@ -590,7 +591,7 @@ export default function QdPage() {
                       onClick={() => setSelectedSector(tag)}
                       style={selectedSector === tag ? s.tabA : s.tab}
                     >
-                      {tag}
+                      {qdTagLabelZh(tag)}
                     </button>
                   ))}
                 </div>
@@ -613,7 +614,7 @@ export default function QdPage() {
                       onClick={() => setSelectedStyleCustom(tag)}
                       style={selectedStyleCustom === tag ? s.tabA : s.tab}
                     >
-                      {tag}
+                      {qdTagLabelZh(tag)}
                     </button>
                   ))}
                 </div>
@@ -650,7 +651,7 @@ export default function QdPage() {
                   onClick={() => setSelectedThemeOnly(tag)}
                   style={selectedThemeOnly === tag ? s.tabA : s.tab}
                 >
-                  {tag}
+                  {qdTagLabelZh(tag)}
                 </button>
               ))}
             </div>
@@ -773,7 +774,7 @@ export default function QdPage() {
                       <span style={{ fontSize: 11, color: "#6B7280" }}>{fund.as_of_date || "—"}</span>
                     </div>
                     {tags.length > 0 && (
-                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>{tags.join(" · ")}</div>
+                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>{qdTagsJoinZh(tags)}</div>
                     )}
                     <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>
                       {isSelected ? "点击收起" : "点击展开"}
@@ -788,7 +789,7 @@ export default function QdPage() {
               <tr>
                 <th style={s.th}>基金名称</th>
                 <th style={s.th}>产品代码</th>
-                <th style={s.th}>主要主题标签</th>
+                <th style={s.th}>主要标签</th>
                 <th style={s.thr}>持仓数量</th>
                 <th style={s.thr}>数据截至</th>
                 <th style={s.thr}>操作</th>
@@ -828,7 +829,7 @@ export default function QdPage() {
                       </span>
                     </td>
                     <td style={{ ...s.td, color: tags.length ? "#F9FAFB" : "#6B7280" }}>
-                      {tags.length ? tags.join(" · ") : "—"}
+                      {tags.length ? qdTagsJoinZh(tags) : "—"}
                     </td>
                     <td style={{ ...s.tdr, color: fund.holdings_count > 0 ? "#1D9E75" : "#6B7280" }}>{fund.holdings_count}</td>
                     <td style={{ ...s.tdr, color: "#9CA3AF", fontSize: 12 }}>{fund.as_of_date || "—"}</td>
@@ -863,7 +864,12 @@ export default function QdPage() {
             >
               {[
                 ["产品代码", String(selected.primary_code || selected.sc_product_code || selected.code || "—")],
-                ["Top 标签", (selected.tags || []).slice(0, 3).join(" · ") || "—"],
+                [
+                  "Top 标签",
+                  (selected.tags || []).length
+                    ? qdTagsJoinZh((selected.tags || []).slice(0, 3))
+                    : "—",
+                ],
                 ["数据截至", selected.as_of_date || "—"],
               ].map(([k, v]) => (
                 <div key={String(k)}>

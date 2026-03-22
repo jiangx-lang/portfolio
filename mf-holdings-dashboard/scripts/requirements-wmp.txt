@@ -1,0 +1,5 @@
+# WMP 净值抓取（scrape_wmp.py）——与仓库根目录 wmp_scraper.py 一致
+requests>=2.28.0
+beautifulsoup4>=4.12.0
+pandas>=2.0.0
+# 若 requests 无法解析表格，可安装：playwright && playwright install chromium

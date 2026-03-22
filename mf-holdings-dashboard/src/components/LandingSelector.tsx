@@ -4,27 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-/** 构建期注入；勿与 Next 本站同 URL，否则当前页跳转等于无反应 */
-const STREAMLIT_HREF = (
-  process.env.NEXT_PUBLIC_STREAMLIT_URL?.trim() || "https://streamlit.atlasallocations.com"
-).replace(/\/$/, "");
-
-/** Streamlit app.py 深链：?entry=wmp|qdii|mrf|… */
-function streamlitWithEntry(entry: string) {
-  const base = STREAMLIT_HREF.includes("://")
-    ? STREAMLIT_HREF
-    : `https://${STREAMLIT_HREF.replace(/^\/+/, "")}`;
-  try {
-    const u = new URL(base);
-    u.searchParams.set("entry", entry);
-    return u.toString();
-  } catch {
-    const join = STREAMLIT_HREF.includes("?") ? "&" : "?";
-    return `${STREAMLIT_HREF}${join}entry=${encodeURIComponent(entry)}`;
-  }
-}
-
-const streamlitLinkStyle = (
+/** 与 Streamlit 落地页按钮风格对齐的站内链接样式 */
+const pillLinkStyle = (
   base: React.CSSProperties
 ): React.CSSProperties => ({
   ...base,
@@ -250,15 +231,15 @@ export default function LandingSelector() {
                 gap: 8,
               }}
             >
-              <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
+              <Link href="/wmp" style={pillLinkStyle(deviceBtn)}>
                 📱 手机端
-              </a>
-              <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
+              </Link>
+              <Link href="/wmp" style={pillLinkStyle(deviceBtn)}>
                 🖥️ 电脑端
-              </a>
+              </Link>
             </div>
             <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-              直达锦城 Streamlit · WMP 净值
+              本站 Next · WMP 净值（读服务器 CSV）
             </p>
           </div>
 
@@ -270,14 +251,9 @@ export default function LandingSelector() {
                 16只互认基金 · 地域筛选 · 主题分析
               </div>
             </div>
-            <a
-              href="https://atlasallocations.com/mrf"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={streamlitLinkStyle(deviceBtn)}
-            >
+            <Link href="/mrf" style={pillLinkStyle(deviceBtn)}>
               进入基金池 →
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -300,7 +276,7 @@ export default function LandingSelector() {
               </div>
               <Link
                 href="/notes"
-                style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
+                style={pillLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 进入市场笔记 →
               </Link>
@@ -315,7 +291,7 @@ export default function LandingSelector() {
               </div>
               <Link
                 href="/podcast"
-                style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
+                style={pillLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 进入播客 →
               </Link>
@@ -330,7 +306,7 @@ export default function LandingSelector() {
               </div>
               <Link
                 href="/admin"
-                style={streamlitLinkStyle({ ...deviceBtn, marginTop: 4 })}
+                style={pillLinkStyle({ ...deviceBtn, marginTop: 4 })}
               >
                 🔐 管理员
               </Link>

@@ -279,7 +279,7 @@ export default function AdminPage() {
   const [pwd, setPwd] = useState("");
   const [authed, setAuthed] = useState(false);
   const [tab, setTab] = useState<
-    "notes" | "podcast" | "report" | "stats" | "visitors"
+    "notes" | "podcast" | "report" | "wmp" | "stats" | "visitors"
   >("notes");
 
   const [noteTitle, setNoteTitle] = useState("");
@@ -322,6 +322,9 @@ export default function AdminPage() {
   const [visitorsErr, setVisitorsErr] = useState<string | null>(null);
   const [visitorLogs, setVisitorLogs] = useState<VisitorLogRow[]>([]);
 
+  const [wmpScrapeLoading, setWmpScrapeLoading] = useState(false);
+  const [wmpScrapeMsg, setWmpScrapeMsg] = useState<string | null>(null);
+
   type VisitorGeoCell =
     | { status: "loading" }
     | { status: "done"; location: string; orgNote: string };
@@ -359,6 +362,38 @@ export default function AdminPage() {
       setVisitorLogs([]);
     } finally {
       setVisitorsLoading(false);
+    }
+  }
+
+  async function runWmpScrape() {
+    setWmpScrapeLoading(true);
+    setWmpScrapeMsg(null);
+    try {
+      const res = await fetch("/api/admin/scrape-wmp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pwd }),
+      });
+      const j = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+        written?: number;
+        scraped?: number;
+        skipped?: boolean;
+      };
+      const detail =
+        typeof j.written === "number" && typeof j.scraped === "number"
+          ? `（写入 ${j.written} 条 / 抓取 ${j.scraped} 条${j.skipped ? " · 已跳过" : ""}）`
+          : "";
+      if (!res.ok || j.success === false) {
+        setWmpScrapeMsg(`❌ ${j.message || "抓取失败"}${detail}`);
+        return;
+      }
+      setWmpScrapeMsg(`✅ ${j.message || "完成"}${detail}`);
+    } catch {
+      setWmpScrapeMsg("❌ 网络错误");
+    } finally {
+      setWmpScrapeLoading(false);
     }
   }
 
@@ -684,7 +719,8 @@ export default function AdminPage() {
       >
         <h2 style={{ color: "#e2e8f0", marginBottom: "24px" }}>⚙️ 管理员后台</h2>
         <div style={{ marginBottom: "24px", flexWrap: "wrap", display: "flex", gap: 8 }}>
-          {(["notes", "podcast", "report", "stats", "visitors"] as const).map((t) => (
+          {(["notes", "podcast", "report", "wmp", "stats", "visitors"] as const).map(
+            (t) => (
             <button
               key={t}
               type="button"
@@ -700,11 +736,14 @@ export default function AdminPage() {
                   ? "🎙️ 播客"
                   : t === "report"
                     ? "📄 每日报告"
-                    : t === "stats"
-                      ? "📊 阅读统计"
-                      : "📋 访问记录"}
+                    : t === "wmp"
+                      ? "🏦 WMP 净值"
+                      : t === "stats"
+                        ? "📊 阅读统计"
+                        : "📋 访问记录"}
             </button>
-          ))}
+          )
+          )}
         </div>
 
         <div
@@ -1112,6 +1151,46 @@ export default function AdminPage() {
             </>
           )}
 
+          {tab === "wmp" && (
+            <>
+              <h3 style={{ marginBottom: "12px" }}>WMP 净值抓取</h3>
+              <p
+                style={{
+                  color: "#64748b",
+                  fontSize: 13,
+                  lineHeight: 1.6,
+                  marginBottom: 16,
+                }}
+              >
+                在服务器上执行{" "}
+                <code style={{ color: "#60a5fa" }}>wmp_scraper</code> 逻辑，结果追加到仓库根目录{" "}
+                <code style={{ color: "#60a5fa" }}>data/wmp_history.csv</code>
+                。若 CSV 已含<strong>当日（上海）</strong>任意一行，则跳过（幂等）。生产建议用 crontab 每日运行，见{" "}
+                <code style={{ color: "#60a5fa" }}>scripts/crontab-wmp.example.txt</code>。
+              </p>
+              <button
+                type="button"
+                style={s.btn}
+                onClick={() => void runWmpScrape()}
+                disabled={wmpScrapeLoading}
+              >
+                {wmpScrapeLoading ? "抓取中…" : "🔄 立即抓取 WMP 净值"}
+              </button>
+              {wmpScrapeMsg && (
+                <p
+                  style={{
+                    marginTop: 16,
+                    color: wmpScrapeMsg.startsWith("✅") ? "#22c55e" : "#ef4444",
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {wmpScrapeMsg}
+                </p>
+              )}
+            </>
+          )}
+
           {tab === "report" && (
             <>
               <h3 style={{ marginBottom: "16px" }}>上传每日报告</h3>
@@ -1144,7 +1223,7 @@ export default function AdminPage() {
             </>
           )}
 
-          {msg && (
+          {msg && tab !== "wmp" && (
             <p
               style={{
                 marginTop: "16px",

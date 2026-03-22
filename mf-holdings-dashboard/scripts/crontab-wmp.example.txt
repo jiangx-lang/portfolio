@@ -1,0 +1,5 @@
+# WMP 净值：每日 22:00（建议在 crontab 或系统环境使用 TZ=Asia/Shanghai）
+# 追加 stdout/stderr 到日志；脚本内 ERROR/INFO 写入 /root/portfolio/logs/wmp_scraper.log
+#
+# crontab -e 追加一行：
+0 22 * * * python3 /root/portfolio/mf-holdings-dashboard/scripts/scrape_wmp.py >> /root/portfolio/logs/wmp_scraper.log 2>&1
