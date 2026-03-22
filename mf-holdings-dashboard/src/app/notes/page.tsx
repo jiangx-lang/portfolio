@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
+import { trackAnalytics } from "@/lib/analytics-client";
 
 export type DailyReportRow = {
   id: number;
@@ -20,6 +21,56 @@ export type MarketNoteRow = {
   date: string;
   created_at?: string;
 };
+
+function TrackedNoteCard({
+  note,
+  cardStyle,
+}: {
+  note: MarketNoteRow;
+  cardStyle: CSSProperties;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let done = false;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (done) return;
+        const e = entries[0];
+        if (e?.isIntersecting) {
+          done = true;
+          trackAnalytics({
+            event_type: "content",
+            page_path: "/notes",
+            content_type: "market_note",
+            content_id: note.id,
+          });
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [note.id]);
+  return (
+    <div ref={ref} style={cardStyle}>
+      <div style={{ color: "#64748b", fontSize: "12px" }}>{note.date}</div>
+      <h3 style={{ color: "#e2e8f0", margin: "8px 0" }}>{note.title}</h3>
+      <div
+        style={{
+          color: "#cbd5e1",
+          fontSize: "14px",
+          lineHeight: "1.7",
+        }}
+        className="markdown-notes"
+      >
+        <ReactMarkdown>{note.content}</ReactMarkdown>
+      </div>
+    </div>
+  );
+}
 
 export default function NotesPage() {
   const [tab, setTab] = useState<"reports" | "notes">("reports");
@@ -194,6 +245,14 @@ export default function NotesPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     style={s.pdfBtn}
+                    onClick={() =>
+                      trackAnalytics({
+                        event_type: "content",
+                        page_path: "/notes",
+                        content_type: "daily_report",
+                        content_id: r.id,
+                      })
+                    }
                   >
                     查看 PDF →
                   </a>
@@ -209,20 +268,7 @@ export default function NotesPage() {
               <p style={{ color: "#64748b" }}>暂无笔记</p>
             ) : (
               filteredNotes.map((n) => (
-                <div key={n.id} style={s.card}>
-                  <div style={{ color: "#64748b", fontSize: "12px" }}>{n.date}</div>
-                  <h3 style={{ color: "#e2e8f0", margin: "8px 0" }}>{n.title}</h3>
-                  <div
-                    style={{
-                      color: "#cbd5e1",
-                      fontSize: "14px",
-                      lineHeight: "1.7",
-                    }}
-                    className="markdown-notes"
-                  >
-                    <ReactMarkdown>{n.content}</ReactMarkdown>
-                  </div>
-                </div>
+                <TrackedNoteCard key={n.id} note={n} cardStyle={s.card} />
               ))
             )}
           </>

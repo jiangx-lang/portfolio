@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
+import { trackAnalytics } from "@/lib/analytics-client";
 
 export type PodcastRow = {
   id: number;
@@ -92,7 +93,18 @@ export default function PodcastPage() {
             )}
             {pod.audio_url && (
               <>
-                <audio controls style={{ width: "100%", marginBottom: "12px" }}>
+                <audio
+                  controls
+                  style={{ width: "100%", marginBottom: "12px" }}
+                  onPlay={() =>
+                    trackAnalytics({
+                      event_type: "content",
+                      page_path: "/podcast",
+                      content_type: "podcast",
+                      content_id: pod.id,
+                    })
+                  }
+                >
                   <source src={pod.audio_url} />
                 </audio>
                 <a

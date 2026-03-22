@@ -1,16 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
 
 /** 仅前端门槛，会打进客户端包；生产请改服务端鉴权或服务_role API */
 const ADMIN_PASSWORD =
   process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
 
+type AdminAnalyticsJson = {
+  error?: string;
+  recent: Array<{
+    id: number;
+    event_type: string;
+    page_path: string;
+    content_type: string | null;
+    content_id: number | null;
+    ip: string | null;
+    user_agent: string | null;
+    referrer: string | null;
+    created_at: string;
+  }>;
+  summary: {
+    last24h: number;
+    last7d: number;
+    byPath: [string, number][];
+    contentReads: [string, number][];
+  } | null;
+};
+
 export default function AdminPage() {
   const [pwd, setPwd] = useState("");
   const [authed, setAuthed] = useState(false);
-  const [tab, setTab] = useState<"notes" | "podcast" | "report">("notes");
+  const [tab, setTab] = useState<"notes" | "podcast" | "report" | "stats">("notes");
 
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
@@ -33,6 +54,37 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsErr, setStatsErr] = useState<string | null>(null);
+  const [statsPayload, setStatsPayload] = useState<AdminAnalyticsJson | null>(null);
+
+  async function loadStats() {
+    setStatsLoading(true);
+    setStatsErr(null);
+    try {
+      const res = await fetch("/api/admin/analytics", {
+        headers: { "x-admin-password": pwd },
+      });
+      const j = (await res.json()) as AdminAnalyticsJson;
+      if (!res.ok) {
+        setStatsErr(j.error || "加载失败");
+        setStatsPayload(null);
+        return;
+      }
+      setStatsPayload(j);
+    } catch {
+      setStatsErr("网络错误");
+      setStatsPayload(null);
+    } finally {
+      setStatsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (authed && tab === "stats") void loadStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 仅在进入统计页时拉取；密码以当前 pwd 为准
+  }, [authed, tab, pwd]);
 
   const s = {
     page: {
@@ -229,12 +281,29 @@ export default function AdminPage() {
     );
   }
 
+  const tableHead = {
+    textAlign: "left" as const,
+    padding: "8px 10px",
+    borderBottom: "1px solid #1e3a5f",
+    color: "#94a3b8",
+    fontSize: 12,
+    fontWeight: 600,
+  };
+  const tableCell = {
+    padding: "8px 10px",
+    borderBottom: "1px solid rgba(30,58,95,0.5)",
+    fontSize: 13,
+    color: "#cbd5e1",
+    verticalAlign: "top" as const,
+    wordBreak: "break-all" as const,
+  };
+
   return (
     <div style={s.page}>
-      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+      <div style={{ maxWidth: tab === "stats" ? "980px" : "600px", margin: "0 auto" }}>
         <h2 style={{ color: "#e2e8f0", marginBottom: "24px" }}>⚙️ 管理员后台</h2>
-        <div style={{ marginBottom: "24px" }}>
-          {(["notes", "podcast", "report"] as const).map((t) => (
+        <div style={{ marginBottom: "24px", flexWrap: "wrap", display: "flex", gap: 8 }}>
+          {(["notes", "podcast", "report", "stats"] as const).map((t) => (
             <button
               key={t}
               type="button"
@@ -248,12 +317,188 @@ export default function AdminPage() {
                 ? "📝 市场笔记"
                 : t === "podcast"
                   ? "🎙️ 播客"
-                  : "📄 每日报告"}
+                  : t === "report"
+                    ? "📄 每日报告"
+                    : "📊 访问统计"}
             </button>
           ))}
         </div>
 
-        <div style={s.card}>
+        <div style={{ ...s.card, maxWidth: tab === "stats" ? "980px" : "600px" }}>
+          {tab === "stats" && (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 12,
+                  marginBottom: 16,
+                }}
+              >
+                <h3 style={{ margin: 0 }}>访问与阅读统计</h3>
+                <button
+                  type="button"
+                  style={{ ...s.btn, width: "auto", padding: "8px 16px" }}
+                  onClick={() => void loadStats()}
+                  disabled={statsLoading}
+                >
+                  {statsLoading ? "刷新中…" : "刷新"}
+                </button>
+              </div>
+              <p style={{ color: "#64748b", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
+                记录前台页面浏览（含路径）、用户 IP（经 CDN 时为 X-Forwarded-For）、以及笔记曝光 / PDF 点击 / 播客播放。需在 Supabase 执行{" "}
+                <code style={{ color: "#60a5fa" }}>supabase_analytics.sql</code>，并在服务端配置{" "}
+                <code style={{ color: "#60a5fa" }}>SUPABASE_SERVICE_ROLE_KEY</code>{" "}
+                后此处才可读库；未配置时事件仍会尝试写入（需{" "}
+                <code style={{ color: "#60a5fa" }}>SUPABASE_URL</code> /{" "}
+                <code style={{ color: "#60a5fa" }}>SUPABASE_KEY</code>）。
+              </p>
+              {statsErr && (
+                <p style={{ color: "#f87171", fontSize: 14, marginBottom: 12 }}>{statsErr}</p>
+              )}
+              {statsPayload?.error && (
+                <p
+                  style={{
+                    color: "#fbbf24",
+                    fontSize: 14,
+                    marginBottom: 12,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {statsPayload.error}
+                </p>
+              )}
+              {statsPayload?.summary && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                    gap: 12,
+                    marginBottom: 20,
+                  }}
+                >
+                  <div style={{ background: "#0f2744", borderRadius: 8, padding: 12 }}>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>近 24 小时事件</div>
+                    <div style={{ fontSize: 22, fontWeight: 600, marginTop: 4 }}>
+                      {statsPayload.summary.last24h}
+                    </div>
+                  </div>
+                  <div style={{ background: "#0f2744", borderRadius: 8, padding: 12 }}>
+                    <div style={{ color: "#64748b", fontSize: 12 }}>近 7 天事件</div>
+                    <div style={{ fontSize: 22, fontWeight: 600, marginTop: 4 }}>
+                      {statsPayload.summary.last7d}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {statsPayload?.summary && statsPayload.summary.byPath.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <h4 style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>
+                    近 7 天 · 按路径（含 page + content）
+                  </h4>
+                  <div style={{ overflowX: "auto", border: "1px solid #1e3a5f", borderRadius: 8 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr>
+                          <th style={tableHead}>路径</th>
+                          <th style={{ ...tableHead, width: 90 }}>次数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {statsPayload.summary.byPath.map(([path, n]) => (
+                          <tr key={path}>
+                            <td style={tableCell}>{path}</td>
+                            <td style={tableCell}>{n}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {statsPayload?.summary && statsPayload.summary.contentReads.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <h4 style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>
+                    近 7 天 · 内容阅读（类型:id）
+                  </h4>
+                  <div style={{ overflowX: "auto", border: "1px solid #1e3a5f", borderRadius: 8 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr>
+                          <th style={tableHead}>内容</th>
+                          <th style={{ ...tableHead, width: 90 }}>次数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {statsPayload.summary.contentReads.map(([key, n]) => (
+                          <tr key={key}>
+                            <td style={tableCell}>{key}</td>
+                            <td style={tableCell}>{n}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {statsPayload && statsPayload.recent.length > 0 && (
+                <div>
+                  <h4 style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>
+                    最近记录（最多 200 条）
+                  </h4>
+                  <div
+                    style={{
+                      overflowX: "auto",
+                      maxHeight: 420,
+                      overflowY: "auto",
+                      border: "1px solid #1e3a5f",
+                      borderRadius: 8,
+                    }}
+                  >
+                    <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 720 }}>
+                      <thead style={{ position: "sticky", top: 0, background: "#0d1b2e" }}>
+                        <tr>
+                          <th style={tableHead}>时间 (UTC)</th>
+                          <th style={tableHead}>IP</th>
+                          <th style={tableHead}>类型</th>
+                          <th style={tableHead}>路径</th>
+                          <th style={tableHead}>内容</th>
+                          <th style={tableHead}>UA</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {statsPayload.recent.map((r) => (
+                          <tr key={r.id}>
+                            <td style={{ ...tableCell, whiteSpace: "nowrap" }}>
+                              {new Date(r.created_at).toISOString().replace("T", " ").slice(0, 19)}
+                            </td>
+                            <td style={tableCell}>{r.ip || "—"}</td>
+                            <td style={tableCell}>{r.event_type}</td>
+                            <td style={tableCell}>{r.page_path}</td>
+                            <td style={tableCell}>
+                              {r.content_type
+                                ? `${r.content_type}${r.content_id != null ? ` #${r.content_id}` : ""}`
+                                : "—"}
+                            </td>
+                            <td style={{ ...tableCell, maxWidth: 220 }} title={r.user_agent || ""}>
+                              {(r.user_agent || "—").slice(0, 80)}
+                              {(r.user_agent?.length || 0) > 80 ? "…" : ""}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {!statsLoading && statsPayload && statsPayload.recent.length === 0 && !statsPayload.error && (
+                <p style={{ color: "#64748b", fontSize: 14 }}>暂无事件数据。</p>
+              )}
+            </>
+          )}
+
           {tab === "notes" && (
             <>
               <h3 style={{ marginBottom: "16px" }}>发布市场笔记</h3>

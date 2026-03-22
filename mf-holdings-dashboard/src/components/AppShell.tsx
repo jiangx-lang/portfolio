@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 
 const STREAMLIT_URL =
   process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
@@ -46,6 +47,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <AnalyticsBeacon />
       <nav
         style={{
           position: "fixed",
