@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -77,7 +77,15 @@ function TrackedNoteCard({
 export default function NotesPage() {
   return (
     <PasswordGate title="市场资讯">
-      <NotesPageInner />
+      <Suspense
+        fallback={
+          <div style={{ padding: "2rem", color: "#94a3b8", textAlign: "center" }}>
+            加载中…
+          </div>
+        }
+      >
+        <NotesPageInner />
+      </Suspense>
     </PasswordGate>
   );
 }

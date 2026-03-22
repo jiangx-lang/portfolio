@@ -101,7 +101,8 @@ export default function PasswordGate({ title, children }: Props) {
           🔒 {title}
         </h1>
         <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 20 }}>
-          请输入密码以继续浏览（任一口令均可）。
+          市场笔记、播客与 Risk 页面需验证后继续。可使用口令 <strong>fs123</strong> 或{" "}
+          <strong>cd123</strong>（任一口令均可）。
         </p>
         <form onSubmit={submit}>
           <input
