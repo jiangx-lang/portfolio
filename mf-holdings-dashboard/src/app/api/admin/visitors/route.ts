@@ -5,7 +5,8 @@ const ADMIN_PASSWORD =
   process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
 
 export async function GET(req: NextRequest) {
-  const pwd = req.headers.get("x-admin-password");
+  // nextUrl.searchParams.get 已自动解码百分号编码（与 encodeURIComponent 配对）
+  const pwd = req.nextUrl.searchParams.get("pwd") ?? "";
   if (!pwd || pwd !== ADMIN_PASSWORD) {
     return NextResponse.json({ error: "未授权" }, { status: 401 });
   }

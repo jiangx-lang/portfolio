@@ -79,9 +79,10 @@ export default function AdminPage() {
     setVisitorsLoading(true);
     setVisitorsErr(null);
     try {
-      const res = await fetch("/api/admin/visitors", {
-        headers: { "x-admin-password": pwd },
-      });
+      // 密码可能含中文：勿放请求头（Fetch 要求 ByteString）；用 query + encodeURIComponent
+      const res = await fetch(
+        `/api/admin/visitors?pwd=${encodeURIComponent(pwd)}`
+      );
       const j = (await res.json()) as { error?: string; logs?: VisitorLogRow[] };
       if (!res.ok) {
         setVisitorsErr(j.error || "加载失败");
@@ -106,9 +107,9 @@ export default function AdminPage() {
     setStatsLoading(true);
     setStatsErr(null);
     try {
-      const res = await fetch("/api/admin/analytics", {
-        headers: { "x-admin-password": pwd },
-      });
+      const res = await fetch(
+        `/api/admin/analytics?pwd=${encodeURIComponent(pwd)}`
+      );
       const j = (await res.json()) as AdminAnalyticsJson;
       if (!res.ok) {
         setStatsErr(j.error || "加载失败");

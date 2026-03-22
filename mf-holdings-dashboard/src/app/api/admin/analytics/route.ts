@@ -9,7 +9,7 @@ function unauthorized() {
 }
 
 export async function GET(req: NextRequest) {
-  const pwd = req.headers.get("x-admin-password");
+  const pwd = req.nextUrl.searchParams.get("pwd") ?? "";
   if (!pwd || pwd !== ADMIN_PASSWORD) return unauthorized();
 
   const supabase = getSupabaseServiceRole();
