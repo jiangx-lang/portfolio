@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "未配置 SUPABASE_SERVICE_ROLE_KEY，无法在后台读取统计（写入仍可用 anon）。在 Supabase 控制台 API 页复制 service_role 密钥并加入服务端环境变量。",
+          "无法创建管理端 Supabase 客户端：请确认 Vercel 已配置 Secret key 到 SUPABASE_SERVICE_ROLE_KEY，且存在 SUPABASE_URL 或 NEXT_PUBLIC_SUPABASE_URL（与 Publishable 所用项目一致）。保存变量后需 Redeploy。",
         recent: [],
         summary: null,
       },

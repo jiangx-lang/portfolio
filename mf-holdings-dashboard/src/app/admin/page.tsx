@@ -31,7 +31,9 @@ type AdminAnalyticsJson = {
 export default function AdminPage() {
   const [pwd, setPwd] = useState("");
   const [authed, setAuthed] = useState(false);
-  const [tab, setTab] = useState<"notes" | "podcast" | "report" | "stats">("notes");
+  const [tab, setTab] = useState<
+    "notes" | "podcast" | "report" | "stats" | "visitors"
+  >("notes");
 
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
@@ -59,6 +61,47 @@ export default function AdminPage() {
   const [statsErr, setStatsErr] = useState<string | null>(null);
   const [statsPayload, setStatsPayload] = useState<AdminAnalyticsJson | null>(null);
 
+  type VisitorLogRow = {
+    id: number;
+    page: string;
+    ip: string | null;
+    country: string | null;
+    city: string | null;
+    user_agent: string | null;
+    referer: string | null;
+    visited_at: string;
+  };
+  const [visitorsLoading, setVisitorsLoading] = useState(false);
+  const [visitorsErr, setVisitorsErr] = useState<string | null>(null);
+  const [visitorLogs, setVisitorLogs] = useState<VisitorLogRow[]>([]);
+
+  async function loadVisitors() {
+    setVisitorsLoading(true);
+    setVisitorsErr(null);
+    try {
+      const res = await fetch("/api/admin/visitors", {
+        headers: { "x-admin-password": pwd },
+      });
+      const j = (await res.json()) as { error?: string; logs?: VisitorLogRow[] };
+      if (!res.ok) {
+        setVisitorsErr(j.error || "加载失败");
+        setVisitorLogs([]);
+        return;
+      }
+      if (j.error && (!j.logs || j.logs.length === 0)) {
+        setVisitorsErr(j.error);
+        setVisitorLogs([]);
+        return;
+      }
+      setVisitorLogs(j.logs ?? []);
+    } catch {
+      setVisitorsErr("网络错误");
+      setVisitorLogs([]);
+    } finally {
+      setVisitorsLoading(false);
+    }
+  }
+
   async function loadStats() {
     setStatsLoading(true);
     setStatsErr(null);
@@ -84,6 +127,11 @@ export default function AdminPage() {
   useEffect(() => {
     if (authed && tab === "stats") void loadStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 仅在进入统计页时拉取；密码以当前 pwd 为准
+  }, [authed, tab, pwd]);
+
+  useEffect(() => {
+    if (authed && tab === "visitors") void loadVisitors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authed, tab, pwd]);
 
   const s = {
@@ -300,10 +348,15 @@ export default function AdminPage() {
 
   return (
     <div style={s.page}>
-      <div style={{ maxWidth: tab === "stats" ? "980px" : "600px", margin: "0 auto" }}>
+      <div
+        style={{
+          maxWidth: tab === "stats" || tab === "visitors" ? "980px" : "600px",
+          margin: "0 auto",
+        }}
+      >
         <h2 style={{ color: "#e2e8f0", marginBottom: "24px" }}>⚙️ 管理员后台</h2>
         <div style={{ marginBottom: "24px", flexWrap: "wrap", display: "flex", gap: 8 }}>
-          {(["notes", "podcast", "report", "stats"] as const).map((t) => (
+          {(["notes", "podcast", "report", "stats", "visitors"] as const).map((t) => (
             <button
               key={t}
               type="button"
@@ -319,12 +372,19 @@ export default function AdminPage() {
                   ? "🎙️ 播客"
                   : t === "report"
                     ? "📄 每日报告"
-                    : "📊 访问统计"}
+                    : t === "stats"
+                      ? "📊 阅读统计"
+                      : "📋 访问记录"}
             </button>
           ))}
         </div>
 
-        <div style={{ ...s.card, maxWidth: tab === "stats" ? "980px" : "600px" }}>
+        <div
+          style={{
+            ...s.card,
+            maxWidth: tab === "stats" || tab === "visitors" ? "980px" : "600px",
+          }}
+        >
           {tab === "stats" && (
             <>
               <div
@@ -495,6 +555,82 @@ export default function AdminPage() {
               )}
               {!statsLoading && statsPayload && statsPayload.recent.length === 0 && !statsPayload.error && (
                 <p style={{ color: "#64748b", fontSize: 14 }}>暂无事件数据。</p>
+              )}
+            </>
+          )}
+
+          {tab === "visitors" && (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 12,
+                  marginBottom: 16,
+                }}
+              >
+                <h3 style={{ margin: 0 }}>页面访问记录</h3>
+                <button
+                  type="button"
+                  style={{ ...s.btn, width: "auto", padding: "8px 16px" }}
+                  onClick={() => void loadVisitors()}
+                  disabled={visitorsLoading}
+                >
+                  {visitorsLoading ? "刷新中…" : "刷新"}
+                </button>
+              </div>
+              <p style={{ color: "#64748b", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
+                数据来自 <code style={{ color: "#60a5fa" }}>visitor_logs</code>，由{" "}
+                <code style={{ color: "#60a5fa" }}>/api/track</code> 写入（服务端{" "}
+                <code style={{ color: "#60a5fa" }}>SUPABASE_SERVICE_ROLE_KEY</code>）。请在
+                Supabase 执行 <code style={{ color: "#60a5fa" }}>supabase_visitor_logs.sql</code>
+                ；自建服务器在 <code style={{ color: "#60a5fa" }}>.env.local</code> 配置密钥后{" "}
+                <code>npm run build && npm start</code> 或 PM2 重启。
+              </p>
+              {visitorsErr && (
+                <p style={{ color: "#f87171", fontSize: 14, marginBottom: 12 }}>{visitorsErr}</p>
+              )}
+              {visitorLogs.length > 0 && (
+                <div
+                  style={{
+                    overflowX: "auto",
+                    maxHeight: 480,
+                    overflowY: "auto",
+                    border: "1px solid #1e3a5f",
+                    borderRadius: 8,
+                  }}
+                >
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
+                    <thead style={{ position: "sticky", top: 0, background: "#0d1b2e" }}>
+                      <tr>
+                        <th style={tableHead}>时间</th>
+                        <th style={tableHead}>页面</th>
+                        <th style={tableHead}>IP</th>
+                        <th style={tableHead}>UA（前 50 字）</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visitorLogs.map((row) => (
+                        <tr key={row.id}>
+                          <td style={{ ...tableCell, whiteSpace: "nowrap" }}>
+                            {new Date(row.visited_at).toISOString().replace("T", " ").slice(0, 19)}
+                          </td>
+                          <td style={tableCell}>{row.page}</td>
+                          <td style={tableCell}>{row.ip || "—"}</td>
+                          <td style={tableCell} title={row.user_agent || ""}>
+                            {(row.user_agent || "—").slice(0, 50)}
+                            {(row.user_agent?.length || 0) > 50 ? "…" : ""}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {!visitorsLoading && visitorLogs.length === 0 && !visitorsErr && (
+                <p style={{ color: "#64748b", fontSize: 14 }}>暂无访问记录。</p>
               )}
             </>
           )}

@@ -8,10 +8,14 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 let _client: SupabaseClient | null = null;
 let _serviceClient: SupabaseClient | null = null;
 
-/** 仅服务端；用于绕过 RLS 读取 analytics_events 等 */
+/**
+ * 仅服务端 API / Server Components 使用；勿在客户端 import。
+ * 密钥名必须为 SUPABASE_SERVICE_ROLE_KEY（勿加 NEXT_PUBLIC_）。
+ */
 export function getSupabaseServiceRole(): SupabaseClient | null {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "")
+    .trim();
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   if (!url || !key) return null;
   if (!_serviceClient) {
     _serviceClient = createClient(url, key, { auth: { persistSession: false } });
@@ -19,9 +23,18 @@ export function getSupabaseServiceRole(): SupabaseClient | null {
   return _serviceClient;
 }
 
+/**
+ * 服务端 API 用 Publishable（或旧 anon JWT）。
+ * Vercel 上若只配了 NEXT_PUBLIC_SUPABASE_* 而未单独设 SUPABASE_URL / SUPABASE_KEY，此处会回退读取，避免埋点/净值等报「未配置」。
+ */
 export function getSupabase(): SupabaseClient | null {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_KEY;
+  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "")
+    .trim();
+  const key = (
+    process.env.SUPABASE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    ""
+  ).trim();
   if (!url || !key) return null;
   if (!_client) {
     _client = createClient(url, key);
@@ -30,7 +43,14 @@ export function getSupabase(): SupabaseClient | null {
 }
 
 export function isSupabaseConfigured(): boolean {
-  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_KEY);
+  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "")
+    .trim();
+  const key = (
+    process.env.SUPABASE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    ""
+  ).trim();
+  return !!(url && key);
 }
 
 /** 根据基金 code 查 fund_list 返回 isin, ccy */

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
-    "@supabase/supabase-js": "^2.99.2",
+    "@supabase/supabase-js": "^2.99.3",
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.8.0",
     "chart.js": "^4.4.6",

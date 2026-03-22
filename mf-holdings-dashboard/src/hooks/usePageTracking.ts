@@ -1,22 +1,21 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
-export default function AnalyticsBeacon() {
+/** 页面浏览 → POST /api/track → visitor_logs（需服务端 Secret key） */
+export function usePageTracking() {
   const pathname = usePathname() || "/";
 
   useEffect(() => {
     if (pathname.startsWith("/admin")) return;
     const t = window.setTimeout(() => {
-      void fetch("/api/analytics/track", {
+      void fetch("/api/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event_type: "page", page_path: pathname }),
+        body: JSON.stringify({ page: pathname }),
       }).catch(() => {});
     }, 400);
     return () => window.clearTimeout(t);
   }, [pathname]);
-
-  return null;
 }
