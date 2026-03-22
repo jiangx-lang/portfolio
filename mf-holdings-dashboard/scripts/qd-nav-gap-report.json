@@ -1,0 +1,194 @@
+{
+  "generated_at": "2026-03-21T05:35:38.433Z",
+  "total_qd_funds": 141,
+  "with_nav": 118,
+  "missing_fund_list": 23,
+  "missing_nav_rows": 0,
+  "samples": {
+    "noFundList": [
+      {
+        "fund_id": 91,
+        "fund_name_cn": "DWS投资全球神衣基金",
+        "tried_codes": [
+          "QDUR128",
+          "QDUR128USD"
+        ]
+      },
+      {
+        "fund_id": 135,
+        "fund_name_cn": "DWS环球神农基金",
+        "tried_codes": [
+          "QDUT007",
+          "QDUT007USD"
+        ]
+      },
+      {
+        "fund_id": 92,
+        "fund_name_cn": "富兰克林美元短期货币市场基金",
+        "tried_codes": [
+          "QDUR129",
+          "QDUR129USD"
+        ]
+      },
+      {
+        "fund_id": 37,
+        "fund_name_cn": "富兰克林邓普顿环球基金系列-FTGF凯利灵活入息基金",
+        "tried_codes": [
+          "QDUR062",
+          "QDUR062USD"
+        ]
+      },
+      {
+        "fund_id": 26,
+        "fund_name_cn": "富兰克林邓普顿环球基金系列-FTGF凯利美国进取型增长基金",
+        "tried_codes": [
+          "QDUR046",
+          "QDUR046USD"
+        ]
+      },
+      {
+        "fund_id": 67,
+        "fund_name_cn": "富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金",
+        "tried_codes": [
+          "QDUR099",
+          "QDUR099USD"
+        ]
+      },
+      {
+        "fund_id": 27,
+        "fund_name_cn": "富兰克林邓普顿环球基金系列-FTGF西方资产环球多元化策略基金",
+        "tried_codes": [
+          "QDUR047",
+          "QDUR047USD"
+        ]
+      },
+      {
+        "fund_id": 49,
+        "fund_name_cn": "富达基金 - 环球房地产基金",
+        "tried_codes": [
+          "QDUR075",
+          "QDUR075USD"
+        ]
+      },
+      {
+        "fund_id": 93,
+        "fund_name_cn": "摩根基金 - 美元浮动净值货币基金",
+        "tried_codes": [
+          "QDUR130",
+          "QDUR130USD"
+        ]
+      },
+      {
+        "fund_id": 59,
+        "fund_name_cn": "摩根基金 - 香港基金",
+        "tried_codes": [
+          "QDUR090",
+          "QDUR090USD"
+        ]
+      },
+      {
+        "fund_id": 118,
+        "fund_name_cn": "摩根基金－环球股息基金",
+        "tried_codes": [
+          "QDUR165"
+        ]
+      },
+      {
+        "fund_id": 53,
+        "fund_name_cn": "摩根投资基金 - 欧洲策略股息基金",
+        "tried_codes": [
+          "QDUR081"
+        ]
+      },
+      {
+        "fund_id": 36,
+        "fund_name_cn": "施罗德环球基金系列 - 欧洲可持续发展价值股票基金 (A类股份 收息单位)",
+        "tried_codes": [
+          "QDUR060",
+          "QDUR060USD"
+        ]
+      },
+      {
+        "fund_id": 94,
+        "fund_name_cn": "施罗德美元金融基金(累积单位)",
+        "tried_codes": [
+          "QDUR132",
+          "QDUR132USD"
+        ]
+      },
+      {
+        "fund_id": 125,
+        "fund_name_cn": "景顺永续性中国债券基金",
+        "tried_codes": [
+          "QDUR176",
+          "QDUR176USD"
+        ]
+      },
+      {
+        "fund_id": 136,
+        "fund_name_cn": "瀚亚投资—单位信托亚洲基建股票基金",
+        "tried_codes": [
+          "QDUT009",
+          "QDUT009USD"
+        ]
+      },
+      {
+        "fund_id": 56,
+        "fund_name_cn": "美盛环球基金系列-富兰克林MV欧洲股票增长及收益基金",
+        "tried_codes": [
+          "QDUR086",
+          "QDUR086USD"
+        ]
+      },
+      {
+        "fund_id": 13,
+        "fund_name_cn": "贝莱德全球基金－新兴欧洲基金",
+        "tried_codes": [
+          "QDUR020",
+          "QDUR020USD"
+        ]
+      },
+      {
+        "fund_id": 55,
+        "fund_name_cn": "贝莱德全球基金－美元货币基金",
+        "tried_codes": [
+          "QDUR082",
+          "QDUR082USD"
+        ]
+      },
+      {
+        "fund_id": 32,
+        "fund_name_cn": "霸菱德国增长基金",
+        "tried_codes": [
+          "QDUR054",
+          "QDUR054EUR"
+        ]
+      },
+      {
+        "fund_id": 24,
+        "fund_name_cn": "霸菱成熟及新兴市场高收益债券基金",
+        "tried_codes": [
+          "QDUR042",
+          "QDUR042USD"
+        ]
+      },
+      {
+        "fund_id": 22,
+        "fund_name_cn": "霸菱韩国联接基金",
+        "tried_codes": [
+          "QDUR040",
+          "QDUR040USD"
+        ]
+      },
+      {
+        "fund_id": 9,
+        "fund_name_cn": "霸菱香港中国基金",
+        "tried_codes": [
+          "QDUR006",
+          "QDUR006USD"
+        ]
+      }
+    ],
+    "noNav": []
+  }
+}

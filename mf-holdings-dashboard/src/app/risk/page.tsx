@@ -1,29 +1,72 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 export default function RiskPage() {
-  return (
-    <div className="min-h-screen bg-navy">
-      <header className="border-b border-white/10 px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/portfolio" className="text-info hover:underline">
-            ← Portfolio
-          </Link>
-          <h1 className="text-xl font-semibold text-white">Risk Metrics</h1>
-          <span />
-        </div>
-      </header>
+  const [content, setContent] = useState("");
+  const [updated, setUpdated] = useState("");
+  const [loading, setLoading] = useState(true);
 
-      <main className="mx-auto max-w-7xl px-4 py-6 pb-24 md:px-6 md:py-8 md:pb-10">
-        <div className="rounded-xl border border-white/10 bg-navy-card p-8 text-center">
-          <p className="text-white/80">
-            Beta, 52W high, % from high, Sharpe, correlation heatmap, stress
-            scenarios.
-          </p>
-          <p className="mt-2 text-sm text-white/50">
-            Connect data + Claude for scenario analysis
-          </p>
+  useEffect(() => {
+    fetch("/api/risk-report")
+      .then((r) => r.json())
+      .then((d) => {
+        setContent(d.content || d.error || "");
+        setUpdated(d.updated || "");
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0a0f1e",
+        color: "#e2e8f0",
+        padding: "40px 24px",
+      }}
+    >
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <a
+          href="/"
+          style={{
+            color: "#64748b",
+            fontSize: "13px",
+            textDecoration: "none",
+          }}
+        >
+          ← 返回首页
+        </a>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            margin: "16px 0 32px",
+          }}
+        >
+          <h1 style={{ color: "#e2e8f0", margin: 0 }}>🚨 宏观风险监控</h1>
+          {updated && (
+            <span style={{ color: "#64748b", fontSize: "12px" }}>
+              更新：{new Date(updated).toLocaleString("zh-CN")}
+            </span>
+          )}
         </div>
-      </main>
+        {loading && <p style={{ color: "#64748b" }}>加载中...</p>}
+        <div
+          style={{
+            background: "#0d1b2e",
+            border: "1px solid #1e3a5f",
+            borderRadius: "12px",
+            padding: "32px",
+            lineHeight: "1.8",
+            fontSize: "14px",
+          }}
+        >
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </div>
+      </div>
     </div>
   );
 }

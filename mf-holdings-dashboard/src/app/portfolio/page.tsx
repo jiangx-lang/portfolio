@@ -227,6 +227,8 @@ export default function PortfolioPage() {
   const [riskLevel, setRiskLevel] = useState<RiskKey>("平稳 (Income)");
   const [activeTab, setActiveTab] = useState<"t1" | "t2" | "t3">("t1");
   const [capital, setCapital] = useState(1_000_000);
+  const [customAmount, setCustomAmount] = useState("");
+  const [selectedPreset, setSelectedPreset] = useState<number | null>(100);
 
   const res1 = useMemo(
     () => computePortfolio(riskLevel, "fee_first"),
@@ -580,28 +582,75 @@ export default function PortfolioPage() {
             }}
           >
             <span style={{ fontSize: 13, color: "#9CA3AF" }}>参考投资金额：</span>
-            {[500_000, 1_000_000, 2_000_000, 5_000_000].map((amt) => (
+            {[50, 100, 200, 500].map((preset) => (
               <button
-                key={amt}
+                key={preset}
                 type="button"
-                onClick={() => setCapital(amt)}
+                onClick={() => {
+                  setCapital(preset * 10000);
+                  setSelectedPreset(preset);
+                  setCustomAmount("");
+                }}
                 style={{
                   padding: "6px 14px",
                   borderRadius: 6,
                   border: `1px solid ${
-                    capital === amt ? "#185FA5" : "rgba(255,255,255,0.08)"
+                    selectedPreset === preset
+                      ? "#185FA5"
+                      : "rgba(255,255,255,0.08)"
                   }`,
                   background:
-                    capital === amt ? "rgba(24,95,165,0.15)" : "transparent",
-                  color: capital === amt ? "#60A5FA" : "#9CA3AF",
+                    selectedPreset === preset
+                      ? "rgba(24,95,165,0.15)"
+                      : "transparent",
+                  color: selectedPreset === preset ? "#60A5FA" : "#9CA3AF",
                   fontSize: 13,
                   cursor: "pointer",
                   fontFamily: "inherit",
                 }}
               >
-                ¥{amt / 10000}万
+                ¥{preset}万
               </button>
             ))}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginLeft: 8,
+              }}
+            >
+              <span style={{ color: "#64748b", fontSize: 13 }}>自定义：¥</span>
+              <input
+                type="number"
+                placeholder="输入金额（万）"
+                value={customAmount}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val) && val > 0) {
+                    setCapital(val * 10000);
+                    setCustomAmount(e.target.value);
+                    setSelectedPreset(null);
+                  } else {
+                    setCustomAmount(e.target.value);
+                  }
+                }}
+                style={{
+                  width: 100,
+                  background: "#0f2744",
+                  color: "#e2e8f0",
+                  border: `1px solid ${
+                    customAmount && selectedPreset === null
+                      ? "#3b82f6"
+                      : "#1e3a5f"
+                  }`,
+                  borderRadius: 8,
+                  padding: "6px 10px",
+                  fontSize: 13,
+                }}
+              />
+              <span style={{ color: "#64748b", fontSize: 13 }}>万</span>
+            </div>
             <span style={{ fontSize: 12, color: "#6B7280" }}>
               ⚠️ 仅供参考，不构成建议
             </span>
