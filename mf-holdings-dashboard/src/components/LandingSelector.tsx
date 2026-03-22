@@ -228,31 +228,57 @@ export default function LandingSelector() {
           </div>
         </div>
 
-        {/* WMP — 仅 Streamlit 有模块 */}
-        <div style={{ marginTop: 8 }}>
-          <div style={{ ...cardInner, marginBottom: 12 }}>
-            <div style={tagStyle}>WMP NAV</div>
-            <div style={titleStyle}>🏦 WMP 净值</div>
-            <div style={descStyle}>抓取与查看 WMP 净值数据</div>
+        {/* WMP | MRF Pool — 与 QDII/MRF 行相同响应式栅格 */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: "16px",
+            marginTop: 8,
+          }}
+        >
+          <div>
+            <div style={cardInner}>
+              <div style={tagStyle}>WMP NAV</div>
+              <div style={titleStyle}>🏦 WMP 净值</div>
+              <div style={descStyle}>抓取与查看 WMP 净值数据</div>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+              }}
+            >
+              <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
+                📱 手机端
+              </a>
+              <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
+                🖥️ 电脑端
+              </a>
+            </div>
+            <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
+              直达锦城 Streamlit · WMP 净值
+            </p>
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 8,
-              maxWidth: isMobile ? "100%" : 480,
-            }}
-          >
-            <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
-              📱 手机端
-            </a>
-            <a href={streamlitWithEntry("wmp")} style={streamlitLinkStyle(deviceBtn)}>
-              🖥️ 电脑端
+
+          <div>
+            <div style={cardInner}>
+              <div style={tagStyle}>MRF POOL</div>
+              <div style={titleStyle}>🌏 MRF 基金池</div>
+              <div style={descStyle}>
+                16只互认基金 · 地域筛选 · 主题分析
+              </div>
+            </div>
+            <a
+              href="https://atlasallocations.com/mrf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={streamlitLinkStyle(deviceBtn)}
+            >
+              进入基金池 →
             </a>
           </div>
-          <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-            直达锦城 Streamlit · WMP 净值
-          </p>
         </div>
 
         {/* 市场笔记 · 播客 · 管理员 */}

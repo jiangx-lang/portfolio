@@ -1,7 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
+import { formatDeviceCell } from "@/lib/parseUA";
+import {
+  formatLocationLine,
+  formatOrgNote,
+  isPrivateOrLocalIp,
+  type IpApiFields,
+} from "@/lib/ipGeoDisplay";
 
 /** 仅前端门槛，会打进客户端包；生产请改服务端鉴权或服务_role API */
 const ADMIN_PASSWORD =
@@ -315,6 +322,18 @@ export default function AdminPage() {
   const [visitorsErr, setVisitorsErr] = useState<string | null>(null);
   const [visitorLogs, setVisitorLogs] = useState<VisitorLogRow[]>([]);
 
+  type VisitorGeoCell =
+    | { status: "loading" }
+    | { status: "done"; location: string; orgNote: string };
+  const visitorGeoCacheRef = useRef<Record<string, VisitorGeoCell>>({});
+  /** 仅用于在 ref 更新后触发重绘（切换 Tab 回来时沿用缓存，不重复请求） */
+  const [visitorGeoTick, setVisitorGeoTick] = useState(0);
+
+  function getVisitorGeoCell(ip: string | null): VisitorGeoCell {
+    if (!ip?.trim()) return { status: "done", location: "—", orgNote: "—" };
+    return visitorGeoCacheRef.current[ip] ?? { status: "loading" };
+  }
+
   async function loadVisitors() {
     setVisitorsLoading(true);
     setVisitorsErr(null);
@@ -374,6 +393,85 @@ export default function AdminPage() {
     if (authed && tab === "visitors") void loadVisitors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authed, tab, pwd]);
+
+  useEffect(() => {
+    if (!authed || tab !== "visitors") return;
+
+    const ips = Array.from(
+      new Set(
+        visitorLogs
+          .map((r) => r.ip?.trim())
+          .filter((x): x is string => Boolean(x))
+      )
+    );
+
+    let cancelled = false;
+
+    const run = async () => {
+      for (const ip of ips) {
+        if (cancelled) break;
+        const cache = visitorGeoCacheRef.current;
+        if (cache[ip]?.status === "done") continue;
+
+        if (isPrivateOrLocalIp(ip)) {
+          cache[ip] = {
+            status: "done",
+            location: "🏠 内网/本地",
+            orgNote: "—",
+          };
+          setVisitorGeoTick((t) => t + 1);
+          continue;
+        }
+
+        cache[ip] = { status: "loading" };
+        setVisitorGeoTick((t) => t + 1);
+
+        try {
+          const res = await fetch(
+            `/api/admin/ip-geo?pwd=${encodeURIComponent(pwd)}&ip=${encodeURIComponent(ip)}`
+          );
+          const j = (await res.json()) as IpApiFields & { error?: string };
+
+          if (cancelled) break;
+
+          if (!res.ok || j.error) {
+            cache[ip] = {
+              status: "done",
+              location: "—",
+              orgNote: typeof j.error === "string" ? j.error : "查询失败",
+            };
+          } else {
+            cache[ip] = {
+              status: "done",
+              location: formatLocationLine(j),
+              orgNote: formatOrgNote(j.org),
+            };
+          }
+        } catch {
+          if (!cancelled) {
+            cache[ip] = {
+              status: "done",
+              location: "—",
+              orgNote: "网络错误",
+            };
+          }
+        }
+
+        setVisitorGeoTick((t) => t + 1);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+      const cache = visitorGeoCacheRef.current;
+      for (const k of Object.keys(cache)) {
+        if (cache[k]?.status === "loading") delete cache[k];
+      }
+      setVisitorGeoTick((t) => t + 1);
+    };
+  }, [authed, tab, visitorLogs, pwd]);
 
   const s = {
     page: {
@@ -843,52 +941,96 @@ export default function AdminPage() {
                 <>
                   <h4 className="admin-dash-section-title">最近访问</h4>
                   <div className="admin-dash-table-wrap" style={{ maxHeight: 480 }}>
-                    <table className="admin-dash-table" style={{ minWidth: 640 }}>
+                    <table className="admin-dash-table" style={{ minWidth: 720 }}>
                       <thead>
                         <tr>
                           <th>时间 (UTC)</th>
-                          <th>类型</th>
+                          <th>设备</th>
                           <th>页面</th>
-                          <th>IP</th>
-                          <th>UA</th>
+                          <th>归属地</th>
+                          <th>运营商/备注</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {visitorLogs.map((row) => (
-                          <tr key={row.id}>
-                            <td
-                              className="admin-dash-mono"
-                              style={{ whiteSpace: "nowrap" }}
-                            >
-                              {new Date(row.visited_at)
-                                .toISOString()
-                                .replace("T", " ")
-                                .slice(0, 19)}
-                            </td>
-                            <td>
-                              <span
-                                className="admin-dash-badge"
-                                style={{
-                                  background: "rgba(59,130,246,0.2)",
-                                  color: "#93c5fd",
-                                  border: "1px solid rgba(59,130,246,0.45)",
-                                }}
+                        {visitorLogs.map((row) => {
+                          void visitorGeoTick;
+                          const geo = getVisitorGeoCell(row.ip);
+                          return (
+                            <tr key={row.id}>
+                              <td
+                                className="admin-dash-mono"
+                                style={{ whiteSpace: "nowrap" }}
                               >
-                                页面
-                              </span>
-                            </td>
-                            <td>{row.page}</td>
-                            <td className="admin-dash-mono">{row.ip || "—"}</td>
-                            <td
-                              className="admin-dash-mono"
-                              style={{ maxWidth: 220 }}
-                              title={row.user_agent || undefined}
-                            >
-                              {(row.user_agent || "—").slice(0, 50)}
-                              {(row.user_agent?.length || 0) > 50 ? "…" : ""}
-                            </td>
-                          </tr>
-                        ))}
+                                {new Date(row.visited_at)
+                                  .toISOString()
+                                  .replace("T", " ")
+                                  .slice(0, 19)}
+                              </td>
+                              <td style={{ maxWidth: 200 }} title={row.user_agent || undefined}>
+                                {formatDeviceCell(row.user_agent)}
+                              </td>
+                              <td>{row.page}</td>
+                              <td style={{ minWidth: 140 }}>
+                                {geo.status === "loading" ? (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 0,
+                                      color: "#64748b",
+                                      fontSize: 12,
+                                    }}
+                                  >
+                                    <span className="admin-geo-spinner" aria-hidden />
+                                    <span>解析中…</span>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div>{geo.location}</div>
+                                    {row.ip ? (
+                                      <small
+                                        className="admin-dash-mono"
+                                        style={{
+                                          display: "block",
+                                          opacity: 0.4,
+                                          marginTop: 4,
+                                          fontSize: 11,
+                                        }}
+                                      >
+                                        {row.ip}
+                                      </small>
+                                    ) : null}
+                                  </>
+                                )}
+                              </td>
+                              <td style={{ maxWidth: 280 }}>
+                                {geo.status === "done" ? (
+                                  <>
+                                    <div>{geo.orgNote}</div>
+                                    {row.referer ? (
+                                      <small
+                                        style={{
+                                          display: "block",
+                                          opacity: 0.55,
+                                          marginTop: 4,
+                                          fontSize: 11,
+                                          wordBreak: "break-all",
+                                        }}
+                                        title={row.referer}
+                                      >
+                                        {row.referer.length > 72
+                                          ? `${row.referer.slice(0, 72)}…`
+                                          : row.referer}
+                                      </small>
+                                    ) : null}
+                                  </>
+                                ) : (
+                                  <span style={{ color: "#64748b", fontSize: 12 }}>—</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
