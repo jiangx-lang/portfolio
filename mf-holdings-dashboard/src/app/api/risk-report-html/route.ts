@@ -3,10 +3,37 @@ import fs from "fs";
 
 export const dynamic = "force-dynamic";
 
-/** 与 Nginx `location /risk-figures/`、`/risk-figures-root/` 对应的公网域名 */
+/**
+ * 使用本站绝对路径（由 next.config.js rewrites 转发到 media 子域），
+ * 这样 iframe 内文档与图片同属 atlasallocations.com，可绕过常见 img-src 'self' CSP。
+ * 若需直连 CDN，可设 RISK_IMG_USE_MEDIA_SUBDOMAIN=1，则仍用 RISK_MEDIA_BASE_URL。
+ */
 const RISK_MEDIA_BASE =
   process.env.RISK_MEDIA_BASE_URL?.replace(/\/$/, "") ||
   "https://media.atlasallocations.com";
+const USE_MEDIA_SUBDOMAIN =
+  process.env.RISK_IMG_USE_MEDIA_SUBDOMAIN === "1" ||
+  process.env.RISK_IMG_USE_MEDIA_SUBDOMAIN === "true";
+
+function figurePrefixes(): { fig: string; root: string } {
+  if (USE_MEDIA_SUBDOMAIN) {
+    return {
+      fig: `${RISK_MEDIA_BASE}/risk-figures/`,
+      root: `${RISK_MEDIA_BASE}/risk-figures-root/`,
+    };
+  }
+  return { fig: "/risk-media/", root: "/risk-media-root/" };
+}
+
+/** iframe 内 HTML 单独放宽图片与内联样式，避免网关默认 CSP 挡掉 data: 与外链图 */
+const REPORT_CSP = [
+  "default-src 'none'",
+  "style-src 'unsafe-inline'",
+  "img-src 'self' data: blob: https: http:",
+  "font-src 'self' data:",
+  "base-uri 'none'",
+  "form-action 'none'",
+].join("; ");
 
 export async function GET() {
   const reportPath =
@@ -14,15 +41,19 @@ export async function GET() {
   try {
     let content = fs.readFileSync(reportPath, "utf-8");
 
-    const figPrefix = `${RISK_MEDIA_BASE}/risk-figures/`;
-    const rootPrefix = `${RISK_MEDIA_BASE}/risk-figures-root/`;
+    const { fig: figPrefix, root: rootPrefix } = figurePrefixes();
 
-    // 双引号：figures/ 与 ./figures/
-    content = content.replace(/src="(?:\.\/)?figures\//g, `src="${figPrefix}`);
-    // 单引号
-    content = content.replace(/src='(?:\.\/)?figures\//g, `src='${figPrefix}`);
+    // 双引号：figures/、./figures/、大小写 Figures/
+    content = content.replace(
+      /src="(?:\.\/)?[Ff]igures\//g,
+      `src="${figPrefix}`
+    );
+    content = content.replace(
+      /src='(?:\.\/)?[Ff]igures\//g,
+      `src='${figPrefix}`
+    );
 
-    // 根目录下的 *_latest.png（双引号 / 单引号），不局限于大写字母
+    // 根目录下的 *_latest.png（双引号 / 单引号）
     content = content.replace(
       /src="([\w]+_latest\.png)"/g,
       `src="${rootPrefix}$1"`
@@ -33,7 +64,10 @@ export async function GET() {
     );
 
     return new NextResponse(content, {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Security-Policy": REPORT_CSP,
+      },
     });
   } catch {
     return new NextResponse(
