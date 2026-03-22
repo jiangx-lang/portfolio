@@ -7,6 +7,17 @@ import HoldingsDeepAnalysis from "@/components/HoldingsDeepAnalysis";
 import { NavChart } from "@/components/NavChart";
 import { getTickerFromHolding, isClickable } from "@/lib/holdingTickerMap";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import {
+  QD_BOND_SPECTRUM_GROUPS,
+  QD_BOND_SPECTRUM_OPTIONS,
+  fundMatchesQdFundFilters,
+  qdRegionTagNames,
+  qdSectorTagNames,
+  qdStyleCustomTagNames,
+  qdThemeOnlyTagNames,
+  type QdBondSpectrumOption,
+  type QdTagRow,
+} from "@/data/qdiiFundFilterConfig";
 
 interface QdFund {
   fund_id: number;
@@ -59,8 +70,16 @@ export default function QdPage() {
   const [funds, setFunds] = useState<QdFund[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [allTags, setAllTags] = useState<string[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string>("全部");
+  const [allTagRows, setAllTagRows] = useState<QdTagRow[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState<string>("全部");
+  const [selectedSector, setSelectedSector] = useState<string>("全部");
+  const [selectedThemeOnly, setSelectedThemeOnly] = useState<string>("全部");
+  const [selectedStyleCustom, setSelectedStyleCustom] = useState<string>("全部");
+  const [selectedBondSpectrum, setSelectedBondSpectrum] =
+    useState<QdBondSpectrumOption>("全部");
+  /** 手机端默认收起「行业 + 策略与定制」 */
+  const [expandSectorStyle, setExpandSectorStyle] = useState(true);
+  const [expandHoldingMapNote, setExpandHoldingMapNote] = useState(false);
   const [holdingType, setHoldingType] = useState<HoldingTypeFilter>("ALL");
   const [selected, setSelected] = useState<QdFund | null>(null);
   /** 全量净值：用于分阶段收益率（不受图表范围影响） */
@@ -78,15 +97,38 @@ export default function QdPage() {
       .then((d) => {
         if (Array.isArray(d)) {
           setFunds(d);
-          setAllTags([]);
+          setAllTagRows([]);
         } else {
           setFunds(Array.isArray(d?.funds) ? d.funds : []);
-          setAllTags(Array.isArray(d?.allTags) ? d.allTags.map((t: any) => String(t?.tag_name ?? t)).filter(Boolean) : []);
+          const raw = Array.isArray(d?.allTags) ? d.allTags : [];
+          const rows: QdTagRow[] = raw
+            .map((t: unknown) => {
+              if (t && typeof t === "object" && "tag_name" in t) {
+                const o = t as { tag_name: string; category?: string | null };
+                return {
+                  tag_name: String(o.tag_name),
+                  category: String(o.category ?? ""),
+                };
+              }
+              if (typeof t === "string") return { tag_name: t, category: "theme" };
+              return null;
+            })
+            .filter((x: QdTagRow | null): x is QdTagRow => x != null && Boolean(x.tag_name));
+          setAllTagRows(rows);
         }
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    setExpandSectorStyle(!isMobile);
+  }, [isMobile]);
+
+  const regionOptions = useMemo(() => qdRegionTagNames(allTagRows), [allTagRows]);
+  const sectorOptions = useMemo(() => qdSectorTagNames(allTagRows), [allTagRows]);
+  const themeOnlyOptions = useMemo(() => qdThemeOnlyTagNames(allTagRows), [allTagRows]);
+  const styleCustomOptions = useMemo(() => qdStyleCustomTagNames(allTagRows), [allTagRows]);
 
   const latestAsOf = useMemo(() => {
     const dates = funds.map((f) => f.as_of_date).filter(Boolean) as string[];
@@ -108,8 +150,17 @@ export default function QdPage() {
         String(f.fund_name_cn || "").includes(search) ||
         code.includes(q);
       if (!hitSearch) return false;
-      const tagMatch = selectedTag === "全部" || (f.tags || []).includes(selectedTag);
-      if (!tagMatch) return false;
+      if (
+        !fundMatchesQdFundFilters(
+          f.tags,
+          selectedRegion,
+          selectedSector,
+          selectedThemeOnly,
+          selectedStyleCustom,
+          selectedBondSpectrum
+        )
+      )
+        return false;
       if (holdingType !== "ALL") {
         const cls = classifyHoldingTypeByTags(f.tags);
         if (holdingType === "EQUITY" && cls !== "EQUITY") return false;
@@ -118,7 +169,16 @@ export default function QdPage() {
       }
       return true;
     });
-  }, [funds, search, selectedTag, holdingType]);
+  }, [
+    funds,
+    search,
+    selectedRegion,
+    selectedSector,
+    selectedThemeOnly,
+    selectedStyleCustom,
+    selectedBondSpectrum,
+    holdingType,
+  ]);
 
   const handleRowClick = async (fund: QdFund) => {
     if (selected?.fund_id === fund.fund_id) {
@@ -369,13 +429,23 @@ export default function QdPage() {
     row: { display: "flex", gap: 8, marginBottom: "1rem", flexWrap: "wrap" as const, alignItems: "center" },
     tab: { padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", border: "0.5px solid transparent", color: "#9CA3AF", background: "transparent" },
     tabA: { padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", border: "0.5px solid #185FA5", color: "#60A5FA", background: "#185FA522" },
-    tagRow: {
+    filterChips: {
       display: "flex",
+      flexWrap: "wrap" as const,
       gap: 6,
-      overflowX: "auto" as const,
-      paddingBottom: 4,
-      scrollbarWidth: "thin" as const,
-      WebkitOverflowScrolling: "touch" as const,
+      alignItems: "center",
+    },
+    filterSection: {
+      marginTop: 12,
+      paddingTop: 12,
+      borderTop: "1px solid rgba(255,255,255,0.06)",
+    },
+    filterLabel: {
+      fontSize: 11,
+      color: "#6B7280",
+      marginBottom: 6,
+      fontWeight: 500,
+      letterSpacing: "0.04em",
     },
     input: {
       padding: "8px 14px",
@@ -441,32 +511,23 @@ export default function QdPage() {
           ))}
         </div>
 
-        {/* 搜索 + 筛选 */}
+        {/* 搜索 + 筛选（五组基金标签 + 持仓类型 + 穿透说明折叠） */}
         <div style={{ ...s.card, marginBottom: "1.25rem" }}>
           <div style={s.stitle}>筛选</div>
-          <div style={{ ...s.row, justifyContent: "space-between" }}>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: 11, color: "#6B7280", marginBottom: 6 }}>主题标签：</div>
-              <div style={s.tagRow}>
-                <button
-                  type="button"
-                  onClick={() => setSelectedTag("全部")}
-                  style={selectedTag === "全部" ? s.tabA : s.tab}
-                >
-                  全部
-                </button>
-                {allTags.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => setSelectedTag(tag)}
-                    style={{ ...(selectedTag === tag ? s.tabA : s.tab), whiteSpace: "nowrap" as const }}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div
+            style={{
+              ...s.row,
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginBottom: 14,
+            }}
+          >
+            <p style={{ fontSize: 11, color: "#6B7280", margin: 0, maxWidth: 560, lineHeight: 1.55 }}>
+              地域、行业、主题、策略与固收谱系可同时限定，逻辑为 <strong>且（AND）</strong>。基金侧使用{" "}
+              <strong>Top 3</strong> 标签，各维度任命中一条即视为满足该维。固收谱系对应{" "}
+              <code style={{ color: "#60A5FA" }}>tag_taxonomy</code> 中 Gov/HY/Corp 等；与根目录{" "}
+              <code style={{ color: "#60A5FA" }}>qdiiTagMap.ts</code> 持仓层债券分类概念对齐。
+            </p>
             <input
               style={s.input}
               placeholder="搜索基金名或代码（QDUR/QDUT）"
@@ -474,13 +535,193 @@ export default function QdPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div style={s.row}>
+
+          <div style={s.filterSection}>
+            <div style={s.filterLabel}>地域</div>
+            <div style={s.filterChips}>
+              <button
+                type="button"
+                onClick={() => setSelectedRegion("全部")}
+                style={selectedRegion === "全部" ? s.tabA : s.tab}
+              >
+                全部
+              </button>
+              {regionOptions.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => setSelectedRegion(tag)}
+                  style={selectedRegion === tag ? s.tabA : s.tab}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {isMobile && !expandSectorStyle ? (
+            <div style={{ marginTop: 12 }}>
+              <button
+                type="button"
+                onClick={() => setExpandSectorStyle(true)}
+                style={{ ...s.tab, width: "100%", textAlign: "center" as const }}
+              >
+                展开行业与策略 ▼
+              </button>
+            </div>
+          ) : null}
+
+          {(!isMobile || expandSectorStyle) && (
+            <>
+              <div style={s.filterSection}>
+                <div style={s.filterLabel}>行业</div>
+                <div style={s.filterChips}>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSector("全部")}
+                    style={selectedSector === "全部" ? s.tabA : s.tab}
+                  >
+                    全部
+                  </button>
+                  {sectorOptions.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setSelectedSector(tag)}
+                      style={selectedSector === tag ? s.tabA : s.tab}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={s.filterSection}>
+                <div style={s.filterLabel}>策略与定制</div>
+                <div style={s.filterChips}>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStyleCustom("全部")}
+                    style={selectedStyleCustom === "全部" ? s.tabA : s.tab}
+                  >
+                    全部
+                  </button>
+                  {styleCustomOptions.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setSelectedStyleCustom(tag)}
+                      style={selectedStyleCustom === tag ? s.tabA : s.tab}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {isMobile ? (
+                <div style={{ marginTop: 8, marginBottom: 4 }}>
+                  <button
+                    type="button"
+                    onClick={() => setExpandSectorStyle(false)}
+                    style={{ ...s.tab, width: "100%", textAlign: "center" as const }}
+                  >
+                    收起行业与策略 ▲
+                  </button>
+                </div>
+              ) : null}
+            </>
+          )}
+
+          <div style={s.filterSection}>
+            <div style={s.filterLabel}>主题与赛道</div>
+            <div style={s.filterChips}>
+              <button
+                type="button"
+                onClick={() => setSelectedThemeOnly("全部")}
+                style={selectedThemeOnly === "全部" ? s.tabA : s.tab}
+              >
+                全部
+              </button>
+              {themeOnlyOptions.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => setSelectedThemeOnly(tag)}
+                  style={selectedThemeOnly === tag ? s.tabA : s.tab}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={s.filterSection}>
+            <div style={s.filterLabel}>固收谱系</div>
+            <div style={s.filterChips}>
+              {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
+                const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setSelectedBondSpectrum(opt)}
+                    title={
+                      pendingAsia
+                        ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
+                        : undefined
+                    }
+                    style={{
+                      ...(selectedBondSpectrum === opt ? s.tabA : s.tab),
+                      ...(pendingAsia ? { opacity: 0.5 } : {}),
+                    }}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ ...s.row, marginBottom: 0, marginTop: 14 }}>
             <span style={{ fontSize: 11, color: "#6B7280" }}>持仓类型：</span>
             {typeTabs.map((t) => (
-              <button key={t.id} type="button" onClick={() => setHoldingType(t.id)} style={holdingType === t.id ? s.tabA : s.tab}>
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setHoldingType(t.id)}
+                style={holdingType === t.id ? s.tabA : s.tab}
+              >
                 {t.label}
               </button>
             ))}
+          </div>
+
+          <div style={{ marginTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
+            <button
+              type="button"
+              onClick={() => setExpandHoldingMapNote((v) => !v)}
+              style={{
+                ...s.tab,
+                width: "100%",
+                textAlign: "left" as const,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ fontSize: 12, color: "#9CA3AF" }}>
+                按底层持仓筛选（qdiiTagMap · 占位）
+              </span>
+              <span style={{ fontSize: 11, color: "#6B7280" }}>{expandHoldingMapNote ? "▲" : "▼"}</span>
+            </button>
+            {expandHoldingMapNote ? (
+              <p style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.55, margin: "10px 0 0" }}>
+                下一版将按基金持仓名匹配仓库根目录 <code style={{ color: "#60A5FA" }}>qdiiTagMap.ts</code>{" "}
+                中的 <code style={{ color: "#60A5FA" }}>qdiiHoldingTags</code>（地域 / 主题 / 债券），与当前「基金
+                Top3 标签」筛选并行。本版仅保留入口说明，避免与列表加载混淆。
+              </p>
+            ) : null}
           </div>
         </div>
 
