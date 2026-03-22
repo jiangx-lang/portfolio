@@ -33,6 +33,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { isMobile } = useIsMobile();
   const pathname = usePathname() || "/";
+  usePageTracking();
 
   /** 精确匹配或子路径（必须带 / 分隔，避免 /qd 与 /portfolio 等误判） */
   const navActive = (href: string) => {
