@@ -8,19 +8,23 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 const STREAMLIT_URL =
   process.env.NEXT_PUBLIC_STREAMLIT_URL || "https://streamlit.atlasallocations.com";
 
-const NAV_ITEMS = [
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/qd", label: "QD基金" },
-  { href: "/mrf", label: "MRF" },
-  { href: "/signals", label: "市场资讯" },
-  { href: "/risk", label: "Risk" },
+type NavLink = { label: string; href: string; external?: boolean };
+
+const navLinks: NavLink[] = [
+  { label: "Portfolio", href: "/" },
+  { label: "QD基金", href: "/qd" },
+  { label: "MRF", href: "/mrf" },
+  { label: "市场笔记", href: "/notes" },
+  { label: "播客", href: "/podcast" },
+  { label: "Risk", href: "/risk" },
+  { label: "锦城系统 ↗", href: STREAMLIT_URL, external: true },
 ];
 
 const BOTTOM_TABS = [
-  { href: "/portfolio", label: "Portfolio", icon: "📊" },
+  { href: "/", label: "Portfolio", icon: "📊" },
   { href: "/qd", label: "QD", icon: "📁" },
   { href: "/mrf", label: "MRF", icon: "🏦" },
-  { href: "/signals", label: "资讯", icon: "📰" },
+  { href: "/notes", label: "笔记", icon: "📝" },
   { href: "/risk", label: "Risk", icon: "📈" },
 ];
 
@@ -83,40 +87,45 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         {!isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            {NAV_ITEMS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  color: navActive(href) ? "#F9FAFB" : "#9CA3AF",
-                  background: navActive(href) ? "rgba(255,255,255,0.08)" : "transparent",
-                  textDecoration: "none",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-            <a
-              href={STREAMLIT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                marginLeft: 8,
-                padding: "5px 10px",
-                borderRadius: 6,
-                border: "0.5px solid rgba(255,255,255,0.12)",
-                fontSize: 12,
-                color: "#9CA3AF",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              锦城系统 ↗
-            </a>
+            {navLinks.map(({ href, label, external }) =>
+              external ? (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    padding: "5px 10px",
+                    borderRadius: 6,
+                    border: "0.5px solid rgba(255,255,255,0.12)",
+                    fontSize: 12,
+                    color: "#9CA3AF",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: 6,
+                    fontSize: 13,
+                    color: navActive(href) ? "#F9FAFB" : "#9CA3AF",
+                    background: navActive(href)
+                      ? "rgba(255,255,255,0.08)"
+                      : "transparent",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {label}
+                </Link>
+              )
+            )}
           </div>
         )}
 
@@ -201,40 +210,48 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               overflowY: "auto",
             }}
           >
-            {NAV_ITEMS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  display: "block",
-                  padding: "14px 1.5rem",
-                  fontSize: 15,
-                  color: navActive(href) ? "#60A5FA" : "#E5E7EB",
-                  textDecoration: "none",
-                  borderLeft: navActive(href) ? "3px solid #185FA5" : "3px solid transparent",
-                  background: navActive(href) ? "rgba(24, 95, 165, 0.08)" : "transparent",
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-            <div
-              style={{
-                padding: "12px 1.5rem",
-                borderTop: "1px solid rgba(255,255,255,0.06)",
-                marginTop: 4,
-              }}
-            >
-              <a
-                href={STREAMLIT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: 13, color: "#6B7280", textDecoration: "none" }}
-              >
-                ← 返回锦城系统
-              </a>
-            </div>
+            {navLinks.map(({ href, label, external }) =>
+              external ? (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "14px 1.5rem",
+                    fontSize: 15,
+                    color: "#9CA3AF",
+                    textDecoration: "none",
+                    borderLeft: "3px solid transparent",
+                  }}
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "14px 1.5rem",
+                    fontSize: 15,
+                    color: navActive(href) ? "#60A5FA" : "#E5E7EB",
+                    textDecoration: "none",
+                    borderLeft: navActive(href)
+                      ? "3px solid #185FA5"
+                      : "3px solid transparent",
+                    background: navActive(href)
+                      ? "rgba(24, 95, 165, 0.08)"
+                      : "transparent",
+                  }}
+                >
+                  {label}
+                </Link>
+              )
+            )}
           </div>
         </>
       )}

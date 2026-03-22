@@ -3,11 +3,21 @@ import fs from "fs";
 
 export const dynamic = "force-dynamic";
 
+const RISK_MEDIA_BASE = "https://media.atlasallocations.com";
+
 export async function GET() {
   const reportPath =
     "/root/fredmonitor/outputs/crisis_monitor/crisis_report_latest.html";
   try {
-    const content = fs.readFileSync(reportPath, "utf-8");
+    let content = fs.readFileSync(reportPath, "utf-8");
+    content = content.replace(
+      /src="figures\//g,
+      `src="${RISK_MEDIA_BASE}/risk-figures/`
+    );
+    content = content.replace(
+      /src="([A-Z_]+_latest\.png)"/g,
+      `src="${RISK_MEDIA_BASE}/risk-figures-root/$1"`
+    );
     return new NextResponse(content, {
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
