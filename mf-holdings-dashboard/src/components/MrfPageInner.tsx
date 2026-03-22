@@ -1,8 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import {
+  MRF_REGION_OPTIONS,
+  MRF_THEME_OPTIONS,
+  MRF_BOND_OPTIONS,
+  fundMatchesHoldingTagFilters,
+  type MrfBondOption,
+  type MrfRegionOption,
+  type MrfThemeOption,
+} from "@/data/mrfHoldingTags";
+import { formatMrfHoldingDisplayName } from "@/data/mrfHoldingNameUnified";
 import MrfAISignalBox from "@/components/MrfAISignalBox";
 import HoldingsDeepAnalysis from "@/components/HoldingsDeepAnalysis";
 import { getTickerFromHolding, isClickable } from "@/lib/holdingTickerMap";
@@ -49,6 +59,10 @@ function mrfProductCodeStr(v: unknown): string {
   return String(v).trim();
 }
 
+function mrfFundHoldingsCacheKey(f: MrfFund): string {
+  return mrfProductCodeStr(f.sc_product_code) || f.fund_name?.trim() || "";
+}
+
 const BRAND_COLORS: Record<string, string> = {
   Amundi: "#185FA5",
   BEA: "#1D9E75",
@@ -72,8 +86,12 @@ export default function MrfPageInner() {
   const [funds, setFunds] = useState<MrfFund[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>("ALL");
-  const [selectedBrand, setSelectedBrand] = useState<string>("ALL");
+  const [selectedRegion, setSelectedRegion] = useState<MrfRegionOption>("全部");
+  const [selectedTheme, setSelectedTheme] = useState<MrfThemeOption>("全部");
+  const [selectedBond, setSelectedBond] = useState<MrfBondOption>("全部");
   const [selected, setSelected] = useState<MrfFund | null>(null);
+  const [holdingsCache, setHoldingsCache] = useState<Record<string, HoldingRow[]>>({});
+  const [holdingsPrefetchReady, setHoldingsPrefetchReady] = useState(false);
 
   const handleRowClick = async (fund: MrfFund) => {
     if (selected?.fund_name === fund.fund_name) {
@@ -157,20 +175,101 @@ export default function MrfPageInner() {
       .catch(() => setLoading(false));
   }, []);
 
-  const brands = ["ALL", ...Array.from(new Set(funds.map((f) => f.brand)))];
+  useEffect(() => {
+    if (!funds.length) {
+      setHoldingsCache({});
+      setHoldingsPrefetchReady(false);
+      return;
+    }
+    let cancelled = false;
+    setHoldingsPrefetchReady(false);
+    (async () => {
+      const results = await Promise.all(
+        funds.map(async (f) => {
+          const code = mrfFundHoldingsCacheKey(f);
+          if (!code) return { key: "", holdings: [] as HoldingRow[] };
+          try {
+            const res = await fetch(`/api/mrf/holdings/${encodeURIComponent(code)}`);
+            const data = (await res.json().catch(() => ({}))) as { holdings?: HoldingRow[] };
+            return {
+              key: code,
+              holdings: Array.isArray(data.holdings) ? data.holdings : [],
+            };
+          } catch {
+            return { key: code, holdings: [] as HoldingRow[] };
+          }
+        })
+      );
+      if (cancelled) return;
+      const map: Record<string, HoldingRow[]> = {};
+      for (const { key, holdings } of results) {
+        if (key) map[key] = holdings;
+      }
+      setHoldingsCache(map);
+      setHoldingsPrefetchReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [funds]);
 
-  const filtered = funds.filter((f) => {
-    const brandOk = selectedBrand === "ALL" || f.brand === selectedBrand;
-    const typeOk =
-      filter === "ALL"
-        ? true
-        : filter === "equity"
-          ? f.equity_pct >= 80
-          : filter === "balanced"
-            ? f.equity_pct >= 30 && f.equity_pct < 80
-            : f.equity_pct < 30;
-    return brandOk && typeOk;
-  });
+  const riskFiltered = useMemo(
+    () =>
+      funds.filter((f) => {
+        if (filter === "ALL") return true;
+        if (filter === "equity") return f.equity_pct >= 80;
+        if (filter === "balanced") return f.equity_pct >= 30 && f.equity_pct < 80;
+        return f.equity_pct < 30;
+      }),
+    [funds, filter]
+  );
+
+  const anyHoldingTagFilter =
+    selectedRegion !== "全部" || selectedTheme !== "全部" || selectedBond !== "全部";
+
+  const sortedDisplay = useMemo(() => {
+    const list = [...riskFiltered];
+    list.sort((a, b) => a.fund_name.localeCompare(b.fund_name, "zh-Hans-CN"));
+    if (!anyHoldingTagFilter || !holdingsPrefetchReady) return list;
+    const matching = list.filter((f) =>
+      fundMatchesHoldingTagFilters(
+        holdingsCache[mrfFundHoldingsCacheKey(f)],
+        selectedRegion,
+        selectedTheme,
+        selectedBond
+      )
+    );
+    const nonMatching = list.filter(
+      (f) =>
+        !fundMatchesHoldingTagFilters(
+          holdingsCache[mrfFundHoldingsCacheKey(f)],
+          selectedRegion,
+          selectedTheme,
+          selectedBond
+        )
+    );
+    return [...matching, ...nonMatching];
+  }, [
+    riskFiltered,
+    anyHoldingTagFilter,
+    holdingsPrefetchReady,
+    holdingsCache,
+    selectedRegion,
+    selectedTheme,
+    selectedBond,
+  ]);
+
+  function rowTagOpacity(f: MrfFund) {
+    if (!anyHoldingTagFilter || !holdingsPrefetchReady) return 1;
+    return fundMatchesHoldingTagFilters(
+      holdingsCache[mrfFundHoldingsCacheKey(f)],
+      selectedRegion,
+      selectedTheme,
+      selectedBond
+    )
+      ? 1
+      : 0.4;
+  }
 
   const brandData = Object.entries(
     funds.reduce((acc, f) => {
@@ -179,11 +278,17 @@ export default function MrfPageInner() {
     }, {} as Record<string, number>)
   ).map(([name, value]) => ({ name, value }));
 
-  const avgAlloc = filtered.length
+  const avgAlloc = riskFiltered.length
     ? {
-        equity: Math.round(filtered.reduce((s, f) => s + f.equity_pct, 0) / filtered.length),
-        fixed: Math.round(filtered.reduce((s, f) => s + f.fixed_income_pct, 0) / filtered.length),
-        cash: Math.round(filtered.reduce((s, f) => s + f.cash_pct, 0) / filtered.length),
+        equity: Math.round(
+          riskFiltered.reduce((s, f) => s + f.equity_pct, 0) / riskFiltered.length
+        ),
+        fixed: Math.round(
+          riskFiltered.reduce((s, f) => s + f.fixed_income_pct, 0) / riskFiltered.length
+        ),
+        cash: Math.round(
+          riskFiltered.reduce((s, f) => s + f.cash_pct, 0) / riskFiltered.length
+        ),
       }
     : { equity: 0, fixed: 0, cash: 0 };
 
@@ -200,6 +305,7 @@ export default function MrfPageInner() {
           background: "#1F2937",
           borderRadius: 8,
           borderLeft: `2px solid ${BRAND_COLORS[sel.brand] ?? "#888"}`,
+          opacity: 1,
         }}
       >
         <div style={{ fontSize: 12, fontWeight: 500, color: "#F9FAFB", marginBottom: 8 }}>{sel.fund_name}</div>
@@ -267,11 +373,11 @@ export default function MrfPageInner() {
                               textDecoration: "none",
                             }}
                           >
-                            {h.holding_name_std || h.holding_name_raw}
+                            {formatMrfHoldingDisplayName(nameKey)}
                           </Link>
                         ) : (
                           <span style={{ fontSize: 13, color: "#F9FAFB", fontWeight: 500 }}>
-                            {h.holding_name_std || h.holding_name_raw}
+                            {formatMrfHoldingDisplayName(nameKey)}
                           </span>
                         )}
                         {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
@@ -327,7 +433,7 @@ export default function MrfPageInner() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                {h.holding_name_std || h.holding_name_raw}
+                                {formatMrfHoldingDisplayName(nameKey)}
                                 {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
                                   <span style={{ fontSize: 11, marginLeft: 6, color: "#60A5FA" }}>
                                     {ticker} ↗
@@ -337,7 +443,7 @@ export default function MrfPageInner() {
                             ) : (
                               <>
                                 <span style={{ fontWeight: 500, color: "#F9FAFB" }}>
-                                  {h.holding_name_std || h.holding_name_raw}
+                                  {formatMrfHoldingDisplayName(nameKey)}
                                 </span>
                                 {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
                                   <span style={{ fontSize: 11, marginLeft: 6, color: "#4B5563" }}>{ticker}</span>
@@ -483,7 +589,7 @@ export default function MrfPageInner() {
           {[
             { label: "MRF 基金池", value: `${funds.length} 只` },
             { label: "平均费率", value: `${(funds.reduce((s, f) => s + f.fee_rate, 0) / Math.max(funds.length, 1)).toFixed(2)}%` },
-            { label: "筛选结果", value: `${filtered.length} 只` },
+            { label: "筛选结果", value: `${riskFiltered.length} 只` },
             { label: "平均股票比", value: `${avgAlloc.equity}%`, color: avgAlloc.equity >= 70 ? "#D85A30" : avgAlloc.equity >= 40 ? "#BA7517" : "#1D9E75" },
           ].map((m) => (
             <div key={m.label} style={s.metric}>
@@ -539,7 +645,7 @@ export default function MrfPageInner() {
             </div>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart
-                data={filtered.slice(0, 8).map((f) => ({
+                data={riskFiltered.slice(0, 8).map((f) => ({
                   name: f.fund_name.slice(0, 8),
                   股票: f.equity_pct,
                   固定收益: f.fixed_income_pct,
@@ -559,32 +665,76 @@ export default function MrfPageInner() {
           </div>
         </div>
 
-        <div style={s.row}>
-          <span style={{ fontSize: 11, color: "#6B7280", alignSelf: "center" }}>风险类型：</span>
-          {([
-            ["ALL", "全部"],
-            ["equity", "进取型 ≥80%"],
-            ["balanced", "均衡型 30-80%"],
-            ["fixed", "稳健型 <30%"],
-          ] as const).map(([v, l]) => (
-            <button key={v} onClick={() => setFilter(v as FilterType)} style={filter === v ? s.tabA : s.tab}>
-              {l}
-            </button>
-          ))}
-          <span style={{ fontSize: 11, color: "#6B7280", alignSelf: "center", marginLeft: 12 }}>品牌：</span>
-          {brands.map((b) => (
-            <button key={b} onClick={() => setSelectedBrand(b)} style={selectedBrand === b ? s.tabA : s.tab}>
-              {b}
-            </button>
-          ))}
+        <div style={{ ...s.row, flexDirection: "column", alignItems: "stretch", gap: 12 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: "#6B7280", alignSelf: "center" }}>风险类型：</span>
+            {([
+              ["ALL", "全部"],
+              ["equity", "进取型 ≥80%"],
+              ["balanced", "均衡型 30-80%"],
+              ["fixed", "稳健型 <30%"],
+            ] as const).map(([v, l]) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setFilter(v as FilterType)}
+                style={filter === v ? s.tabA : s.tab}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: "#6B7280" }}>地域：</span>
+            {MRF_REGION_OPTIONS.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => setSelectedRegion(opt)}
+                style={selectedRegion === opt ? s.tabA : s.tab}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: "#6B7280" }}>主题：</span>
+            {MRF_THEME_OPTIONS.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => setSelectedTheme(opt)}
+                style={selectedTheme === opt ? s.tabA : s.tab}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: "#6B7280" }}>债券：</span>
+            {MRF_BOND_OPTIONS.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => setSelectedBond(opt)}
+                style={selectedBond === opt ? s.tabA : s.tab}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+          <p style={{ fontSize: 10, color: "#4B5563", margin: 0 }}>
+            标签按底层持仓匹配：已选地域/主题/债券须同时满足（各维度任一只持仓命中即可）；完全匹配排前、不透明；否则置底并半透明显示。预取完成前不按标签排序。
+          </p>
         </div>
 
         <div style={s.card}>
           {isMobile ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {filtered.map((f) => {
+              {sortedDisplay.map((f) => {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
+                const op = rowTagOpacity(f);
                 return (
                   <Fragment key={f.fund_name}>
                     <div
@@ -599,6 +749,8 @@ export default function MrfPageInner() {
                         borderRadius: 10,
                         padding: "12px 14px",
                         cursor: "pointer",
+                        opacity: op,
+                        transition: "opacity 0.2s ease",
                       }}
                     >
                       <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 6, color: "#F9FAFB" }}>
@@ -684,15 +836,20 @@ export default function MrfPageInner() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((f) => {
+              {sortedDisplay.map((f) => {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
+                const op = rowTagOpacity(f);
                 return (
                   <Fragment key={f.fund_name}>
                     <tr
                       id={`mrf-row-${mrfProductCodeStr(f.sc_product_code) || f.fund_name}`}
                       onClick={() => handleRowClick(f)}
-                      style={{ background: isSelected ? "rgba(24,95,165,0.12)" : "transparent" }}
+                      style={{
+                        background: isSelected ? "rgba(24,95,165,0.12)" : "transparent",
+                        opacity: op,
+                        transition: "opacity 0.2s ease",
+                      }}
                     >
                       <td style={s.td}>
                         <div style={{ fontWeight: 500, fontSize: 13 }}>{f.fund_name}</div>
@@ -759,7 +916,7 @@ export default function MrfPageInner() {
                       </td>
                     </tr>
                     {isSelected && (
-                      <tr style={{ background: "rgba(24,95,165,0.06)" }}>
+                      <tr style={{ background: "rgba(24,95,165,0.06)", opacity: 1 }}>
                         <td colSpan={8} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
                           {renderHoldingsPanelBelowRow()}
                         </td>
