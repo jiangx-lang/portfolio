@@ -20,28 +20,40 @@ export async function GET() {
       )
       .all() as { tag_name: string; category: string | null }[];
 
-    // Top 3 tags per fund (by aggregated_score desc)
+    // 每个 category 取 aggregated_score 最高的 1 个标签（避免全局 Top 3 挤掉地域等维度）
     const tagRows = db
       .prepare(
         `
         SELECT
           ftm.fund_id AS fund_id,
           tt.tag_name AS tag_name,
+          tt.category AS category,
           ftm.aggregated_score AS aggregated_score
         FROM fund_tag_map ftm
         JOIN tag_taxonomy tt ON tt.tag_id = ftm.tag_id
         WHERE tt.is_active = 1
-        ORDER BY ftm.fund_id, ftm.aggregated_score DESC
+        ORDER BY ftm.fund_id, tt.category, ftm.aggregated_score DESC
       `
       )
-      .all() as { fund_id: number; tag_name: string; aggregated_score: number }[];
+      .all() as {
+        fund_id: number;
+        tag_name: string;
+        category: string | null;
+        aggregated_score: number;
+      }[];
+
+    const tagsByCat: Record<number, Record<string, string>> = {};
+    for (const r of tagRows) {
+      if (!tagsByCat[r.fund_id]) tagsByCat[r.fund_id] = {};
+      const cat = r.category || "theme";
+      if (!tagsByCat[r.fund_id][cat]) {
+        tagsByCat[r.fund_id][cat] = String(r.tag_name);
+      }
+    }
 
     const tagsMap: Record<number, string[]> = {};
-    for (const r of tagRows) {
-      if (!tagsMap[r.fund_id]) tagsMap[r.fund_id] = [];
-      if (tagsMap[r.fund_id].length < 3) {
-        tagsMap[r.fund_id].push(String(r.tag_name));
-      }
+    for (const [fid, catMap] of Object.entries(tagsByCat)) {
+      tagsMap[Number(fid)] = Object.values(catMap);
     }
 
     const funds = db
