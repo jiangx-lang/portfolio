@@ -19,6 +19,7 @@ import {
   type QdTagRow,
 } from "@/data/qdiiFundFilterConfig";
 import { qdTagLabelZh, qdTagsJoinZh } from "@/data/qdiiTagLabelsZh";
+import { QD_THEME_CARDS, type QdThemeCard } from "@/data/qdThemeCards";
 
 interface QdFund {
   fund_id: number;
@@ -78,6 +79,7 @@ export default function QdPage() {
   const [selectedStyleCustom, setSelectedStyleCustom] = useState<string>("全部");
   const [selectedBondSpectrum, setSelectedBondSpectrum] =
     useState<QdBondSpectrumOption>("全部");
+  const [activeThemeCard, setActiveThemeCard] = useState<string | null>(null);
   /** 手机端默认收起「行业 + 策略与定制」 */
   const [expandSectorStyle, setExpandSectorStyle] = useState(true);
   const [expandHoldingMapNote, setExpandHoldingMapNote] = useState(false);
@@ -144,30 +146,42 @@ export default function QdPage() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toUpperCase();
-    return funds.filter((f) => {
+    const card = activeThemeCard ? QD_THEME_CARDS.find((c) => c.id === activeThemeCard) : null;
+
+    const pool = card
+      ? funds.filter((f) => (f.tags || []).some((t) => card.anchorTags.includes(t)))
+      : funds;
+
+    return pool.filter((f) => {
       const code = String(f.primary_code || f.sc_product_code || f.code || "").toUpperCase();
       const hitSearch =
-        !q ||
-        String(f.fund_name_cn || "").includes(search) ||
-        code.includes(q);
+        !q || String(f.fund_name_cn || "").includes(search) || code.includes(q);
       if (!hitSearch) return false;
-      if (
-        !fundMatchesQdFundFilters(
-          f.tags,
-          selectedRegion,
-          selectedSector,
-          selectedThemeOnly,
-          selectedStyleCustom,
-          selectedBondSpectrum
-        )
-      )
-        return false;
+
+      // 主题卡片激活时：跳过多维筛选（AND），仅保留主题 OR 命中 + 搜索。
+      if (!card) {
+        if (
+          !fundMatchesQdFundFilters(
+            f.tags,
+            selectedRegion,
+            selectedSector,
+            selectedThemeOnly,
+            selectedStyleCustom,
+            selectedBondSpectrum
+          )
+        ) {
+          return false;
+        }
+      }
+
+      // 持仓类型筛选（点击卡片时会重置为 ALL）
       if (holdingType !== "ALL") {
         const cls = classifyHoldingTypeByTags(f.tags);
         if (holdingType === "EQUITY" && cls !== "EQUITY") return false;
         if (holdingType === "BOND" && cls !== "BOND") return false;
         if (holdingType === "MIXED" && cls !== "MIXED") return false;
       }
+
       return true;
     });
   }, [
@@ -179,7 +193,23 @@ export default function QdPage() {
     selectedStyleCustom,
     selectedBondSpectrum,
     holdingType,
+    activeThemeCard,
   ]);
+
+  const handleThemeCardClick = (cardId: string) => {
+    if (activeThemeCard === cardId) {
+      setActiveThemeCard(null);
+      return;
+    }
+    setActiveThemeCard(cardId);
+    // 重置所有多维筛选维度
+    setSelectedRegion("全部");
+    setSelectedSector("全部");
+    setSelectedThemeOnly("全部");
+    setSelectedStyleCustom("全部");
+    setSelectedBondSpectrum("全部");
+    setHoldingType("ALL");
+  };
 
   const handleRowClick = async (fund: QdFund) => {
     if (selected?.fund_id === fund.fund_id) {
@@ -510,6 +540,96 @@ export default function QdPage() {
               <div style={s.mval}>{m.value}</div>
             </div>
           ))}
+        </div>
+
+        {/* 奇思妙想主题发现 */}
+        <div style={{ marginBottom: "1.25rem" }}>
+          <div
+            style={{
+              fontSize: 11,
+              color: "#9CA3AF",
+              marginBottom: 10,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              fontWeight: 500,
+            }}
+          >
+            ✦ 奇思妙想 · 主题发现
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              overflowX: "auto",
+              paddingBottom: 6,
+            }}
+          >
+            {QD_THEME_CARDS.map((card: QdThemeCard) => {
+              const isActive = activeThemeCard === card.id;
+              const hitCount = funds.filter((f) => (f.tags || []).some((t) => card.anchorTags.includes(t)))
+                .length;
+              return (
+                <div
+                  key={card.id}
+                  onClick={() => handleThemeCardClick(card.id)}
+                  style={{
+                    minWidth: isMobile ? 160 : 190,
+                    padding: "12px 14px",
+                    borderRadius: 10,
+                    border: isActive ? "1px solid #3B82F6" : "0.5px solid rgba(255,255,255,0.1)",
+                    background: isActive ? "rgba(59,130,246,0.15)" : "#1F2937",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <div style={{ fontSize: 20, marginBottom: 6 }}>{card.emoji}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#F9FAFB", marginBottom: 3 }}>
+                    {card.title}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#9CA3AF", marginBottom: 8, lineHeight: 1.4 }}>
+                    {card.subtitle}
+                  </div>
+                  <div style={{ fontSize: 11, color: isActive ? "#60A5FA" : "#6B7280", fontWeight: 500 }}>
+                    {hitCount} 只基金
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 锦囊展开 */}
+          {activeThemeCard &&
+            (() => {
+              const card = QD_THEME_CARDS.find((c) => c.id === activeThemeCard);
+              if (!card) return null;
+              return (
+                <div
+                  style={{
+                    marginTop: 10,
+                    padding: "10px 14px",
+                    background: "rgba(59,130,246,0.08)",
+                    borderRadius: 8,
+                    borderLeft: "2px solid #3B82F6",
+                  }}
+                >
+                  <span style={{ fontSize: 11, color: "#9CA3AF", marginRight: 6 }}>💡 锦囊：</span>
+                  <span style={{ fontSize: 12, color: "#D1D5DB", lineHeight: 1.6 }}>{card.insightText}</span>
+                  <span
+                    onClick={() => setActiveThemeCard(null)}
+                    style={{
+                      marginLeft: 12,
+                      fontSize: 11,
+                      color: "#6B7280",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    收起
+                  </span>
+                </div>
+              );
+            })()}
         </div>
 
         {/* 搜索 + 筛选（五组基金标签 + 持仓类型 + 穿透说明折叠） */}
