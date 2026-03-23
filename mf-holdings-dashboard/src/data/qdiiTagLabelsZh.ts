@@ -1,82 +1,86 @@
 /**
- * QD 基金 tag_taxonomy.tag_name → 界面中文展示（筛选芯片、列表 Top3）。
- * 内部筛选仍以英文 tag_name 与 fund.tags 对齐；未收录名称原样显示。
- * 专有缩写（HALO、SaaS、AI、QDUR 等）保持英文可读性。
+ * QD 基金 tag_taxonomy.tag_name → 界面中文展示。
+ * 筛选与 API 仍以英文 tag_name 为准；未收录名称原样显示。
  */
 
-export const QD_TAG_LABEL_ZH: Record<string, string> = {
-  // 地域 region
+const ZH_LABELS: Record<string, string> = {
+  // asset_class
+  Bond: "债券",
+  Commodity: "大宗商品",
+  Equity: "股票",
+  "Investment Grade": "投资级",
+  "Money Market": "货币市场",
+  "Multi Asset": "多资产",
+  "Non-Investment Grade": "非投资级",
+  REIT: "REITs",
+  // region
+  US: "美国",
+  Europe: "欧洲",
   Asia: "亚洲",
   China: "中国",
-  EM: "新兴市场",
-  Europe: "欧洲",
-  India: "印度",
   Japan: "日本",
-  Korea: "韩国",
-  LatAm: "拉美",
-  MiddleEast: "中东",
-  Taiwan: "台湾",
-  US: "美国",
-  UK: "英国",
   Global: "全球",
-  ASEAN: "东盟",
-
-  // 行业 sector
-  ConsumerDisc: "非必需消费",
-  ConsumerStaples: "必需消费",
-  Energy: "能源",
+  "Emerging Markets": "新兴市场",
+  // sector
+  Technology: "科技",
   Financials: "金融",
   Healthcare: "医疗健康",
+  Consumer: "消费",
+  Energy: "能源",
   Industrials: "工业",
-  Infrastructure: "基础设施",
   Materials: "原材料",
   "Real Estate": "房地产",
-  Semiconductors: "半导体",
-  Technology: "科技",
-  Telecom: "电信",
+  "Communication Services": "电信",
   Utilities: "公用事业",
-
-  // 策略 style + 定制 custom
-  Growth: "成长",
-  Income: "收益",
-  LowVol: "低波动",
-  Momentum: "动量",
-  Value: "价值",
-  "A-AIpower": "A-AIpower",
-  "H-HardAssets": "H-硬资产",
-  "L-LowVol": "L-低波动",
-  "O-OilHedge": "O-原油对冲",
-
-  // 主题 theme（非债券类）
+  // theme
   AI: "AI",
-  AIChips: "AI 芯片",
-  Biotech: "生物科技",
-  CleanEnergy: "清洁能源",
-  Cybersecurity: "网络安全",
-  DataCenter: "数据中心",
-  EV: "电动汽车",
-  HighDividend: "高股息",
+  "AI Hardware": "AI硬件",
+  "AI Software": "AI软件",
+  "AI Infrastructure": "AI基建",
+  "AI Datacenter": "AI数据中心",
+  Semiconductor: "半导体",
+  "Semiconductor Equipment": "半导体设备",
+  Cloud: "云计算",
   SaaS: "SaaS",
+  Cybersecurity: "网络安全",
+  Internet: "互联网",
+  "China Internet": "中概互联",
+  Robotics: "机器人",
+  EV: "电动汽车",
+  "Energy Transition": "清洁能源",
+  Gold: "黄金",
+  Infrastructure: "基础设施",
+  Defense: "国防",
+  Datacenter: "数据中心",
+  "Enterprise Software": "企业软件",
+  "Asset Management": "资产管理",
+  Insurance: "保险",
+  Logistics: "物流",
+  HighDividend: "高股息",
+  // style
+  Growth: "成长",
+  Value: "价值",
+  Quality: "质量",
+  Income: "收益",
+  "Low Vol": "低波动",
+  Blend: "混合",
+  "Mega Cap": "超大盘",
+  "Broad Market": "宽基",
+  Concentrated: "集中持仓",
+  // custom
   HALO: "HALO",
-
-  // 固收类 tag（列表里可能出现）
-  CorpBond: "投资级信用",
-  FloatingRate: "浮息债",
-  "GovtBond-EM": "新兴主权债",
-  "GovtBond-EU": "欧洲主权债",
-  "GovtBond-US": "美债/主权",
-  HYBond: "高收益债",
-  AsiaBond: "亚洲债",
+  halo: "HALO",
+  core: "核心",
+  satellite: "卫星",
+  aggressive: "进取",
+  defensive: "防御",
+  watchlist: "观察名单",
 };
 
-/** 筛选芯片 / 表格 / 详情中的单标签展示 */
 export function qdTagLabelZh(tag: string): string {
-  if (!tag || tag === "全部") return tag;
-  const t = tag.trim();
-  return QD_TAG_LABEL_ZH[t] ?? QD_TAG_LABEL_ZH[tag] ?? t;
+  return ZH_LABELS[tag] ?? tag;
 }
 
-/** Top3 等多标签拼接 */
 export function qdTagsJoinZh(tags: string[]): string {
   return tags.map(qdTagLabelZh).join(" · ");
 }

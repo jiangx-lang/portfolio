@@ -1,6 +1,8 @@
 /**
  * QD 基金池筛选：与 `tag_taxonomy.category` 对齐的多行分组；债券谱系对应 Gov/HY/Corp 等 tag_name。
  * 持仓层 `qdiiTagMap.ts` 穿透筛选后续版本接入。
+ *
+ * 数据库另有 `asset_class`（Equity/Bond/…），仅用于 taxonomy，不进入下列任一筛选维度。
  */
 
 /** 债券类 theme 标签：只出现在「固收谱系」，不出现在「主题与赛道」 */
