@@ -634,7 +634,25 @@ export default function QdPage() {
 
         {/* 搜索 + 筛选（五组基金标签 + 持仓类型 + 穿透说明折叠） */}
         <div style={{ ...s.card, marginBottom: "1.25rem" }}>
-          <div style={s.stitle}>筛选</div>
+          <div style={{ ...s.stitle, display: "flex", alignItems: "center", gap: 10 }}>
+            筛选
+            {activeThemeCard && (
+              <span
+                style={{
+                  fontSize: 10,
+                  color: "#60A5FA",
+                  background: "rgba(59,130,246,0.12)",
+                  border: "0.5px solid rgba(59,130,246,0.35)",
+                  borderRadius: 4,
+                  padding: "2px 7px",
+                  fontWeight: 400,
+                  letterSpacing: "0.03em",
+                }}
+              >
+                ✦ 主题模式 · 多维筛选暂停
+              </span>
+            )}
+          </div>
           <div
             style={{
               ...s.row,
