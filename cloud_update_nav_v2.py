@@ -5,7 +5,7 @@ from datetime import date
 import pandas as pd
 import yfinance as yf
 
-NAV_DB = "/root/data/nav_history.db"
+NAV_DB = os.environ.get("NAV_HISTORY_DB", "/root/data/nav_history.db")
 SUPABASE_URL = "https://wpsiqvbhxhzrynfhbwno.supabase.co"
 SUPABASE_KEY = "sb_publishable_8sWmy_vOCTdplogyWYhxbg_ACf1Uxrz"
 SYNC = True
@@ -19,6 +19,7 @@ MRF_CODES = [
 ]
 
 def get_conn():
+    Path(NAV_DB).parent.mkdir(parents=True, exist_ok=True)
     return sqlite3.connect(NAV_DB, timeout=30)
 
 def get_fund_list():
@@ -163,8 +164,19 @@ def sync_supabase(rows):
 
 def main():
     history = "--history" in sys.argv
+    only_mrf = "--only-mrf" in sys.argv
+    only_qd = "--only-qd" in sys.argv
+    if only_mrf and only_qd:
+        print("参数冲突：--only-mrf 与 --only-qd 不能同时使用")
+        return
     print(f"模式: {'历史补全' if history else '增量更新'}")
     funds = ensure_mrf_rows(get_fund_list())
+    if only_mrf:
+        funds = funds[funds["code"].astype(str).str.strip().isin(MRF_CODES)].copy()
+        print("运行范围: 仅 MRF (968)")
+    elif only_qd:
+        funds = funds[~funds["code"].astype(str).str.strip().isin(MRF_CODES)].copy()
+        print("运行范围: 仅 QD/非 MRF")
     print(f"基金数量: {len(funds)}\n")
 
     success, fail = 0, 0
