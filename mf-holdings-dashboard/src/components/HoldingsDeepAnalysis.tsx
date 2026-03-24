@@ -264,7 +264,7 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
     const w = Number(d.weight ?? 0);
     const hasName = String(d.name ?? "").trim().length > 0;
     const hasTicker = String(d.ticker ?? "").trim().length > 0;
-    return !d.error && w > 0 && (hasName || hasTicker);
+    return w > 0 && (hasName || hasTicker);
   });
   sortedForMatrix.sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0));
 
