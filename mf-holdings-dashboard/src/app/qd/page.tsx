@@ -85,8 +85,15 @@ export default function QdPage() {
   const [selectedStyleCustom, setSelectedStyleCustom] = useState<string>("全部");
   const [selectedBondSpectrum, setSelectedBondSpectrum] =
     useState<QdBondSpectrumOption>("全部");
-  /** 手机端默认收起「行业 + 策略与定制」 */
-  const [expandSectorStyle, setExpandSectorStyle] = useState(true);
+  /** 桌面端展开 / 手机端默认收起「行业 + 策略与定制」 */
+  const [expandSectorStyle, setExpandSectorStyle] = useState(false);
+  /** 手机端：地域 / 主题与赛道 / 固收谱系 分块折叠 */
+  const [expandMobileRegion, setExpandMobileRegion] = useState(false);
+  const [expandMobileTheme, setExpandMobileTheme] = useState(false);
+  const [expandMobileBond, setExpandMobileBond] = useState(false);
+  /** 手机端收益率筛选：字段 + 方向（与列头排序独立） */
+  const [mobilePerfField, setMobilePerfField] = useState<PerfKey | null>(null);
+  const [mobilePerfSign, setMobilePerfSign] = useState<"all" | "positive" | "negative">("all");
   const [expandHoldingMapNote, setExpandHoldingMapNote] = useState(false);
   const [holdingType, setHoldingType] = useState<HoldingTypeFilter>("ALL");
   const [selected, setSelected] = useState<QdFund | null>(null);
@@ -151,6 +158,11 @@ export default function QdPage() {
 
   useEffect(() => {
     setExpandSectorStyle(!isMobile);
+    if (isMobile) {
+      setExpandMobileRegion(false);
+      setExpandMobileTheme(false);
+      setExpandMobileBond(false);
+    }
   }, [isMobile]);
 
   const regionOptions = useMemo(() => qdRegionTagNames(allTagRows), [allTagRows]);
@@ -198,6 +210,13 @@ export default function QdPage() {
         if (holdingType === "MIXED" && cls !== "MIXED") return false;
       }
 
+      if (mobilePerfField != null && mobilePerfSign !== "all") {
+        const v = perfSortValue(f.performance?.[mobilePerfField]);
+        if (v === null) return false;
+        if (mobilePerfSign === "positive" && v <= 0) return false;
+        if (mobilePerfSign === "negative" && v >= 0) return false;
+      }
+
       return true;
     });
   }, [
@@ -209,6 +228,8 @@ export default function QdPage() {
     selectedStyleCustom,
     selectedBondSpectrum,
     holdingType,
+    mobilePerfField,
+    mobilePerfSign,
   ]);
 
   const sortedFiltered = useMemo(() => {
@@ -642,28 +663,135 @@ export default function QdPage() {
             />
           </div>
 
-          <div style={s.filterSection}>
-            <div style={s.filterLabel}>地域</div>
-            <div style={s.filterChips}>
+          {isMobile ? (
+            <div style={{ ...s.filterSection, borderTop: "none", paddingTop: 0 }}>
+              <div style={s.filterLabel}>收益率筛选</div>
+              <p style={{ fontSize: 10, color: "#6B7280", margin: "0 0 8px", lineHeight: 1.45 }}>
+                先选时间维度，再选涨跌方向；与表头排序可同时使用。
+              </p>
+              <div style={{ ...s.filterChips, marginBottom: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobilePerfField(null);
+                    setMobilePerfSign("all");
+                  }}
+                  style={mobilePerfField === null ? s.tabA : s.tab}
+                >
+                  不按绩效
+                </button>
+                {(
+                  [
+                    ["日涨跌", "daily_return"],
+                    ["1周", "weekly_return"],
+                    ["1月", "monthly_1"],
+                    ["3月", "monthly_3"],
+                    ["6月", "monthly_6"],
+                    ["1年", "yearly_1"],
+                  ] as const
+                ).map(([label, key]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setMobilePerfField(key)}
+                    style={mobilePerfField === key ? s.tabA : s.tab}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div style={s.filterChips}>
+                <button
+                  type="button"
+                  onClick={() => setMobilePerfSign("all")}
+                  style={mobilePerfSign === "all" ? s.tabA : s.tab}
+                  disabled={mobilePerfField === null}
+                >
+                  不限方向
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobilePerfSign("positive")}
+                  style={mobilePerfSign === "positive" ? s.tabA : s.tab}
+                  disabled={mobilePerfField === null}
+                >
+                  上涨 &gt;0
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobilePerfSign("negative")}
+                  style={mobilePerfSign === "negative" ? s.tabA : s.tab}
+                  disabled={mobilePerfField === null}
+                >
+                  下跌 &lt;0
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {isMobile ? (
+            <div style={s.filterSection}>
               <button
                 type="button"
-                onClick={() => setSelectedRegion("全部")}
-                style={selectedRegion === "全部" ? s.tabA : s.tab}
+                onClick={() => setExpandMobileRegion((v) => !v)}
+                style={{
+                  ...s.tab,
+                  width: "100%",
+                  textAlign: "center" as const,
+                  border: "0.5px solid rgba(255,255,255,0.12)",
+                }}
               >
-                全部
+                {expandMobileRegion ? "收起地域 ▲" : "展开地域 ▼"}
+                {selectedRegion !== "全部" ? `（${qdTagLabelZh(selectedRegion)}）` : ""}
               </button>
-              {regionOptions.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => setSelectedRegion(tag)}
-                  style={selectedRegion === tag ? s.tabA : s.tab}
-                >
-                  {qdTagLabelZh(tag)}
-                </button>
-              ))}
+              {expandMobileRegion ? (
+                <div style={{ marginTop: 10 }}>
+                  <div style={s.filterChips}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRegion("全部")}
+                      style={selectedRegion === "全部" ? s.tabA : s.tab}
+                    >
+                      全部
+                    </button>
+                    {regionOptions.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => setSelectedRegion(tag)}
+                        style={selectedRegion === tag ? s.tabA : s.tab}
+                      >
+                        {qdTagLabelZh(tag)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
-          </div>
+          ) : (
+            <div style={s.filterSection}>
+              <div style={s.filterLabel}>地域</div>
+              <div style={s.filterChips}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRegion("全部")}
+                  style={selectedRegion === "全部" ? s.tabA : s.tab}
+                >
+                  全部
+                </button>
+                {regionOptions.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setSelectedRegion(tag)}
+                    style={selectedRegion === tag ? s.tabA : s.tab}
+                  >
+                    {qdTagLabelZh(tag)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {isMobile && !expandSectorStyle ? (
             <div style={{ marginTop: 12 }}>
@@ -739,55 +867,141 @@ export default function QdPage() {
             </>
           )}
 
-          <div style={s.filterSection}>
-            <div style={s.filterLabel}>主题与赛道</div>
-            <div style={s.filterChips}>
+          {isMobile ? (
+            <div style={s.filterSection}>
               <button
                 type="button"
-                onClick={() => setSelectedThemeOnly("全部")}
-                style={selectedThemeOnly === "全部" ? s.tabA : s.tab}
+                onClick={() => setExpandMobileTheme((v) => !v)}
+                style={{
+                  ...s.tab,
+                  width: "100%",
+                  textAlign: "center" as const,
+                  border: "0.5px solid rgba(255,255,255,0.12)",
+                }}
               >
-                全部
+                {expandMobileTheme ? "收起主题与赛道 ▲" : "展开主题与赛道 ▼"}
+                {selectedThemeOnly !== "全部" ? `（${qdTagLabelZh(selectedThemeOnly)}）` : ""}
               </button>
-              {themeOnlyOptions.map((tag) => (
+              {expandMobileTheme ? (
+                <div style={{ marginTop: 10 }}>
+                  <div style={s.filterChips}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedThemeOnly("全部")}
+                      style={selectedThemeOnly === "全部" ? s.tabA : s.tab}
+                    >
+                      全部
+                    </button>
+                    {themeOnlyOptions.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => setSelectedThemeOnly(tag)}
+                        style={selectedThemeOnly === tag ? s.tabA : s.tab}
+                      >
+                        {qdTagLabelZh(tag)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div style={s.filterSection}>
+              <div style={s.filterLabel}>主题与赛道</div>
+              <div style={s.filterChips}>
                 <button
-                  key={tag}
                   type="button"
-                  onClick={() => setSelectedThemeOnly(tag)}
-                  style={selectedThemeOnly === tag ? s.tabA : s.tab}
+                  onClick={() => setSelectedThemeOnly("全部")}
+                  style={selectedThemeOnly === "全部" ? s.tabA : s.tab}
                 >
-                  {qdTagLabelZh(tag)}
+                  全部
                 </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={s.filterSection}>
-            <div style={s.filterLabel}>固收谱系</div>
-            <div style={s.filterChips}>
-              {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
-                const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
-                return (
+                {themeOnlyOptions.map((tag) => (
                   <button
-                    key={opt}
+                    key={tag}
                     type="button"
-                    onClick={() => setSelectedBondSpectrum(opt)}
-                    title={
-                      pendingAsia
-                        ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
-                        : undefined
-                    }
-                    style={{
-                      ...(selectedBondSpectrum === opt ? s.tabA : s.tab),
-                      ...(pendingAsia ? { opacity: 0.5 } : {}),
-                    }}
+                    onClick={() => setSelectedThemeOnly(tag)}
+                    style={selectedThemeOnly === tag ? s.tabA : s.tab}
                   >
-                    {opt}
+                    {qdTagLabelZh(tag)}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {isMobile ? (
+            <div style={s.filterSection}>
+              <button
+                type="button"
+                onClick={() => setExpandMobileBond((v) => !v)}
+                style={{
+                  ...s.tab,
+                  width: "100%",
+                  textAlign: "center" as const,
+                  border: "0.5px solid rgba(255,255,255,0.12)",
+                }}
+              >
+                {expandMobileBond ? "收起固收谱系 ▲" : "展开固收谱系 ▼"}
+                {selectedBondSpectrum !== "全部" ? `（${selectedBondSpectrum}）` : ""}
+              </button>
+              {expandMobileBond ? (
+                <div style={{ marginTop: 10 }}>
+                  <div style={s.filterChips}>
+                    {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
+                      const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSelectedBondSpectrum(opt)}
+                          title={
+                            pendingAsia
+                              ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
+                              : undefined
+                          }
+                          style={{
+                            ...(selectedBondSpectrum === opt ? s.tabA : s.tab),
+                            ...(pendingAsia ? { opacity: 0.5 } : {}),
+                          }}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div style={s.filterSection}>
+              <div style={s.filterLabel}>固收谱系</div>
+              <div style={s.filterChips}>
+                {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
+                  const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setSelectedBondSpectrum(opt)}
+                      title={
+                        pendingAsia
+                          ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
+                          : undefined
+                      }
+                      style={{
+                        ...(selectedBondSpectrum === opt ? s.tabA : s.tab),
+                        ...(pendingAsia ? { opacity: 0.5 } : {}),
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div style={{ ...s.row, marginBottom: 0, marginTop: 14 }}>
             <span style={{ fontSize: 11, color: "#6B7280" }}>持仓类型：</span>
