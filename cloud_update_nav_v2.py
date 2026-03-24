@@ -24,7 +24,11 @@ def get_conn():
 
 def get_fund_list():
     conn = get_conn()
-    df = pd.read_sql("SELECT code, isin, ccy, nav_source, yahoo_symbol FROM fund_list", conn)
+    try:
+        df = pd.read_sql("SELECT code, isin, ccy, nav_source, yahoo_symbol, type FROM fund_list", conn)
+    except Exception:
+        df = pd.read_sql("SELECT code, isin, ccy, nav_source, yahoo_symbol FROM fund_list", conn)
+        df["type"] = ""
     conn.close()
     return df
 
@@ -117,6 +121,19 @@ def download_akshare_968(code, ccy="HKD", history=False):
         import akshare as ak
     except Exception:
         return []
+
+
+def fetch_mrf_nav(row, history=False):
+    """
+    MRF 专用入口：type='mrf' 或 968 代码时走 AKShare。
+    """
+    code = str(row.get("code") or "").strip()
+    ccy = str(row.get("ccy") or "HKD").strip().upper() or "HKD"
+    if not code:
+        return []
+    if str(row.get("type") or "").strip().lower() == "mrf" or code.startswith("968"):
+        return download_akshare_968(code, ccy, history)
+    return []
     try:
         df = ak.fund_hk_fund_hist_em(code=str(code), symbol="历史净值明细")
         if df is None or df.empty:
@@ -142,7 +159,7 @@ def download_akshare_968(code, ccy="HKD", history=False):
     except Exception:
         return []
 
-def sync_supabase(rows):
+def sync_to_supabase(rows):
     if not SYNC or not rows:
         return
     headers = {
@@ -161,6 +178,11 @@ def sync_supabase(rows):
                 print(f"  Supabase 失败: {resp.status_code}")
         except Exception as e:
             print(f"  Supabase 异常: {e}")
+
+
+def sync_supabase(rows):
+    # 向后兼容旧调用
+    sync_to_supabase(rows)
 
 def main():
     history = "--history" in sys.argv
@@ -188,10 +210,9 @@ def main():
         print(f"[{idx+1}/{len(funds)}] {f['code']} ({isin})...")
 
         rows = []
-        code = str(f.get("code") or "").strip()
-        # MRF 统一 968 先走 akshare，确保 16 只可抓
-        if code in MRF_CODES:
-            rows = download_akshare_968(code, ccy, history)
+        # MRF 专用分支（type=mrf 或 968 前缀）
+        rows = fetch_mrf_nav(f, history)
+        if rows:
             if rows:
                 print(f"  AKShare(968): {len(rows)} 条")
         # 先试 FT
@@ -219,7 +240,7 @@ def main():
         # 每10个基金同步一次 Supabase，避免积累太多
         if len(all_new) >= 5000:
             print(f"\n  同步 {len(all_new)} 条到 Supabase...")
-            sync_supabase(all_new)
+            sync_to_supabase(all_new)
             all_new = []
 
         time.sleep(SLEEP)
@@ -227,7 +248,7 @@ def main():
     # 最后同步剩余
     if all_new:
         print(f"\n最终同步 {len(all_new)} 条到 Supabase...")
-        sync_supabase(all_new)
+        sync_to_supabase(all_new)
 
     print(f"\n完成！成功: {success} 只，无数据: {fail} 只")
 
