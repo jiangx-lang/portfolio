@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
 import { trackAnalytics } from "@/lib/analytics-client";
-import PasswordGate from "@/components/PasswordGate";
 
 export type PodcastRow = {
   id: number;
@@ -16,11 +15,7 @@ export type PodcastRow = {
 };
 
 export default function PodcastPage() {
-  return (
-    <PasswordGate title="播客">
-      <PodcastPageInner />
-    </PasswordGate>
-  );
+  return <PodcastPageInner />;
 }
 
 function PodcastPageInner() {

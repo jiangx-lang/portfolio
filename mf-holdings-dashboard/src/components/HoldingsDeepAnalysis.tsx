@@ -113,6 +113,19 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
     (h) => h.type === "equity" && h.ticker && h.ticker.length > 0 && !NON_YF_TICKERS.has(h.ticker)
   );
 
+  if (equityHoldings.length < 2) {
+    return (
+      <div style={{ marginTop: 24, borderTop: "1px solid #1e3a5f", paddingTop: 20 }}>
+        <h3 style={{ color: "#e2e8f0", fontSize: 16, margin: "0 0 8px" }}>📊 持仓深度分析</h3>
+        <p className="text-sm text-slate-400" style={{ margin: 0, lineHeight: 1.65, maxWidth: 560 }}>
+          本基金持仓以债券或非上市资产为主（当前{" "}
+          <span className="text-slate-300">{equityHoldings.length}</span>{" "}
+          只股票持仓可映射到公开市场数据），样本过少，暂不展示持仓深度分析，避免误导。
+        </p>
+      </div>
+    );
+  }
+
   const todayStr = new Date().toLocaleDateString("zh-CN", {
     year: "numeric",
     month: "2-digit",

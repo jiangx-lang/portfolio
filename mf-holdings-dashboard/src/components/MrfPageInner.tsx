@@ -539,25 +539,49 @@ export default function MrfPageInner() {
           </div>
         )}
 
-        {sel.holdings && sel.holdings.length > 0 && (
-          <HoldingsDeepAnalysis
-            fundName={sel.fund_name}
-            productCode={mrfProductCodeStr(sel.sc_product_code) || undefined}
-            holdings={sel.holdings.slice(0, 10).map((h) => {
-              const name = String(h.holding_name_std || h.holding_name_raw || "").trim();
-              const rawTicker = getTickerFromHolding(name);
-              const skip = new Set(["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"]);
-              const ticker = rawTicker && !skip.has(rawTicker) ? rawTicker : undefined;
-              const type = String(h.holding_type || "").toLowerCase().includes("equity") ? "equity" : "other";
-              return {
-                name,
-                ticker,
-                weight: Number(h.weight_pct) / 100,
-                type,
-              };
-            })}
-          />
-        )}
+        {sel.holdings && sel.holdings.length > 0 && (() => {
+          const skipTickers = new Set(["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"]);
+          const top10 = sel.holdings.slice(0, 10);
+          const holdingsPayload = top10.map((h) => {
+            const name = String(h.holding_name_std || h.holding_name_raw || "").trim();
+            const rawTicker = getTickerFromHolding(name);
+            const ticker = rawTicker && !skipTickers.has(rawTicker) ? rawTicker : undefined;
+            const type = String(h.holding_type || "").toLowerCase().includes("equity") ? "equity" : "other";
+            return {
+              name,
+              ticker,
+              weight: Number(h.weight_pct) / 100,
+              type,
+            };
+          });
+          // 与 HoldingsDeepAnalysis 一致：仅 equity 且可映射 yfinance 的标的
+          const validEquityCount = holdingsPayload.filter(
+            (h) => h.type === "equity" && h.ticker && h.ticker.length > 0
+          ).length;
+          return (
+            <>
+              {validEquityCount >= 3 ? (
+                <HoldingsDeepAnalysis
+                  fundName={sel.fund_name}
+                  productCode={mrfProductCodeStr(sel.sc_product_code) || undefined}
+                  holdings={holdingsPayload}
+                />
+              ) : (
+                <div
+                  className="rounded-lg border border-slate-700/80 bg-slate-950/30 p-4"
+                  style={{ marginTop: 20 }}
+                >
+                  <p className="text-sm font-medium text-slate-300" style={{ margin: "0 0 6px" }}>
+                    持仓说明
+                  </p>
+                  <p className="text-xs text-slate-500" style={{ margin: 0, lineHeight: 1.65, maxWidth: 520 }}>
+                    本基金以固定收益类资产为主要持仓，可映射股票代码的持仓不足 3 只，股票型「持仓深度分析」不适用。可参考上方资产配置中的股票/债券/现金比例与基金招募说明书中的久期、信用风险等披露。
+                  </p>
+                </div>
+              )}
+            </>
+          );
+        })()}
 
         <MrfAISignalBox
           fund={{

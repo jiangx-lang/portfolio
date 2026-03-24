@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
 import { trackAnalytics } from "@/lib/analytics-client";
-import PasswordGate from "@/components/PasswordGate";
 
 export type DailyReportRow = {
   id: number;
@@ -76,17 +75,15 @@ function TrackedNoteCard({
 
 export default function NotesPage() {
   return (
-    <PasswordGate title="市场资讯">
-      <Suspense
-        fallback={
-          <div style={{ padding: "2rem", color: "#94a3b8", textAlign: "center" }}>
-            加载中…
-          </div>
-        }
-      >
-        <NotesPageInner />
-      </Suspense>
-    </PasswordGate>
+    <Suspense
+      fallback={
+        <div style={{ padding: "2rem", color: "#94a3b8", textAlign: "center" }}>
+          加载中…
+        </div>
+      }
+    >
+      <NotesPageInner />
+    </Suspense>
   );
 }
 

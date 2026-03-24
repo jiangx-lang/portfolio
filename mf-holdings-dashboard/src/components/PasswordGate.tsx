@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-/** 与 Streamlit 内容区门禁一致；任一口令均可解锁本会话内全部受保护页面 */
+/** 仅用于 /risk；任一口令均可解锁本会话内该页 */
 const VALID_PASSWORDS = new Set(["fs123", "cd123"]);
-const STORAGE_UNLOCKED = "atlas_gate_content_v1";
+const STORAGE_UNLOCKED = "atlas_gate_risk_v1";
 
 /** 全角/大小写/零宽字符等规范化后再比对，避免输入法导致 fs123、cd123 误判失败 */
 function normalizeContentGatePassword(raw: string): string {
@@ -117,8 +117,12 @@ export default function PasswordGate({ title, children }: Props) {
           🔒 {title}
         </h1>
         <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 20 }}>
-          市场笔记、播客与 Risk 页面需验证后继续。可使用口令 <strong>fs123</strong> 或{" "}
-          <strong>cd123</strong>（任一口令均可）。
+          本页（宏观风险监控）需验证后继续。可使用口令 <strong>fs123</strong> 或{" "}
+          <strong>cd123</strong>（任一口令均可）。管理员后台请使用{" "}
+          <Link href="/admin" style={{ color: "#60a5fa" }}>
+            /admin
+          </Link>{" "}
+          独立密码。
         </p>
         <form onSubmit={submit}>
           <input
