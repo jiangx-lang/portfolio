@@ -11,8 +11,9 @@ from __future__ import annotations
 
 import json
 import math
+import random
 import sys
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 from datetime import date
 from pathlib import Path
 
@@ -51,6 +52,22 @@ def _set_cache(ticker: str, data: dict) -> None:
         p.write_text(json.dumps(to_store, ensure_ascii=False), encoding="utf-8")
     except OSError:
         pass
+
+
+def _is_rate_limited_error(err_msg: str) -> bool:
+    s = (err_msg or "").lower()
+    return "429" in s or "too many requests" in s or "rate limit" in s or "rate limited" in s
+
+
+def _is_clean_for_cache(row: dict) -> bool:
+    """仅缓存干净结果：无 error，且结构有效。"""
+    if not isinstance(row, dict):
+        return False
+    if row.get("error"):
+        return False
+    # 不强求 PE/PB：ETF、债券、亏损股等可能天然缺失估值字段，
+    # 这属于有效业务数据，应允许缓存，避免每天重复请求。
+    return True
 
 
 def _safe_float(x) -> float | None:
@@ -321,7 +338,7 @@ def _try_naver_kr_fundamentals(code: str) -> dict | None:
     try:
         r = requests.get(
             url,
-            timeout=18,
+            timeout=(5, 10),
             headers={
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
@@ -453,10 +470,21 @@ def _fetch_single_holding(item: dict) -> dict:
     if cached is not None:
         merged = {**cached, "weight": w, "cached": True}
         return merged
-    result = fetch_holding_data(t, w)
-    if not result.get("error"):
-        _set_cache(t, result)
-    return result
+    max_retries = 3
+    for attempt in range(max_retries):
+        result = fetch_holding_data(t, w)
+        err_msg = str(result.get("error") or "")
+        if not err_msg:
+            if _is_clean_for_cache(result):
+                _set_cache(t, result)
+            return result
+        # 仅对 429 / 限流做指数退避重试
+        if _is_rate_limited_error(err_msg) and attempt < max_retries - 1:
+            sleep_s = (2 ** attempt) + random.uniform(0.3, 1.2)
+            time.sleep(sleep_s)
+            continue
+        return result
+    return {"ticker": t, "weight": w, "error": "unknown_fetch_failure"}
 
 
 def main() -> None:
@@ -496,19 +524,20 @@ def main() -> None:
     if not parsed:
         print(json.dumps([], ensure_ascii=False))
         return
-    max_workers = min(8, max(1, len(parsed)))
-    results_by_idx: dict[int, dict] = {}
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        future_to_i = {ex.submit(_fetch_single_holding, parsed[i]): i for i in range(len(parsed))}
-        for fut in as_completed(future_to_i):
-            i = future_to_i[fut]
-            try:
-                results_by_idx[i] = fut.result()
-            except Exception as e:
-                t = (parsed[i].get("ticker") or "").strip()
-                w = _safe_float(parsed[i].get("weight")) or 0.0
-                results_by_idx[i] = {"ticker": t, "weight": w, "error": str(e)}
-    results = [results_by_idx[i] for i in range(len(parsed))]
+    # 反爬：串行抓取 + 随机延迟，避免触发上游限流
+    results: list[dict] = []
+    for idx, item in enumerate(parsed):
+        try:
+            row = _fetch_single_holding(item)
+            results.append(row)
+        except Exception as e:
+            t = (item.get("ticker") or "").strip()
+            w = _safe_float(item.get("weight")) or 0.0
+            results.append({"ticker": t, "weight": w, "error": str(e)})
+        # 请求间随机停顿（最后一条无需 sleep）；缓存命中时跳过等待
+        is_cached = bool(results[-1].get("cached"))
+        if idx < len(parsed) - 1 and not is_cached:
+            time.sleep(random.uniform(1.0, 3.0))
     print(json.dumps(results, ensure_ascii=False))
 
 

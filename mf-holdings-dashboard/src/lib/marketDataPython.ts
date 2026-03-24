@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import path from "path";
 
 export type MarketHoldingInput = { ticker: string; weight: number };
+const PYTHON_HARD_TIMEOUT_MS = 120_000;
 
 /** Run scripts/fetch_market_data.py; returns parsed JSON array or throws */
 export function fetchMarketDataViaPython(holdings: MarketHoldingInput[]): Promise<unknown[]> {
@@ -19,6 +20,13 @@ export function fetchMarketDataViaPython(holdings: MarketHoldingInput[]): Promis
       env: process.env,
       windowsHide: true,
     });
+    let settled = false;
+    const timeout = setTimeout(() => {
+      if (settled) return;
+      py.kill("SIGTERM");
+      settled = true;
+      reject(new Error(`python_timeout_${PYTHON_HARD_TIMEOUT_MS}ms`));
+    }, PYTHON_HARD_TIMEOUT_MS);
     let output = "";
     let error = "";
     py.stdout.on("data", (d) => {
@@ -28,9 +36,15 @@ export function fetchMarketDataViaPython(holdings: MarketHoldingInput[]): Promis
       error += d.toString();
     });
     py.on("error", (err) => {
+      if (settled) return;
+      clearTimeout(timeout);
+      settled = true;
       reject(err);
     });
     py.on("close", (code) => {
+      if (settled) return;
+      clearTimeout(timeout);
+      settled = true;
       if (code !== 0) {
         reject(new Error(error || `python_exit_${code}`));
         return;
