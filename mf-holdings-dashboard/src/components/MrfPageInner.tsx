@@ -542,6 +542,7 @@ export default function MrfPageInner() {
         {sel.holdings && sel.holdings.length > 0 && (
           <HoldingsDeepAnalysis
             fundName={sel.fund_name}
+            productCode={mrfProductCodeStr(sel.sc_product_code) || undefined}
             holdings={sel.holdings.slice(0, 10).map((h) => {
               const name = String(h.holding_name_std || h.holding_name_raw || "").trim();
               const rawTicker = getTickerFromHolding(name);

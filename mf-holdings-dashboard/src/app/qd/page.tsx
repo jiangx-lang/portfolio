@@ -1500,6 +1500,7 @@ export default function QdPage() {
             {selected.holdings && selected.holdings.length > 0 && (
               <HoldingsDeepAnalysis
                 fundName={selected.fund_name_cn}
+                productCode={String(selected.sc_product_code || selected.code || selected.primary_code || "")}
                 holdings={selected.holdings.slice(0, 10).map((h) => {
                   const name = String(h.holding_name_std || h.holding_name_raw || "").trim();
                   const rawTicker = getTickerFromHolding(name);

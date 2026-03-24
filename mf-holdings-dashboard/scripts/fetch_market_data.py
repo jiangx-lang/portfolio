@@ -12,6 +12,45 @@ from __future__ import annotations
 import json
 import math
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import date
+from pathlib import Path
+
+CACHE_DIR = Path(__file__).resolve().parent / ".market_cache"
+
+
+def _ensure_cache_dir() -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _ticker_cache_key(ticker: str) -> str:
+    t = ticker.strip().upper()
+    return "".join(c if c.isalnum() or c in "-_" else "_" for c in t)
+
+
+def _cache_path(ticker: str) -> Path:
+    today = date.today().isoformat()
+    return CACHE_DIR / f"{_ticker_cache_key(ticker)}_{today}.json"
+
+
+def _get_cached(ticker: str) -> dict | None:
+    p = _cache_path(ticker)
+    if not p.is_file():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def _set_cache(ticker: str, data: dict) -> None:
+    _ensure_cache_dir()
+    p = _cache_path(ticker)
+    to_store = {k: v for k, v in data.items() if k != "weight"}
+    try:
+        p.write_text(json.dumps(to_store, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
 
 
 def _safe_float(x) -> float | None:
@@ -163,6 +202,9 @@ def _build_from_yf(
         put_call_ratio, pcr_source = _apply_beta_pcr_proxy(info, put_call_ratio, pcr_source)
         beta = _safe_float(info.get("beta"))
         data_quality = _data_quality(ticker, iv)
+        div_y = _safe_float(info.get("dividendYield"))
+        if div_y is not None and div_y <= 1.0:
+            div_y = div_y * 100.0
 
         return {
             "ticker": ticker,
@@ -173,6 +215,7 @@ def _build_from_yf(
             "pe_forward": pe_forward,
             "pb": pb,
             "beta": beta,
+            "dividend_yield": round(div_y, 3) if div_y is not None else None,
             "implied_volatility": round(iv, 4) if iv is not None else None,
             "put_call_ratio": round(put_call_ratio, 3) if put_call_ratio is not None else None,
             "pcr_source": pcr_source,
@@ -401,6 +444,21 @@ def fetch_holding_data(ticker: str, weight: float) -> dict:
     return fetch_other_data(ticker, weight, m)
 
 
+def _fetch_single_holding(item: dict) -> dict:
+    t = (item.get("ticker") or "").strip()
+    w = _safe_float(item.get("weight")) or 0.0
+    if not t:
+        return {"ticker": "", "weight": w, "error": "empty_ticker"}
+    cached = _get_cached(t)
+    if cached is not None:
+        merged = {**cached, "weight": w, "cached": True}
+        return merged
+    result = fetch_holding_data(t, w)
+    if not result.get("error"):
+        _set_cache(t, result)
+    return result
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         print(json.dumps({"error": "missing_json_arg"}, ensure_ascii=False))
@@ -424,13 +482,33 @@ def main() -> None:
     if not isinstance(holdings, list):
         print(json.dumps({"error": "holdings_must_be_array"}, ensure_ascii=False))
         sys.exit(1)
-    results = []
+    parsed: list[dict] = []
     for h in holdings:
+        if not isinstance(h, dict):
+            continue
         t = (h.get("ticker") or "").strip()
         w = _safe_float(h.get("weight")) or 0.0
         if not t:
             continue
-        results.append(fetch_holding_data(t, w))
+        parsed.append({"ticker": t, "weight": w})
+    parsed.sort(key=lambda x: x.get("weight") or 0.0, reverse=True)
+    parsed = parsed[:20]
+    if not parsed:
+        print(json.dumps([], ensure_ascii=False))
+        return
+    max_workers = min(8, max(1, len(parsed)))
+    results_by_idx: dict[int, dict] = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        future_to_i = {ex.submit(_fetch_single_holding, parsed[i]): i for i in range(len(parsed))}
+        for fut in as_completed(future_to_i):
+            i = future_to_i[fut]
+            try:
+                results_by_idx[i] = fut.result()
+            except Exception as e:
+                t = (parsed[i].get("ticker") or "").strip()
+                w = _safe_float(parsed[i].get("weight")) or 0.0
+                results_by_idx[i] = {"ticker": t, "weight": w, "error": str(e)}
+    results = [results_by_idx[i] for i in range(len(parsed))]
     print(json.dumps(results, ensure_ascii=False))
 
 

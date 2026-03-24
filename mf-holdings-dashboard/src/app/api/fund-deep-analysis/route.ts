@@ -6,10 +6,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const key = process.env.QWEN_API_KEY?.trim();
-  if (!key) {
-    return NextResponse.json({ error: "missing_QWEN_API_KEY" }, { status: 500 });
-  }
+  const key = process.env.QWEN_API_KEY?.trim() || undefined;
 
   try {
     const body = await req.json();

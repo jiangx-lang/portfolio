@@ -36,3 +36,6 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
+
+# 行情脚本按 ticker+日期缓存（勿提交）
+scripts/.market_cache/
