@@ -1,9 +1,9 @@
 /**
- * Groq API client for equity/options analysis (FREE tier).
+ * 基金/股票 AI 分析：经阿里云 Qwen OpenAI 兼容接口调用（原 Groq 已弃用）。
  * Same response schema as Claude so upgrade = swap client + model.
  */
 
-import Groq from "groq-sdk";
+import { createQwenOpenAIClient, getQwenModel } from "@/lib/qwenOpenai";
 import type { AISignal } from "@/types";
 
 const SYSTEM_PROMPT = `你是公开市场信息与波动数据的分析师（非投顾）。
@@ -28,7 +28,8 @@ export async function analyzeWithGroq(
   input: AnalyzeInput,
   apiKey: string
 ): Promise<AISignal> {
-  const groq = new Groq({ apiKey });
+  const client = createQwenOpenAIClient(apiKey);
+  const model = getQwenModel();
 
   const ctxObj =
     typeof input.context === "string"
@@ -59,8 +60,8 @@ export async function analyzeWithGroq(
   "recommendation": "数据观察要点（2句，禁止操作建议）"
 }
 `;
-    const response = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+    const response = await client.chat.completions.create({
+      model,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: prompt },
@@ -122,8 +123,8 @@ export async function analyzeWithGroq(
   "valuationComment": "估值一句客观描述；末句须含「不构成任何投资建议」"
 }
 `;
-  const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+  const response = await client.chat.completions.create({
+    model,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: prompt },
@@ -146,7 +147,7 @@ export async function analyzeWithGroq(
   }
 }
 
-/** MRF 互认基金 — 传给 Groq 的持仓摘要 */
+/** MRF 互认基金 — 传给模型的持仓摘要 */
 export interface MrfFundDataForAI {
   fund_name: string;
   brand: string;
@@ -178,7 +179,8 @@ export async function analyzeMrfFundWithGroq(
   fundData: MrfFundDataForAI,
   apiKey: string
 ): Promise<MrfAnalyzeResult> {
-  const groq = new Groq({ apiKey });
+  const client = createQwenOpenAIClient(apiKey);
+  const model = getQwenModel();
   const riskType =
     fundData.equity_pct >= 80 ? "进取型" : fundData.equity_pct >= 40 ? "均衡型" : "稳健型";
   const topHoldings = (fundData.holdings ?? []).slice(0, 5);
@@ -204,8 +206,8 @@ Top Holdings：${JSON.stringify(topHoldings)}
   "recommendation": "数据观察要点，末句：不构成任何投资建议"
 }`;
 
-  const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+  const response = await client.chat.completions.create({
+    model,
     messages: [
       { role: "system", content: MRF_SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
@@ -259,7 +261,8 @@ export async function analyzeQdFundWithGroq(
   fundData: QdFundDataForAI,
   apiKey: string
 ): Promise<MrfAnalyzeResult> {
-  const groq = new Groq({ apiKey });
+  const client = createQwenOpenAIClient(apiKey);
+  const model = getQwenModel();
   const topHoldings = (fundData.holdings ?? []).slice(0, 5);
   const userPrompt = `根据公开信息摘要这只 QDII 基金（禁止申购赎回或跟投建议）：
 基金名称：${fundData.fund_name_cn}
@@ -280,8 +283,8 @@ Top Holdings：${JSON.stringify(topHoldings)}
   "recommendation": "数据观察要点，末句：不构成任何投资建议"
 }`;
 
-  const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+  const response = await client.chat.completions.create({
+    model,
     messages: [
       { role: "system", content: QD_SYSTEM_PROMPT },
       { role: "user", content: userPrompt },

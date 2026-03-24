@@ -1516,7 +1516,7 @@ export default function QdPage() {
               />
             )}
 
-            {/* Block 3：Groq AI 分析（缓存优先） */}
+            {/* Block 3：通义千问 AI 分析（缓存优先） */}
             <div id={`ai-box-${selected.fund_id}`}>
               <QdAISignalBox code={String(selected.primary_code || selected.sc_product_code || selected.code || "")} />
             </div>

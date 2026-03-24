@@ -6,13 +6,13 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 180;
 
 /**
- * Single POST: yfinance (Python) + Groq analysis.
+ * Single POST: yfinance (Python) + Qwen 分析。
  * Body: { fundName: string, holdings: { ticker, weight }[] }
  */
 export async function POST(req: Request) {
-  const key = process.env.GROQ_API_KEY;
+  const key = process.env.QWEN_API_KEY?.trim();
   if (!key) {
-    return NextResponse.json({ error: "missing_GROQ_API_KEY" }, { status: 500 });
+    return NextResponse.json({ error: "missing_QWEN_API_KEY" }, { status: 500 });
   }
 
   try {

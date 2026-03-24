@@ -236,7 +236,7 @@ export default function MrfPage() {
       </div>
 
       <div style={{ marginTop:'1rem', fontSize:11, color:'#4B5563', textAlign:'center' }}>
-        数据来源：Supabase mrf_funds · Powered by Groq AI
+        数据来源：Supabase mrf_funds · 通义千问 AI
       </div>
     </div>
   )

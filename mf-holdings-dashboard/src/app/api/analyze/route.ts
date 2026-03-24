@@ -8,13 +8,14 @@ import {
 } from "@/lib/groq";
 
 export async function POST(req: NextRequest) {
-  const groqKey = process.env.GROQ_API_KEY;
-  if (!groqKey) {
+  const qwenKey = process.env.QWEN_API_KEY?.trim();
+  if (!qwenKey) {
     return NextResponse.json(
       {
         signal: "hold",
         confidence: 50,
-        thesis: "Groq API key not configured. Set GROQ_API_KEY in .env.local (free at console.groq.com).",
+        thesis:
+          "未配置 Qwen API。请在 .env.local 中设置 QWEN_API_KEY（阿里云 DashScope，兼容 OpenAI 格式）。可选 QWEN_MODEL=qwen-plus|qwen-turbo|qwen-max。",
         keyRisks: [],
         catalysts: [],
       },
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
               }))
             : [],
         },
-        groqKey
+        qwenKey
       );
       return NextResponse.json(result);
     }
@@ -68,19 +69,19 @@ export async function POST(req: NextRequest) {
               }))
             : [],
         },
-        groqKey
+        qwenKey
       );
       return NextResponse.json(result);
     }
 
     if (body.analysisType === "portfolio") {
-      // 组合分析：直接把 context 透传给 Groq（analyzeWithGroq 会按中文 schema 输出）
-      const result = await analyzeWithGroq(body as AnalyzeInput, groqKey);
+      // 组合分析：直接把 context 透传给模型（analyzeWithGroq 会按中文 schema 输出）
+      const result = await analyzeWithGroq(body as AnalyzeInput, qwenKey);
       return NextResponse.json(result as any);
     }
 
     const input = body as AnalyzeInput;
-    const result = await analyzeWithGroq(input, groqKey);
+    const result = await analyzeWithGroq(input, qwenKey);
     return NextResponse.json(result);
   } catch (e) {
     console.error(e);

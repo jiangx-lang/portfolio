@@ -1,4 +1,4 @@
-import Groq from "groq-sdk";
+import { createQwenOpenAIClient, getQwenModel } from "@/lib/qwenOpenai";
 
 export type MarketDataRow = {
   ticker?: string;
@@ -111,9 +111,9 @@ Return ONLY valid JSON（不要 markdown）：
 
 字段 data_coverage 必须严格为：${coverageStr}`;
 
-  const groq = new Groq({ apiKey });
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+  const client = createQwenOpenAIClient(apiKey);
+  const completion = await client.chat.completions.create({
+    model: getQwenModel(),
     messages: [
       {
         role: "system",

@@ -432,7 +432,7 @@ export default function HoldingsDeepAnalysis({ fundName, holdings }: Props) {
 
             <code style={{ fontSize: 11 }}>fetch_market_data.py</code>{" "}
 
-            多源（港 AkShare、韩 Naver、美 yfinance+期权等）→ 加权 PE/PB/IV 计算 → Groq 结构化摘要；MRF / QD
+            多源（港 AkShare、韩 Naver、美 yfinance+期权等）→ 加权 PE/PB/IV 计算 → 通义千问结构化摘要；MRF / QD
 
             基金池展开后均可点击标的跳转详情页。卡片标题旁 ⓘ：悬停查看计算逻辑（桌面端）。
 
@@ -486,7 +486,7 @@ export default function HoldingsDeepAnalysis({ fundName, holdings }: Props) {
 
         <div style={{ color: "#94a3b8", fontSize: 13, padding: "16px 0" }}>
 
-          ⏳ 正在抓取市场数据（Python 多源）并运行 Groq 分析（约 10–40 秒，美股期权链较慢）…
+          ⏳ 正在抓取市场数据（Python 多源）并运行 AI 分析（约 10–40 秒，美股期权链较慢）…
 
         </div>
 

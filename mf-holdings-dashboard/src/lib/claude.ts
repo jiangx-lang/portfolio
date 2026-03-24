@@ -4,7 +4,7 @@
  * 1. npm install @anthropic-ai/sdk (already in package.json)
  * 2. Change model to claude-sonnet-4-20250514
  * 3. Update ANTHROPIC_API_KEY in .env.local
- * 4. Groq and Claude share same OpenAI-compatible message format
+ * 4. Qwen (OpenAI-compatible) and Claude share same message shape where applicable
  *    so migration is just swapping the client + model name in /api/analyze/route.ts
  */
 
@@ -23,7 +23,7 @@ export async function analyzeWithClaude(
   return {
     signal: "hold",
     confidence: 50,
-    thesis: "Claude not configured. Using Groq in /api/analyze.",
+    thesis: "Claude not configured. Using Qwen in /api/analyze.",
     keyRisks: [],
     catalysts: [],
   };

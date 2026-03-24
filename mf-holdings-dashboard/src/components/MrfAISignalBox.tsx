@@ -117,7 +117,7 @@ export default function MrfAISignalBox({ fund }: { fund: MrfFundData }) {
         return;
       }
       if (data.thesis && data.keyRisks && !data.summary) {
-        setError("当前返回格式异常，请检查 GROQ 与 analysisType");
+        setError("当前返回格式异常，请检查 QWEN_API_KEY 与 analysisType");
         setResult(null);
         return;
       }
