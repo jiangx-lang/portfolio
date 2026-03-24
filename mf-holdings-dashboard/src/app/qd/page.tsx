@@ -80,7 +80,6 @@ export default function QdPage() {
   const [selectedStyleCustom, setSelectedStyleCustom] = useState<string>("全部");
   const [selectedBondSpectrum, setSelectedBondSpectrum] =
     useState<QdBondSpectrumOption>("全部");
-  const [whimsicalExpandedId, setWhimsicalExpandedId] = useState<number | null>(null);
   /** 手机端默认收起「行业 + 策略与定制」 */
   const [expandSectorStyle, setExpandSectorStyle] = useState(true);
   const [expandHoldingMapNote, setExpandHoldingMapNote] = useState(false);
@@ -532,29 +531,17 @@ export default function QdPage() {
           >
             ✦ 奇思妙想 · 主题发现
           </div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 14 }}>五档宏观主题组合</div>
+          <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 14, lineHeight: 1.5 }}>
+            {"五档宏观主题组合  ·  基于2026宏观三元悖论研究"}
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {WHIMSICAL_PORTFOLIOS.slice(0, 3).map((p) => (
-              <WhimsicalPortfolioCard
-                key={p.id}
-                portfolio={p}
-                expanded={whimsicalExpandedId === p.id}
-                onToggle={() =>
-                  setWhimsicalExpandedId((cur) => (cur === p.id ? null : p.id))
-                }
-              />
+              <WhimsicalPortfolioCard key={p.id} portfolio={p} />
             ))}
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="mx-auto mt-4 grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-2">
             {WHIMSICAL_PORTFOLIOS.slice(3).map((p) => (
-              <WhimsicalPortfolioCard
-                key={p.id}
-                portfolio={p}
-                expanded={whimsicalExpandedId === p.id}
-                onToggle={() =>
-                  setWhimsicalExpandedId((cur) => (cur === p.id ? null : p.id))
-                }
-              />
+              <WhimsicalPortfolioCard key={p.id} portfolio={p} />
             ))}
           </div>
         </div>
