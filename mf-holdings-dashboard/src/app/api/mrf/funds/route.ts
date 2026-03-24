@@ -23,6 +23,35 @@ const MRF_MOCK = [
 
 export const dynamic = "force-dynamic";
 
+// MRF 统一数字代码映射（用于兜底修正中文/脏 sc_product_code）
+const MRF_CODE_BY_NAME: Record<string, string> = {
+  东方汇理香港组合-灵活配置增长: "968001",
+  东方汇理香港组合-灵活配置均衡: "968002",
+  东方汇理香港组合-灵活配置平稳: "968003",
+  东亚联丰环球股票基金: "968004",
+  东亚联丰亚洲债券及货币基金: "968005",
+  惠理高息股票基金: "968006",
+  惠理价值基金: "968007",
+  摩根国际债: "968050",
+  摩根太平洋科技: "968009",
+  摩根太平洋证券: "968010",
+  摩根亚洲股息: "968011",
+  摩根亚洲总收益: "968000",
+  瑞士百达策略收益基金: "968013",
+  中银香港环球股票基金: "968031",
+  中银香港香港股票基金: "968030",
+  施罗德亚洲高息股债基金M类别(人民币派息): "968166",
+};
+
+function isLikelyChineseText(s: string): boolean {
+  return /[\u3400-\u9FFF]/.test(s);
+}
+
+function normalizeMrfNumericCode(v: unknown): string {
+  const s = String(v ?? "").trim();
+  return /^968\d{3,}$/.test(s) ? s : "";
+}
+
 function normalizePerfKey(v: unknown): string {
   const s = String(v ?? "").trim();
   return s ? s.toUpperCase() : "";
@@ -31,10 +60,25 @@ function normalizePerfKey(v: unknown): string {
 export async function GET() {
   try {
     const { byCode: perfByCode, lastUpdated: performanceLastUpdated } = await fetchFundPerformanceBulk();
+    console.log("MRF Perf Map Size:", perfByCode.size);
+    console.log("Sample Keys in Map:", Array.from(perfByCode.keys()).slice(0, 5));
 
-    const mergePerf = <T extends { sc_product_code?: string | null; fund_name?: string }>(rows: T[]) =>
+    const mergePerf = <T extends { sc_product_code?: string | null; fund_name?: string; code?: string | null; isin?: string | null }>(rows: T[]) =>
       rows.map((r) => {
-        const c = normalizePerfKey(r.sc_product_code);
+        const rawSc = String(r.sc_product_code ?? "").trim();
+        const bySc = normalizeMrfNumericCode(rawSc);
+        const byCode = normalizeMrfNumericCode(r.code);
+        const byIsin = normalizeMrfNumericCode(r.isin);
+        const byName = normalizeMrfNumericCode(MRF_CODE_BY_NAME[String(r.fund_name ?? "").trim()]);
+        const primary = bySc || byCode || byIsin || byName;
+
+        // 若 sc_product_code 是中文，优先回退到 code/isin/名称映射
+        const candidateKeys = isLikelyChineseText(rawSc)
+          ? [byCode, byIsin, byName, bySc]
+          : [bySc, byCode, byIsin, byName];
+        const resolved = candidateKeys.find((k) => k.length > 0) ?? "";
+        const c = normalizePerfKey(resolved || primary);
+
         const performance = c ? lookupFundPerformance(perfByCode, c) ?? null : null;
         // 临时排查：确认 MRF 取到的匹配键
         console.log("MRF Match Debug:", c || "(empty)");
@@ -81,6 +125,17 @@ export async function GET() {
         if (c == null) return null;
         const s = String(c).trim();
         return s.length ? s : null;
+      })(),
+      // 兼容 fallback 逻辑：若 sc_product_code 非数字，尝试用映射生成数字 code
+      code: (() => {
+        const name = String((r as { fund_name?: string }).fund_name ?? "").trim();
+        const sc = String((r as { sc_product_code?: string | number | null }).sc_product_code ?? "").trim();
+        return normalizeMrfNumericCode(sc) || MRF_CODE_BY_NAME[name] || null;
+      })(),
+      isin: (() => {
+        const name = String((r as { fund_name?: string }).fund_name ?? "").trim();
+        const sc = String((r as { sc_product_code?: string | number | null }).sc_product_code ?? "").trim();
+        return normalizeMrfNumericCode(sc) || MRF_CODE_BY_NAME[name] || null;
       })(),
     }));
     return NextResponse.json({
