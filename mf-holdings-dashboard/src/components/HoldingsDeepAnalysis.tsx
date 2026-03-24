@@ -102,6 +102,15 @@ function peBarWidth(pe: number | null | undefined): number {
 
 const BAR_COLORS = ["#3b82f6", "#6366f1", "#8b5cf6", "#a855f7", "#d946ef", "#ec4899", "#f43f5e", "#f97316"];
 
+/** 从“英伟达 NVDA / 腾讯 0700.HK / 茅台 600519.SH”等字符串末尾提取 ticker；仅作展示层兜底 */
+function extractTickerFromName(raw: string): string | undefined {
+  const s = String(raw || "").trim();
+  if (!s) return undefined;
+  const m = s.match(/\b([A-Z0-9]{1,6}(?:\.[A-Z]{1,4})?)\b/g);
+  if (!m || m.length === 0) return undefined;
+  return m[m.length - 1];
+}
+
 export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }: Props) {
   const [loading, setLoading] = useState(false);
   const [marketData, setMarketData] = useState<MarketDataRow[]>([]);
@@ -180,22 +189,33 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
   const conc = analysis?.concentration;
   const ai = analysis?.aiInsights;
 
-  // 展示层兜底：若 analysis/marketData 无可用项，回退到传入的 holdings，
-  // 避免因缺少 ticker 导致持仓在矩阵中被全部过滤掉。
-  const fallbackRows: MarketDataRow[] = holdings.map((h) => ({
-    ticker: h.ticker,
-    name: h.name,
-    weight: h.weight,
-  }));
+  // 统一标准化：兼容 weight/weight_pct、name/holding_name_std，并尝试从名称提取 ticker。
+  const normalizeMatrixRow = (d: any): MarketDataRow => {
+    const rawName = String(d?.name ?? d?.holding_name_std ?? d?.holding_name_raw ?? "").trim();
+    const ticker = String(d?.ticker ?? "").trim() || extractTickerFromName(rawName);
+    const weight =
+      d?.weight != null
+        ? Number(d.weight)
+        : d?.weight_pct != null
+          ? Number(d.weight_pct) / 100
+          : 0;
+    return {
+      ...d,
+      ticker: ticker || undefined,
+      name: rawName || undefined,
+      weight: Number.isFinite(weight) ? weight : 0,
+    };
+  };
 
+  const fromAnalysis = (analysis?.holdingsDetail ?? []).map(normalizeMatrixRow);
+  const fromMarket = (marketData ?? []).map(normalizeMatrixRow);
+  const fromProps = holdings.map((h) => normalizeMatrixRow(h));
+
+  // 优先使用可分析结果（analysis/marketData）；两者都空时才退回 props。
   const sourceRows: MarketDataRow[] =
-    analysis?.holdingsDetail && analysis.holdingsDetail.length > 0
-      ? analysis.holdingsDetail
-      : marketData.length > 0
-        ? marketData
-        : fallbackRows;
+    fromAnalysis.length > 0 ? fromAnalysis : fromMarket.length > 0 ? fromMarket : fromProps;
 
-  const sortedForMatrix = [...sourceRows].filter((d) => {
+  const sortedForMatrix = sourceRows.filter((d) => {
     const w = Number(d.weight ?? 0);
     const hasName = String(d.name ?? "").trim().length > 0;
     const hasTicker = String(d.ticker ?? "").trim().length > 0;
