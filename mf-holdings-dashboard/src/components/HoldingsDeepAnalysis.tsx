@@ -180,9 +180,27 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
   const conc = analysis?.concentration;
   const ai = analysis?.aiInsights;
 
-  const sortedForMatrix = [...(analysis?.holdingsDetail ?? marketData)].filter(
-    (d) => !d.error && (d.weight ?? 0) > 0
-  );
+  // 展示层兜底：若 analysis/marketData 无可用项，回退到传入的 holdings，
+  // 避免因缺少 ticker 导致持仓在矩阵中被全部过滤掉。
+  const fallbackRows: MarketDataRow[] = holdings.map((h) => ({
+    ticker: h.ticker,
+    name: h.name,
+    weight: h.weight,
+  }));
+
+  const sourceRows: MarketDataRow[] =
+    analysis?.holdingsDetail && analysis.holdingsDetail.length > 0
+      ? analysis.holdingsDetail
+      : marketData.length > 0
+        ? marketData
+        : fallbackRows;
+
+  const sortedForMatrix = [...sourceRows].filter((d) => {
+    const w = Number(d.weight ?? 0);
+    const hasName = String(d.name ?? "").trim().length > 0;
+    const hasTicker = String(d.ticker ?? "").trim().length > 0;
+    return !d.error && w > 0 && (hasName || hasTicker);
+  });
   sortedForMatrix.sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0));
 
   return (
