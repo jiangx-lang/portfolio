@@ -11,6 +11,13 @@ SUPABASE_KEY = "sb_publishable_8sWmy_vOCTdplogyWYhxbg_ACf1Uxrz"
 SYNC = True
 SLEEP = 2  # 每个基金之间等待秒数
 
+# MRF 16 只目标代码（统一 968 数字代码）
+MRF_CODES = [
+    "968001", "968002", "968003", "968004", "968005", "968006", "968007",
+    "968009", "968010", "968011", "968012", "968013", "968014", "968030",
+    "968031", "968166",
+]
+
 def get_conn():
     return sqlite3.connect(NAV_DB, timeout=30)
 
@@ -19,6 +26,27 @@ def get_fund_list():
     df = pd.read_sql("SELECT code, isin, ccy, nav_source, yahoo_symbol FROM fund_list", conn)
     conn.close()
     return df
+
+
+def ensure_mrf_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    保证 MRF 目标代码都进入抓取队列。
+    若 fund_list 缺失，则补一条占位行（isin=code, ccy=HKD）。
+    """
+    out = df.copy()
+    existing = set(out["code"].astype(str).str.strip().tolist()) if not out.empty else set()
+    missing = [c for c in MRF_CODES if c not in existing]
+    for c in missing:
+        out = pd.concat(
+            [
+                out,
+                pd.DataFrame([{"code": c, "isin": c, "ccy": "HKD", "nav_source": "mrf", "yahoo_symbol": None}]),
+            ],
+            ignore_index=True,
+        )
+    if missing:
+        print(f"补入缺失 MRF 代码到抓取队列: {', '.join(missing)}")
+    return out
 
 def save_nav(rows):
     if not rows:
@@ -78,6 +106,41 @@ def download_ft(isin, ccy, history=False):
     except Exception as e:
         return []
 
+
+def download_akshare_968(code, ccy="HKD", history=False):
+    """
+    直接按 968 代码拉香港基金历史净值，写入 nav_history 所需行格式。
+    isin 字段统一写 code（与 fund_list/sync_mrf_to_supabase 对齐）。
+    """
+    try:
+        import akshare as ak
+    except Exception:
+        return []
+    try:
+        df = ak.fund_hk_fund_hist_em(code=str(code), symbol="历史净值明细")
+        if df is None or df.empty:
+            return []
+        date_col = next((c for c in df.columns if "日期" in str(c)), df.columns[0])
+        nav_candidates = [c for c in df.columns if "净值" in str(c)]
+        nav_col = nav_candidates[0] if nav_candidates else (df.columns[1] if len(df.columns) > 1 else None)
+        if nav_col is None:
+            return []
+        rows = []
+        for _, r in df.iterrows():
+            ds = str(r.get(date_col) or "").strip()
+            if not ds:
+                continue
+            ds = ds[:10].replace("/", "-")
+            try:
+                nav = float(r.get(nav_col))
+            except Exception:
+                continue
+            if nav and not math.isnan(nav):
+                rows.append((str(code), ccy or "HKD", ds, round(nav, 6), "akshare"))
+        return rows
+    except Exception:
+        return []
+
 def sync_supabase(rows):
     if not SYNC or not rows:
         return
@@ -101,7 +164,7 @@ def sync_supabase(rows):
 def main():
     history = "--history" in sys.argv
     print(f"模式: {'历史补全' if history else '增量更新'}")
-    funds = get_fund_list()
+    funds = ensure_mrf_rows(get_fund_list())
     print(f"基金数量: {len(funds)}\n")
 
     success, fail = 0, 0
@@ -113,13 +176,20 @@ def main():
         print(f"[{idx+1}/{len(funds)}] {f['code']} ({isin})...")
 
         rows = []
+        code = str(f.get("code") or "").strip()
+        # MRF 统一 968 先走 akshare，确保 16 只可抓
+        if code in MRF_CODES:
+            rows = download_akshare_968(code, ccy, history)
+            if rows:
+                print(f"  AKShare(968): {len(rows)} 条")
         # 先试 FT
-        ft_rows = download_ft(isin, ccy, history)
-        if ft_rows:
-            rows = ft_rows
-            print(f"  FT: {len(rows)} 条")
+        if not rows:
+            ft_rows = download_ft(isin, ccy, history)
+            if ft_rows:
+                rows = ft_rows
+                print(f"  FT: {len(rows)} 条")
         # FT 没有再试 Yahoo
-        elif symbol and str(symbol) not in ("None", "nan", ""):
+        if not rows and symbol and str(symbol) not in ("None", "nan", ""):
             time.sleep(SLEEP)  # 避免限流
             rows = download_yahoo(isin, ccy, symbol, history)
             if rows:
