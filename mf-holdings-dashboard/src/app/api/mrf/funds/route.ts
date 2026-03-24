@@ -23,19 +23,30 @@ const MRF_MOCK = [
 
 export const dynamic = "force-dynamic";
 
+function normalizePerfKey(v: unknown): string {
+  const s = String(v ?? "").trim();
+  return s ? s.toUpperCase() : "";
+}
+
 export async function GET() {
   try {
     const { byCode: perfByCode, lastUpdated: performanceLastUpdated } = await fetchFundPerformanceBulk();
 
-    const mergePerf = <T extends { sc_product_code?: string | null }>(rows: T[]) =>
+    const mergePerf = <T extends { sc_product_code?: string | null; fund_name?: string }>(rows: T[]) =>
       rows.map((r) => {
-        const c = (() => {
-          const x = r.sc_product_code;
-          if (x == null) return "";
-          const s = String(x).trim();
-          return s.length ? s : "";
-        })();
+        const c = normalizePerfKey(r.sc_product_code);
         const performance = c ? lookupFundPerformance(perfByCode, c) ?? null : null;
+        // 临时排查：确认 MRF 取到的匹配键
+        console.log("MRF Match Debug:", c || "(empty)");
+        if (c && !performance) {
+          const sample = Array.from(perfByCode.keys()).slice(0, 8).join(", ");
+          console.warn("[MRF] performance miss:", {
+            fund_name: r.fund_name ?? "",
+            sc_product_code: c,
+            perf_map_size: perfByCode.size,
+            perf_map_sample_keys: sample,
+          });
+        }
         return { ...r, performance };
       });
 
@@ -81,8 +92,9 @@ export async function GET() {
     const { byCode, lastUpdated } = await fetchFundPerformanceBulk();
     const mergePerf = (rows: typeof MRF_MOCK) =>
       rows.map((r) => {
-        const c = r.sc_product_code != null ? String(r.sc_product_code).trim() : "";
+        const c = normalizePerfKey(r.sc_product_code);
         const performance = c ? lookupFundPerformance(byCode, c) ?? null : null;
+        console.log("MRF Match Debug:", c || "(empty)");
         return { ...r, performance };
       });
     return NextResponse.json({ funds: mergePerf(MRF_MOCK), performanceLastUpdated: lastUpdated });
