@@ -111,23 +111,38 @@ export default function MrfPageInner() {
   }
 
   const handleRowClick = async (fund: MrfFund) => {
+    console.log("[MRF] handleSelectFund called:", fund.fund_name);
     if (selected?.fund_name === fund.fund_name) {
+      console.log("[MRF] same row clicked, collapsing:", fund.fund_name);
       setSelected(null);
       return;
     }
     // 用 sc_product_code 或 fund_name 查持仓（API 支持按两者查 Supabase mrf_holdings）
     const code = mrfProductCodeStr(fund.sc_product_code) || fund.fund_name?.trim() || "";
+    console.log("[MRF] code:", code, "sc_product_code:", mrfProductCodeStr(fund.sc_product_code));
     if (!code) {
+      console.warn("[MRF] empty code, set empty holdings:", fund.fund_name);
       setSelected({ ...fund, holdings: [], holdingsLoading: false, holdingsFetchMessage: undefined });
       return;
     }
+    console.log("[MRF] setSelected loading=true:", fund.fund_name);
     setSelected({ ...fund, holdingsLoading: true, holdingsFetchMessage: undefined });
     try {
-      const res = await fetch(`/api/mrf/holdings/${encodeURIComponent(code)}`);
+      const url = `/api/mrf/holdings/${encodeURIComponent(code)}`;
+      console.log("[MRF] fetching:", url);
+      const res = await fetch(url);
       const data = (await res.json().catch(() => ({}))) as {
         holdings?: HoldingRow[];
         message?: string;
       };
+      console.log(
+        "[MRF] response:",
+        res.status,
+        "holdings=",
+        Array.isArray(data.holdings) ? data.holdings.length : "not-array",
+        "message=",
+        data.message
+      );
       const msg = typeof data.message === "string" ? data.message : undefined;
       setSelected({
         ...fund,
@@ -135,7 +150,8 @@ export default function MrfPageInner() {
         holdingsLoading: false,
         holdingsFetchMessage: msg,
       });
-    } catch {
+    } catch (e) {
+      console.error("[MRF] fetch failed:", e);
       setSelected({
         ...fund,
         holdings: [],
@@ -144,6 +160,23 @@ export default function MrfPageInner() {
       });
     }
   };
+
+  useEffect(() => {
+    if (!selected) {
+      console.log("[MRF] selected changed: null");
+      return;
+    }
+    console.log(
+      "[MRF] selected changed:",
+      selected.fund_name,
+      "loading=",
+      !!selected.holdingsLoading,
+      "holdings=",
+      selected.holdings?.length ?? "undefined",
+      "message=",
+      selected.holdingsFetchMessage
+    );
+  }, [selected]);
 
   const searchParams = useSearchParams();
   const autoOpenDone = useRef(false);
@@ -339,6 +372,16 @@ export default function MrfPageInner() {
   const renderHoldingsPanelBelowRow = () => {
     if (!selected) return null;
     const sel = selected;
+    console.log(
+      "[MRF] renderHoldingsPanel:",
+      sel.fund_name,
+      "loading=",
+      !!sel.holdingsLoading,
+      "holdings=",
+      sel.holdings?.length ?? "undefined",
+      "message=",
+      sel.holdingsFetchMessage
+    );
     return (
       <div
         id="mrf-holdings-panel"
