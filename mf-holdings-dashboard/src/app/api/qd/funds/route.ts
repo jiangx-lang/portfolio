@@ -91,12 +91,12 @@ export async function GET() {
     const list = funds.map((f) => {
       const primary = f.primary_code || f.code || "";
       const sc = f.sc_product_code || f.code || "";
-      const co = f.code || "";
-      const performance =
-        lookupFundPerformance(perfByCode, primary) ??
-        lookupFundPerformance(perfByCode, sc) ??
-        lookupFundPerformance(perfByCode, co) ??
-        null;
+      // fund_performance.fund_code 与 sc_product_code 一致（如 QDUR128USD）；勿用 primary_code（如 QDUR128）匹配
+      const scKey =
+        f.sc_product_code != null && String(f.sc_product_code).trim() !== ""
+          ? String(f.sc_product_code).trim()
+          : "";
+      const performance = scKey ? lookupFundPerformance(perfByCode, scKey) ?? null : null;
       return {
         fund_id: f.fund_id,
         fund_name_cn: f.fund_name_cn,

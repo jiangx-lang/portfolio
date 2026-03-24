@@ -163,13 +163,14 @@ export function lookupFundPerformance(
 
 /**
  * 分页拉取 `fund_performance` 全表，供 QD/MRF 列表合并。
+ * 优先使用 Service Role（绕过 RLS）；否则回退 anon —— 若表开了 RLS 且未给 anon SELECT，必须用 SUPABASE_SERVICE_ROLE_KEY。
  * 表不存在或无权访问时返回空 Map（不抛错）。
  */
 export async function fetchFundPerformanceBulk(): Promise<{
   byCode: Map<string, FundPerformance>;
   lastUpdated: string | null;
 }> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseServiceRole() ?? getSupabase();
   const empty: { byCode: Map<string, FundPerformance>; lastUpdated: string | null } = {
     byCode: new Map(),
     lastUpdated: null,
@@ -185,12 +186,11 @@ export async function fetchFundPerformanceBulk(): Promise<{
     const { data, error } = await supabase
       .from("fund_performance")
       .select("fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, updated_at")
+      .order("fund_code", { ascending: true })
       .range(from, from + pageSize - 1);
 
     if (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("[fetchFundPerformanceBulk]", error.message);
-      }
+      console.warn("[fetchFundPerformanceBulk]", error.message);
       return empty;
     }
     if (!data?.length) break;

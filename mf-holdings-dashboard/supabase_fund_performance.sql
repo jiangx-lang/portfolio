@@ -17,3 +17,13 @@ CREATE TABLE IF NOT EXISTS fund_performance (
 -- ALTER TABLE fund_performance ADD COLUMN IF NOT EXISTS nav_date DATE;
 
 CREATE INDEX IF NOT EXISTS idx_fund_performance_updated_at ON fund_performance (updated_at DESC);
+
+-- ---------------------------------------------------------------------------
+-- RLS：若列表页绩效全为「—」且服务端日志有 permission denied / JWT，
+-- 说明 anon 读不到本表。任选其一：
+-- A) 在 Vercel 等环境配置 SUPABASE_SERVICE_ROLE_KEY（仅服务端），API 已优先用其拉取；
+-- B) 允许匿名只读（公开绩效数据时）：
+-- ALTER TABLE fund_performance ENABLE ROW LEVEL SECURITY;
+-- CREATE POLICY "Allow anon read fund_performance"
+--   ON fund_performance FOR SELECT TO anon USING (true);
+-- （若已启用 RLS 且无 policy，需补上类似 policy。）
