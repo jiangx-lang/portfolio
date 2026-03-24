@@ -1,5 +1,7 @@
 // MF Holdings Dashboard — Data models
 
+export type { FundPerformance } from "./fund";
+
 export type SignalLevel =
   | "strong_buy"
   | "buy"

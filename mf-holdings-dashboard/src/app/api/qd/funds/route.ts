@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Database from "better-sqlite3";
 import path from "path";
+import { fetchFundPerformanceBulk, lookupFundPerformance } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -85,20 +86,36 @@ export async function GET() {
 
     db.close();
 
-    const list = funds.map((f) => ({
-      fund_id: f.fund_id,
-      fund_name_cn: f.fund_name_cn,
-      code: f.code || "",
-      primary_code: f.primary_code || f.code || "",
-      sc_product_code: f.sc_product_code || f.code || "",
-      as_of_date: f.as_of_date,
-      holdings_count: f.holdings_count,
-      tags: tagsMap[f.fund_id] || [],
-    }));
+    const { byCode: perfByCode, lastUpdated: performanceLastUpdated } = await fetchFundPerformanceBulk();
 
-    return NextResponse.json({ funds: list, allTags });
+    const list = funds.map((f) => {
+      const primary = f.primary_code || f.code || "";
+      const sc = f.sc_product_code || f.code || "";
+      const co = f.code || "";
+      const performance =
+        lookupFundPerformance(perfByCode, primary) ??
+        lookupFundPerformance(perfByCode, sc) ??
+        lookupFundPerformance(perfByCode, co) ??
+        null;
+      return {
+        fund_id: f.fund_id,
+        fund_name_cn: f.fund_name_cn,
+        code: f.code || "",
+        primary_code: primary,
+        sc_product_code: sc,
+        as_of_date: f.as_of_date,
+        holdings_count: f.holdings_count,
+        tags: tagsMap[f.fund_id] || [],
+        performance,
+      };
+    });
+
+    return NextResponse.json({ funds: list, allTags, performanceLastUpdated });
   } catch (err) {
     console.error("QD funds API error:", err);
-    return NextResponse.json({ funds: [], allTags: [] }, { status: 500 });
+    return NextResponse.json(
+      { funds: [], allTags: [], performanceLastUpdated: null },
+      { status: 500 }
+    );
   }
 }

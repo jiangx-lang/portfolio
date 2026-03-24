@@ -29,6 +29,10 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { PerformanceCell } from "@/components/PerformanceCell";
+import { perfSortValue, SortablePerfHeader, type PerfKey } from "@/components/SortablePerfHeader";
+import { formatPerformanceLastUpdated } from "@/lib/formatPerformanceUpdated";
+import type { FundPerformance } from "@/types/fund";
 
 export interface HoldingRow {
   rank: number;
@@ -47,6 +51,7 @@ export interface MrfFund {
   cash_pct: number;
   fee_rate: number;
   sc_product_code?: string | null;
+  performance?: FundPerformance | null;
   holdings?: HoldingRow[];
   holdingsLoading?: boolean;
   /** 持仓接口返回的提示（如未配置 Supabase） */
@@ -92,6 +97,18 @@ export default function MrfPageInner() {
   const [selected, setSelected] = useState<MrfFund | null>(null);
   const [holdingsCache, setHoldingsCache] = useState<Record<string, HoldingRow[]>>({});
   const [holdingsPrefetchReady, setHoldingsPrefetchReady] = useState(false);
+  const [performanceLastUpdated, setPerformanceLastUpdated] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<PerfKey | null>(null);
+  const [sortDir, setSortDir] = useState<"desc" | "asc">("desc");
+
+  function handlePerfSort(key: PerfKey) {
+    if (sortKey === key) {
+      setSortDir((prev) => (prev === "desc" ? "asc" : "desc"));
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  }
 
   const handleRowClick = async (fund: MrfFund) => {
     if (selected?.fund_name === fund.fund_name) {
@@ -169,10 +186,24 @@ export default function MrfPageInner() {
     fetch("/api/mrf/funds")
       .then((r) => r.json())
       .then((d) => {
-        setFunds(Array.isArray(d) ? d : []);
+        if (d && typeof d === "object" && Array.isArray(d.funds)) {
+          setFunds(d.funds);
+          setPerformanceLastUpdated(
+            typeof d.performanceLastUpdated === "string" ? d.performanceLastUpdated : null
+          );
+        } else if (Array.isArray(d)) {
+          setFunds(d);
+          setPerformanceLastUpdated(null);
+        } else {
+          setFunds([]);
+          setPerformanceLastUpdated(null);
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setPerformanceLastUpdated(null);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -258,6 +289,18 @@ export default function MrfPageInner() {
     selectedTheme,
     selectedBond,
   ]);
+
+  const displayFunds = useMemo(() => {
+    if (!sortKey) return sortedDisplay;
+    return [...sortedDisplay].sort((a, b) => {
+      const va = perfSortValue(a.performance?.[sortKey]);
+      const vb = perfSortValue(b.performance?.[sortKey]);
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;
+      if (vb === null) return -1;
+      return sortDir === "desc" ? vb - va : va - vb;
+    });
+  }, [sortedDisplay, sortKey, sortDir]);
 
   function rowTagOpacity(f: MrfFund) {
     if (!anyHoldingTagFilter || !holdingsPrefetchReady) return 1;
@@ -731,7 +774,7 @@ export default function MrfPageInner() {
         <div style={s.card}>
           {isMobile ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {sortedDisplay.map((f) => {
+              {displayFunds.map((f) => {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
                 const op = rowTagOpacity(f);
@@ -792,6 +835,33 @@ export default function MrfPageInner() {
                         </span>
                       </div>
                       <div
+                        style={{
+                          marginTop: 8,
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "6px 10px",
+                          alignItems: "center",
+                          borderTop: "1px solid rgba(255,255,255,0.06)",
+                          paddingTop: 8,
+                        }}
+                      >
+                        {(
+                          [
+                            ["日涨跌", f.performance?.daily_return],
+                            ["1周", f.performance?.weekly_return],
+                            ["1月", f.performance?.monthly_1],
+                            ["3月", f.performance?.monthly_3],
+                            ["6月", f.performance?.monthly_6],
+                            ["1年", f.performance?.yearly_1],
+                          ] as const
+                        ).map(([label, v]) => (
+                          <div key={label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                            <span style={{ fontSize: 10, color: "#6B7280" }}>{label}</span>
+                            <PerformanceCell value={v} />
+                          </div>
+                        ))}
+                      </div>
+                      <div
                         onClick={(e) => e.stopPropagation()}
                         style={{ marginTop: "6px", textAlign: "right" }}
                       >
@@ -822,7 +892,8 @@ export default function MrfPageInner() {
               })}
             </div>
           ) : (
-          <table style={s.table}>
+          <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-[1280px]" style={s.table}>
             <thead>
               <tr>
                 <th style={s.th}>基金名称</th>
@@ -832,14 +903,70 @@ export default function MrfPageInner() {
                 <th style={s.thr}>现金%</th>
                 <th style={s.thr}>申购费率</th>
                 <th style={s.thr}>风险类型</th>
+                <SortablePerfHeader
+                  label="日涨跌"
+                  perfKey="daily_return"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  borderLeft
+                  minWidth={66}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="1周"
+                  perfKey="weekly_return"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="1月"
+                  perfKey="monthly_1"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="3月"
+                  perfKey="monthly_3"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="6月"
+                  perfKey="monthly_6"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="1年"
+                  perfKey="yearly_1"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {sortedDisplay.map((f) => {
+              {displayFunds.map((f) => {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
                 const op = rowTagOpacity(f);
+                const perf = f.performance;
                 return (
                   <Fragment key={f.fund_name}>
                     <tr
@@ -893,6 +1020,24 @@ export default function MrfPageInner() {
                           {risk.label}
                         </span>
                       </td>
+                      <td style={{ ...s.tdr, minWidth: 66 }} className="border-l border-gray-700 px-3 py-2">
+                        <PerformanceCell value={perf?.daily_return} />
+                      </td>
+                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                        <PerformanceCell value={perf?.weekly_return} />
+                      </td>
+                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                        <PerformanceCell value={perf?.monthly_1} />
+                      </td>
+                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                        <PerformanceCell value={perf?.monthly_3} />
+                      </td>
+                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                        <PerformanceCell value={perf?.monthly_6} />
+                      </td>
+                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                        <PerformanceCell value={perf?.yearly_1} />
+                      </td>
                       <td onClick={(e) => e.stopPropagation()}>
                         <a
                           href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
@@ -917,7 +1062,7 @@ export default function MrfPageInner() {
                     </tr>
                     {isSelected && (
                       <tr style={{ background: "rgba(24,95,165,0.06)", opacity: 1 }}>
-                        <td colSpan={8} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
+                        <td colSpan={14} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
                           {renderHoldingsPanelBelowRow()}
                         </td>
                       </tr>
@@ -927,12 +1072,18 @@ export default function MrfPageInner() {
               })}
             </tbody>
           </table>
+          </div>
           )}
         </div>
 
         <div style={{ marginTop: "1rem", fontSize: 11, color: "#4B5563", textAlign: "center" }}>
           数据来源：Supabase mrf_funds · 与 Streamlit 优化器同源
         </div>
+        {performanceLastUpdated ? (
+          <p className="mt-2 text-right text-xs text-gray-600">
+            绩效数据更新时间：{formatPerformanceLastUpdated(performanceLastUpdated)} · 来源：基金公司 NAV
+          </p>
+        ) : null}
       </div>
     </div>
   );

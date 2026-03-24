@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSupabase } from "@/lib/supabase";
+import { fetchFundPerformanceBulk, getSupabase, lookupFundPerformance } from "@/lib/supabase";
 
 // Fallback: mirrors app.py MRF_POOL exactly
 const MRF_MOCK = [
@@ -25,9 +25,26 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    const { byCode: perfByCode, lastUpdated: performanceLastUpdated } = await fetchFundPerformanceBulk();
+
+    const mergePerf = <T extends { sc_product_code?: string | null }>(rows: T[]) =>
+      rows.map((r) => {
+        const c = (() => {
+          const x = r.sc_product_code;
+          if (x == null) return "";
+          const s = String(x).trim();
+          return s.length ? s : "";
+        })();
+        const performance = c ? lookupFundPerformance(perfByCode, c) ?? null : null;
+        return { ...r, performance };
+      });
+
     const supabase = getSupabase();
     if (!supabase) {
-      return NextResponse.json(MRF_MOCK);
+      return NextResponse.json({
+        funds: mergePerf(MRF_MOCK),
+        performanceLastUpdated,
+      });
     }
     const { data, error } = await supabase
       .from("mrf_funds")
@@ -35,7 +52,10 @@ export async function GET() {
       .order("fund_name");
 
     if (error || !data || data.length === 0) {
-      return NextResponse.json(MRF_MOCK);
+      return NextResponse.json({
+        funds: mergePerf(MRF_MOCK),
+        performanceLastUpdated,
+      });
     }
     // 与 getMrfFunds 一致：避免 PostgREST 把代码序列化成 number 导致前端 .trim() 抛错
     const normalized = (data ?? []).map((r) => ({
@@ -52,9 +72,19 @@ export async function GET() {
         return s.length ? s : null;
       })(),
     }));
-    return NextResponse.json(normalized);
+    return NextResponse.json({
+      funds: mergePerf(normalized),
+      performanceLastUpdated,
+    });
   } catch (err) {
     console.error("[MRF] API error:", err);
-    return NextResponse.json(MRF_MOCK);
+    const { byCode, lastUpdated } = await fetchFundPerformanceBulk();
+    const mergePerf = (rows: typeof MRF_MOCK) =>
+      rows.map((r) => {
+        const c = r.sc_product_code != null ? String(r.sc_product_code).trim() : "";
+        const performance = c ? lookupFundPerformance(byCode, c) ?? null : null;
+        return { ...r, performance };
+      });
+    return NextResponse.json({ funds: mergePerf(MRF_MOCK), performanceLastUpdated: lastUpdated });
   }
 }

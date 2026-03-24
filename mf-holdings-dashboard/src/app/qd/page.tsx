@@ -21,6 +21,10 @@ import {
 import { qdTagLabelZh, qdTagsJoinZh } from "@/data/qdiiTagLabelsZh";
 import { WhimsicalPortfolioCard } from "@/components/WhimsicalPortfolioCard";
 import { WHIMSICAL_PORTFOLIOS } from "@/data/whimsicalPortfolios";
+import { PerformanceCell } from "@/components/PerformanceCell";
+import { perfSortValue, SortablePerfHeader, type PerfKey } from "@/components/SortablePerfHeader";
+import { formatPerformanceLastUpdated } from "@/lib/formatPerformanceUpdated";
+import type { FundPerformance } from "@/types/fund";
 
 interface QdFund {
   fund_id: number;
@@ -31,6 +35,7 @@ interface QdFund {
   holdings_count: number;
   as_of_date: string | null;
   tags?: string[];
+  performance?: FundPerformance | null;
   holdings?: HoldingRow[];
   holdingsLoading?: boolean;
 }
@@ -93,6 +98,19 @@ export default function QdPage() {
   const [navRangeDays, setNavRangeDays] = useState(365);
   const [navFullLoading, setNavFullLoading] = useState(false);
   const [navChartLoading, setNavChartLoading] = useState(false);
+  const [performanceLastUpdated, setPerformanceLastUpdated] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<PerfKey | null>(null);
+  const [sortDir, setSortDir] = useState<"desc" | "asc">("desc");
+  const [whimsicalOpen, setWhimsicalOpen] = useState(false);
+
+  function handlePerfSort(key: PerfKey) {
+    if (sortKey === key) {
+      setSortDir((prev) => (prev === "desc" ? "asc" : "desc"));
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  }
 
   useEffect(() => {
     fetch("/api/qd/funds")
@@ -101,8 +119,12 @@ export default function QdPage() {
         if (Array.isArray(d)) {
           setFunds(d);
           setAllTagRows([]);
+          setPerformanceLastUpdated(null);
         } else {
           setFunds(Array.isArray(d?.funds) ? d.funds : []);
+          setPerformanceLastUpdated(
+            typeof d?.performanceLastUpdated === "string" ? d.performanceLastUpdated : null
+          );
           const raw = Array.isArray(d?.allTags) ? d.allTags : [];
           const rows: QdTagRow[] = raw
             .map((t: unknown) => {
@@ -121,7 +143,10 @@ export default function QdPage() {
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setPerformanceLastUpdated(null);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -185,6 +210,18 @@ export default function QdPage() {
     selectedBondSpectrum,
     holdingType,
   ]);
+
+  const sortedFiltered = useMemo(() => {
+    if (!sortKey) return filtered;
+    return [...filtered].sort((a, b) => {
+      const va = perfSortValue(a.performance?.[sortKey]);
+      const vb = perfSortValue(b.performance?.[sortKey]);
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;
+      if (vb === null) return -1;
+      return sortDir === "desc" ? vb - va : va - vb;
+    });
+  }, [filtered, sortKey, sortDir]);
 
   const handleRowClick = async (fund: QdFund) => {
     if (selected?.fund_id === fund.fund_id) {
@@ -517,32 +554,66 @@ export default function QdPage() {
           ))}
         </div>
 
-        {/* 奇思妙想 · 五档宏观主题组合 */}
+        {/* 奇思妙想 · 默认折叠，点击标题展开 */}
         <div style={{ marginBottom: "1.25rem" }}>
           <div
-            style={{
-              fontSize: 11,
-              color: "#9CA3AF",
-              marginBottom: 6,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              fontWeight: 500,
+            role="button"
+            tabIndex={0}
+            aria-expanded={whimsicalOpen}
+            aria-controls="qd-whimsical-panel"
+            onClick={() => setWhimsicalOpen((prev) => !prev)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setWhimsicalOpen((prev) => !prev);
+              }
             }}
+            className="group flex cursor-pointer select-none items-center justify-between py-2"
           >
-            ✦ 奇思妙想 · 主题发现
+            <div>
+              <div className="text-xs font-medium uppercase tracking-widest text-gray-500">
+                ✦ 奇思妙想 · 主题发现
+              </div>
+              <p className="mt-0.5 text-sm text-gray-400">
+                {"五档宏观主题组合  ·  基于2026宏观三元悖论研究"}
+              </p>
+            </div>
+            <svg
+              width={16}
+              height={16}
+              viewBox="0 0 16 16"
+              fill="none"
+              className={`shrink-0 text-gray-500 transition-transform duration-200 group-hover:text-gray-300 ${
+                whimsicalOpen ? "rotate-180" : "rotate-0"
+              }`}
+              aria-hidden
+            >
+              <path
+                d="M4 6L8 10L12 6"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 14, lineHeight: 1.5 }}>
-            {"五档宏观主题组合  ·  基于2026宏观三元悖论研究"}
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {WHIMSICAL_PORTFOLIOS.slice(0, 3).map((p) => (
-              <WhimsicalPortfolioCard key={p.id} portfolio={p} />
-            ))}
-          </div>
-          <div className="mx-auto mt-4 grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-2">
-            {WHIMSICAL_PORTFOLIOS.slice(3).map((p) => (
-              <WhimsicalPortfolioCard key={p.id} portfolio={p} />
-            ))}
+          <div className="mb-3 border-b border-gray-800" />
+          <div
+            id="qd-whimsical-panel"
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              whimsicalOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
+            <div className="mb-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {WHIMSICAL_PORTFOLIOS.slice(0, 3).map((p) => (
+                <WhimsicalPortfolioCard key={p.id} portfolio={p} />
+              ))}
+            </div>
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-3 md:grid-cols-2">
+              {WHIMSICAL_PORTFOLIOS.slice(3, 5).map((p) => (
+                <WhimsicalPortfolioCard key={p.id} portfolio={p} />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -764,7 +835,7 @@ export default function QdPage() {
         <div style={{ background: "#111827", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: 12, overflow: "hidden" }}>
           {isMobile ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: 10 }}>
-              {filtered.map((fund) => {
+              {sortedFiltered.map((fund) => {
                 const isSelected = selected?.fund_id === fund.fund_id;
                 const code = String(fund.primary_code || fund.sc_product_code || fund.code || "—").trim();
                 const badge = codeBadgeStyle(code);
@@ -810,6 +881,33 @@ export default function QdPage() {
                     {tags.length > 0 && (
                       <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>{qdTagsJoinZh(tags)}</div>
                     )}
+                    <div
+                      style={{
+                        marginTop: 8,
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "6px 10px",
+                        alignItems: "center",
+                        borderTop: "1px solid rgba(255,255,255,0.06)",
+                        paddingTop: 8,
+                      }}
+                    >
+                      {(
+                        [
+                          ["日涨跌", fund.performance?.daily_return],
+                          ["1周", fund.performance?.weekly_return],
+                          ["1月", fund.performance?.monthly_1],
+                          ["3月", fund.performance?.monthly_3],
+                          ["6月", fund.performance?.monthly_6],
+                          ["1年", fund.performance?.yearly_1],
+                        ] as const
+                      ).map(([label, v]) => (
+                        <div key={label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                          <span style={{ fontSize: 10, color: "#6B7280" }}>{label}</span>
+                          <PerformanceCell value={v} />
+                        </div>
+                      ))}
+                    </div>
                     <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>
                       {isSelected ? "点击收起" : "点击展开"}
                     </div>
@@ -818,7 +916,8 @@ export default function QdPage() {
               })}
             </div>
           ) : (
-          <table style={s.table}>
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[1200px]" style={s.table}>
             <thead>
               <tr>
                 <th style={s.th}>基金名称</th>
@@ -826,15 +925,71 @@ export default function QdPage() {
                 <th style={s.th}>主要标签</th>
                 <th style={s.thr}>持仓数量</th>
                 <th style={s.thr}>数据截至</th>
+                <SortablePerfHeader
+                  label="日涨跌"
+                  perfKey="daily_return"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  borderLeft
+                  minWidth={66}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="1周"
+                  perfKey="weekly_return"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="1月"
+                  perfKey="monthly_1"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="3月"
+                  perfKey="monthly_3"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="6月"
+                  perfKey="monthly_6"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
+                <SortablePerfHeader
+                  label="1年"
+                  perfKey="yearly_1"
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={handlePerfSort}
+                  minWidth={58}
+                  style={s.thr}
+                />
                 <th style={s.thr}>操作</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((fund) => {
+              {sortedFiltered.map((fund) => {
                 const isSelected = selected?.fund_id === fund.fund_id;
                 const code = String(fund.primary_code || fund.sc_product_code || fund.code || "—").trim();
                 const badge = codeBadgeStyle(code);
                 const tags = (fund.tags || []).slice(0, 3);
+                const perf = fund.performance;
                 return (
                   <tr
                     id={`fund-row-${fund.fund_id}`}
@@ -867,13 +1022,37 @@ export default function QdPage() {
                     </td>
                     <td style={{ ...s.tdr, color: fund.holdings_count > 0 ? "#1D9E75" : "#6B7280" }}>{fund.holdings_count}</td>
                     <td style={{ ...s.tdr, color: "#9CA3AF", fontSize: 12 }}>{fund.as_of_date || "—"}</td>
+                    <td style={{ ...s.tdr, minWidth: 66 }} className="border-l border-gray-700 px-3 py-2">
+                      <PerformanceCell value={perf?.daily_return} />
+                    </td>
+                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <PerformanceCell value={perf?.weekly_return} />
+                    </td>
+                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <PerformanceCell value={perf?.monthly_1} />
+                    </td>
+                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <PerformanceCell value={perf?.monthly_3} />
+                    </td>
+                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <PerformanceCell value={perf?.monthly_6} />
+                    </td>
+                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <PerformanceCell value={perf?.yearly_1} />
+                    </td>
                     <td style={{ ...s.tdr, color: "#9CA3AF", fontSize: 12 }}>{isSelected ? "点击收起" : "点击展开"}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          </div>
           )}
+          {performanceLastUpdated ? (
+            <p className="mt-2 text-right text-xs text-gray-600">
+              绩效数据更新时间：{formatPerformanceLastUpdated(performanceLastUpdated)} · 来源：基金公司 NAV
+            </p>
+          ) : null}
         </div>
 
         {/* 展开区 */}

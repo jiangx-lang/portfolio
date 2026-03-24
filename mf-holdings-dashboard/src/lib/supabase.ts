@@ -4,6 +4,7 @@
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { FundPerformance } from "@/types/fund";
 
 let _client: SupabaseClient | null = null;
 let _serviceClient: SupabaseClient | null = null;
@@ -134,4 +135,81 @@ export async function getMrfFunds(): Promise<MrfFundRow[]> {
     fee_rate: Number(r.fee_rate ?? 0),
     sc_product_code: r.sc_product_code != null ? String(r.sc_product_code) : undefined,
   }));
+}
+
+function performanceFromRow(row: Record<string, unknown>): FundPerformance {
+  const num = (v: unknown): number | null =>
+    v == null || v === "" ? null : Number(v);
+  return {
+    daily_return: num(row.daily_return),
+    weekly_return: num(row.weekly_return),
+    monthly_1: num(row.monthly_1),
+    monthly_3: num(row.monthly_3),
+    monthly_6: num(row.monthly_6),
+    yearly_1: num(row.yearly_1),
+    updated_at: row.updated_at != null ? String(row.updated_at) : null,
+  };
+}
+
+/** 按产品代码匹配绩效（trim + 大小写不敏感） */
+export function lookupFundPerformance(
+  byCode: Map<string, FundPerformance>,
+  code: string | null | undefined
+): FundPerformance | undefined {
+  const c = String(code ?? "").trim();
+  if (!c) return undefined;
+  return byCode.get(c) ?? byCode.get(c.toUpperCase());
+}
+
+/**
+ * 分页拉取 `fund_performance` 全表，供 QD/MRF 列表合并。
+ * 表不存在或无权访问时返回空 Map（不抛错）。
+ */
+export async function fetchFundPerformanceBulk(): Promise<{
+  byCode: Map<string, FundPerformance>;
+  lastUpdated: string | null;
+}> {
+  const supabase = getSupabase();
+  const empty: { byCode: Map<string, FundPerformance>; lastUpdated: string | null } = {
+    byCode: new Map(),
+    lastUpdated: null,
+  };
+  if (!supabase) return empty;
+
+  const byCode = new Map<string, FundPerformance>();
+  let lastUpdated: string | null = null;
+  const pageSize = 1000;
+  let from = 0;
+
+  for (;;) {
+    const { data, error } = await supabase
+      .from("fund_performance")
+      .select("fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, updated_at")
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[fetchFundPerformanceBulk]", error.message);
+      }
+      return empty;
+    }
+    if (!data?.length) break;
+
+    for (const raw of data) {
+      const row = raw as Record<string, unknown>;
+      const code = String(row.fund_code ?? "").trim();
+      if (!code) continue;
+      const perf = performanceFromRow(row);
+      byCode.set(code, perf);
+      const up = code.toUpperCase();
+      if (up !== code) byCode.set(up, perf);
+      const ua = perf.updated_at;
+      if (ua && (!lastUpdated || ua > lastUpdated)) lastUpdated = ua;
+    }
+
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+
+  return { byCode, lastUpdated };
 }
