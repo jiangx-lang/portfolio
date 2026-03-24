@@ -103,24 +103,57 @@ function peBarWidth(pe: number | null | undefined): number {
 const BAR_COLORS = ["#3b82f6", "#6366f1", "#8b5cf6", "#a855f7", "#d946ef", "#ec4899", "#f43f5e", "#f97316"];
 
 /** 从“英伟达 NVDA / 腾讯 0700.HK / 茅台 600519.SH”等字符串末尾提取 ticker；仅作展示层兜底 */
-function extractTickerFromName(raw: string): string | undefined {
+function extractTickerFromName(raw: string): string {
   const s = String(raw || "").trim();
-  if (!s) return undefined;
+  if (!s) return "";
   const m = s.match(/\b([A-Z0-9]{1,6}(?:\.[A-Z]{1,4})?)\b/g);
-  if (!m || m.length === 0) return undefined;
+  if (!m || m.length === 0) return "";
   return m[m.length - 1];
 }
 
-function parseWeightValue(input: unknown): number {
-  if (typeof input === "number") return Number.isFinite(input) ? input : 0;
-  if (typeof input === "string") {
-    const s = input.trim();
-    if (!s) return 0;
-    const n = Number.parseFloat(s.replace("%", ""));
-    if (!Number.isFinite(n)) return 0;
-    return s.includes("%") ? n / 100 : n;
-  }
-  return 0;
+function parseSafeWeight(val: unknown): number {
+  if (val == null) return 0;
+  if (typeof val === "number") return Number.isFinite(val) ? val : 0;
+  const strVal = String(val).trim().replace("%", "");
+  const parsed = Number.parseFloat(strVal);
+  if (Number.isNaN(parsed)) return 0;
+  return parsed;
+}
+
+function tickerKey(val: unknown): string {
+  return String(val ?? "").trim().toUpperCase();
+}
+
+function normalizeName(row: any): string {
+  return String(row?.name ?? row?.holding_name_std ?? row?.holding_name_raw ?? row?.holding_name ?? "").trim();
+}
+
+function normalizeTicker(row: any): string {
+  const t = String(row?.ticker ?? "").trim();
+  if (t) return t;
+  return extractTickerFromName(normalizeName(row));
+}
+
+function findByTicker<T extends { ticker?: string }>(rows: T[], ticker: string): T | undefined {
+  if (!ticker) return undefined;
+  const k = tickerKey(ticker);
+  return rows.find((r) => tickerKey(r?.ticker) === k);
+}
+
+function normalizeWeight01(row: any): number {
+  let w = parseSafeWeight(row?.weight ?? row?.weight_pct);
+  if (w > 1) w = w / 100;
+  if (!Number.isFinite(w) || w < 0) return 0;
+  return w;
+}
+
+function toNormalizedMarketRow(row: any): MarketDataRow {
+  return {
+    ...row,
+    name: normalizeName(row) || undefined,
+    ticker: normalizeTicker(row) || undefined,
+    weight: normalizeWeight01(row),
+  } as MarketDataRow;
 }
 
 export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }: Props) {
@@ -201,57 +234,31 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
   const conc = analysis?.concentration;
   const ai = analysis?.aiInsights;
 
-  // 统一标准化：兼容 weight/weight_pct、name/holding_name_std，并尝试从名称提取 ticker。
-  const normalizeMatrixRow = (d: any): MarketDataRow => {
-    const rawName = String(d?.name ?? d?.holding_name_std ?? d?.holding_name_raw ?? "").trim();
-    const ticker = String(d?.ticker ?? "").trim() || extractTickerFromName(rawName);
-    const weight =
-      d?.weight != null
-        ? parseWeightValue(d.weight)
-        : d?.weight_pct != null
-          ? parseWeightValue(d.weight_pct) / (String(d.weight_pct).includes("%") ? 1 : 100)
-          : 0;
+  const baseRows: MarketDataRow[] = (holdings || []).map((h: any) => {
+    const rawName = normalizeName(h);
+    const ticker = normalizeTicker(h);
+    let w = parseSafeWeight(h?.weight ?? h?.weight_pct);
+    if (w > 1) w = w / 100;
     return {
-      ...d,
-      ticker: ticker || undefined,
+      ...h,
       name: rawName || undefined,
-      weight: Number.isFinite(weight) ? weight : 0,
-    };
-  };
-
-  const fromAnalysis = (analysis?.holdingsDetail ?? []).map(normalizeMatrixRow);
-  const fromMarket = (marketData ?? []).map(normalizeMatrixRow);
-  const fromProps = holdings.map((h) => normalizeMatrixRow(h));
-
-  // 以 fromProps 为基准做融合：名称/权重以基准持仓为准，防止 analysis 的 weight=0 覆盖真实权重。
-  const analysisByTicker = new Map<string, MarketDataRow>();
-  for (const item of fromAnalysis) {
-    const tk = String(item.ticker ?? "").trim().toUpperCase();
-    if (tk) analysisByTicker.set(tk, item);
-  }
-  const marketByTicker = new Map<string, MarketDataRow>();
-  for (const item of fromMarket) {
-    const tk = String(item.ticker ?? "").trim().toUpperCase();
-    if (tk) marketByTicker.set(tk, item);
-  }
-
-  let sourceRows: MarketDataRow[] = fromProps.map((baseItem) => {
-    const tk = String(baseItem.ticker ?? "").trim().toUpperCase();
-    const marketItem = tk ? marketByTicker.get(tk) : undefined;
-    const analysisItem = tk ? analysisByTicker.get(tk) : undefined;
-    return {
-      ...marketItem,
-      ...analysisItem,
-      ...baseItem,
-      // 核心兜底：name / weight 永远用基准持仓
-      name: baseItem.name ?? analysisItem?.name ?? marketItem?.name,
-      weight: baseItem.weight ?? analysisItem?.weight ?? marketItem?.weight ?? 0,
-    };
+      ticker: ticker || undefined,
+      weight: Number.isFinite(w) ? w : 0,
+    } as MarketDataRow;
   });
-  // 极端场景：父层未传持仓时，退回 analysis/marketData
-  if (sourceRows.length === 0) {
-    sourceRows = fromAnalysis.length > 0 ? fromAnalysis : fromMarket;
-  }
+
+  const analysisRows: MarketDataRow[] = (analysis?.holdingsDetail ?? []).map((a) => toNormalizedMarketRow(a));
+  const marketRows: MarketDataRow[] = (marketData ?? []).map((m) => toNormalizedMarketRow(m));
+
+  const sourceRows: MarketDataRow[] = baseRows.map((baseItem) => {
+    const matchedAnalysis = findByTicker(analysisRows, baseItem.ticker ?? "") ?? {};
+    const matchedMarket = findByTicker(marketRows, baseItem.ticker ?? "") ?? {};
+    return {
+      ...matchedMarket,
+      ...matchedAnalysis,
+      ...baseItem,
+    } as MarketDataRow;
+  });
 
   const sortedForMatrix = sourceRows.filter((d) => {
     const w = Number(d.weight ?? 0);
@@ -260,6 +267,9 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
     return !d.error && w > 0 && (hasName || hasTicker);
   });
   sortedForMatrix.sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0));
+
+  console.log("[Debug] Base Rows (parsed):", baseRows);
+  console.log("[Debug] Sorted Matrix (filtered):", sortedForMatrix);
 
   return (
     <div style={{ marginTop: 24, borderTop: "1px solid #1e3a5f", paddingTop: 20 }}>
