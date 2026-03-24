@@ -1,0 +1,50 @@
+=== SHEET: 'HALO标签复核' ===
+columns: ['持仓标准化名', '持仓类型', '涉及基金数', '示例基金', '地域', '行业', '主题', 'HALO', '全部标签', '人工复核', '备注']
+rows: 188
+                                持仓标准化名    持仓类型  涉及基金数                               示例基金      地域              行业            主题                                 HALO                                              全部标签  人工复核  备注
+0                              ABB LTD  equity      2  贝莱德全球基金－欧洲基金 / 贝莱德全球基金－欧洲基金（美元对冲）  Europe     Industrials           NaN             H-HardAssets | A-AIpower      Europe, Industrials, H-HardAssets, A-AIpower   NaN NaN
+1                          ABB LTD-REG  equity      1                           安联多元主题基金  Europe     Industrials           NaN             H-HardAssets | A-AIpower      Europe, Industrials, H-HardAssets, A-AIpower   NaN NaN
+2                          AENA SME SA  equity      1                  贝莱德策略基金－环球不动产证券基金  Europe  Infrastructure           NaN                         H-HardAssets              Europe, Infrastructure, H-HardAssets   NaN NaN
+3     AGNICO EAGLE MINES LTD (ONTARIO)  equity      1                 施罗德环球基金系列 - 环球黄金基金      US       Materials           NaN                           O-OilHedge                         US, Materials, O-OilHedge   NaN NaN
+4               AGREE REALTY REIT CORP  equity      1                  贝莱德全球基金－世界房地产证券基金      US     Real Estate  HighDividend                         H-HardAssets       US, Real Estate, H-HardAssets, HighDividend   NaN NaN
+5                      ALAMOS GOLD INC  equity      1                 施罗德环球基金系列 - 环球黄金基金      US       Materials           NaN                           O-OilHedge                         US, Materials, O-OilHedge   NaN NaN
+6   ALEXANDRIA REAL ESTATE EQUITIES RE  equity      1                  贝莱德策略基金－环球不动产证券基金      US     Real Estate           NaN                         H-HardAssets                     US, Real Estate, H-HardAssets   NaN NaN
+7              AMERICAN ELECTRIC POWER  equity      1               宏利环球基金 — 投资级优先证券收益基金      US       Utilities           NaN  H-HardAssets | L-LowVol | A-AIpower  US, Utilities, H-HardAssets, L-LowVol, A-AIpower   NaN NaN
+8                AMERICAN HOMES 4 RENT  equity      1                     富达基金 - 环球房地产基金      US     Real Estate           NaN                         H-HardAssets                     US, Real Estate, H-HardAssets   NaN NaN
+9                   ANGLO AMERICAN PLC  equity      1                     贝莱德全球基金－世界矿业基金  Europe       Materials           NaN                         H-HardAssets                   Europe, Materials, H-HardAssets   NaN NaN
+10               ANGLOGOLD ASHANTI PLC  equity      1                 施罗德环球基金系列 - 环球黄金基金      US       Materials           NaN                           O-OilHedge                         US, Materials, O-OilHedge   NaN NaN
+11                       APA Group NpV  equity      1       富兰克林邓普顿环球基金系列-FTGF凯利环球基建入息基金  Europe  Infrastructure           NaN                         H-HardAssets              Europe, Infrastructure, H-HardAssets   NaN NaN
+
+=== SHEET: '全量复核' ===
+columns: ['持仓标准化名', '持仓类型', '涉及基金数', '示例基金', '地域', '行业', '主题', 'HALO', '全部标签', '覆盖', '人工复核', '备注']
+rows: 714
+                                持仓标准化名    持仓类型  涉及基金数                                                                                       示例基金      地域              行业                         主题       HALO                                                全部标签 覆盖  人工复核  备注
+0                          NVIDIA CORP  equity     11                                              安联AI收益基金 / 安联全球永续发展基金 / 安联全球永续发展基金（派息款） …共11只      US      Technology  AI | AIChips | DataCenter  A-AIpower  US, Technology, AI, AIChips, DataCenter, A-AIpower  ✓   NaN NaN
+1                       AMAZON.COM INC  equity     10                                              安联全球永续发展基金 / 安联全球永续发展基金（派息款） / 安联多元主题基金 …共10只      US      Technology     AI | DataCenter | SaaS        NaN                US, Technology, AI, DataCenter, SaaS  ✓   NaN NaN
+2   Taiwan Semiconductor Manufacturing  equity     10                                                  摩根亚洲股息基金 / 摩根亚洲股票高息基金 / 摩根基金 - 大中华基金 …共9只  Taiwan  Semiconductors               AI | AIChips        NaN                 Taiwan, Semiconductors, AI, AIChips  ✓   NaN NaN
+3                       MICROSOFT CORP  equity      9                                            安联全球永续发展基金 / 安联全球永续发展基金（派息款） / 安联精选收益及增长基金 …共9只      US      Technology     AI | SaaS | DataCenter        NaN                US, Technology, AI, SaaS, DataCenter  ✓   NaN NaN
+4                            APPLE INC  equity      9                                            安联全球永续发展基金 / 安联全球永续发展基金（派息款） / 安联精选收益及增长基金 …共9只      US      Technology                        NaN        NaN                                      US, Technology  ✓   NaN NaN
+5                         BROADCOM INC  equity      8                                                    安联AI收益基金 / 安联多元主题基金 / 安联环球人工智能股票基金 …共8只      US  Semiconductors               AI | AIChips        NaN                     US, Semiconductors, AI, AIChips  ✓   NaN NaN
+6                  Samsung Electronics  equity      8                     富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金 / 摩根亚洲股息基金 / 摩根亚洲股票高息基金 …共6只   Korea  Semiconductors                         AI        NaN                           Korea, Semiconductors, AI  ✓   NaN NaN
+7                                   微软  equity      8  施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位) / 施罗德环球基金系列 - 环球目标回报基金 (A类股份 收息单位) / 贝莱德全球基金－世界科技基金 …共8只      US      Technology     AI | SaaS | DataCenter        NaN                US, Technology, AI, SaaS, DataCenter  ✓   NaN NaN
+8           SAMSUNG ELECTRONICS CO LTD  equity      8                                        富达基金 - 环球科技基金 / 富达基金－亚太股息基金 / 富达基金－亚洲股票 ESG 基金 …共8只   Korea  Semiconductors                         AI        NaN                           Korea, Semiconductors, AI  ✓   NaN NaN
+9      TAIWAN SEMICONDUCTOR MFG CO LTD  equity      7                                        富达基金 - 环球科技基金 / 富达基金－亚太股息基金 / 富达基金－亚洲股票 ESG 基金 …共7只  Taiwan  Semiconductors               AI | AIChips        NaN                 Taiwan, Semiconductors, AI, AIChips  ✓   NaN NaN
+10                                 台积电  equity      7               施罗德环球基金系列 - 环球持续增长基金 (A类股份 累积单位) / 贝莱德全球基金－世界科技基金 / 贝莱德全球基金－可持续环球动力股票基金 …共7只  Taiwan  Semiconductors               AI | AIChips        NaN                 Taiwan, Semiconductors, AI, AIChips  ✓   NaN NaN
+11                     ALPHABET(谷歌母公司)  equity      6                           贝莱德全球基金－世界科技基金 / 贝莱德全球基金－可持续环球动力股票基金 / 贝莱德全球基金－智慧数据环球股票高息基金 …共6只      US      Technology            AI | DataCenter        NaN                      US, Technology, AI, DataCenter  ✓   NaN NaN
+
+=== SHEET: '待补充' ===
+columns: ['持仓标准化名', '持仓类型', '涉及基金数', '示例基金', '覆盖', '备注']
+rows: 19
+                                      持仓标准化名         持仓类型  涉及基金数                                                           示例基金   覆盖  备注
+0                       ALEXANDER FUND TRUST       equity      1                                           宏利环球基金 — 投资级优先证券收益基金  待补充 NaN
+1       ALLIANZ GLOBAL FLOAT RT NTS + WT USD  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+2            AM FLOAT RAT US CORP UC ETF (C)  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+3           AMUNDI MON MKT SHT TERM (USD)-OV  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+4                    China Construction Bank  equity,bond      2  富兰克林邓普顿环球基金系列-FTGF富兰克林MV亚太(日本除外)股票增长及收益基金 / 摩根基金 - 美元浮动净值货币基金  待补充 NaN
+5                EURO-Bobl FUTURE MAR26 OEH6       equity      1                                                  富达基金－欧洲多元收益基金  待补充 NaN
+6       INVERCO US TRS BD 1-3 YR ETF USD ACC       equity      1                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+7       INVESCO US TRS BD 1-3 YR ETF USD ACC       equity      1                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+8   ISHARES $ FLOATING RATE BD UCITS ETF USD  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+9   ISHARES $ SHT DURATION HY CRP BD UCITS E  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+10   ISHARES $ ULTRASHORT BOND UCITS ETF USD  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
+11     ISHARES CORP BD 0-3YR ESG SRI ETF ACC  equity,bond      3                                        东方汇理亚洲伞子基金 — CIO 精选保守基金  待补充 NaN
