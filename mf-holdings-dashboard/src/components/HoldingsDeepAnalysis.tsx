@@ -111,6 +111,18 @@ function extractTickerFromName(raw: string): string | undefined {
   return m[m.length - 1];
 }
 
+function parseWeightValue(input: unknown): number {
+  if (typeof input === "number") return Number.isFinite(input) ? input : 0;
+  if (typeof input === "string") {
+    const s = input.trim();
+    if (!s) return 0;
+    const n = Number.parseFloat(s.replace("%", ""));
+    if (!Number.isFinite(n)) return 0;
+    return s.includes("%") ? n / 100 : n;
+  }
+  return 0;
+}
+
 export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }: Props) {
   const [loading, setLoading] = useState(false);
   const [marketData, setMarketData] = useState<MarketDataRow[]>([]);
@@ -195,9 +207,9 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
     const ticker = String(d?.ticker ?? "").trim() || extractTickerFromName(rawName);
     const weight =
       d?.weight != null
-        ? Number(d.weight)
+        ? parseWeightValue(d.weight)
         : d?.weight_pct != null
-          ? Number(d.weight_pct) / 100
+          ? parseWeightValue(d.weight_pct) / (String(d.weight_pct).includes("%") ? 1 : 100)
           : 0;
     return {
       ...d,
@@ -211,9 +223,35 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
   const fromMarket = (marketData ?? []).map(normalizeMatrixRow);
   const fromProps = holdings.map((h) => normalizeMatrixRow(h));
 
-  // 优先使用可分析结果（analysis/marketData）；两者都空时才退回 props。
-  const sourceRows: MarketDataRow[] =
-    fromAnalysis.length > 0 ? fromAnalysis : fromMarket.length > 0 ? fromMarket : fromProps;
+  // 以 fromProps 为基准做融合：名称/权重以基准持仓为准，防止 analysis 的 weight=0 覆盖真实权重。
+  const analysisByTicker = new Map<string, MarketDataRow>();
+  for (const item of fromAnalysis) {
+    const tk = String(item.ticker ?? "").trim().toUpperCase();
+    if (tk) analysisByTicker.set(tk, item);
+  }
+  const marketByTicker = new Map<string, MarketDataRow>();
+  for (const item of fromMarket) {
+    const tk = String(item.ticker ?? "").trim().toUpperCase();
+    if (tk) marketByTicker.set(tk, item);
+  }
+
+  let sourceRows: MarketDataRow[] = fromProps.map((baseItem) => {
+    const tk = String(baseItem.ticker ?? "").trim().toUpperCase();
+    const marketItem = tk ? marketByTicker.get(tk) : undefined;
+    const analysisItem = tk ? analysisByTicker.get(tk) : undefined;
+    return {
+      ...marketItem,
+      ...analysisItem,
+      ...baseItem,
+      // 核心兜底：name / weight 永远用基准持仓
+      name: baseItem.name ?? analysisItem?.name ?? marketItem?.name,
+      weight: baseItem.weight ?? analysisItem?.weight ?? marketItem?.weight ?? 0,
+    };
+  });
+  // 极端场景：父层未传持仓时，退回 analysis/marketData
+  if (sourceRows.length === 0) {
+    sourceRows = fromAnalysis.length > 0 ? fromAnalysis : fromMarket;
+  }
 
   const sortedForMatrix = sourceRows.filter((d) => {
     const w = Number(d.weight ?? 0);
