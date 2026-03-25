@@ -9,12 +9,14 @@ CREATE TABLE IF NOT EXISTS fund_performance (
   monthly_3     NUMERIC(8,4),
   monthly_6     NUMERIC(8,4),
   yearly_1      NUMERIC(8,4),
+  nav           NUMERIC(18,6),
   nav_date      DATE,
   updated_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 若表已存在但缺少 nav_date（旧版脚本），执行：
+-- 若表已存在但缺少列（旧版脚本），执行：
 -- ALTER TABLE fund_performance ADD COLUMN IF NOT EXISTS nav_date DATE;
+-- ALTER TABLE fund_performance ADD COLUMN IF NOT EXISTS nav NUMERIC(18,6);
 
 CREATE INDEX IF NOT EXISTS idx_fund_performance_updated_at ON fund_performance (updated_at DESC);
 

@@ -21,7 +21,7 @@ import {
 import { qdTagLabelZh, qdTagsJoinZh } from "@/data/qdiiTagLabelsZh";
 import { WhimsicalPortfolioCard } from "@/components/WhimsicalPortfolioCard";
 import { WHIMSICAL_PORTFOLIOS } from "@/data/whimsicalPortfolios";
-import { PerformanceCell } from "@/components/PerformanceCell";
+import { formatFundNavDisplay, formatPerfNavDate, PerformanceCell } from "@/components/PerformanceCell";
 import { perfSortValue, SortablePerfHeader, type PerfKey } from "@/components/SortablePerfHeader";
 import { formatPerformanceLastUpdated } from "@/lib/formatPerformanceUpdated";
 import type { FundPerformance } from "@/types/fund";
@@ -1087,10 +1087,10 @@ export default function QdPage() {
                       >
                         {code}
                       </span>
-                      <span style={{ fontSize: 11, color: fund.holdings_count > 0 ? "#1D9E75" : "#6B7280" }}>
-                        持仓 {fund.holdings_count} 条
+                      <span style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+                        NAV {formatFundNavDisplay(fund.performance?.nav)} ·{" "}
+                        {formatPerfNavDate(fund.performance?.nav_date) ?? "—"}
                       </span>
-                      <span style={{ fontSize: 11, color: "#6B7280" }}>{fund.as_of_date || "—"}</span>
                     </div>
                     {tags.length > 0 && (
                       <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>{qdTagsJoinZh(tags)}</div>
@@ -1131,14 +1131,14 @@ export default function QdPage() {
             </div>
           ) : (
           <div className="w-full overflow-x-auto">
-            <table className="w-full min-w-[1200px]" style={s.table}>
+            <table className="w-full min-w-[1220px]" style={s.table}>
             <thead>
               <tr>
                 <th style={s.th}>基金名称</th>
                 <th style={s.th}>产品代码</th>
                 <th style={s.th}>主要标签</th>
-                <th style={s.thr}>持仓数量</th>
-                <th style={s.thr}>数据截至</th>
+                <th style={s.thr}>NAV</th>
+                <th style={s.thr}>NAV获得日期</th>
                 <SortablePerfHeader
                   label="日涨跌"
                   perfKey="daily_return"
@@ -1234,8 +1234,20 @@ export default function QdPage() {
                     <td style={{ ...s.td, color: tags.length ? "#F9FAFB" : "#6B7280" }}>
                       {tags.length ? qdTagsJoinZh(tags) : "—"}
                     </td>
-                    <td style={{ ...s.tdr, color: fund.holdings_count > 0 ? "#1D9E75" : "#6B7280" }}>{fund.holdings_count}</td>
-                    <td style={{ ...s.tdr, color: "#9CA3AF", fontSize: 12 }}>{fund.as_of_date || "—"}</td>
+                    <td
+                      style={{
+                        ...s.tdr,
+                        fontSize: 12,
+                        color: "#E5E7EB",
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                      className="px-3 py-2"
+                    >
+                      {formatFundNavDisplay(perf?.nav)}
+                    </td>
+                    <td style={{ ...s.tdr, fontSize: 12, color: "#9CA3AF" }} className="px-3 py-2">
+                      {formatPerfNavDate(perf?.nav_date) ?? "—"}
+                    </td>
                     <td style={{ ...s.tdr, minWidth: 66 }} className="border-l border-gray-700 px-3 py-2">
                       <PerformanceCell value={perf?.daily_return} />
                     </td>
@@ -1297,7 +1309,9 @@ export default function QdPage() {
                     ? qdTagsJoinZh((selected.tags || []).slice(0, 3))
                     : "—",
                 ],
-                ["数据截至", selected.as_of_date || "—"],
+                ["NAV", formatFundNavDisplay(selected.performance?.nav)],
+                ["NAV获得日期", formatPerfNavDate(selected.performance?.nav_date) ?? "—"],
+                ["持仓记录数", String(selected.holdings_count)],
               ].map(([k, v]) => (
                 <div key={String(k)}>
                   <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 2 }}>{k}</div>

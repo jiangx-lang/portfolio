@@ -41,6 +41,8 @@ type PerfRow = {
   monthly_3: number | null;
   monthly_6: number | null;
   yearly_1: number | null;
+  nav: number | null;
+  nav_date: string | null;
   updated_at: string | null;
 };
 
@@ -80,7 +82,9 @@ export async function GET() {
     if (supabase && scCodes.length > 0) {
       const { data: perfRows } = await supabase
         .from("fund_performance")
-        .select("fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, updated_at")
+        .select(
+          "fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, nav, nav_date, updated_at"
+        )
         .in("fund_code", scCodes);
 
       if (perfRows) {

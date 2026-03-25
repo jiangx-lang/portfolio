@@ -6,5 +6,9 @@ export interface FundPerformance {
   monthly_3: number | null;
   monthly_6: number | null;
   yearly_1: number | null;
+  /** 与 nav_date 对应的最新单位净值（来自 calc_performance / nav_history） */
+  nav: number | null;
+  /** 最新净值日期 YYYY-MM-DD */
+  nav_date: string | null;
   updated_at: string | null;
 }

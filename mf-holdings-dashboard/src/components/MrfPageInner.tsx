@@ -29,7 +29,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { PerformanceCell } from "@/components/PerformanceCell";
+import { formatFundNavDisplay, formatPerfNavDate, PerformanceCell } from "@/components/PerformanceCell";
 import { perfSortValue, SortablePerfHeader, type PerfKey } from "@/components/SortablePerfHeader";
 import { formatPerformanceLastUpdated } from "@/lib/formatPerformanceUpdated";
 import type { FundPerformance } from "@/types/fund";
@@ -871,17 +871,6 @@ export default function MrfPageInner() {
                         <span
                           style={{
                             fontSize: 11,
-                            padding: "2px 8px",
-                            borderRadius: 4,
-                            background: (BRAND_COLORS[f.brand] ?? "#888") + "22",
-                            color: BRAND_COLORS[f.brand] ?? "#9CA3AF",
-                          }}
-                        >
-                          {f.brand}
-                        </span>
-                        <span
-                          style={{
-                            fontSize: 11,
                             color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
                           }}
                         >
@@ -900,6 +889,10 @@ export default function MrfPageInner() {
                           }}
                         >
                           {risk.label}
+                        </span>
+                        <span style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+                          NAV {formatFundNavDisplay(f.performance?.nav)} ·{" "}
+                          {formatPerfNavDate(f.performance?.nav_date) ?? "—"}
                         </span>
                       </div>
                       <div
@@ -961,16 +954,17 @@ export default function MrfPageInner() {
             </div>
           ) : (
           <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-[1280px]" style={s.table}>
+          <table className="w-full min-w-[1320px]" style={s.table}>
             <thead>
               <tr>
                 <th style={s.th}>基金名称</th>
-                <th style={s.th}>品牌</th>
                 <th style={s.thr}>股票%</th>
                 <th style={s.thr}>固定收益%</th>
                 <th style={s.thr}>现金%</th>
                 <th style={s.thr}>申购费率</th>
                 <th style={s.thr}>风险类型</th>
+                <th style={s.thr}>NAV</th>
+                <th style={s.thr}>NAV更新日期</th>
                 <SortablePerfHeader
                   label="日涨跌"
                   perfKey="daily_return"
@@ -1049,20 +1043,6 @@ export default function MrfPageInner() {
                       <td style={s.td}>
                         <div style={{ fontWeight: 500, fontSize: 13 }}>{f.fund_name}</div>
                       </td>
-                      <td style={s.td}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "2px 8px",
-                            borderRadius: 4,
-                            fontSize: 11,
-                            background: (BRAND_COLORS[f.brand] ?? "#888") + "22",
-                            color: BRAND_COLORS[f.brand] ?? "#9CA3AF",
-                          }}
-                        >
-                          {f.brand}
-                        </span>
-                      </td>
                       <td style={s.tdr}>{f.equity_pct}%</td>
                       <td style={s.tdr}>{f.fixed_income_pct}%</td>
                       <td style={s.tdr}>{f.cash_pct}%</td>
@@ -1087,6 +1067,20 @@ export default function MrfPageInner() {
                         >
                           {risk.label}
                         </span>
+                      </td>
+                      <td
+                        style={{
+                          ...s.tdr,
+                          fontSize: 12,
+                          color: "#E5E7EB",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                        className="px-3 py-2"
+                      >
+                        {formatFundNavDisplay(perf?.nav)}
+                      </td>
+                      <td style={{ ...s.tdr, fontSize: 12, color: "#9CA3AF" }} className="px-3 py-2">
+                        {formatPerfNavDate(perf?.nav_date) ?? "—"}
                       </td>
                       <td style={{ ...s.tdr, minWidth: 66 }} className="border-l border-gray-700 px-3 py-2">
                         <PerformanceCell value={perf?.daily_return} />
@@ -1130,7 +1124,7 @@ export default function MrfPageInner() {
                     </tr>
                     {isSelected && (
                       <tr style={{ background: "rgba(24,95,165,0.06)", opacity: 1 }}>
-                        <td colSpan={14} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
+                        <td colSpan={15} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
                           {renderHoldingsPanelBelowRow()}
                         </td>
                       </tr>

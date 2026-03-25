@@ -137,9 +137,17 @@ export async function getMrfFunds(): Promise<MrfFundRow[]> {
   }));
 }
 
+function navDateFromRow(v: unknown): string | null {
+  if (v == null || v === "") return null;
+  const s = String(v).trim();
+  if (s.length >= 10 && /^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  return s || null;
+}
+
 function performanceFromRow(row: Record<string, unknown>): FundPerformance {
   const num = (v: unknown): number | null =>
     v == null || v === "" ? null : Number(v);
+  const nNav = num(row.nav);
   return {
     daily_return: num(row.daily_return),
     weekly_return: num(row.weekly_return),
@@ -147,6 +155,8 @@ function performanceFromRow(row: Record<string, unknown>): FundPerformance {
     monthly_3: num(row.monthly_3),
     monthly_6: num(row.monthly_6),
     yearly_1: num(row.yearly_1),
+    nav: nNav != null && !Number.isNaN(nNav) ? nNav : null,
+    nav_date: navDateFromRow(row.nav_date),
     updated_at: row.updated_at != null ? String(row.updated_at) : null,
   };
 }
@@ -185,7 +195,9 @@ export async function fetchFundPerformanceBulk(): Promise<{
   for (;;) {
     const { data, error } = await supabase
       .from("fund_performance")
-      .select("fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, updated_at")
+      .select(
+        "fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, nav, nav_date, updated_at"
+      )
       .order("fund_code", { ascending: true })
       .range(from, from + pageSize - 1);
 

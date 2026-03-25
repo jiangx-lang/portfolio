@@ -191,6 +191,7 @@ def compute_rows(
         row: Dict[str, Any] = {
             "fund_code": fund_code,
             "nav_date": str(latest_date),
+            "nav": round(latest_nav, 6),
         }
         for field, days in PERIODS.items():
             start_d = latest_date - timedelta(days=days)

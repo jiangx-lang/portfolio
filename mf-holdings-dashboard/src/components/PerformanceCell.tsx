@@ -5,6 +5,21 @@ interface PerformanceCellProps {
   digits?: number;
 }
 
+/** 绩效表「净值日期」列：YYYY-MM-DD */
+export function formatPerfNavDate(navDate: string | null | undefined): string | null {
+  if (navDate == null || String(navDate).trim() === "") return null;
+  const s = String(navDate).trim();
+  if (s.length >= 10 && /^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  return null;
+}
+
+/** 列表「NAV」列展示 */
+export function formatFundNavDisplay(nav: number | null | undefined): string {
+  if (nav == null || (typeof nav === "number" && Number.isNaN(nav))) return "—";
+  const n = Number(nav);
+  return n.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+}
+
 /**
  * 基金列表绩效单元格：百分比已按「数值 = 百分点」存储（如 0.32 → +0.32%）
  */
