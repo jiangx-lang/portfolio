@@ -83,7 +83,7 @@ export async function GET() {
       const { data: perfRows } = await supabase
         .from("fund_performance")
         .select(
-          "fund_code, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, nav, nav_date, updated_at"
+          "fund_code, nav, nav_date, daily_return, weekly_return, monthly_1, monthly_3, monthly_6, yearly_1, updated_at"
         )
         .in("fund_code", scCodes);
 
