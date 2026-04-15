@@ -9,6 +9,7 @@ import {
   isPrivateOrLocalIp,
   type IpApiFields,
 } from "@/lib/ipGeoDisplay";
+import { formatBeijingTime } from "@/lib/formatBeijingTime";
 
 /** 仅前端门槛，会打进客户端包；生产请改服务端鉴权或服务_role API */
 const ADMIN_PASSWORD =
@@ -307,6 +308,7 @@ export default function AdminPage() {
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsErr, setStatsErr] = useState<string | null>(null);
   const [statsPayload, setStatsPayload] = useState<AdminAnalyticsJson | null>(null);
+  const [statsGeoMap, setStatsGeoMap] = useState<Record<string, string>>({});
 
   type VisitorLogRow = {
     id: number;
@@ -423,6 +425,67 @@ export default function AdminPage() {
     if (authed && tab === "stats") void loadStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 仅在进入统计页时拉取；密码以当前 pwd 为准
   }, [authed, tab, pwd]);
+
+  useEffect(() => {
+    if (!authed || tab !== "stats") return;
+    const ips = Array.from(
+      new Set(
+        (statsPayload?.recent || [])
+          .map((r) => r.ip?.trim())
+          .filter((x): x is string => Boolean(x))
+          .filter((ip) => !isPrivateOrLocalIp(ip))
+      )
+    ).filter((ip) => !statsGeoMap[ip]);
+
+    if (ips.length === 0) return;
+
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        const pairs = await Promise.all(
+          ips.map(async (ip) => {
+            const res = await fetch(`/api/geoip?ip=${encodeURIComponent(ip)}`, {
+              cache: "no-store",
+            });
+            if (!res.ok) return [ip, ip] as const;
+            const j = (await res.json()) as {
+              city: string | null;
+              country: string | null;
+              region: string | null;
+            };
+
+            const country = (j.country || "").trim();
+            const isChina = country.toUpperCase() === "CN" || country === "中国";
+
+            let label = ip;
+            if (isChina) {
+              label = (j.city || j.region || "中国") ?? "中国";
+            } else {
+              const city = (j.city || "").trim();
+              if (city && country) label = `${city}, ${country}`;
+              else if (country) label = country;
+            }
+            return [ip, label] as const;
+          })
+        );
+
+        if (cancelled) return;
+        setStatsGeoMap((prev) => {
+          const next = { ...prev };
+          for (const [ip, label] of pairs) next[ip] = label;
+          return next;
+        });
+      } catch {
+        // ignore
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [authed, tab, statsPayload, statsGeoMap]);
 
   useEffect(() => {
     if (authed && tab === "visitors") void loadVisitors();
@@ -878,8 +941,8 @@ export default function AdminPage() {
                     <table className="admin-dash-table" style={{ minWidth: 720 }}>
                       <thead>
                         <tr>
-                          <th>时间 (UTC)</th>
-                          <th>IP</th>
+                          <th>时间</th>
+                          <th>地区</th>
                           <th>类型</th>
                           <th>路径</th>
                           <th>内容</th>
@@ -895,12 +958,13 @@ export default function AdminPage() {
                                 className="admin-dash-mono"
                                 style={{ whiteSpace: "nowrap" }}
                               >
-                                {new Date(r.created_at)
-                                  .toISOString()
-                                  .replace("T", " ")
-                                  .slice(0, 19)}
+                                {formatBeijingTime(r.created_at)}
                               </td>
-                              <td className="admin-dash-mono">{r.ip || "—"}</td>
+                              <td className="admin-dash-mono">
+                                {r.ip
+                                  ? statsGeoMap[r.ip.trim()] || r.ip
+                                  : "—"}
+                              </td>
                               <td>
                                 <span
                                   className="admin-dash-badge"
@@ -983,7 +1047,7 @@ export default function AdminPage() {
                     <table className="admin-dash-table" style={{ minWidth: 720 }}>
                       <thead>
                         <tr>
-                          <th>时间 (UTC)</th>
+                          <th>时间</th>
                           <th>设备</th>
                           <th>页面</th>
                           <th>归属地</th>
@@ -1000,10 +1064,7 @@ export default function AdminPage() {
                                 className="admin-dash-mono"
                                 style={{ whiteSpace: "nowrap" }}
                               >
-                                {new Date(row.visited_at)
-                                  .toISOString()
-                                  .replace("T", " ")
-                                  .slice(0, 19)}
+                                {formatBeijingTime(row.visited_at)}
                               </td>
                               <td style={{ maxWidth: 200 }} title={row.user_agent || undefined}>
                                 {formatDeviceCell(row.user_agent)}

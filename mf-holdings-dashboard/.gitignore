@@ -39,3 +39,6 @@ next-env.d.ts
 
 # 行情脚本按 ticker+日期缓存（勿提交）
 scripts/.market_cache/
+
+# MaxMind GeoLite2 数据库（勿提交）
+/data/GeoLite2-City.mmdb
