@@ -389,7 +389,8 @@ async function fetchAiInsights(
       messages: [
         {
           role: "system",
-          content: "只输出合法 JSON 对象，键名与用户要求一致。你不是投资顾问，勿给出具体买卖指令。",
+          content:
+            "你是资深机构买方研究员，输出风格参照高盛/摩根士丹利投研报告。只输出合法 JSON 对象，键名与用户 prompt 严格一致。禁止给出具体买卖指令。",
         },
         { role: "user", content: buildCompactPrompt(fundName, marketData, scores, wm) },
       ],
