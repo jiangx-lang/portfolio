@@ -317,6 +317,7 @@ function buildCompactPrompt(
   const wPCR = wm.pcr != null ? wm.pcr.toFixed(2) : "N/A";
   const wIV = wm.ivPct != null ? wm.ivPct.toFixed(1) : "N/A";
   const wDiv = wm.dividendYield != null ? wm.dividendYield.toFixed(2) : "N/A";
+  const wBeta = wm.beta != null ? wm.beta.toFixed(2) : "N/A";
 
   const top5 = [...valid]
     .sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0))
@@ -325,26 +326,53 @@ function buildCompactPrompt(
       const pe = d.pe_ttm != null ? Number(d.pe_ttm).toFixed(1) : "N/A";
       const pb = d.pb != null ? Number(d.pb).toFixed(2) : "N/A";
       const pcr = d.put_call_ratio != null ? Number(d.put_call_ratio).toFixed(2) : "N/A";
-      return `${d.ticker ?? "?"}(${(Number(d.weight) * 100).toFixed(1)}% PE:${pe} PB:${pb} PCR:${pcr})`;
+      const div =
+        d.dividend_yield != null
+          ? (Number(d.dividend_yield) * 100).toFixed(1) + "%"
+          : "N/A";
+      return `${d.name ?? d.ticker ?? "?"}(${(Number(d.weight) * 100).toFixed(1)}% | PE ${pe}x | PB ${pb}x | PCR ${pcr} | 股息 ${div})`;
     })
-    .join("；");
+    .join("\n");
 
-  return `你是机构投研助手，请根据已算好的量化评分与加权指标写简短解读（总计不超过400字）。禁止个性化喊单；末段须体现数据局限性、不构成投资建议。
+  return `你是一名资深机构买方研究员，风格参照高盛/摩根士丹利投研报告。请根据下方量化数据，撰写专业的持仓深度解读。
 
-基金：${fundName}
-综合评分：${scores.overall}/100（估值${scores.valuation} 情绪${scores.sentiment} 风险${scores.risk} 质量${scores.quality}）
-四维标签：估值「${scores.valuationLabel}」情绪「${scores.sentimentLabel}」风险「${scores.riskLabel}」质量「${scores.qualityLabel}」
-加权：PE ${wPE}x | PB ${wPB}x | PCR ${wPCR} | IV ${wIV}% | 股息率 ${wDiv}%
-Top5：${top5 || "—"}
+## 基金信息
+基金名称：${fundName}
+持仓数量：${valid.length} 只
 
-只返回一个 JSON 对象，不要 markdown：
+## 量化评分（满分100）
+综合评分：${scores.overall}分
+- 估值维度：${scores.valuation}分（${scores.valuationLabel}）
+- 情绪维度：${scores.sentiment}分（${scores.sentimentLabel}）
+- 风险维度：${scores.risk}分（${scores.riskLabel}）
+- 质量维度：${scores.quality}分（${scores.qualityLabel}）
+
+## 加权组合指标
+PE（TTM）：${wPE}x | PB：${wPB}x | Beta：${wBeta}
+隐含波动率：${wIV}% | 认沽/认购比率（PCR）：${wPCR}
+加权股息率：${wDiv}%
+
+## 前五大持仓
+${top5 || "数据不足"}
+
+## 输出要求
+返回一个合法 JSON 对象，字段如下。每个字段写作风格须符合机构投研标准：
+- 使用具体数字和指标支撑判断，避免模糊表述
+- 语言简练、专业，不使用\"非常\"\"很\"等口语化形容词
+- 估值结论须引用 PE/PB 具体数值与行业参考区间
+- 情绪信号须结合 PCR 和 IV 数值给出方向性判断
+- 风险提示须量化（如\"Beta 1.35 高于基准 35%\"），不得泛泛而谈
+- 末尾须注明数据局限性，不构成投资建议
+
 {
-  "valuationConclusion": "估值结论，2-3句",
-  "sentimentSignal": "情绪与期权信号，2-3句",
-  "advisorRecommendation": "不同风险偏好的观察要点（非买卖指令），2-3句",
-  "keyRisks": "核心风险，分号分隔3条以内，每条约20字",
-  "marketContext": "宏观/流动性等对组合的潜在影响，1-2句"
-}`;
+  \"valuationConclusion\": \"基于PE/PB等估值指标的专业分析，须引用具体数值，约60-80字\",
+  \"sentimentSignal\": \"基于PCR和IV的市场情绪判断，须说明方向和强度，约50-70字\",
+  \"advisorRecommendation\": \"针对不同风险偏好投资者的观察要点（非买卖指令），约60-80字\",
+  \"keyRisks\": \"三条核心风险，每条须量化，格式：风险名称：具体描述（含数值）；用分号分隔\",
+  \"marketContext\": \"当前宏观环境与流动性对该组合的潜在影响，约40-60字，须结合Beta和IV数据\"
+}
+
+只返回 JSON，不要任何 markdown 或额外文字。`;
 }
 
 async function fetchAiInsights(
