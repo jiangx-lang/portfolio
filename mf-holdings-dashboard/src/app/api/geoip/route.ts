@@ -8,7 +8,7 @@ const DB_PATH =
   process.env.MAXMIND_DB_PATH?.trim() ||
   path.join(process.cwd(), "data", "GeoLite2-City.mmdb");
 
-let readerPromise: Promise<maxmind.Reader<CityResponse>> | null = null;
+let readerPromise: Promise<any> | null = null;
 
 async function getReader() {
   if (!readerPromise) {
@@ -18,7 +18,7 @@ async function getReader() {
 }
 
 function pickName(
-  names: Record<string, string> | undefined,
+  names: any,
   preferredLocales: string[]
 ): string | null {
   if (!names) return null;
@@ -27,8 +27,8 @@ function pickName(
     if (v && v.trim()) return v.trim();
   }
   // fallback: any value
-  const any = Object.values(names).find((v) => v && v.trim());
-  return any ? any.trim() : null;
+  const any = Object.values(names).find((v: any) => v && v.trim());
+  return any ? (any as string).trim() : null;
 }
 
 export async function GET(req: NextRequest) {
