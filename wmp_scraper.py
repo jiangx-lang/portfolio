@@ -143,12 +143,59 @@ def scrape_via_playwright() -> list[dict[str, Any]] | None:
     except ImportError:
         return None
 
+    def _try_expand_all_rows(page) -> None:
+        """
+        尝试展开/加载更多行。
+        该页面表格可能为前端分页/懒加载，仅靠 content() 会拿到首屏。
+        策略：
+        - 多次滚动到底部触发懒加载
+        - 尝试点击「加载更多 / 更多 / 展开 / 查看更多」等按钮
+        """
+        more_re = re.compile(r"(加载更多|查看更多|更多|展开|Show more|More)", re.I)
+        for _ in range(20):
+            # 先滚动到底部，触发懒加载
+            try:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            except Exception:
+                pass
+            page.wait_for_timeout(800)
+
+            clicked = False
+            try:
+                buttons = page.query_selector_all("button, a[role='button'], [role='button']")
+                for b in buttons:
+                    try:
+                        txt = (b.inner_text() or "").strip()
+                    except Exception:
+                        continue
+                    if not txt or not more_re.search(txt):
+                        continue
+                    try:
+                        # 仅点击可见元素
+                        if hasattr(b, "is_visible") and not b.is_visible():
+                            continue
+                        b.click(timeout=1500)
+                        clicked = True
+                        page.wait_for_timeout(800)
+                        break
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+            if not clicked:
+                # 没找到可点击的「更多」按钮，认为已展开完
+                break
+
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         try:
             page = browser.new_page()
-            page.goto(WMP_URL, wait_until="networkidle", timeout=20000)
-            page.wait_for_timeout(2000)
+            page.goto(WMP_URL, wait_until="domcontentloaded", timeout=30000)
+            page.wait_for_timeout(1500)
+            _try_expand_all_rows(page)
+            # 再等一会让表格渲染完成
+            page.wait_for_timeout(1200)
             html = page.content()
         finally:
             browser.close()
