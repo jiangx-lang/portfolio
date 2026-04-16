@@ -32,6 +32,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "/";
   usePageTracking();
 
+  // 登录页不展示壳（顶部导航/底部 tab），避免干扰表单与重定向逻辑
+  if (pathname === "/login" || pathname.startsWith("/login/")) {
+    return <>{children}</>;
+  }
+
   /** 精确匹配或子路径（必须带 / 分隔，避免 /qd 与 /portfolio 等误判） */
   const navActive = (href: string) => {
     if (!href.startsWith("/")) return false;
