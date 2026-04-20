@@ -624,15 +624,21 @@ export default function AdminPage() {
   };
 
   async function uploadFile(file: File, bucket: string): Promise<string> {
-    const supabase = getBrowserSupabase();
-    if (!supabase) throw new Error("Supabase 未配置");
-    const fileName = `${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
-    const { error } = await supabase.storage.from(bucket).upload(fileName, file, {
-      upsert: false,
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("bucket", bucket);
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: {
+        // 复用 admin 后台现有 pwd（服务端校验），避免把文件直接上传到 Supabase Storage
+        Authorization: `Bearer ${pwd}`,
+      },
+      body: formData,
     });
-    if (error) throw error;
-    const { data } = supabase.storage.from(bucket).getPublicUrl(fileName);
-    return data.publicUrl;
+    if (!res.ok) throw new Error("上传失败");
+    const data = (await res.json()) as { url?: string };
+    if (!data?.url) throw new Error("上传失败");
+    return data.url;
   }
 
   async function publishNote() {
