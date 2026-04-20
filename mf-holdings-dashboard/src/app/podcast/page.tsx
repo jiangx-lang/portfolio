@@ -22,6 +22,7 @@ function PodcastPageInner() {
   const [pods, setPods] = useState<PodcastRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
     if (!isBrowserSupabaseConfigured()) {
@@ -45,6 +46,9 @@ function PodcastPageInner() {
         setLoading(false);
       });
   }, []);
+
+  const visiblePods = pods.slice(0, visibleCount);
+  const canLoadMore = visibleCount < pods.length;
 
   const s = {
     page: {
@@ -84,7 +88,7 @@ function PodcastPageInner() {
         {!loading && !err && pods.length === 0 && (
           <p style={{ color: "#64748b" }}>暂无播客</p>
         )}
-        {pods.map((pod) => (
+        {visiblePods.map((pod) => (
           <div key={pod.id} style={s.card}>
             <div style={{ color: "#64748b", fontSize: "12px", marginBottom: "8px" }}>
               {pod.date}
@@ -99,6 +103,7 @@ function PodcastPageInner() {
               <>
                 <audio
                   controls
+                  preload="none"
                   style={{ width: "100%", marginBottom: "12px" }}
                   onPlay={() =>
                     trackAnalytics({
@@ -122,6 +127,26 @@ function PodcastPageInner() {
             )}
           </div>
         ))}
+
+        {!loading && !err && canLoadMore && (
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+            <button
+              type="button"
+              onClick={() => setVisibleCount((n) => Math.min(n + 10, pods.length))}
+              style={{
+                background: "rgba(24, 95, 165, 0.18)",
+                color: "#93c5fd",
+                border: "1px solid rgba(59, 130, 246, 0.35)",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              加载更多（{visiblePods.length}/{pods.length}）
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
