@@ -1,6 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  Activity,
+  BarChart3,
+  BookOpen,
+  Eye,
+  FileText,
+  Landmark,
+  Lock,
+  Podcast,
+  RefreshCw,
+  Shield,
+} from "lucide-react";
 import { getBrowserSupabase, isBrowserSupabaseConfigured } from "@/lib/supabase-browser";
 import { formatDeviceCell } from "@/lib/parseUA";
 import {
@@ -36,186 +48,48 @@ type AdminAnalyticsJson = {
   } | null;
 };
 
-const ADMIN_MONO =
-  'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace';
+const ADMIN_INPUT_CLS =
+  "mb-3 w-full rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition-colors focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30";
+
+const ADMIN_TABS = [
+  { key: "notes", label: "市场笔记", Icon: FileText },
+  { key: "podcast", label: "播客", Icon: Podcast },
+  { key: "report", label: "每日报告", Icon: BookOpen },
+  { key: "wmp", label: "WMP 净值", Icon: Landmark },
+  { key: "stats", label: "阅读统计", Icon: BarChart3 },
+  { key: "visitors", label: "访问记录", Icon: Eye },
+] as const;
 
 function statsEventBadge(eventType: string, contentType: string | null) {
   if (eventType === "page") {
-    return {
-      label: "页面",
-      bg: "rgba(59,130,246,0.2)",
-      color: "#93c5fd",
-      border: "1px solid rgba(59,130,246,0.45)",
-    };
+    return { label: "页面", cls: "badge-blue" };
   }
   if (contentType === "podcast") {
-    return {
-      label: "播放",
-      bg: "rgba(168,85,247,0.2)",
-      color: "#d8b4fe",
-      border: "1px solid rgba(168,85,247,0.45)",
-    };
+    return { label: "播放", cls: "badge-gold" };
   }
-  return {
-    label: "互动",
-    bg: "rgba(34,197,94,0.18)",
-    color: "#86efac",
-    border: "1px solid rgba(34,197,94,0.4)",
-  };
-}
-
-function IconEye() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ opacity: 0.9 }}
-      aria-hidden
-    >
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function IconActivity() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ opacity: 0.9 }}
-      aria-hidden
-    >
-      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-    </svg>
-  );
+  return { label: "互动", cls: "badge-green" };
 }
 
 function AdminStatHeroCards({ last24h, last7d }: { last24h: number; last7d: number }) {
-  const cardShell = {
-    borderRadius: 16,
-    padding: "22px 24px",
-    border: "1px solid rgba(147, 197, 253, 0.22)",
-    position: "relative" as const,
-    overflow: "hidden" as const,
-  };
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-        gap: 16,
-        marginBottom: 8,
-      }}
-    >
-      <div
-        style={{
-          ...cardShell,
-          background:
-            "linear-gradient(135deg, rgba(59,130,246,0.5) 0%, rgba(99,102,241,0.38) 45%, rgba(139,92,246,0.35) 100%)",
-          boxShadow:
-            "0 6px 28px rgba(99, 102, 241, 0.28), inset 0 1px 0 rgba(255,255,255,0.1)",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: -24,
-            right: -24,
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.08)",
-            filter: "blur(2px)",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 14,
-          }}
-        >
-          <span style={{ color: "rgba(241,245,249,0.92)", fontSize: 13, fontWeight: 600 }}>
-            近 24 小时事件
-          </span>
-          <span style={{ color: "#e0e7ff" }}>
-            <IconEye />
-          </span>
+    <div className="mb-2 grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+      <div className="glass-card relative overflow-hidden p-6">
+        <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-info/10 blur-2xl" />
+        <div className="mb-4 flex items-start justify-between">
+          <span className="text-[13px] font-semibold text-slate-300">近 24 小时事件</span>
+          <Eye size={20} className="text-info" aria-hidden />
         </div>
-        <div
-          style={{
-            fontSize: 42,
-            fontWeight: 800,
-            color: "#f8fafc",
-            lineHeight: 1,
-            letterSpacing: "-0.03em",
-            textShadow: "0 0 48px rgba(165, 180, 252, 0.55)",
-          }}
-        >
+        <div className="font-mono text-[42px] font-bold leading-none tracking-tight text-slate-50">
           {last24h}
         </div>
       </div>
-      <div
-        style={{
-          ...cardShell,
-          background:
-            "linear-gradient(135deg, rgba(99,102,241,0.45) 0%, rgba(139,92,246,0.42) 50%, rgba(168,85,247,0.38) 100%)",
-          border: "1px solid rgba(196, 181, 253, 0.22)",
-          boxShadow:
-            "0 6px 28px rgba(139, 92, 246, 0.26), inset 0 1px 0 rgba(255,255,255,0.08)",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            bottom: -20,
-            left: -20,
-            width: 88,
-            height: 88,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.06)",
-            filter: "blur(2px)",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 14,
-          }}
-        >
-          <span style={{ color: "rgba(241,245,249,0.92)", fontSize: 13, fontWeight: 600 }}>
-            近 7 天事件
-          </span>
-          <span style={{ color: "#ede9fe" }}>
-            <IconActivity />
-          </span>
+      <div className="glass-card relative overflow-hidden p-6">
+        <div className="pointer-events-none absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-gold/10 blur-2xl" />
+        <div className="mb-4 flex items-start justify-between">
+          <span className="text-[13px] font-semibold text-slate-300">近 7 天事件</span>
+          <Activity size={20} className="text-gold" aria-hidden />
         </div>
-        <div
-          style={{
-            fontSize: 42,
-            fontWeight: 800,
-            color: "#faf5ff",
-            lineHeight: 1,
-            letterSpacing: "-0.03em",
-            textShadow: "0 0 48px rgba(192, 132, 252, 0.45)",
-          }}
-        >
+        <div className="font-mono text-[42px] font-bold leading-none tracking-tight text-gold-light">
           {last7d}
         </div>
       </div>
@@ -226,28 +100,15 @@ function AdminStatHeroCards({ last24h, last7d }: { last24h: number; last7d: numb
 function AdminPathBars({ rows }: { rows: [string, number][] }) {
   const maxN = Math.max(...rows.map(([, n]) => n), 1);
   return (
-    <div style={{ padding: "6px 0 4px" }}>
+    <div className="py-1.5">
       {rows.map(([path, n]) => {
         const pct = Math.round((n / maxN) * 100);
         return (
-          <div key={path} style={{ marginBottom: 18 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-              }}
-            >
-              <div style={{ flex: 1, minWidth: 0 }}>
+          <div key={path} className="mb-4 last:mb-0">
+            <div className="flex items-center gap-3.5">
+              <div className="min-w-0 flex-1">
                 <div
-                  style={{
-                    fontSize: 13,
-                    color: "#cbd5e1",
-                    marginBottom: 8,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
+                  className="mb-2 truncate text-[13px] text-slate-300"
                   title={path}
                 >
                   {path}
@@ -256,16 +117,7 @@ function AdminPathBars({ rows }: { rows: [string, number][] }) {
                   <div className="admin-dash-path-bar-fill" style={{ width: `${pct}%` }} />
                 </div>
               </div>
-              <div
-                style={{
-                  fontFamily: ADMIN_MONO,
-                  fontSize: 17,
-                  fontWeight: 700,
-                  color: "#f1f5f9",
-                  minWidth: 48,
-                  textAlign: "right",
-                }}
-              >
+              <div className="min-w-[48px] text-right font-mono text-[17px] font-bold text-slate-100">
                 {n}
               </div>
             </div>
@@ -571,58 +423,6 @@ export default function AdminPage() {
     };
   }, [authed, tab, visitorLogs, pwd]);
 
-  const s = {
-    page: {
-      minHeight: "100vh",
-      background: "#0a0f1e",
-      color: "#e2e8f0",
-      padding: "40px 24px",
-    },
-    card: {
-      background: "#0d1b2e",
-      border: "1px solid #1e3a5f",
-      borderRadius: "12px",
-      padding: "24px",
-      maxWidth: "600px",
-      margin: "0 auto",
-    },
-    input: {
-      width: "100%",
-      background: "#0f2744",
-      color: "#e2e8f0",
-      border: "1px solid #1e3a5f",
-      borderRadius: "8px",
-      padding: "10px 14px",
-      fontSize: "14px",
-      marginBottom: "12px",
-      boxSizing: "border-box" as const,
-      fontFamily: "inherit",
-    },
-    btn: {
-      background: "#0f2744",
-      color: "#60a5fa",
-      border: "1px solid #3b82f6",
-      borderRadius: "8px",
-      padding: "10px 20px",
-      fontSize: "14px",
-      cursor: "pointer",
-      width: "100%",
-      fontFamily: "inherit",
-    },
-    tab: (active: boolean) =>
-      ({
-        background: active ? "#1e3a5f" : "transparent",
-        color: active ? "#60a5fa" : "#64748b",
-        border: "1px solid #1e3a5f",
-        borderRadius: "8px",
-        padding: "8px 16px",
-        cursor: "pointer",
-        marginRight: "8px",
-        fontSize: "13px",
-        fontFamily: "inherit",
-      }) as React.CSSProperties,
-  };
-
   async function uploadFile(file: File, bucket: string): Promise<string> {
     const formData = new FormData();
     formData.append("file", file);
@@ -726,11 +526,15 @@ export default function AdminPage() {
 
   if (!isBrowserSupabaseConfigured()) {
     return (
-      <div style={s.page}>
-        <div style={s.card}>
-          <h2 style={{ color: "#e2e8f0", marginBottom: "16px" }}>⚙️ 管理员后台</h2>
-          <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.6 }}>
-            请在 <code style={{ color: "#60a5fa" }}>.env.local</code> 中配置{" "}
+      <div className="flex min-h-screen items-center justify-center bg-navy px-6 py-16 text-slate-200">
+        <div className="glass-panel glow-border w-full max-w-lg rounded-2xl p-8">
+          <span className="eyebrow">ATLAS ADMIN</span>
+          <h2 className="mb-4 mt-2 flex items-center gap-2 font-display text-2xl font-bold">
+            <Shield size={20} className="text-gold" aria-hidden />
+            管理员后台
+          </h2>
+          <p className="text-sm leading-relaxed text-slate-400">
+            请在 <code className="text-info">.env.local</code> 中配置{" "}
             <code>NEXT_PUBLIC_SUPABASE_URL</code> 与{" "}
             <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>（与现有 Supabase 项目一致即可，通常与
             服务端 <code>SUPABASE_URL</code> / anon key 相同），重新 build 后使用。
@@ -742,19 +546,23 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div style={s.page}>
-        <div style={s.card}>
-          <h2 style={{ color: "#e2e8f0", marginBottom: "24px" }}>🔐 管理员登录</h2>
+      <div className="flex min-h-screen items-center justify-center bg-navy px-6 py-16 text-slate-200">
+        <div className="glass-panel glow-border animate-in w-full max-w-md rounded-2xl p-8">
+          <span className="eyebrow">ATLAS ADMIN</span>
+          <h2 className="mb-6 mt-2 flex items-center gap-2 font-display text-2xl font-bold">
+            <Lock size={20} className="text-gold" aria-hidden />
+            管理员登录
+          </h2>
           <input
             type="password"
             placeholder="输入管理员密码"
             value={pwd}
             onChange={(e) => setPwd(e.target.value)}
-            style={s.input}
+            className={ADMIN_INPUT_CLS}
           />
           <button
             type="button"
-            style={s.btn}
+            className="btn-gold w-full"
             onClick={() => {
               if (pwd === ADMIN_PASSWORD) {
                 setAuthed(true);
@@ -765,114 +573,78 @@ export default function AdminPage() {
             登录
           </button>
           {msg && (
-            <p style={{ color: "#ef4444", marginTop: "12px", fontSize: 14 }}>{msg}</p>
+            <p className="mt-3 text-sm text-red-400">{msg}</p>
           )}
         </div>
       </div>
     );
   }
 
+  const wideTab = tab === "stats" || tab === "visitors";
+
   return (
-    <div
-      style={{
-        ...s.page,
-        background:
-          tab === "stats" || tab === "visitors" ? "#0a0e1a" : s.page.background,
-      }}
-    >
-      <div
-        style={{
-          maxWidth: tab === "stats" || tab === "visitors" ? "980px" : "600px",
-          margin: "0 auto",
-        }}
-      >
-        <h2 style={{ color: "#e2e8f0", marginBottom: "24px" }}>⚙️ 管理员后台</h2>
-        <div style={{ marginBottom: "24px", flexWrap: "wrap", display: "flex", gap: 8 }}>
-          {(["notes", "podcast", "report", "wmp", "stats", "visitors"] as const).map(
-            (t) => (
+    <div className="min-h-screen bg-navy px-6 py-10 text-slate-200">
+      <div className={`mx-auto ${wideTab ? "max-w-[980px]" : "max-w-[600px]"}`}>
+        <header className="mb-6">
+          <span className="eyebrow">ATLAS ADMIN</span>
+          <h2 className="mt-2 flex items-center gap-2.5 font-display text-3xl font-bold">
+            <Shield size={24} className="text-gold" aria-hidden />
+            管理员后台
+          </h2>
+        </header>
+        <div className="mb-6 flex flex-wrap gap-2">
+          {ADMIN_TABS.map(({ key: t, label, Icon }) => (
             <button
               key={t}
               type="button"
-              style={s.tab(tab === t)}
+              className={`flex items-center gap-1.5 rounded-xl border px-4 py-2 text-[13px] font-medium transition-colors ${
+                tab === t
+                  ? "border-gold/40 bg-gold/10 text-gold"
+                  : "border-white/10 text-slate-500 hover:border-white/20 hover:text-slate-300"
+              }`}
               onClick={() => {
                 setTab(t);
                 setMsg("");
               }}
             >
-              {t === "notes"
-                ? "📝 市场笔记"
-                : t === "podcast"
-                  ? "🎙️ 播客"
-                  : t === "report"
-                    ? "📄 每日报告"
-                    : t === "wmp"
-                      ? "🏦 WMP 净值"
-                      : t === "stats"
-                        ? "📊 阅读统计"
-                        : "📋 访问记录"}
+              <Icon size={15} aria-hidden />
+              {label}
             </button>
-          )
-          )}
+          ))}
         </div>
 
-        <div
-          style={{
-            ...s.card,
-            maxWidth: tab === "stats" || tab === "visitors" ? "980px" : "600px",
-            ...(tab === "stats" || tab === "visitors"
-              ? {
-                  background: "rgba(13, 27, 46, 0.72)",
-                  border: "1px solid rgba(59, 130, 246, 0.12)",
-                  boxShadow:
-                    "0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)",
-                }
-              : {}),
-          }}
-        >
+        <div className="glass-panel animate-in rounded-2xl p-6">
           {tab === "stats" && (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: 12,
-                  marginBottom: 20,
-                }}
-              >
-                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#f1f5f9" }}>
-                  阅读统计
-                </h3>
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-display text-xl font-bold text-slate-50">阅读统计</h3>
                 <button
                   type="button"
-                  style={{ ...s.btn, width: "auto", padding: "8px 16px" }}
+                  className="btn-ghost disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() => void loadStats()}
                   disabled={statsLoading}
                 >
+                  <RefreshCw
+                    size={14}
+                    className={statsLoading ? "animate-spin" : undefined}
+                    aria-hidden
+                  />
                   {statsLoading ? "刷新中…" : "刷新"}
                 </button>
               </div>
-              <p style={{ color: "#64748b", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
+              <p className="mb-4 text-[13px] leading-relaxed text-slate-500">
                 记录前台页面浏览（含路径）、用户 IP（经 CDN 时为 X-Forwarded-For）、以及笔记曝光 / PDF 点击 / 播客播放。需在 Supabase 执行{" "}
-                <code style={{ color: "#60a5fa" }}>supabase_analytics.sql</code>，并在服务端配置{" "}
-                <code style={{ color: "#60a5fa" }}>SUPABASE_SERVICE_ROLE_KEY</code>{" "}
+                <code className="text-info">supabase_analytics.sql</code>，并在服务端配置{" "}
+                <code className="text-info">SUPABASE_SERVICE_ROLE_KEY</code>{" "}
                 后此处才可读库；未配置时事件仍会尝试写入（需{" "}
-                <code style={{ color: "#60a5fa" }}>SUPABASE_URL</code> /{" "}
-                <code style={{ color: "#60a5fa" }}>SUPABASE_KEY</code>）。
+                <code className="text-info">SUPABASE_URL</code> /{" "}
+                <code className="text-info">SUPABASE_KEY</code>）。
               </p>
               {statsErr && (
-                <p style={{ color: "#f87171", fontSize: 14, marginBottom: 12 }}>{statsErr}</p>
+                <p className="mb-3 text-sm text-red-400">{statsErr}</p>
               )}
               {statsPayload?.error && (
-                <p
-                  style={{
-                    color: "#fbbf24",
-                    fontSize: 14,
-                    marginBottom: 12,
-                    lineHeight: 1.6,
-                  }}
-                >
+                <p className="mb-3 text-sm leading-relaxed text-amber-400">
                   {statsPayload.error}
                 </p>
               )}
@@ -887,16 +659,7 @@ export default function AdminPage() {
                     <div className="admin-dash-divider" />
                   )}
                   {statsPayload.summary.byPath.length > 0 && (
-                    <div
-                      style={{
-                        marginBottom: 24,
-                        borderRadius: 14,
-                        border: "1px solid rgba(30,58,95,0.55)",
-                        padding: "20px 22px",
-                        background: "rgba(13,27,46,0.45)",
-                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
-                      }}
-                    >
+                    <div className="glass-panel mb-6 px-[22px] py-5">
                       <h4 className="admin-dash-section-title">近 7 天 · 路径分布</h4>
                       <AdminPathBars rows={statsPayload.summary.byPath} />
                     </div>
@@ -906,26 +669,23 @@ export default function AdminPage() {
                       <div className="admin-dash-divider" />
                     )}
                   {statsPayload.summary.contentReads.length > 0 && (
-                    <div style={{ marginBottom: 24 }}>
+                    <div className="mb-6">
                       <h4 className="admin-dash-section-title">
                         近 7 天 · 内容阅读（类型:id）
                       </h4>
-                      <div className="admin-dash-table-wrap" style={{ maxHeight: 320 }}>
+                      <div className="admin-dash-table-wrap max-h-[320px]">
                         <table className="admin-dash-table">
                           <thead>
                             <tr>
                               <th>内容</th>
-                              <th style={{ width: 88 }}>次数</th>
+                              <th className="w-[88px]">次数</th>
                             </tr>
                           </thead>
                           <tbody>
                             {statsPayload.summary.contentReads.map(([key, n]) => (
                               <tr key={key}>
                                 <td>{key}</td>
-                                <td
-                                  className="admin-dash-mono"
-                                  style={{ fontWeight: 600, color: "#94a3b8" }}
-                                >
+                                <td className="admin-dash-mono font-semibold text-slate-400">
                                   {n}
                                 </td>
                               </tr>
@@ -943,8 +703,8 @@ export default function AdminPage() {
               {statsPayload && statsPayload.recent.length > 0 && (
                 <div>
                   <h4 className="admin-dash-section-title">最近事件（最多 200 条）</h4>
-                  <div className="admin-dash-table-wrap" style={{ maxHeight: 440 }}>
-                    <table className="admin-dash-table" style={{ minWidth: 720 }}>
+                  <div className="admin-dash-table-wrap max-h-[440px]">
+                    <table className="admin-dash-table min-w-[720px]">
                       <thead>
                         <tr>
                           <th>时间</th>
@@ -960,10 +720,7 @@ export default function AdminPage() {
                           const b = statsEventBadge(r.event_type, r.content_type);
                           return (
                             <tr key={r.id}>
-                              <td
-                                className="admin-dash-mono"
-                                style={{ whiteSpace: "nowrap" }}
-                              >
+                              <td className="admin-dash-mono whitespace-nowrap">
                                 {formatBeijingTime(r.created_at)}
                               </td>
                               <td className="admin-dash-mono">
@@ -972,14 +729,7 @@ export default function AdminPage() {
                                   : "—"}
                               </td>
                               <td>
-                                <span
-                                  className="admin-dash-badge"
-                                  style={{
-                                    background: b.bg,
-                                    color: b.color,
-                                    border: b.border,
-                                  }}
-                                >
+                                <span className={`admin-dash-badge ${b.cls}`}>
                                   {b.label}
                                 </span>
                               </td>
@@ -990,8 +740,7 @@ export default function AdminPage() {
                                   : "—"}
                               </td>
                               <td
-                                className="admin-dash-mono"
-                                style={{ maxWidth: 200 }}
+                                className="admin-dash-mono max-w-[200px]"
                                 title={r.user_agent || undefined}
                               >
                                 {(r.user_agent || "—").slice(0, 80)}
@@ -1006,51 +755,45 @@ export default function AdminPage() {
                 </div>
               )}
               {!statsLoading && statsPayload && statsPayload.recent.length === 0 && !statsPayload.error && (
-                <p style={{ color: "#64748b", fontSize: 14 }}>暂无事件数据。</p>
+                <p className="text-sm text-slate-500">暂无事件数据。</p>
               )}
             </>
           )}
 
           {tab === "visitors" && (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: 12,
-                  marginBottom: 20,
-                }}
-              >
-                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#f1f5f9" }}>
-                  访问记录
-                </h3>
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-display text-xl font-bold text-slate-50">访问记录</h3>
                 <button
                   type="button"
-                  style={{ ...s.btn, width: "auto", padding: "8px 16px" }}
+                  className="btn-ghost disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() => void loadVisitors()}
                   disabled={visitorsLoading}
                 >
+                  <RefreshCw
+                    size={14}
+                    className={visitorsLoading ? "animate-spin" : undefined}
+                    aria-hidden
+                  />
                   {visitorsLoading ? "刷新中…" : "刷新"}
                 </button>
               </div>
-              <p style={{ color: "#64748b", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
-                数据来自 <code style={{ color: "#60a5fa" }}>visitor_logs</code>，由{" "}
-                <code style={{ color: "#60a5fa" }}>/api/track</code> 写入（服务端{" "}
-                <code style={{ color: "#60a5fa" }}>SUPABASE_SERVICE_ROLE_KEY</code>）。请在
-                Supabase 执行 <code style={{ color: "#60a5fa" }}>supabase_visitor_logs.sql</code>
-                ；自建服务器在 <code style={{ color: "#60a5fa" }}>.env.local</code> 配置密钥后{" "}
+              <p className="mb-4 text-[13px] leading-relaxed text-slate-500">
+                数据来自 <code className="text-info">visitor_logs</code>，由{" "}
+                <code className="text-info">/api/track</code> 写入（服务端{" "}
+                <code className="text-info">SUPABASE_SERVICE_ROLE_KEY</code>）。请在
+                Supabase 执行 <code className="text-info">supabase_visitor_logs.sql</code>
+                ；自建服务器在 <code className="text-info">.env.local</code> 配置密钥后{" "}
                 <code>npm run build && npm start</code> 或 PM2 重启。
               </p>
               {visitorsErr && (
-                <p style={{ color: "#f87171", fontSize: 14, marginBottom: 12 }}>{visitorsErr}</p>
+                <p className="mb-3 text-sm text-red-400">{visitorsErr}</p>
               )}
               {visitorLogs.length > 0 && (
                 <>
                   <h4 className="admin-dash-section-title">最近访问</h4>
-                  <div className="admin-dash-table-wrap" style={{ maxHeight: 480 }}>
-                    <table className="admin-dash-table" style={{ minWidth: 720 }}>
+                  <div className="admin-dash-table-wrap max-h-[480px]">
+                    <table className="admin-dash-table min-w-[720px]">
                       <thead>
                         <tr>
                           <th>时间</th>
@@ -1066,27 +809,16 @@ export default function AdminPage() {
                           const geo = getVisitorGeoCell(row.ip);
                           return (
                             <tr key={row.id}>
-                              <td
-                                className="admin-dash-mono"
-                                style={{ whiteSpace: "nowrap" }}
-                              >
+                              <td className="admin-dash-mono whitespace-nowrap">
                                 {formatBeijingTime(row.visited_at)}
                               </td>
-                              <td style={{ maxWidth: 200 }} title={row.user_agent || undefined}>
+                              <td className="max-w-[200px]" title={row.user_agent || undefined}>
                                 {formatDeviceCell(row.user_agent)}
                               </td>
                               <td>{row.page}</td>
-                              <td style={{ minWidth: 140 }}>
+                              <td className="min-w-[140px]">
                                 {geo.status === "loading" ? (
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: 0,
-                                      color: "#64748b",
-                                      fontSize: 12,
-                                    }}
-                                  >
+                                  <div className="flex items-center text-xs text-slate-500">
                                     <span className="admin-geo-spinner" aria-hidden />
                                     <span>解析中…</span>
                                   </div>
@@ -1094,34 +826,20 @@ export default function AdminPage() {
                                   <>
                                     <div>{geo.location}</div>
                                     {row.ip ? (
-                                      <small
-                                        className="admin-dash-mono"
-                                        style={{
-                                          display: "block",
-                                          opacity: 0.4,
-                                          marginTop: 4,
-                                          fontSize: 11,
-                                        }}
-                                      >
+                                      <small className="admin-dash-mono mt-1 block text-[11px] opacity-40">
                                         {row.ip}
                                       </small>
                                     ) : null}
                                   </>
                                 )}
                               </td>
-                              <td style={{ maxWidth: 280 }}>
+                              <td className="max-w-[280px]">
                                 {geo.status === "done" ? (
                                   <>
                                     <div>{geo.orgNote}</div>
                                     {row.referer ? (
                                       <small
-                                        style={{
-                                          display: "block",
-                                          opacity: 0.55,
-                                          marginTop: 4,
-                                          fontSize: 11,
-                                          wordBreak: "break-all",
-                                        }}
+                                        className="mt-1 block break-all text-[11px] opacity-55"
                                         title={row.referer}
                                       >
                                         {row.referer.length > 72
@@ -1131,7 +849,7 @@ export default function AdminPage() {
                                     ) : null}
                                   </>
                                 ) : (
-                                  <span style={{ color: "#64748b", fontSize: 12 }}>—</span>
+                                  <span className="text-xs text-slate-500">—</span>
                                 )}
                               </td>
                             </tr>
@@ -1143,35 +861,35 @@ export default function AdminPage() {
                 </>
               )}
               {!visitorsLoading && visitorLogs.length === 0 && !visitorsErr && (
-                <p style={{ color: "#64748b", fontSize: 14 }}>暂无访问记录。</p>
+                <p className="text-sm text-slate-500">暂无访问记录。</p>
               )}
             </>
           )}
 
           {tab === "notes" && (
             <>
-              <h3 style={{ marginBottom: "16px" }}>发布市场笔记</h3>
+              <h3 className="mb-4 font-display text-lg font-bold">发布市场笔记</h3>
               <input
                 placeholder="标题"
                 value={noteTitle}
                 onChange={(e) => setNoteTitle(e.target.value)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <input
                 type="date"
                 value={noteDate}
                 onChange={(e) => setNoteDate(e.target.value)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <textarea
                 placeholder="内容（支持 Markdown）"
                 value={noteContent}
                 onChange={(e) => setNoteContent(e.target.value)}
-                style={{ ...s.input, height: "200px", resize: "vertical" }}
+                className={`${ADMIN_INPUT_CLS} h-[200px] resize-y`}
               />
               <button
                 type="button"
-                style={s.btn}
+                className="btn-gold w-full disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={publishNote}
                 disabled={loading}
               >
@@ -1182,34 +900,34 @@ export default function AdminPage() {
 
           {tab === "podcast" && (
             <>
-              <h3 style={{ marginBottom: "16px" }}>上传播客</h3>
+              <h3 className="mb-4 font-display text-lg font-bold">上传播客</h3>
               <input
                 placeholder="播客标题"
                 value={podTitle}
                 onChange={(e) => setPodTitle(e.target.value)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <input
                 type="date"
                 value={podDate}
                 onChange={(e) => setPodDate(e.target.value)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <textarea
                 placeholder="简介"
                 value={podDesc}
                 onChange={(e) => setPodDesc(e.target.value)}
-                style={{ ...s.input, height: "100px", resize: "vertical" }}
+                className={`${ADMIN_INPUT_CLS} h-[100px] resize-y`}
               />
               <input
                 type="file"
                 accept=".mp3,.m4a,.wav,audio/mpeg,audio/mp4,audio/wav"
                 onChange={(e) => setPodFile(e.target.files?.[0] ?? null)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <button
                 type="button"
-                style={s.btn}
+                className="btn-gold w-full disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={publishPodcast}
                 disabled={loading}
               >
@@ -1220,37 +938,32 @@ export default function AdminPage() {
 
           {tab === "wmp" && (
             <>
-              <h3 style={{ marginBottom: "12px" }}>WMP 净值抓取</h3>
-              <p
-                style={{
-                  color: "#64748b",
-                  fontSize: 13,
-                  lineHeight: 1.6,
-                  marginBottom: 16,
-                }}
-              >
+              <h3 className="mb-3 font-display text-lg font-bold">WMP 净值抓取</h3>
+              <p className="mb-4 text-[13px] leading-relaxed text-slate-500">
                 在服务器上执行{" "}
-                <code style={{ color: "#60a5fa" }}>wmp_scraper</code> 逻辑，结果追加到仓库根目录{" "}
-                <code style={{ color: "#60a5fa" }}>data/wmp_history.csv</code>
+                <code className="text-info">wmp_scraper</code> 逻辑，结果追加到仓库根目录{" "}
+                <code className="text-info">data/wmp_history.csv</code>
                 。若 CSV 已含<strong>当日（上海）</strong>任意一行，则跳过（幂等）。生产建议用 crontab 每日运行，见{" "}
-                <code style={{ color: "#60a5fa" }}>scripts/crontab-wmp.example.txt</code>。
+                <code className="text-info">scripts/crontab-wmp.example.txt</code>。
               </p>
               <button
                 type="button"
-                style={s.btn}
+                className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={() => void runWmpScrape()}
                 disabled={wmpScrapeLoading}
               >
-                {wmpScrapeLoading ? "抓取中…" : "🔄 立即抓取 WMP 净值"}
+                <RefreshCw
+                  size={14}
+                  className={wmpScrapeLoading ? "animate-spin" : undefined}
+                  aria-hidden
+                />
+                {wmpScrapeLoading ? "抓取中…" : "立即抓取 WMP 净值"}
               </button>
               {wmpScrapeMsg && (
                 <p
-                  style={{
-                    marginTop: 16,
-                    color: wmpScrapeMsg.startsWith("✅") ? "#22c55e" : "#ef4444",
-                    fontSize: 14,
-                    lineHeight: 1.5,
-                  }}
+                  className={`mt-4 text-sm leading-normal ${
+                    wmpScrapeMsg.startsWith("✅") ? "text-emerald-400" : "text-red-400"
+                  }`}
                 >
                   {wmpScrapeMsg}
                 </p>
@@ -1260,28 +973,28 @@ export default function AdminPage() {
 
           {tab === "report" && (
             <>
-              <h3 style={{ marginBottom: "16px" }}>上传每日报告</h3>
+              <h3 className="mb-4 font-display text-lg font-bold">上传每日报告</h3>
               <input
                 placeholder="报告标题"
                 value={reportTitle}
                 onChange={(e) => setReportTitle(e.target.value)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <input
                 type="date"
                 value={reportDate}
                 onChange={(e) => setReportDate(e.target.value)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <input
                 type="file"
                 accept=".pdf,application/pdf"
                 onChange={(e) => setReportFile(e.target.files?.[0] ?? null)}
-                style={s.input}
+                className={ADMIN_INPUT_CLS}
               />
               <button
                 type="button"
-                style={s.btn}
+                className="btn-gold w-full disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={publishReport}
                 disabled={loading}
               >
@@ -1292,11 +1005,9 @@ export default function AdminPage() {
 
           {msg && tab !== "wmp" && (
             <p
-              style={{
-                marginTop: "16px",
-                color: msg.includes("✅") ? "#22c55e" : "#ef4444",
-                fontSize: 14,
-              }}
+              className={`mt-4 text-sm ${
+                msg.includes("✅") ? "text-emerald-400" : "text-red-400"
+              }`}
             >
               {msg}
             </p>

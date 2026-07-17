@@ -33,47 +33,58 @@ interface Props {
 export function GlobalEquityView({ ticker, quote }: Props) {
   const pct = quote.changePercent;
   const up = pct >= 0;
+  // 中国市场惯例：红涨绿跌，零值持平色
+  const tone = pct > 0 ? "text-rise" : pct < 0 ? "text-fall" : "text-flat";
 
   return (
     <div className="space-y-4 px-3 pb-8 md:px-0">
-      <div
-        className="rounded-2xl border border-white/10 bg-[#111827] p-5 shadow-[0_18px_48px_rgba(0,0,0,0.7)]"
-        style={{ fontFamily: "var(--font-sans, Inter, sans-serif)" }}
-      >
-        <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-gray-500">
-          {ticker} · 公开市场数据（非美股简版）
-        </div>
+      <div className="glass-panel glow-border animate-in p-5 md:p-8">
+        <span className="eyebrow">GLOBAL EQUITY · 非美股简版</span>
+        <h2 className="font-display mt-2 text-2xl font-bold text-slate-100 md:text-3xl">
+          {ticker}
+        </h2>
         <div className="mt-2 flex flex-col gap-1 md:flex-row md:items-baseline md:gap-4">
-          <div className="font-mono text-3xl font-semibold text-white md:text-4xl">
+          <div className="font-mono text-3xl font-semibold tabular-nums text-slate-50 md:text-4xl">
             {formatSpotLabel(ticker, quote.price)}
           </div>
-          <div className={up ? "text-[#1D9E75]" : "text-[#D85A30]"}>
+          <div className={`font-mono text-sm md:text-base ${tone}`}>
             {up ? "+" : ""}
             {quote.change.toFixed(2)} ({up ? "+" : ""}
             {pct.toFixed(2)}%)
           </div>
         </div>
-        <p className="mt-3 text-xs text-gray-500">
+        <p className="mt-3 text-xs text-slate-500">
           演示环境报价与走势为本地 mock；生产可接 Yahoo/AkShare 等。深度分析中的 PE/PB 已由{" "}
-          <code className="rounded bg-black/30 px-1">scripts/fetch_market_data.py</code> 多源补全。
+          <code className="rounded bg-white/[0.06] px-1 py-0.5 font-mono text-[11px] text-slate-400">
+            scripts/fetch_market_data.py
+          </code>{" "}
+          多源补全。
         </p>
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
           {quote.pe != null && (
             <div>
-              <div className="text-[10px] uppercase text-gray-500">P/E（示意）</div>
-              <div className="font-mono text-white">{quote.pe.toFixed(1)}</div>
+              <div className="mb-1 text-[11px] uppercase tracking-[0.05em] text-slate-500">
+                P/E（示意）
+              </div>
+              <div className="font-mono text-slate-100">{quote.pe.toFixed(1)}</div>
             </div>
           )}
           {quote.beta != null && (
             <div>
-              <div className="text-[10px] uppercase text-gray-500">Beta</div>
-              <div className="font-mono text-white">{quote.beta.toFixed(2)}</div>
+              <div className="mb-1 text-[11px] uppercase tracking-[0.05em] text-slate-500">
+                Beta
+              </div>
+              <div className="font-mono text-slate-100">{quote.beta.toFixed(2)}</div>
             </div>
           )}
           {quote.marketCap != null && (
             <div>
-              <div className="text-[10px] uppercase text-gray-500">市值（示意）</div>
-              <div className="font-mono text-xs text-white">{quote.marketCap.toExponential(2)}</div>
+              <div className="mb-1 text-[11px] uppercase tracking-[0.05em] text-slate-500">
+                市值（示意）
+              </div>
+              <div className="font-mono text-xs text-slate-100">
+                {quote.marketCap.toExponential(2)}
+              </div>
             </div>
           )}
         </div>
@@ -82,7 +93,7 @@ export function GlobalEquityView({ ticker, quote }: Props) {
       <StockPriceChart ticker={ticker} currentPrice={quote.price} chartHeight={240} />
 
       <div className="text-center">
-        <Link href="/mrf" className="text-sm text-sky-400 hover:underline">
+        <Link href="/mrf" className="text-sm text-info hover:underline">
           ← 返回 MRF 基金池
         </Link>
       </div>

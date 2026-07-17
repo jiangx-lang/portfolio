@@ -73,33 +73,33 @@ export function StrategyCards({
             onClick={() => onSelect(card.id)}
             className={cn(
               "rounded-xl border p-4 text-left transition",
-              "border-white/10 bg-[#0a0e1a] hover:border-white/20",
-              isSel && "ring-2 ring-info",
-              isRec && "border-amber-500/50"
+              "border-white/[0.07] bg-navy-soft hover:border-gold/30",
+              isSel && "border-gold/40 ring-2 ring-gold/60",
+              isRec && "border-gold/50"
             )}
           >
             <div className="flex items-center justify-between">
-              <span className="font-medium text-white">{meta.name}</span>
+              <span className="font-medium text-slate-100">{meta.name}</span>
               {isRec && (
-                <span className="rounded bg-info/20 px-1.5 py-0.5 text-xs text-info">推荐</span>
+                <span className="badge badge-gold">推荐</span>
               )}
             </div>
             <div className="mt-1 flex items-center gap-2">
-              <span className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-white/70">{meta.tag}</span>
-              <span className="text-xs text-white/50">{meta.suitable}</span>
+              <span className="badge badge-blue">{meta.tag}</span>
+              <span className="text-xs text-slate-500">{meta.suitable}</span>
             </div>
-            {meta.oneLiner && <div className="mt-2 text-xs text-white/60">{meta.oneLiner}</div>}
+            {meta.oneLiner && <div className="mt-2 text-xs text-slate-400">{meta.oneLiner}</div>}
             <div className="mt-2 grid grid-cols-2 gap-1 text-xs">
-              <span className="text-white/50">最大收益</span>
-              <span className="font-mono text-gain">
+              <span className="text-slate-500">最大收益</span>
+              <span className="font-mono text-rise">
                 {card.maxProfit === Infinity ? "∞" : `$${card.maxProfit.toFixed(0)}`}
               </span>
-              <span className="text-white/50">最大亏损</span>
-              <span className="font-mono text-loss">${card.maxLoss.toFixed(0)}</span>
-              <span className="text-white/50">盈亏平衡</span>
-              <span className="font-mono text-white">{card.breakeven.toFixed(2)}</span>
-              <span className="text-white/50">胜率(估)</span>
-              <span className="font-mono text-white">{(card.probabilityOfProfit * 100).toFixed(0)}%</span>
+              <span className="text-slate-500">最大亏损</span>
+              <span className="font-mono text-fall">${card.maxLoss.toFixed(0)}</span>
+              <span className="text-slate-500">盈亏平衡</span>
+              <span className="font-mono text-slate-100">{card.breakeven.toFixed(2)}</span>
+              <span className="text-slate-500">胜率(估)</span>
+              <span className="font-mono text-slate-100">{(card.probabilityOfProfit * 100).toFixed(0)}%</span>
             </div>
           </button>
         );

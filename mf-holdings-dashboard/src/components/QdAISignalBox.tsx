@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Loader2, RefreshCw, Sparkles } from "lucide-react";
 
 type AIResult = {
   signal: string;
@@ -17,12 +18,12 @@ type AIResult = {
 
 type CachedRow = AIResult & { generated_at?: string };
 
-const SIGNAL_COLOR: Record<string, string> = {
-  strong_buy: "#1D9E75",
-  buy: "#185FA5",
-  hold: "#888780",
-  trim: "#BA7517",
-  sell: "#D85A30",
+const SIGNAL_BADGE: Record<string, string> = {
+  strong_buy: "badge badge-green",
+  buy: "badge badge-blue",
+  hold: "badge border border-white/15 bg-white/5 text-slate-300",
+  trim: "badge badge-gold",
+  sell: "badge badge-red",
 };
 
 const SIGNAL_LABEL: Record<string, string> = {
@@ -32,6 +33,10 @@ const SIGNAL_LABEL: Record<string, string> = {
   trim: "谨慎",
   sell: "高风险示意",
 };
+
+function signalBadge(sig: string): string {
+  return SIGNAL_BADGE[sig] || "badge border border-white/15 bg-white/5 text-slate-300";
+}
 
 export function QdAISignalBox({ code }: { code: string }) {
   const [result, setResult] = useState<AIResult | null>(null);
@@ -129,141 +134,92 @@ export function QdAISignalBox({ code }: { code: string }) {
     }
   };
 
-  const s = {
-    box: {
-      background: "#111827",
-      border: "0.5px solid rgba(255,255,255,0.08)",
-      borderRadius: 12,
-      padding: "1rem 1.25rem",
-      marginTop: "1rem",
-    },
-    label: {
-      fontSize: 10,
-      color: "#9CA3AF",
-      textTransform: "uppercase" as const,
-      letterSpacing: "0.06em",
-      marginBottom: 6,
-    },
-    btn: {
-      padding: "8px 18px",
-      borderRadius: 8,
-      border: "0.5px solid rgba(255,255,255,0.15)",
-      background: "transparent",
-      color: "#60A5FA",
-      fontSize: 13,
-      cursor: "pointer",
-      fontFamily: "inherit",
-    },
-    signal: (sig: string) => ({
-      display: "inline-block",
-      padding: "4px 12px",
-      borderRadius: 6,
-      background: (SIGNAL_COLOR[sig] || "#888") + "22",
-      color: SIGNAL_COLOR[sig] || "#888",
-      fontWeight: 500,
-      fontSize: 14,
-    }),
-    grid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 },
-    item: { background: "#1F2937", borderRadius: 8, padding: "0.75rem" },
-    ititle: { fontSize: 10, color: "#6B7280", marginBottom: 4 },
-    itext: { fontSize: 13, color: "#F9FAFB", lineHeight: 1.5 },
-    list: { paddingLeft: 16, margin: 0, fontSize: 13, color: "#F9FAFB", lineHeight: 1.7 },
-  };
-
   return (
-    <div style={s.box}>
-      <div style={s.label}>🤖 QDII 公开信息摘要</div>
+    <div className="glass-card mt-4 p-5">
+      <span className="eyebrow">QDII 公开信息摘要</span>
 
       {!result && !loading && (
-        <button type="button" style={s.btn} onClick={analyze}>
-          生成摘要 ↗
+        <button type="button" className="btn-gold mt-3 !px-4 !py-2 text-[13px]" onClick={analyze}>
+          <Sparkles className="h-3.5 w-3.5" aria-hidden />
+          生成摘要
         </button>
       )}
 
-      {loading && <div style={{ color: "#9CA3AF", fontSize: 13 }}>生成中，请稍候…</div>}
-      {error && <div style={{ color: "#D85A30", fontSize: 13 }}>{error}</div>}
+      {loading && (
+        <div className="mt-3 flex items-center gap-2 text-[13px] text-slate-400">
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-gold" aria-hidden />
+          生成中，请稍候…
+        </div>
+      )}
+      {error && <div className="mt-3 text-[13px] text-rise">{error}</div>}
 
       {result && (
-        <div>
+        <div className="mt-3">
           {generatedAt && (
-            <div style={{ fontSize: 11, color: "#6B7280", marginBottom: 8 }}>
-              上次生成时间：{String(generatedAt).replace("T", " ").slice(0, 19)}
+            <div className="mb-2 text-[11px] text-slate-500">
+              上次生成时间：<span className="num">{String(generatedAt).replace("T", " ").slice(0, 19)}</span>
             </div>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-            <span style={s.signal(result.signal)}>{SIGNAL_LABEL[result.signal] || result.signal}</span>
-            <span style={{ fontSize: 12, color: "#9CA3AF" }}>置信度 {result.confidence}%</span>
+          <div className="mb-3 flex items-center gap-3">
+            <span className={signalBadge(result.signal)}>{SIGNAL_LABEL[result.signal] || result.signal}</span>
+            <span className="text-xs text-slate-400">
+              置信度 <span className="num">{result.confidence}%</span>
+            </span>
             <button
               type="button"
-              style={{ ...s.btn, fontSize: 11, padding: "4px 10px", marginLeft: "auto" }}
+              className="btn-ghost ml-auto !px-2.5 !py-1 text-[11px]"
               onClick={analyze}
             >
+              <RefreshCw className="h-3 w-3" aria-hidden />
               重新生成
             </button>
           </div>
 
-          <div
-            style={{
-              fontSize: 14,
-              color: "#F9FAFB",
-              marginBottom: 12,
-              borderLeft: "2px solid #185FA5",
-              paddingLeft: 10,
-            }}
-          >
+          <div className="mb-3 border-l-2 border-info pl-3 text-sm leading-relaxed text-slate-100">
             {result.summary}
           </div>
 
-          <div style={s.grid}>
-            <div style={s.item}>
-              <div style={s.ititle}>策略说明</div>
-              <div style={s.itext}>{result.thesis}</div>
+          <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 p-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">策略说明</div>
+              <div className="text-[13px] leading-normal text-slate-100">{result.thesis}</div>
             </div>
-            <div style={s.item}>
-              <div style={s.ititle}>风险特征（标签）</div>
-              <div style={s.itext}>{result.suitable_investor}</div>
+            <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 p-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">风险特征（标签）</div>
+              <div className="text-[13px] leading-normal text-slate-100">{result.suitable_investor}</div>
             </div>
-            <div style={s.item}>
-              <div style={s.ititle}>核心优势</div>
-              <ul style={s.list}>
+            <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 p-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">核心优势</div>
+              <ul className="m-0 list-disc pl-4 text-[13px] leading-[1.7] text-slate-100">
                 {result.strengths?.map((st, i) => (
                   <li key={i}>{st}</li>
                 ))}
               </ul>
             </div>
-            <div style={s.item}>
-              <div style={s.ititle}>主要风险</div>
-              <ul style={s.list}>
+            <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 p-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">主要风险</div>
+              <ul className="m-0 list-disc pl-4 text-[13px] leading-[1.7] text-slate-100">
                 {result.risks?.map((r, i) => (
                   <li key={i}>{r}</li>
                 ))}
               </ul>
             </div>
-            <div style={s.item}>
-              <div style={s.ititle}>费率评价</div>
-              <div style={s.itext}>{result.fee_assessment}</div>
+            <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 p-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">费率评价</div>
+              <div className="text-[13px] leading-normal text-slate-100">{result.fee_assessment}</div>
             </div>
-            <div style={s.item}>
-              <div style={s.ititle}>持仓点评</div>
-              <div style={s.itext}>{result.allocation_comment}</div>
+            <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 p-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">持仓点评</div>
+              <div className="text-[13px] leading-normal text-slate-100">{result.allocation_comment}</div>
             </div>
           </div>
 
-          <div
-            style={{
-              marginTop: 10,
-              padding: "0.75rem",
-              background: "#185FA511",
-              borderRadius: 8,
-              borderLeft: "2px solid #185FA5",
-            }}
-          >
-            <div style={s.ititle}>数据观察要点</div>
-            <div style={{ fontSize: 13, color: "#F9FAFB", lineHeight: 1.6 }}>{result.recommendation}</div>
+          <div className="mt-2.5 rounded-xl border-l-2 border-info bg-info/10 p-3">
+            <div className="mb-1 text-[10px] uppercase tracking-wide text-slate-500">数据观察要点</div>
+            <div className="text-[13px] leading-relaxed text-slate-100">{result.recommendation}</div>
           </div>
         </div>
       )}
     </div>
   );
 }
-

@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
+import {
+  createAuthToken,
+  getServiceSupabase,
+  logLogin,
+  verifyPassword,
+} from "@/lib/auth-server";
+import {
+  ensureUserProgressByUsername,
+  recordUserEventByUsername,
+  serializeProgressCookie,
+  PROGRESS_COOKIE,
+} from "@/lib/progress-server";
 
 const COOKIE_NAME = "atlas_auth";
 const THIRTY_DAYS_SEC = 60 * 60 * 24 * 30;
@@ -14,58 +24,60 @@ const USERS: Record<string, string> = {
   admin: "cd123",
 };
 
-function createToken(username: string) {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) throw new Error("Missing AUTH_SECRET");
-
-  const expMs = Date.now() + THIRTY_DAYS_SEC * 1000;
-  const payload = `${username}.${expMs}`;
-  const sig = crypto.createHmac("sha256", secret).update(payload).digest("base64url");
-  return `${payload}.${sig}`;
-}
-
-function getIpFromHeaders(req: Request) {
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0]?.trim() || "unknown";
-  const realIp = req.headers.get("x-real-ip");
-  if (realIp) return realIp;
-  return "unknown";
-}
-
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  const username = String(body?.username || "").trim();
+  let username = String(body?.username || "").trim();
   const password = String(body?.password || "");
 
   const expected = USERS[username.toLowerCase()];
-  if (!expected || expected !== password) {
-    return NextResponse.json({ error: "用户名或密码错误" }, { status: 401 });
+  if (expected) {
+    // 硬编码共享账号：明文比对（旧行为保留）
+    if (expected !== password) {
+      return NextResponse.json({ error: "用户名或密码错误" }, { status: 401 });
+    }
+  } else {
+    // 自助注册账号：查 app_users 表做 scrypt 校验
+    const supabase = getServiceSupabase();
+    let valid = false;
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("app_users")
+        .select("password_hash")
+        .eq("username", username.toLowerCase())
+        .maybeSingle();
+      valid =
+        !error &&
+        !!data &&
+        verifyPassword(password, String(data.password_hash || ""));
+    }
+    if (!valid) {
+      // 查表失败（表不存在等）同样按凭据错误处理，不暴露细节
+      return NextResponse.json({ error: "用户名或密码错误" }, { status: 401 });
+    }
+    // 注册账号统一用小写规范化用户名签发令牌 / 统计 XP
+    username = username.toLowerCase();
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!getServiceSupabase()) {
     return NextResponse.json(
       { error: "服务未配置 Supabase 环境变量" },
       { status: 500 }
     );
   }
 
-  const token = createToken(username);
+  const token = createAuthToken(username);
 
   // 记录登录日志到 Supabase（失败不影响登录）
-  try {
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+  await logLogin(req, username);
 
-    await supabase.from("login_logs").insert({
-      username,
-      ip: getIpFromHeaders(req),
-      user_agent: req.headers.get("user-agent") || "unknown",
-    });
+  // 初始化/更新用户使用进度（登录即送每日 XP）
+  let progressCookie = null;
+  try {
+    await ensureUserProgressByUsername(username);
+    const progress = await recordUserEventByUsername(username, "login_daily");
+    progressCookie = serializeProgressCookie(progress.cookieToken);
   } catch {
-    // ignore
+    // 进度系统失败不影响登录
   }
 
   const response = NextResponse.json({ ok: true });
@@ -77,12 +89,16 @@ export async function POST(req: Request) {
     sameSite: "lax",
   });
 
+  if (progressCookie) {
+    response.cookies.set(progressCookie);
+  }
+
   return response;
 }
 
 export async function DELETE() {
   const response = NextResponse.json({ ok: true });
   response.cookies.delete(COOKIE_NAME);
+  response.cookies.delete(PROGRESS_COOKIE);
   return response;
 }
-

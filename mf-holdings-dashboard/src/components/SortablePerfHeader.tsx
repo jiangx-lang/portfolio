@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export type PerfKey =
   | "daily_return"
@@ -42,26 +43,26 @@ export function SortablePerfHeader({
       style={{ ...style, ...(minWidth != null ? { minWidth } : {}) }}
       className={[
         "text-right text-xs font-medium whitespace-nowrap px-3 py-2",
-        "cursor-pointer select-none",
-        borderLeft ? "border-l border-gray-700" : "",
-        active ? "text-white" : "text-gray-500 hover:text-gray-300",
+        "cursor-pointer select-none transition-colors",
+        borderLeft ? "border-l border-white/[0.07]" : "",
+        active ? "text-gold" : "text-slate-500 hover:text-slate-300",
       ].join(" ")}
     >
       <span className="inline-flex w-full items-center justify-end gap-1">
         {label}
-        <span className="inline-flex flex-col" style={{ gap: 1, lineHeight: 1 }}>
-          <svg width={7} height={5} viewBox="0 0 7 5" aria-hidden>
-            <path
-              d="M3.5 0L7 5H0L3.5 0Z"
-              fill={active && sortDir === "desc" ? "#fff" : "#4b5563"}
-            />
-          </svg>
-          <svg width={7} height={5} viewBox="0 0 7 5" aria-hidden>
-            <path
-              d="M3.5 5L0 0H7L3.5 5Z"
-              fill={active && sortDir === "asc" ? "#fff" : "#4b5563"}
-            />
-          </svg>
+        <span className="inline-flex flex-col items-center leading-none -space-y-1.5">
+          <ChevronUp
+            size={10}
+            strokeWidth={2.5}
+            aria-hidden
+            className={active && sortDir === "desc" ? "text-gold" : "text-slate-600"}
+          />
+          <ChevronDown
+            size={10}
+            strokeWidth={2.5}
+            aria-hidden
+            className={active && sortDir === "asc" ? "text-gold" : "text-slate-600"}
+          />
         </span>
       </span>
     </th>

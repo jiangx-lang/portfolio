@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import {
   MRF_REGION_OPTIONS,
   MRF_THEME_OPTIONS,
@@ -68,22 +69,59 @@ function mrfFundHoldingsCacheKey(f: MrfFund): string {
   return mrfProductCodeStr(f.sc_product_code) || f.fund_name?.trim() || "";
 }
 
+/** 品牌配色：香槟金 / 信息蓝 / 石板灰的高级暗色盘 */
 const BRAND_COLORS: Record<string, string> = {
-  Amundi: "#185FA5",
-  BEA: "#1D9E75",
-  ValuePartners: "#534AB7",
-  JPM: "#BA7517",
-  Pictet: "#D85A30",
-  BOC: "#639922",
-  Schroders: "#888780",
+  Amundi: "#C9A84C",
+  BEA: "#5B93F0",
+  ValuePartners: "#E3C87A",
+  JPM: "#2F66C4",
+  Pictet: "#9A7E2F",
+  BOC: "#94A3B8",
+  Schroders: "#64748B",
 };
+
+const BRAND_COLOR_FALLBACK = "#64748B";
+
+/** 资产配置堆叠柱：股票金 / 固收蓝 / 现金石板 */
+const ALLOC_COLORS = {
+  equity: "#C9A84C",
+  fixed: "#5B93F0",
+  cash: "#64748B",
+} as const;
+
+/** recharts 浮层：深色玻璃 + 金边（图表库仅支持 style 传入） */
+const CHART_TOOLTIP_STYLE: React.CSSProperties = {
+  background: "#111A2E",
+  border: "1px solid rgba(201, 168, 76, 0.35)",
+  borderRadius: 12,
+  fontSize: 12,
+  color: "#F4F6FB",
+  boxShadow: "0 10px 34px rgba(0, 0, 0, 0.45)",
+};
+
+const CHART_TICK_STYLE = { fontSize: 10, fill: "#66738C" };
 
 type FilterType = "ALL" | "equity" | "balanced" | "fixed";
 
-function getRiskLabel(equity: number): { label: string; color: string } {
-  if (equity >= 80) return { label: "进取型", color: "#D85A30" };
-  if (equity >= 40) return { label: "均衡型", color: "#BA7517" };
-  return { label: "稳健型", color: "#1D9E75" };
+function getRiskLabel(equity: number): { label: string; badgeClass: string } {
+  if (equity >= 80) return { label: "进取型", badgeClass: "badge badge-red" };
+  if (equity >= 40) return { label: "均衡型", badgeClass: "badge badge-gold" };
+  return { label: "稳健型", badgeClass: "badge badge-green" };
+}
+
+function feeTextClass(fee: number): string {
+  if (fee >= 3) return "text-rise";
+  if (fee >= 2) return "text-gold";
+  return "text-fall";
+}
+
+function filterTabClass(active: boolean): string {
+  return [
+    "cursor-pointer rounded-lg border px-3 py-1.5 text-xs transition-colors",
+    active
+      ? "border-gold/40 bg-gold/10 text-gold-light"
+      : "border-white/[0.07] text-slate-400 hover:border-gold/25 hover:text-slate-200",
+  ].join(" ");
 }
 
 export default function MrfPageInner() {
@@ -382,51 +420,40 @@ export default function MrfPageInner() {
       "message=",
       sel.holdingsFetchMessage
     );
+    const risk = getRiskLabel(sel.equity_pct);
     return (
       <div
         id="mrf-holdings-panel"
-        style={{
-          marginTop: 0,
-          padding: "1rem",
-          background: "#1F2937",
-          borderRadius: 8,
-          borderLeft: `2px solid ${BRAND_COLORS[sel.brand] ?? "#888"}`,
-          opacity: 1,
-        }}
+        className="rounded-xl border border-white/[0.07] border-l-2 bg-navy-elevated/70 p-4"
+        style={{ borderLeftColor: BRAND_COLORS[sel.brand] ?? BRAND_COLOR_FALLBACK }}
       >
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#F9FAFB", marginBottom: 8 }}>{sel.fund_name}</div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)",
-            gap: 8,
-          }}
-        >
-          {[
-            ["配置", `股票${sel.equity_pct}% / 债${sel.fixed_income_pct}% / 现金${sel.cash_pct}%`],
-            ["申购费率", `${sel.fee_rate.toFixed(1)}%`],
-            ["风险等级", getRiskLabel(sel.equity_pct).label],
-          ].map(([k, v]) => (
-            <div key={k}>
-              <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 2 }}>{k}</div>
-              <div style={{ fontSize: 13, color: "#F9FAFB" }}>{v}</div>
+        <div className="mb-3 text-sm font-medium text-slate-100">{sel.fund_name}</div>
+        <div className={`grid gap-3 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}>
+          <div>
+            <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">配置</div>
+            <div className="num text-[13px] text-slate-100">
+              股票{sel.equity_pct}% / 债{sel.fixed_income_pct}% / 现金{sel.cash_pct}%
             </div>
-          ))}
+          </div>
+          <div>
+            <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">申购费率</div>
+            <div className="num text-[13px] text-slate-100">{sel.fee_rate.toFixed(1)}%</div>
+          </div>
+          <div>
+            <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">风险等级</div>
+            <span className={risk.badgeClass}>{risk.label}</span>
+          </div>
         </div>
         {sel.holdingsLoading && (
-          <div style={{ color: "#9CA3AF", fontSize: 12, marginTop: 8 }}>Loading holdings...</div>
+          <div className="mt-4 space-y-2">
+            <div className="skeleton h-3 w-32" />
+            <div className="skeleton h-3 w-48" />
+            <p className="text-xs text-slate-500">正在加载持仓…</p>
+          </div>
         )}
         {sel.holdings && sel.holdings.length > 0 && (
-          <div style={{ marginTop: "1rem" }}>
-            <div
-              style={{
-                fontSize: 11,
-                color: "#9CA3AF",
-                marginBottom: 6,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-              }}
-            >
+          <div className="mt-4">
+            <div className="mb-2 text-[11px] uppercase tracking-[0.08em] text-slate-500">
               Top {sel.holdings.length} Holdings
             </div>
             {isMobile ? (
@@ -439,54 +466,43 @@ export default function MrfPageInner() {
                   return (
                     <div
                       key={i}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "10px 0",
-                        borderBottom: "1px solid rgba(255,255,255,0.05)",
-                      }}
+                      className="flex items-center justify-between border-b border-white/5 py-2.5 last:border-0"
                     >
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ fontSize: 13, marginRight: 6, color: "#6B7280" }}>{h.rank ?? i + 1}.</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="num mr-1.5 text-[13px] text-slate-500">{h.rank ?? i + 1}.</span>
                         {href ? (
                           <Link
                             href={href}
-                            style={{
-                              fontSize: 13,
-                              color: "#60A5FA",
-                              fontWeight: 500,
-                              textDecoration: "none",
-                            }}
+                            className="text-[13px] font-medium text-info transition-colors hover:text-gold-light"
                           >
                             {formatMrfHoldingDisplayName(nameKey)}
                           </Link>
                         ) : (
-                          <span style={{ fontSize: 13, color: "#F9FAFB", fontWeight: 500 }}>
+                          <span className="text-[13px] font-medium text-slate-100">
                             {formatMrfHoldingDisplayName(nameKey)}
                           </span>
                         )}
                         {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                          <span style={{ fontSize: 10, color: "#6B7280", marginLeft: 4 }}>{ticker}</span>
+                          <span className="num ml-1 text-[10px] text-slate-500">{ticker}</span>
                         )}
                       </div>
-                      <div style={{ textAlign: "right", marginLeft: 8 }}>
-                        <div style={{ fontSize: 13, color: "#1D9E75" }}>{Number(h.weight_pct).toFixed(2)}%</div>
-                        <div style={{ fontSize: 10, color: "#6B7280" }}>{h.holding_type}</div>
+                      <div className="ml-2 text-right">
+                        <div className="num text-[13px] text-gold-light">{Number(h.weight_pct).toFixed(2)}%</div>
+                        <div className="text-[10px] text-slate-500">{h.holding_type}</div>
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 12 }}>
+              <table className="w-full text-xs">
                 <thead>
-                  <tr>
-                    <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>#</th>
-                    <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>持仓名称</th>
-                    <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>类型</th>
-                    <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>权重%</th>
-                    <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>截至日期</th>
+                  <tr className="text-slate-500">
+                    <th className="px-2 py-1.5 text-left font-medium">#</th>
+                    <th className="px-2 py-1.5 text-left font-medium">持仓名称</th>
+                    <th className="px-2 py-1.5 text-left font-medium">类型</th>
+                    <th className="px-2 py-1.5 text-right font-medium">权重%</th>
+                    <th className="px-2 py-1.5 text-right font-medium">截至日期</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -499,9 +515,7 @@ export default function MrfPageInner() {
                       return (
                         <tr
                           key={i}
-                          style={{
-                            borderTop: "0.5px solid rgba(255,255,255,0.05)",
-                          }}
+                          className="border-t border-white/5"
                           title={
                             canClick
                               ? `查看公开市场数据：${ticker}`
@@ -510,38 +524,38 @@ export default function MrfPageInner() {
                                 : undefined
                           }
                         >
-                          <td style={{ padding: "5px 8px", color: "#6B7280" }}>{h.rank ?? i + 1}</td>
-                          <td style={{ padding: "5px 8px" }}>
+                          <td className="num px-2 py-1.5 text-slate-500">{h.rank ?? i + 1}</td>
+                          <td className="px-2 py-1.5">
                             {href ? (
                               <Link
                                 href={href}
-                                style={{ fontWeight: 500, color: "#60A5FA", textDecoration: "none" }}
+                                className="font-medium text-info transition-colors hover:text-gold-light"
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
                                 {formatMrfHoldingDisplayName(nameKey)}
                                 {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#60A5FA" }}>
+                                  <span className="num ml-1.5 text-[11px] text-info">
                                     {ticker} ↗
                                   </span>
                                 )}
                               </Link>
                             ) : (
                               <>
-                                <span style={{ fontWeight: 500, color: "#F9FAFB" }}>
+                                <span className="font-medium text-slate-100">
                                   {formatMrfHoldingDisplayName(nameKey)}
                                 </span>
                                 {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#4B5563" }}>{ticker}</span>
+                                  <span className="num ml-1.5 text-[11px] text-slate-500">{ticker}</span>
                                 )}
                               </>
                             )}
                           </td>
-                          <td style={{ padding: "5px 8px", color: "#9CA3AF" }}>{h.holding_type}</td>
-                          <td style={{ padding: "5px 8px", color: "#1D9E75", textAlign: "right" }}>
+                          <td className="px-2 py-1.5 text-slate-400">{h.holding_type}</td>
+                          <td className="num px-2 py-1.5 text-right text-gold-light">
                             {Number(h.weight_pct).toFixed(2)}%
                           </td>
-                          <td style={{ padding: "5px 8px", color: "#6B7280", textAlign: "right" }}>{h.as_of_date}</td>
+                          <td className="num px-2 py-1.5 text-right text-slate-500">{h.as_of_date}</td>
                         </tr>
                       );
                     })()
@@ -552,23 +566,23 @@ export default function MrfPageInner() {
           </div>
         )}
         {!mrfProductCodeStr(sel.sc_product_code) && (
-          <div style={{ marginTop: 8, fontSize: 12, color: "#BA7517" }}>
+          <div className="mt-3 text-xs text-gold-light">
             请先配置产品代码（Supabase mrf_funds.sc_product_code）
           </div>
         )}
         {sel.holdingsFetchMessage === "SUPABASE_NOT_CONFIGURED" && (
-          <div style={{ marginTop: 8, fontSize: 12, color: "#F87171", lineHeight: 1.5 }}>
-            当前运行环境未配置 Supabase（需设置 <code>SUPABASE_URL</code>、<code>SUPABASE_KEY</code>
+          <div className="mt-3 text-xs leading-relaxed text-rise">
+            当前运行环境未配置 Supabase（需设置 <code className="rounded bg-white/5 px-1">SUPABASE_URL</code>、<code className="rounded bg-white/5 px-1">SUPABASE_KEY</code>
             ）。列表可能来自本地 Mock，但 MRF 持仓只从数据库读取，故显示为空。请在 Vercel / 服务器环境变量中配置后重新部署。
           </div>
         )}
         {sel.holdingsFetchMessage === "NO_MRF_HOLDINGS_ROWS" && mrfProductCodeStr(sel.sc_product_code) && (
-          <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>
+          <div className="mt-3 text-xs text-slate-500">
             数据库中未找到该代码/名称对应的持仓行，请核对 mrf_holdings.sc_product_code 与 mrf_funds 是否一致。
           </div>
         )}
         {sel.holdingsFetchMessage === "FETCH_FAILED" && (
-          <div style={{ marginTop: 8, fontSize: 12, color: "#F87171" }}>
+          <div className="mt-3 text-xs text-rise">
             加载持仓失败（网络或接口异常），请打开开发者工具查看 /api/mrf/holdings/ 请求。
           </div>
         )}
@@ -577,7 +591,7 @@ export default function MrfPageInner() {
           sel.holdings.length === 0 &&
           !sel.holdingsLoading &&
           !sel.holdingsFetchMessage && (
-          <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>
+          <div className="mt-3 text-xs text-slate-500">
             暂无底层持仓数据（PDF 尚未解析此基金）
           </div>
         )}
@@ -610,14 +624,11 @@ export default function MrfPageInner() {
                   holdings={holdingsPayload}
                 />
               ) : (
-                <div
-                  className="rounded-lg border border-slate-700/80 bg-slate-950/30 p-4"
-                  style={{ marginTop: 20 }}
-                >
-                  <p className="text-sm font-medium text-slate-300" style={{ margin: "0 0 6px" }}>
+                <div className="mt-5 rounded-xl border border-white/[0.07] bg-navy/50 p-4">
+                  <p className="mb-1.5 text-sm font-medium text-slate-300">
                     持仓说明
                   </p>
-                  <p className="text-xs text-slate-500" style={{ margin: 0, lineHeight: 1.65, maxWidth: 520 }}>
+                  <p className="max-w-[520px] text-xs leading-relaxed text-slate-500">
                     本基金以固定收益类资产为主要持仓，可映射股票代码的持仓不足 3 只，股票型「持仓深度分析」不适用。可参考上方资产配置中的股票/债券/现金比例与基金招募说明书中的久期、信用风险等披露。
                   </p>
                 </div>
@@ -641,90 +652,80 @@ export default function MrfPageInner() {
     );
   };
 
-  const s: Record<string, React.CSSProperties> = {
-    page: {
-      padding: isMobile ? "1rem" : "1.5rem",
-      paddingBottom: isMobile ? "5rem" : "1.5rem",
-      fontFamily: "var(--font-sans, Inter, sans-serif)",
-      color: "#F9FAFB",
-      minHeight: "100vh",
-    },
-    grid4: {
-      display: "grid",
-      gridTemplateColumns: isMobile ? "repeat(2,minmax(0,1fr))" : "repeat(4,minmax(0,1fr))",
-      gap: 10,
-      marginBottom: "1.25rem",
-    },
-    metric: { background: "#1F2937", borderRadius: 8, padding: "0.75rem 1rem" },
-    mlabel: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.05em", marginBottom: 4 },
-    mval: { fontSize: 20, fontWeight: 500 },
-    card: { background: "#111827", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "1rem 1.25rem" },
-    stitle: { fontSize: 11, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: 10 },
-    row: { display: "flex", gap: 8, marginBottom: "1rem", flexWrap: "wrap" as const },
-    tab: { padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", border: "0.5px solid transparent", color: "#9CA3AF", background: "transparent" },
-    tabA: { padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", border: "0.5px solid #185FA5", color: "#60A5FA", background: "#185FA522" },
-    table: { width: "100%", borderCollapse: "collapse" as const, fontSize: 13 },
-    th: { padding: "8px 12px", textAlign: "left" as const, fontSize: 10, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.04em", borderBottom: "0.5px solid rgba(255,255,255,0.08)", background: "#1F2937" },
-    thr: { padding: "8px 12px", textAlign: "right" as const, fontSize: 10, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.04em", borderBottom: "0.5px solid rgba(255,255,255,0.08)", background: "#1F2937" },
-    td: { padding: "10px 12px", color: "#F9FAFB", borderBottom: "0.5px solid rgba(255,255,255,0.05)", cursor: "pointer" },
-    tdr: { padding: "10px 12px", color: "#F9FAFB", borderBottom: "0.5px solid rgba(255,255,255,0.05)", textAlign: "right" as const, fontVariantNumeric: "tabular-nums", cursor: "pointer" },
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-navy">
-        <header className="border-b border-white/10 px-6 py-4">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <Link href="/portfolio" className="text-info hover:underline">← Portfolio</Link>
-            <h1 className="text-xl font-semibold text-white">MRF 基金池</h1>
-            <span />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-20 pb-24">
+          <header className="mb-8">
+            <span className="eyebrow">MUTUAL RECOGNITION FUNDS</span>
+            <h1 className="font-display text-3xl sm:text-4xl font-bold mt-2">MRF 互认基金</h1>
+          </header>
+          <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="skeleton h-20" />
+            ))}
           </div>
-        </header>
-        <div style={{ ...s.page, textAlign: "center", paddingTop: "4rem", color: "#9CA3AF" }}>Loading MRF funds...</div>
+          <div className="skeleton h-72" />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-navy">
-      <header className="border-b border-white/10 px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/portfolio" className="text-info hover:underline">← Portfolio</Link>
-          <h1 className="text-xl font-semibold text-white">MRF 基金池</h1>
-          <span />
-        </div>
-      </header>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-20 pb-24">
+        <Link
+          href="/portfolio"
+          className="mb-5 inline-flex items-center gap-1.5 text-xs text-slate-500 transition hover:text-gold"
+        >
+          <ArrowLeft size={14} />
+          返回投资组合
+        </Link>
 
-      <div style={s.page}>
-        <div style={s.grid4}>
+        <header className="mb-8 animate-in">
+          <span className="eyebrow">MUTUAL RECOGNITION FUNDS</span>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold mt-2">MRF 互认基金</h1>
+          <p className="text-sm text-slate-400 mt-2">
+            中港互认基金池：品牌分布、资产配置与底层持仓透视
+          </p>
+        </header>
+
+        <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {[
-            { label: "MRF 基金池", value: `${funds.length} 只` },
-            { label: "平均费率", value: `${(funds.reduce((s, f) => s + f.fee_rate, 0) / Math.max(funds.length, 1)).toFixed(2)}%` },
-            { label: "筛选结果", value: `${riskFiltered.length} 只` },
-            { label: "平均股票比", value: `${avgAlloc.equity}%`, color: avgAlloc.equity >= 70 ? "#D85A30" : avgAlloc.equity >= 40 ? "#BA7517" : "#1D9E75" },
+            { label: "MRF 基金池", value: `${funds.length} 只`, valueClass: "text-slate-100" },
+            {
+              label: "平均费率",
+              value: `${(funds.reduce((s, f) => s + f.fee_rate, 0) / Math.max(funds.length, 1)).toFixed(2)}%`,
+              valueClass: "text-slate-100",
+            },
+            { label: "筛选结果", value: `${riskFiltered.length} 只`, valueClass: "text-gold-light" },
+            {
+              label: "平均股票比",
+              value: `${avgAlloc.equity}%`,
+              valueClass:
+                avgAlloc.equity >= 70 ? "text-rise" : avgAlloc.equity >= 40 ? "text-gold" : "text-fall",
+            },
           ].map((m) => (
-            <div key={m.label} style={s.metric}>
-              <div style={s.mlabel}>{m.label}</div>
-              <div style={{ ...s.mval, color: m.color ?? "#F9FAFB" }}>{m.value}</div>
+            <div key={m.label} className="glass-card p-4">
+              <div className="mb-1 text-[11px] uppercase tracking-[0.08em] text-slate-500">{m.label}</div>
+              <div className={`num text-xl font-medium ${m.valueClass}`}>{m.value}</div>
             </div>
           ))}
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: 12,
-            marginBottom: "1.25rem",
-          }}
-        >
-          <div style={s.card}>
-            <div style={s.stitle}>按品牌分布</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+        <div className={`mb-6 grid gap-3 ${isMobile ? "grid-cols-1" : "grid-cols-2"}`}>
+          <div className="glass-card p-5">
+            <div className="mb-3 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+              按品牌分布
+            </div>
+            <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1.5">
               {brandData.map((b) => (
-                <span key={b.name} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#9CA3AF" }}>
-                  <span style={{ width: 8, height: 8, borderRadius: 2, background: BRAND_COLORS[b.name] ?? "#888" }} />
-                  {b.name} {b.value}只
+                <span key={b.name} className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                  <span
+                    className="h-2 w-2 rounded-sm"
+                    style={{ background: BRAND_COLORS[b.name] ?? BRAND_COLOR_FALLBACK }}
+                  />
+                  {b.name} <span className="num">{b.value}只</span>
                 </span>
               ))}
             </div>
@@ -732,25 +733,27 @@ export default function MrfPageInner() {
               <PieChart>
                 <Pie data={brandData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} innerRadius={40}>
                   {brandData.map((b) => (
-                    <Cell key={b.name} fill={BRAND_COLORS[b.name] ?? "#888"} />
+                    <Cell key={b.name} fill={BRAND_COLORS[b.name] ?? BRAND_COLOR_FALLBACK} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ background: "#1F2937", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12 }} />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div style={s.card}>
-            <div style={s.stitle}>资产配置对比（当前筛选）</div>
-            <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
+          <div className="glass-card p-5">
+            <div className="mb-3 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+              资产配置对比（当前筛选）
+            </div>
+            <div className="mb-2 flex gap-6">
               {[
-                ["股票", avgAlloc.equity, "#185FA5"],
-                ["固定收益", avgAlloc.fixed, "#1D9E75"],
-                ["现金", avgAlloc.cash, "#BA7517"],
-              ].map(([l, v, c]) => (
-                <div key={String(l)} style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 18, fontWeight: 500, color: c as string }}>{v}%</div>
-                  <div style={{ fontSize: 10, color: "#9CA3AF" }}>{l}</div>
+                { label: "股票", value: avgAlloc.equity, textClass: "text-gold" },
+                { label: "固定收益", value: avgAlloc.fixed, textClass: "text-info" },
+                { label: "现金", value: avgAlloc.cash, textClass: "text-slate-400" },
+              ].map((a) => (
+                <div key={a.label} className="text-center">
+                  <div className={`num text-lg font-medium ${a.textClass}`}>{a.value}%</div>
+                  <div className="text-[10px] text-slate-500">{a.label}</div>
                 </div>
               ))}
             </div>
@@ -764,21 +767,21 @@ export default function MrfPageInner() {
                 }))}
                 margin={{ top: 0, right: 0, bottom: 0, left: -20 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#6B7280" }} />
-                <YAxis tick={{ fontSize: 9, fill: "#6B7280" }} />
-                <Tooltip contentStyle={{ background: "#1F2937", border: "none", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="股票" stackId="a" fill="#185FA5" />
-                <Bar dataKey="固定收益" stackId="a" fill="#1D9E75" />
-                <Bar dataKey="现金" stackId="a" fill="#BA7517" radius={[3, 3, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 194, 0.08)" />
+                <XAxis dataKey="name" tick={CHART_TICK_STYLE} />
+                <YAxis tick={CHART_TICK_STYLE} />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                <Bar dataKey="股票" stackId="a" fill={ALLOC_COLORS.equity} />
+                <Bar dataKey="固定收益" stackId="a" fill={ALLOC_COLORS.fixed} />
+                <Bar dataKey="现金" stackId="a" fill={ALLOC_COLORS.cash} radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div style={{ ...s.row, flexDirection: "column", alignItems: "stretch", gap: 12 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 11, color: "#6B7280", alignSelf: "center" }}>风险类型：</span>
+        <div className="mb-6 flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500">风险类型：</span>
             {([
               ["ALL", "全部"],
               ["equity", "进取型 ≥80%"],
@@ -789,59 +792,59 @@ export default function MrfPageInner() {
                 key={v}
                 type="button"
                 onClick={() => setFilter(v as FilterType)}
-                style={filter === v ? s.tabA : s.tab}
+                className={filterTabClass(filter === v)}
               >
                 {l}
               </button>
             ))}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 11, color: "#6B7280" }}>地域：</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500">地域：</span>
             {MRF_REGION_OPTIONS.map((opt) => (
               <button
                 key={opt}
                 type="button"
                 onClick={() => setSelectedRegion(opt)}
-                style={selectedRegion === opt ? s.tabA : s.tab}
+                className={filterTabClass(selectedRegion === opt)}
               >
                 {opt}
               </button>
             ))}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 11, color: "#6B7280" }}>主题：</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500">主题：</span>
             {MRF_THEME_OPTIONS.map((opt) => (
               <button
                 key={opt}
                 type="button"
                 onClick={() => setSelectedTheme(opt)}
-                style={selectedTheme === opt ? s.tabA : s.tab}
+                className={filterTabClass(selectedTheme === opt)}
               >
                 {opt}
               </button>
             ))}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 11, color: "#6B7280" }}>债券：</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500">债券：</span>
             {MRF_BOND_OPTIONS.map((opt) => (
               <button
                 key={opt}
                 type="button"
                 onClick={() => setSelectedBond(opt)}
-                style={selectedBond === opt ? s.tabA : s.tab}
+                className={filterTabClass(selectedBond === opt)}
               >
                 {opt}
               </button>
             ))}
           </div>
-          <p style={{ fontSize: 10, color: "#4B5563", margin: 0 }}>
+          <p className="text-[11px] leading-relaxed text-slate-500">
             标签按底层持仓匹配：已选地域/主题/债券须同时满足（各维度任一只持仓命中即可）；完全匹配排前、不透明；否则置底并半透明显示。预取完成前不按标签排序。
           </p>
         </div>
 
-        <div style={s.card}>
+        <div>
           {isMobile ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="flex flex-col gap-3">
               {displayFunds.map((f) => {
                 const risk = getRiskLabel(f.equity_pct);
                 const isSelected = selected?.fund_name === f.fund_name;
@@ -854,58 +857,28 @@ export default function MrfPageInner() {
                       tabIndex={0}
                       onClick={() => handleRowClick(f)}
                       onKeyDown={(e) => e.key === "Enter" && handleRowClick(f)}
-                      style={{
-                        background: "#111827",
-                        border: isSelected ? "1px solid rgba(24,95,165,0.5)" : "1px solid rgba(255,255,255,0.07)",
-                        borderRadius: 10,
-                        padding: "12px 14px",
-                        cursor: "pointer",
-                        opacity: op,
-                        transition: "opacity 0.2s ease",
-                      }}
+                      className={`glass-card p-4 transition-opacity ${
+                        isSelected ? "border-gold/40" : ""
+                      }`}
+                      style={{ opacity: op }}
                     >
-                      <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 6, color: "#F9FAFB" }}>
+                      <div className="mb-2 text-sm font-medium text-slate-100">
                         {f.fund_name}
                       </div>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
-                          }}
-                        >
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                        <span className={`num text-[11px] ${feeTextClass(f.fee_rate)}`}>
                           手续费 {f.fee_rate.toFixed(1)}%
                         </span>
-                        <span style={{ fontSize: 11, color: "#6B7280" }}>
+                        <span className="num text-[11px] text-slate-500">
                           股票 {f.equity_pct}% · 固收 {f.fixed_income_pct}%
                         </span>
-                        <span
-                          style={{
-                            fontSize: 11,
-                            padding: "2px 6px",
-                            borderRadius: 4,
-                            background: risk.color + "22",
-                            color: risk.color,
-                          }}
-                        >
-                          {risk.label}
-                        </span>
-                        <span style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+                        <span className={risk.badgeClass}>{risk.label}</span>
+                        <span className="num text-[11px] text-slate-400">
                           NAV {formatFundNavDisplay(f.performance?.nav)} ·{" "}
                           {formatPerfNavDate(f.performance?.nav_date) ?? "—"}
                         </span>
                       </div>
-                      <div
-                        style={{
-                          marginTop: 8,
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "6px 10px",
-                          alignItems: "center",
-                          borderTop: "1px solid rgba(255,255,255,0.06)",
-                          paddingTop: 8,
-                        }}
-                      >
+                      <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 border-t border-white/[0.06] pt-2.5">
                         {(
                           [
                             ["日涨跌", f.performance?.daily_return],
@@ -916,31 +889,21 @@ export default function MrfPageInner() {
                             ["1年", f.performance?.yearly_1],
                           ] as const
                         ).map(([label, v]) => (
-                          <div key={label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                            <span style={{ fontSize: 10, color: "#6B7280" }}>{label}</span>
+                          <div key={label} className="flex items-center gap-1">
+                            <span className="text-[10px] text-slate-500">{label}</span>
                             <PerformanceCell value={v} />
                           </div>
                         ))}
                       </div>
                       <div
                         onClick={(e) => e.stopPropagation()}
-                        style={{ marginTop: "6px", textAlign: "right" }}
+                        className="mt-2.5 text-right"
                       >
                         <a
                           href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{
-                            display: "inline-block",
-                            padding: "3px 10px",
-                            background: "#0f2744",
-                            color: "#60a5fa",
-                            border: "1px solid #3b82f6",
-                            borderRadius: "5px",
-                            fontSize: "11px",
-                            textDecoration: "none",
-                            whiteSpace: "nowrap",
-                          }}
+                          className="inline-flex items-center gap-1 rounded-lg border border-info/40 bg-info/10 px-2.5 py-1 text-[11px] text-info transition-colors hover:bg-info/20"
                           onClick={(e) => e.stopPropagation()}
                         >
                           深度分析 →
@@ -953,18 +916,18 @@ export default function MrfPageInner() {
               })}
             </div>
           ) : (
-          <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-[1320px]" style={s.table}>
+          <div className="atlas-table-wrap">
+          <table className="atlas-table min-w-[1320px]">
             <thead>
               <tr>
-                <th style={s.th}>基金名称</th>
-                <th style={s.thr}>股票%</th>
-                <th style={s.thr}>固定收益%</th>
-                <th style={s.thr}>现金%</th>
-                <th style={s.thr}>申购费率</th>
-                <th style={s.thr}>风险类型</th>
-                <th style={s.thr}>NAV</th>
-                <th style={s.thr}>NAV更新日期</th>
+                <th>基金名称</th>
+                <th><span className="block text-right">股票%</span></th>
+                <th><span className="block text-right">固定收益%</span></th>
+                <th><span className="block text-right">现金%</span></th>
+                <th><span className="block text-right">申购费率</span></th>
+                <th><span className="block text-right">风险类型</span></th>
+                <th><span className="block text-right">NAV</span></th>
+                <th><span className="block text-right">NAV更新日期</span></th>
                 <SortablePerfHeader
                   label="日涨跌"
                   perfKey="daily_return"
@@ -973,7 +936,6 @@ export default function MrfPageInner() {
                   onSort={handlePerfSort}
                   borderLeft
                   minWidth={66}
-                  style={s.thr}
                 />
                 <SortablePerfHeader
                   label="1周"
@@ -982,7 +944,6 @@ export default function MrfPageInner() {
                   sortDir={sortDir}
                   onSort={handlePerfSort}
                   minWidth={58}
-                  style={s.thr}
                 />
                 <SortablePerfHeader
                   label="1月"
@@ -991,7 +952,6 @@ export default function MrfPageInner() {
                   sortDir={sortDir}
                   onSort={handlePerfSort}
                   minWidth={58}
-                  style={s.thr}
                 />
                 <SortablePerfHeader
                   label="3月"
@@ -1000,7 +960,6 @@ export default function MrfPageInner() {
                   sortDir={sortDir}
                   onSort={handlePerfSort}
                   minWidth={58}
-                  style={s.thr}
                 />
                 <SortablePerfHeader
                   label="6月"
@@ -1009,7 +968,6 @@ export default function MrfPageInner() {
                   sortDir={sortDir}
                   onSort={handlePerfSort}
                   minWidth={58}
-                  style={s.thr}
                 />
                 <SortablePerfHeader
                   label="1年"
@@ -1018,9 +976,8 @@ export default function MrfPageInner() {
                   sortDir={sortDir}
                   onSort={handlePerfSort}
                   minWidth={58}
-                  style={s.thr}
                 />
-                <th></th>
+                <th><span className="block text-right">操作</span></th>
               </tr>
             </thead>
             <tbody>
@@ -1034,88 +991,53 @@ export default function MrfPageInner() {
                     <tr
                       id={`mrf-row-${mrfProductCodeStr(f.sc_product_code) || f.fund_name}`}
                       onClick={() => handleRowClick(f)}
-                      style={{
-                        background: isSelected ? "rgba(24,95,165,0.12)" : "transparent",
-                        opacity: op,
-                        transition: "opacity 0.2s ease",
-                      }}
+                      className={`cursor-pointer transition-opacity ${
+                        isSelected ? "bg-gold/[0.06]" : ""
+                      }`}
+                      style={{ opacity: op }}
                     >
-                      <td style={s.td}>
-                        <div style={{ fontWeight: 500, fontSize: 13 }}>{f.fund_name}</div>
+                      <td>
+                        <div className="text-[13px] font-medium text-slate-100">{f.fund_name}</div>
                       </td>
-                      <td style={s.tdr}>{f.equity_pct}%</td>
-                      <td style={s.tdr}>{f.fixed_income_pct}%</td>
-                      <td style={s.tdr}>{f.cash_pct}%</td>
-                      <td
-                        style={{
-                          ...s.tdr,
-                          color: f.fee_rate >= 3 ? "#D85A30" : f.fee_rate >= 2 ? "#BA7517" : "#1D9E75",
-                        }}
-                      >
+                      <td className="num text-right">{f.equity_pct}%</td>
+                      <td className="num text-right">{f.fixed_income_pct}%</td>
+                      <td className="num text-right">{f.cash_pct}%</td>
+                      <td className={`num text-right ${feeTextClass(f.fee_rate)}`}>
                         {f.fee_rate.toFixed(1)}%
                       </td>
-                      <td style={s.tdr}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "2px 8px",
-                            borderRadius: 4,
-                            fontSize: 11,
-                            background: risk.color + "22",
-                            color: risk.color,
-                          }}
-                        >
-                          {risk.label}
-                        </span>
+                      <td className="text-right">
+                        <span className={risk.badgeClass}>{risk.label}</span>
                       </td>
-                      <td
-                        style={{
-                          ...s.tdr,
-                          fontSize: 12,
-                          color: "#E5E7EB",
-                          fontVariantNumeric: "tabular-nums",
-                        }}
-                        className="px-3 py-2"
-                      >
+                      <td className="num text-right text-slate-200">
                         {formatFundNavDisplay(perf?.nav)}
                       </td>
-                      <td style={{ ...s.tdr, fontSize: 12, color: "#9CA3AF" }} className="px-3 py-2">
+                      <td className="num text-right text-slate-400">
                         {formatPerfNavDate(perf?.nav_date) ?? "—"}
                       </td>
-                      <td style={{ ...s.tdr, minWidth: 66 }} className="border-l border-gray-700 px-3 py-2">
+                      <td className="border-l border-white/[0.07]">
                         <PerformanceCell value={perf?.daily_return} />
                       </td>
-                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <td>
                         <PerformanceCell value={perf?.weekly_return} />
                       </td>
-                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <td>
                         <PerformanceCell value={perf?.monthly_1} />
                       </td>
-                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <td>
                         <PerformanceCell value={perf?.monthly_3} />
                       </td>
-                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <td>
                         <PerformanceCell value={perf?.monthly_6} />
                       </td>
-                      <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
+                      <td>
                         <PerformanceCell value={perf?.yearly_1} />
                       </td>
-                      <td onClick={(e) => e.stopPropagation()}>
+                      <td className="text-right" onClick={(e) => e.stopPropagation()}>
                         <a
                           href={`/mrf?fund=${encodeURIComponent(f.fund_name)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{
-                            display: "inline-block",
-                            padding: "3px 10px",
-                            background: "#0f2744",
-                            color: "#60a5fa",
-                            border: "1px solid #3b82f6",
-                            borderRadius: "5px",
-                            fontSize: "11px",
-                            textDecoration: "none",
-                            whiteSpace: "nowrap",
-                          }}
+                          className="inline-flex items-center gap-1 rounded-lg border border-info/40 bg-info/10 px-2.5 py-1 text-[11px] text-info transition-colors hover:bg-info/20"
                           onClick={(e) => e.stopPropagation()}
                         >
                           深度分析 →
@@ -1123,8 +1045,8 @@ export default function MrfPageInner() {
                       </td>
                     </tr>
                     {isSelected && (
-                      <tr style={{ background: "rgba(24,95,165,0.06)", opacity: 1 }}>
-                        <td colSpan={15} style={{ padding: "0.75rem 12px", verticalAlign: "top", borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
+                      <tr className="bg-gold/[0.03]">
+                        <td colSpan={15}>
                           {renderHoldingsPanelBelowRow()}
                         </td>
                       </tr>
@@ -1138,11 +1060,12 @@ export default function MrfPageInner() {
           )}
         </div>
 
-        <div style={{ marginTop: "1rem", fontSize: 11, color: "#4B5563", textAlign: "center" }}>
+        <hr className="hairline-gold mt-8" />
+        <div className="mt-4 text-center text-[11px] text-slate-500">
           数据来源：Supabase mrf_funds · 与 Streamlit 优化器同源
         </div>
         {performanceLastUpdated ? (
-          <p className="mt-2 text-right text-xs text-gray-600">
+          <p className="num mt-2 text-right text-xs text-slate-500">
             绩效数据更新时间：{formatPerformanceLastUpdated(performanceLastUpdated)} · 来源：基金公司 NAV
           </p>
         ) : null}

@@ -42,3 +42,6 @@ scripts/.market_cache/
 
 # MaxMind GeoLite2 数据库（勿提交）
 /data/GeoLite2-City.mmdb
+
+# Playwright 巡检截图（勿提交）
+/.preview_shots/

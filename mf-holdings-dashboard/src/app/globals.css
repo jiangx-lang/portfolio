@@ -2,20 +2,456 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   ATLAS · Midnight Private-Bank Design System
+   深空墨蓝 × 香槟金 · 私行级暗夜质感
+   ============================================================ */
+
 :root {
-  --background: #0a0e1a;
-  --foreground: #f9fafb;
+  /* --- core surfaces --- */
+  --background: #05070d;
+  --background-soft: #0a0f1c;
+  --foreground: #f4f6fb;
+  --foreground-muted: #9aa7bd;
+  --foreground-subtle: #66738c;
+
+  --card: rgba(13, 18, 33, 0.66);
+  --card-solid: #0c1120;
+  --card-elevated: #111a2e;
+
+  --border: rgba(148, 163, 194, 0.12);
+  --border-hover: rgba(201, 168, 76, 0.38);
+
+  /* --- brand --- */
+  --primary: #2f66c4;
+  --primary-light: #5b93f0;
+  --gold: #c9a84c;
+  --gold-light: #e9d5a1;
+  --gold-deep: #9a7e2f;
+
+  /* --- market semantics（中国市场惯例：红涨绿跌） --- */
+  --rise: #e85d50;   /* 上涨 / 收益为正 */
+  --fall: #2fbf8f;   /* 下跌 / 收益为负 */
+  --gain: #e85d50;   /* legacy alias = rise */
+  --loss: #2fbf8f;   /* legacy alias = fall */
+  --info: #5b93f0;
+
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+
+  /* --- legacy aliases（历史组件引用，务必保留） --- */
+  --bg-card: var(--card-solid);
+  --bg-elevated: var(--card-elevated);
+  --border-subtle: var(--border);
+  --border-normal: rgba(148, 163, 194, 0.2);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--foreground-muted);
+  --text-muted: var(--foreground-subtle);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+* {
+  box-sizing: border-box;
 }
 
 html,
 body {
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(201, 168, 76, 0.28);
+  color: #fff;
+}
+
+/* --- scrollbar --- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 194, 0.18);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 168, 76, 0.35);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* ============================================================
+   背景 · 极光 + 胶片颗粒（artistic atmosphere）
+   ============================================================ */
+.atlas-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 620px at 12% -8%, rgba(47, 102, 196, 0.16), transparent 60%),
+    radial-gradient(900px 560px at 88% 4%, rgba(201, 168, 76, 0.08), transparent 58%),
+    radial-gradient(760px 700px at 50% 110%, rgba(88, 60, 180, 0.10), transparent 62%),
+    var(--background);
+}
+
+.atlas-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   字体工具
+   ============================================================ */
+.font-display,
+.font-serif {
+  font-family: var(--font-serif), "Songti SC", "STSong", "Noto Serif SC",
+    "SimSun", serif;
+  letter-spacing: 0.01em;
+}
+
+.font-mono,
+.num {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* 小金字眉标 —— 章节前的点睛 */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+/* ============================================================
+   玻璃拟态卡片
+   ============================================================ */
+.glass-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(21, 28, 48, 0.55), rgba(10, 14, 26, 0.72));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 34px rgba(0, 0, 0, 0.34);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 76, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 44px rgba(0, 0, 0, 0.42),
+    0 0 26px rgba(201, 168, 76, 0.07);
+}
+
+.glass-panel {
+  background: rgba(13, 18, 33, 0.6);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(201, 168, 76, 0.55),
+    rgba(201, 168, 76, 0.08) 40%,
+    rgba(91, 147, 240, 0.25)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ============================================================
+   渐变文字
+   ============================================================ */
+.text-gradient {
+  background: linear-gradient(120deg, #f8fafc 10%, #a9c4f5 55%, #5b93f0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(120deg, #f4e7c3 0%, #e3c87a 45%, #c9a84c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================================
+   按钮
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #f6f9ff;
+  background: linear-gradient(135deg, #2f66c4 0%, #4c83e8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 6px 20px rgba(47, 102, 196, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 28px rgba(47, 102, 196, 0.42);
+  filter: brightness(1.07);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #1a1405;
+  background: linear-gradient(135deg, #dfc06b 0%, #c9a84c 55%, #b8933d 100%);
+  border: 1px solid rgba(233, 213, 161, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 6px 20px rgba(201, 168, 76, 0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  cursor: pointer;
+}
+
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 10px 30px rgba(201, 168, 76, 0.42);
+  filter: brightness(1.06);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #dbe4f3;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(201, 168, 76, 0.32);
+  color: #fff;
+}
+
+/* ============================================================
+   徽章
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+}
+
+.badge-blue {
+  background: rgba(91, 147, 240, 0.13);
+  color: #8ab2f5;
+  border: 1px solid rgba(91, 147, 240, 0.3);
+}
+
+.badge-gold {
+  background: rgba(201, 168, 76, 0.13);
+  color: var(--gold-light);
+  border: 1px solid rgba(201, 168, 76, 0.34);
+}
+
+.badge-green {
+  background: rgba(47, 191, 143, 0.12);
+  color: #5fd6ab;
+  border: 1px solid rgba(47, 191, 143, 0.3);
+}
+
+.badge-red {
+  background: rgba(232, 93, 80, 0.12);
+  color: #f0867c;
+  border: 1px solid rgba(232, 93, 80, 0.3);
+}
+
+/* 涨跌语义（红涨绿跌） */
+.text-rise { color: var(--rise); }
+.text-fall { color: var(--fall); }
+.text-flat { color: var(--foreground-muted); }
+
+/* ============================================================
+   数据表格（全站统一）
+   ============================================================ */
+.atlas-table-wrap {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(17, 23, 40, 0.5), rgba(9, 12, 22, 0.7));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 34px rgba(0, 0, 0, 0.32);
+  overflow: auto;
+}
+
+.atlas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.atlas-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--foreground-subtle);
+  background: rgba(12, 17, 32, 0.96);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.atlas-table tbody td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #d5deee;
+  border-bottom: 1px solid rgba(148, 163, 194, 0.07);
+  vertical-align: middle;
+}
+
+.atlas-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.atlas-table tbody tr:hover {
+  background: rgba(201, 168, 76, 0.045);
+}
+
+/* ============================================================
+   加载与动效
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 1000px 100%;
+  border-radius: 8px;
+  animation: shimmer 1.6s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-in {
+  animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* 细腻的金色分隔线 */
+.hairline-gold {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 168, 76, 0.4),
+    transparent
+  );
 }
 
 button,
@@ -36,7 +472,18 @@ a {
   }
 }
 
-/* 管理员后台 · 阅读统计 / 访问记录 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   管理员后台 · 阅读统计 / 访问记录
+   ============================================================ */
 .admin-dash-section-title {
   color: #94a3b8;
   font-size: 12px;
@@ -97,14 +544,8 @@ a {
   background: rgba(59, 130, 246, 0.08);
 }
 .admin-dash-mono {
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    "Liberation Mono",
-    monospace;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", monospace;
   font-size: 12px;
   color: #e2e8f0;
 }
@@ -118,9 +559,7 @@ a {
 }
 
 @keyframes admin-geo-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 .admin-geo-spinner {
   display: inline-block;
@@ -145,39 +584,94 @@ a {
 .admin-dash-path-bar-fill {
   height: 100%;
   border-radius: 6px;
-  background: linear-gradient(90deg, #3b82f6, #6366f1 45%, #8b5cf6);
-  box-shadow: 0 0 14px rgba(99, 102, 241, 0.35);
+  background: linear-gradient(90deg, #9a7e2f, #c9a84c 55%, #e9d5a1);
+  box-shadow: 0 0 14px rgba(201, 168, 76, 0.35);
   transition: width 0.4s ease;
 }
 
-/* 市场笔记 Markdown */
+/* ============================================================
+   市场笔记 Markdown · 私行研报排版
+   ============================================================ */
+.markdown-notes {
+  line-height: 1.85;
+  color: #cfd9ea;
+  font-size: 14.5px;
+}
 .markdown-notes h1,
 .markdown-notes h2,
 .markdown-notes h3 {
-  color: #e2e8f0;
-  margin: 1rem 0 0.5rem;
-  font-weight: 600;
+  font-family: var(--font-serif), "Songti SC", "Noto Serif SC", serif;
+  color: #eef2fa;
+  margin: 1.4rem 0 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
+.markdown-notes h1 { font-size: 1.45rem; }
+.markdown-notes h2 {
+  font-size: 1.2rem;
+  padding-left: 12px;
+  border-left: 3px solid var(--gold);
+}
+.markdown-notes h3 { font-size: 1.05rem; }
 .markdown-notes p {
-  margin: 0.5rem 0;
+  margin: 0.6rem 0;
 }
 .markdown-notes a {
-  color: #60a5fa;
+  color: #8ab2f5;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(138, 178, 245, 0.35);
+}
+.markdown-notes a:hover {
+  color: #b9d0f9;
+  border-bottom-color: #b9d0f9;
+}
+.markdown-notes strong {
+  color: #f0e6c8;
 }
 .markdown-notes code {
-  background: #0f2744;
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: rgba(201, 168, 76, 0.1);
+  color: #e9d5a1;
+  padding: 2px 7px;
+  border-radius: 5px;
   font-size: 0.9em;
+  font-family: var(--font-mono), ui-monospace, monospace;
 }
 .markdown-notes pre {
-  background: #0f2744;
-  padding: 12px;
-  border-radius: 8px;
+  background: rgba(8, 11, 20, 0.85);
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: 10px;
   overflow-x: auto;
+}
+.markdown-notes pre code {
+  background: transparent;
+  padding: 0;
+  color: #d5deee;
 }
 .markdown-notes ul,
 .markdown-notes ol {
   padding-left: 1.25rem;
-  margin: 0.5rem 0;
+  margin: 0.6rem 0;
+}
+.markdown-notes li {
+  margin: 0.25rem 0;
+}
+.markdown-notes blockquote {
+  margin: 0.8rem 0;
+  padding: 10px 16px;
+  border-left: 3px solid var(--gold);
+  background: rgba(201, 168, 76, 0.06);
+  border-radius: 0 10px 10px 0;
+  color: #c9d4e6;
+}
+.markdown-notes hr {
+  height: 1px;
+  border: 0;
+  margin: 1.2rem 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 168, 76, 0.35),
+    transparent
+  );
 }

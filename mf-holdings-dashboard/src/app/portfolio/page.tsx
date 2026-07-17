@@ -14,8 +14,23 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
+import {
+  Landmark,
+  Globe,
+  LineChart,
+  Shield,
+  Radio,
+  BookOpen,
+  Wallet,
+  PieChart as PieChartIcon,
+  RefreshCw,
+  AlertTriangle,
+  ArrowRight,
+  Info,
+  Check,
+  Activity,
+} from "lucide-react";
 
 // ── 数据 ────────────────────────────────────────
 const MODEL_TARGET = {
@@ -219,6 +234,52 @@ const BRAND_COLORS: Record<string, string> = {
   BOC: "#DC2626",
 };
 
+/* recharts 深色玻璃 tooltip（表现层组件） */
+type TooltipEntry = {
+  name?: string;
+  value?: number | string;
+  color?: string;
+  payload?: Record<string, unknown>;
+};
+
+function GlassTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: TooltipEntry[];
+  label?: string;
+}) {
+  if (!active || !payload || payload.length === 0) return null;
+  return (
+    <div className="glass-panel px-3 py-2 text-xs shadow-card">
+      {label ? (
+        <div className="mb-1 font-semibold text-slate-200">{label}</div>
+      ) : null}
+      {payload.map((p, i) => {
+        const dot =
+          p.color ??
+          (typeof p.payload?.color === "string"
+            ? (p.payload.color as string)
+            : "#C9A84C");
+        return (
+          <div key={i} className="flex items-center gap-2 py-0.5">
+            <span
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: dot }}
+            />
+            <span className="text-slate-400">{p.name}</span>
+            <span className="ml-auto pl-3 font-mono font-semibold text-slate-100">
+              {p.value}%
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function PortfolioPage() {
   const router = useRouter();
   const { isMobile } = useIsMobile();
@@ -244,11 +305,12 @@ export default function PortfolioPage() {
   const target = MODEL_TARGET[riskLevel];
   const activeRes = activeTab === "t1" ? res1 : activeTab === "t2" ? res2 : res3;
 
+  /* 金 / 蓝 / 石板高级暗色盘（令牌色） */
   const allocationData = [
-    { name: "股票", value: target.equity, color: "#185FA5" },
-    { name: "债券", value: target.bond, color: "#1D9E75" },
-    { name: "黄金", value: target.gold, color: "#C9A84C" },
-    { name: "现金", value: target.cash, color: "#6B7280" },
+    { name: "股票", value: target.equity, color: "#5B93F0" },
+    { name: "债券", value: target.bond, color: "#C9A84C" },
+    { name: "黄金", value: target.gold, color: "#E3C87A" },
+    { name: "现金", value: target.cash, color: "#64748B" },
   ];
 
   const penetrationData = [
@@ -271,313 +333,238 @@ export default function PortfolioPage() {
 
   const detail = MODEL_DETAIL[riskLevel];
 
-  const s = {
-    page: {
-      minHeight: "100vh",
-      background: "#0a0e1a",
-      color: "#F9FAFB",
-      paddingBottom: isMobile ? 80 : 40,
-    },
-    hero: {
-      padding: isMobile ? "1.5rem 1rem" : "2rem 2.5rem",
-      borderBottom: "1px solid rgba(255,255,255,0.06)",
-      background: "linear-gradient(180deg, #0d1829 0%, #0a0e1a 100%)",
-    },
-    heroLabel: {
-      fontSize: 11,
-      color: "#185FA5",
-      fontWeight: 600,
-      letterSpacing: "0.1em",
-      textTransform: "uppercase" as const,
-      marginBottom: 8,
-    },
-    heroTitle: {
-      fontSize: isMobile ? 22 : 28,
-      fontWeight: 700,
-      color: "#F9FAFB",
-      margin: "0 0 6px",
-    },
-    heroSub: {
-      fontSize: 13,
-      color: "#6B7280",
-      margin: "0 0 20px",
-    },
-    riskBar: {
-      display: "flex",
-      gap: 8,
-      flexWrap: "wrap" as const,
-    },
-    riskBtn: (active: boolean) =>
-      ({
-        padding: isMobile ? "8px 14px" : "7px 18px",
-        borderRadius: 8,
-        border: `1px solid ${active ? "#185FA5" : "rgba(255,255,255,0.08)"}`,
-        background: active ? "rgba(24,95,165,0.2)" : "transparent",
-        color: active ? "#60A5FA" : "#9CA3AF",
-        fontSize: 13,
-        fontWeight: active ? 600 : 400,
-        cursor: "pointer",
-        fontFamily: "inherit",
-        transition: "all 0.15s",
-      }) as React.CSSProperties,
-    body: {
-      padding: isMobile ? "1rem" : "1.5rem 2.5rem",
-      maxWidth: 1400,
-      margin: "0 auto",
-    },
-    grid2: {
-      display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-      gap: 16,
-      marginBottom: 16,
-    },
-    card: {
-      background: "#111827",
-      border: "1px solid rgba(255,255,255,0.07)",
-      borderRadius: 12,
-      padding: "1rem 1.25rem",
-    },
-    cardTitle: {
-      fontSize: 12,
-      color: "#6B7280",
-      fontWeight: 500,
-      letterSpacing: "0.05em",
-      textTransform: "uppercase" as const,
-      marginBottom: 12,
-    },
-    tabBar: {
-      display: "flex",
-      gap: 0,
-      borderBottom: "1px solid rgba(255,255,255,0.08)",
-      marginBottom: 16,
-      overflowX: "auto" as const,
-    },
-    tabBtn: (active: boolean) =>
-      ({
-        padding: "10px 16px 10px",
-        background: "none",
-        border: "none",
-        borderBottom: active ? "2px solid #185FA5" : "2px solid transparent",
-        color: active ? "#F9FAFB" : "#6B7280",
-        cursor: "pointer",
-        fontSize: isMobile ? 12 : 13,
-        fontWeight: active ? 600 : 400,
-        fontFamily: "inherit",
-        whiteSpace: "nowrap" as const,
-      }) as React.CSSProperties,
-  };
-
   const quickLinks = [
-    { label: "🏦 MRF 基金", href: "/mrf" },
-    { label: "📁 QD 基金", href: "/qd" },
-    { label: "📰 市场资讯", href: "/notes" },
-    { label: "📈 Risk", href: "/risk" },
-    { label: "🎙️ 播客", href: "/podcast" },
-    { label: "📝 笔记", href: "/notes?tab=notes" },
+    { label: "MRF 基金", href: "/mrf", icon: Landmark },
+    { label: "QD 基金", href: "/qd", icon: Globe },
+    { label: "市场资讯", href: "/notes", icon: LineChart },
+    { label: "Risk", href: "/risk", icon: Shield },
+    { label: "播客", href: "/podcast", icon: Radio },
+    { label: "笔记", href: "/notes?tab=notes", icon: BookOpen },
+  ];
+
+  const tabs = [
+    {
+      id: "t1" as const,
+      label: isMobile ? "手续费优先" : "精选 Portfolio（手续费优先）",
+      icon: Wallet,
+    },
+    {
+      id: "t2" as const,
+      label: isMobile ? "Model" : "Model Portfolio（最优匹配）",
+      icon: PieChartIcon,
+    },
+    {
+      id: "t3" as const,
+      label: isMobile ? "补充" : "补充 Portfolio（差异化配置）",
+      icon: RefreshCw,
+    },
   ];
 
   return (
-    <div style={s.page}>
-      <div style={s.hero}>
-        <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-          <div style={s.heroLabel}>ATLAS · MARKET PORTFOLIO</div>
-          <h1 style={s.heroTitle}>Model Portfolio · 市场信息参考</h1>
-          <p style={s.heroSub}>
-             Model Portfolio 数据展示 · 市场资讯分享 · 不构成任何投资建议
+    <div className="min-h-screen bg-navy text-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-20 pb-24 animate-in">
+        {/* ── 页头 ─────────────────────────── */}
+        <header className="mb-8">
+          <span className="eyebrow">MODEL PORTFOLIO</span>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold mt-2">
+            Model Portfolio · 标准组合
+          </h1>
+          <p className="text-sm text-slate-400 mt-2">
+            Model Portfolio 数据展示 · 市场资讯分享 · 不构成任何投资建议
           </p>
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-400">
+            <span>
+              当前基准：
+              <span className="font-semibold text-slate-100">{riskLevel}</span>
+            </span>
+            <span>
+              股票{" "}
+              <span className="font-mono font-semibold text-info">
+                {target.equity}%
+              </span>
+            </span>
+            <span>
+              债券{" "}
+              <span className="font-mono font-semibold text-gold">
+                {target.bond}%
+              </span>
+            </span>
+            <span>
+              黄金{" "}
+              <span className="font-mono font-semibold text-gold-light">
+                {target.gold}%
+              </span>
+            </span>
+            <span>
+              现金{" "}
+              <span className="font-mono font-semibold text-slate-400">
+                {target.cash}%
+              </span>
+            </span>
+          </div>
+        </header>
 
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>
-              选择投资目标基准：
-            </div>
-            <div style={s.riskBar}>
-              {(Object.keys(MODEL_TARGET) as RiskKey[]).map((level) => (
+        {/* ── 策略选择 ─────────────────────── */}
+        <section className="mb-6">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 mb-3">
+            选择投资目标基准
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            {(Object.keys(MODEL_TARGET) as RiskKey[]).map((level) => {
+              const t = MODEL_TARGET[level];
+              const active = riskLevel === level;
+              return (
                 <button
                   key={level}
                   type="button"
-                  style={s.riskBtn(riskLevel === level)}
                   onClick={() => setRiskLevel(level)}
+                  className={`glass-card relative w-full text-left p-4 sm:p-5 ${
+                    active ? "glow-border border-gold/50" : ""
+                  }`}
                 >
-                  {level}
+                  {active && (
+                    <span className="badge badge-gold absolute top-3 right-3">
+                      <Check size={11} />
+                      当前基准
+                    </span>
+                  )}
+                  <div className="font-display text-lg font-bold text-slate-100">
+                    {level}
+                  </div>
+                  <div className="mt-3 grid grid-cols-4 gap-2">
+                    {(
+                      [
+                        ["股票", t.equity, "text-info"],
+                        ["债券", t.bond, "text-gold"],
+                        ["黄金", t.gold, "text-gold-light"],
+                        ["现金", t.cash, "text-slate-400"],
+                      ] as const
+                    ).map(([name, v, cls]) => (
+                      <div key={name}>
+                        <div className="text-[10px] text-slate-500">{name}</div>
+                        <div className={`font-mono text-sm font-semibold ${cls}`}>
+                          {v}%
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </section>
 
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              flexWrap: "wrap",
-              fontSize: 13,
-              color: "#9CA3AF",
-            }}
-          >
-            <span>
-              当前基准：
-              <strong style={{ color: "#F9FAFB" }}> - {riskLevel}</strong>
-            </span>
-            <span>
-              股票 <strong style={{ color: "#185FA5" }}>{target.equity}%</strong>
-            </span>
-            <span>
-              债券 <strong style={{ color: "#1D9E75" }}>{target.bond}%</strong>
-            </span>
-            <span>
-              黄金 <strong style={{ color: "#C9A84C" }}>{target.gold}%</strong>
-            </span>
-            <span>
-              现金 <strong style={{ color: "#6B7280" }}>{target.cash}%</strong>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div style={s.body}>
-        <div style={s.grid2}>
-          <div style={s.card}>
-            <div style={s.cardTitle}>标准配置</div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: "center",
-                gap: 16,
-              }}
-            >
-              <div style={{ width: "100%", maxWidth: isMobile ? 280 : 200, height: 180, margin: "0 auto" }}>
-                <ResponsiveContainer width="100%" height={180}>
+        {/* ── 标准配置 + 快捷入口 ───────────── */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+          <div className="glass-card p-5 sm:p-6">
+            <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 mb-4">
+              <PieChartIcon size={14} className="text-gold" />
+              标准配置
+            </h2>
+            <div className="flex flex-col sm:flex-row items-center gap-5">
+              <div className="h-[190px] w-full max-w-[230px] shrink-0">
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={allocationData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
+                      innerRadius={52}
+                      outerRadius={82}
                       dataKey="value"
                       paddingAngle={2}
                       nameKey="name"
+                      strokeWidth={0}
                     >
-                      {allocationData.map((entry, i) => (
-                        <Cell key={i} fill={entry.color} />
+                      {allocationData.map((entry) => (
+                        <Cell key={entry.name} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        background: "#1F2937",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: 8,
-                        fontSize: 12,
-                      }}
-                      formatter={(v: number) => [`${v}%`, ""]}
-                    />
+                    <Tooltip content={<GlassTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div style={{ flex: 1, width: "100%" }}>
+              <div className="flex-1 w-full">
                 {allocationData.map(({ name, value, color }) => (
                   <div
                     key={name}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "6px 0",
-                      borderBottom: "1px solid rgba(255,255,255,0.04)",
-                    }}
+                    className="flex items-center justify-between py-1.5 border-b border-white/[0.04] last:border-b-0"
                   >
-                    <div
-                      style={{ display: "flex", alignItems: "center", gap: 8 }}
-                    >
+                    <div className="flex items-center gap-2">
                       <span
-                        style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: "50%",
-                          background: color,
-                          display: "inline-block",
-                        }}
+                        className="h-2 w-2 rounded-full"
+                        style={{ backgroundColor: color }}
                       />
-                      <span style={{ fontSize: 13, color: "#E5E7EB" }}>
-                        {name}
-                      </span>
+                      <span className="text-sm text-slate-300">{name}</span>
                     </div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color }}>
+                    <span className="font-mono text-sm font-semibold text-slate-100">
                       {value}%
                     </span>
                   </div>
                 ))}
               </div>
-              <details style={{ marginTop: 12, fontSize: 11, color: "#6B7280" }}>
-                <summary style={{ cursor: "pointer", color: "#9CA3AF" }}>
-                  股票地区 / 债券分类明细（目标基准）
-                </summary>
-                <div style={{ marginTop: 8, lineHeight: 1.6 }}>
-                  <div style={{ marginBottom: 6 }}>股票地区：</div>
+            </div>
+            <details className="mt-4 text-xs text-slate-500">
+              <summary className="cursor-pointer select-none text-slate-400 transition hover:text-gold-light">
+                股票地区 / 债券分类明细（目标基准）
+              </summary>
+              <div className="mt-3 leading-relaxed">
+                <div className="mb-2 text-slate-400">股票地区</div>
+                <div className="flex flex-wrap gap-1.5">
                   {Object.entries(detail.equity).map(([k, v]) => (
-                    <span key={k} style={{ marginRight: 8 }}>
-                      {k} {v}%
-                    </span>
-                  ))}
-                  <div style={{ margin: "8px 0 6px" }}>债券：</div>
-                  {Object.entries(detail.bond).map(([k, v]) => (
-                    <span key={k} style={{ marginRight: 8 }}>
+                    <span
+                      key={k}
+                      className="rounded-md border border-white/[0.07] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[11px]"
+                    >
                       {k} {v}%
                     </span>
                   ))}
                 </div>
-              </details>
-            </div>
+                <div className="mb-2 mt-3 text-slate-400">债券</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {Object.entries(detail.bond).map(([k, v]) => (
+                    <span
+                      key={k}
+                      className="rounded-md border border-white/[0.07] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[11px]"
+                    >
+                      {k} {v}%
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </details>
           </div>
 
-          <div style={s.card}>
-            <div style={s.cardTitle}>快捷入口</div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
-                gap: 8,
-              }}
-            >
-              {quickLinks.map(({ label, href }) => (
+          <div className="glass-card p-5 sm:p-6">
+            <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 mb-4">
+              <Globe size={14} className="text-gold" />
+              快捷入口
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {quickLinks.map(({ label, href, icon: Icon }) => (
                 <Link
                   key={label}
                   href={href}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "14px 8px",
-                    borderRadius: 10,
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    background: "rgba(255,255,255,0.02)",
-                    textDecoration: "none",
-                    color: "#E5E7EB",
-                    fontSize: 12,
-                    gap: 4,
-                    transition: "all 0.15s",
-                    cursor: "pointer",
-                    textAlign: "center" as const,
-                  }}
+                  className="flex items-center justify-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.03] px-3 py-2.5 text-xs text-slate-300 transition hover:border-gold/40 hover:text-gold-light"
                 >
-                  <span>{label}</span>
+                  <Icon size={13} className="text-slate-500" />
+                  {label}
                 </Link>
               ))}
             </div>
+            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+              跨基金池与资讯模块快速跳转，随时对照基准审视持仓与风险。
+            </p>
           </div>
-        </div>
+        </section>
 
-        <div style={{ ...s.card, marginBottom: 16 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <span style={{ fontSize: 13, color: "#9CA3AF" }}>参考投资金额：</span>
+        {/* ── 加权费率计算器 ────────────────── */}
+        <section className="glass-panel p-5 sm:p-6 mb-6">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex items-center gap-2 text-sm text-slate-300">
+              <Wallet size={14} className="text-gold" />
+              参考投资金额
+            </span>
             {[50, 100, 200, 500].map((preset) => (
               <button
                 key={preset}
@@ -587,39 +574,20 @@ export default function PortfolioPage() {
                   setSelectedPreset(preset);
                   setCustomAmount("");
                 }}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: 6,
-                  border: `1px solid ${
-                    selectedPreset === preset
-                      ? "#185FA5"
-                      : "rgba(255,255,255,0.08)"
-                  }`,
-                  background:
-                    selectedPreset === preset
-                      ? "rgba(24,95,165,0.15)"
-                      : "transparent",
-                  color: selectedPreset === preset ? "#60A5FA" : "#9CA3AF",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                }}
+                className={`rounded-lg border px-3.5 py-1.5 font-mono text-sm transition ${
+                  selectedPreset === preset
+                    ? "border-gold/50 bg-gold/10 text-gold-light"
+                    : "border-white/[0.07] text-slate-400 hover:border-gold/25 hover:text-slate-200"
+                }`}
               >
                 ¥{preset}万
               </button>
             ))}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginLeft: 8,
-              }}
-            >
-              <span style={{ color: "#64748b", fontSize: 13 }}>自定义：¥</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500">自定义 ¥</span>
               <input
                 type="number"
-                placeholder="输入金额（万）"
+                placeholder="金额（万）"
                 value={customAmount}
                 onChange={(e) => {
                   const val = parseFloat(e.target.value);
@@ -631,54 +599,36 @@ export default function PortfolioPage() {
                     setCustomAmount(e.target.value);
                   }
                 }}
-                style={{
-                  width: 100,
-                  background: "#0f2744",
-                  color: "#e2e8f0",
-                  border: `1px solid ${
-                    customAmount && selectedPreset === null
-                      ? "#3b82f6"
-                      : "#1e3a5f"
-                  }`,
-                  borderRadius: 8,
-                  padding: "6px 10px",
-                  fontSize: 13,
-                }}
+                className={`w-28 rounded-lg border bg-navy-elevated px-3 py-1.5 font-mono text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none transition ${
+                  customAmount && selectedPreset === null
+                    ? "border-gold/50"
+                    : "border-white/[0.07] focus:border-gold/40"
+                }`}
               />
-              <span style={{ color: "#64748b", fontSize: 13 }}>万</span>
+              <span className="text-sm text-slate-500">万</span>
             </div>
-            <span style={{ fontSize: 12, color: "#6B7280" }}>
-              ⚠️ 仅供参考，不构成建议
+            <span className="ml-auto flex items-center gap-1.5 text-xs text-slate-500">
+              <Info size={12} className="text-gold" />
+              仅供参考，不构成建议
             </span>
           </div>
-        </div>
+        </section>
 
-        <div style={s.card}>
-          <div style={s.tabBar}>
-            {(
-              [
-                {
-                  id: "t1" as const,
-                  label: isMobile
-                    ? "💰 手续费优先"
-                    : "💰 精选 Portfolio（手续费优先）",
-                },
-                {
-                  id: "t2" as const,
-                  label: isMobile ? "🎯 Model" : "🎯 Model Portfolio（最优匹配）",
-                },
-                {
-                  id: "t3" as const,
-                  label: isMobile ? "🔄 补充" : "🔄 补充 Portfolio（差异化配置）",
-                },
-              ] as const
-            ).map(({ id, label }) => (
+        {/* ── 组合方案 ─────────────────────── */}
+        <section className="glass-panel p-4 sm:p-6">
+          <div className="mb-5 flex flex-wrap gap-2">
+            {tabs.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
                 type="button"
-                style={s.tabBtn(activeTab === id)}
                 onClick={() => setActiveTab(id)}
+                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm transition ${
+                  activeTab === id
+                    ? "border-gold/50 bg-gold/10 font-semibold text-gold-light"
+                    : "border-white/[0.07] text-slate-400 hover:border-gold/25 hover:text-slate-200"
+                }`}
               >
+                <Icon size={14} />
                 {label}
               </button>
             ))}
@@ -694,23 +644,14 @@ export default function PortfolioPage() {
               router.push(`/mrf?fund=${encodeURIComponent(fund)}`)
             }
           />
-        </div>
+        </section>
 
-        <div
-          style={{
-            marginTop: 24,
-            padding: "12px 16px",
-            background: "rgba(186, 117, 23, 0.06)",
-            border: "1px solid rgba(186, 117, 23, 0.15)",
-            borderRadius: 8,
-            fontSize: 12,
-            color: "#9CA3AF",
-            textAlign: "center" as const,
-            lineHeight: 1.6,
-          }}
-        >
-          ⚠️ 本平台所有内容仅为市场数据展示与资讯分享，不构成任何投资建议。
-          投资涉及风险，请咨询持牌理财顾问后自行决策。
+        {/* ── 免责声明 ─────────────────────── */}
+        <div className="mt-8 flex items-start gap-2.5 rounded-2xl border border-gold/20 bg-gold/[0.05] px-4 py-3 text-xs leading-relaxed text-slate-400">
+          <AlertTriangle size={14} className="mt-0.5 shrink-0 text-gold" />
+          <p>
+            本平台所有内容仅为市场数据展示与资讯分享，不构成任何投资建议。投资涉及风险，请咨询持牌理财顾问后自行决策。
+          </p>
         </div>
       </div>
     </div>
@@ -735,316 +676,207 @@ function PortfolioTab({
   const { funds, weights, avgFee } = res;
 
   return (
-    <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-          gap: 20,
-          marginBottom: 16,
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontSize: 12,
-              color: "#6B7280",
-              marginBottom: 12,
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-            }}
-          >
-            建议落地基金
-          </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* ── MRF 落地基金 · 手续费排名表 ── */}
+      <div>
+        <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 mb-3">
+          <Wallet size={13} className="text-gold" />
+          建议落地基金
+        </h3>
 
-          {funds.map((fund, i) => {
-            const info = MRF_POOL[fund];
-            if (!info) return null;
-            const weight = Math.round(weights[i] * 100);
-            const amount = Math.round(capital * weights[i]);
-            const fee = info.fee;
+        <div className="atlas-table-wrap">
+          <table className="atlas-table">
+            <thead>
+              <tr>
+                <th>基金</th>
+                <th>品牌</th>
+                <th>手续费</th>
+                <th>权重</th>
+                <th>参考金额</th>
+                <th>股 · 债 · 现</th>
+                <th aria-label="操作" />
+              </tr>
+            </thead>
+            <tbody>
+              {funds.map((fund, i) => {
+                const info = MRF_POOL[fund];
+                if (!info) return null;
+                const weight = Math.round(weights[i] * 100);
+                const amount = Math.round(capital * weights[i]);
+                const fee = info.fee;
+                const brandColor = BRAND_COLORS[info.brand] || "#64748B";
 
-            return (
-              <div
-                key={fund}
-                role="button"
-                tabIndex={0}
-                onClick={() => onFundClick(fund)}
-                onKeyDown={(e) => e.key === "Enter" && onFundClick(fund)}
-                style={{
-                  padding: "12px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
-                  cursor: "pointer",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    marginBottom: 6,
-                  }}
-                >
-                  <div style={{ flex: 1, marginRight: 8 }}>
-                    <span
-                      style={{
-                        fontSize: isMobile ? 13 : 14,
-                        color: "#E5E7EB",
-                        fontWeight: 500,
-                        display: "block",
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {fund}
-                    </span>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 6,
-                        marginTop: 4,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 10,
-                          padding: "1px 6px",
-                          borderRadius: 3,
-                          background: `${BRAND_COLORS[info.brand] || "#6B7280"}22`,
-                          color: BRAND_COLORS[info.brand] || "#9CA3AF",
-                          border: `1px solid ${BRAND_COLORS[info.brand] || "#6B7280"}44`,
-                        }}
-                      >
+                return (
+                  <tr
+                    key={fund}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => onFundClick(fund)}
+                    onKeyDown={(e) => e.key === "Enter" && onFundClick(fund)}
+                    className="cursor-pointer"
+                  >
+                    <td className="min-w-[150px] font-medium text-slate-200">{fund}</td>
+                    <td className="whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-slate-300">
+                        <span
+                          className="h-2 w-2 rounded-full"
+                          style={{ backgroundColor: brandColor }}
+                        />
                         {info.brand}
                       </span>
-                      <span
-                        style={{
-                          fontSize: 10,
-                          padding: "1px 6px",
-                          borderRadius: 3,
-                          background:
-                            fee >= 3.0
-                              ? "rgba(201,168,76,0.15)"
-                              : "rgba(107,114,128,0.1)",
-                          color: fee >= 3.0 ? "#C9A84C" : "#9CA3AF",
-                          border: `1px solid ${
-                            fee >= 3.0 ? "#C9A84C44" : "transparent"
-                          }`,
-                        }}
-                      >
-                        {fee >= 3.0 ? "⭐ " : ""}
-                        {fee.toFixed(1)}% 手续费
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    <div
-                      style={{
-                        fontSize: 18,
-                        fontWeight: 700,
-                        color: "#F9FAFB",
-                      }}
-                    >
-                      {weight}%
-                    </div>
-                    <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      {fee >= 3.0 ? (
+                        <span className="badge badge-gold font-mono">
+                          {fee.toFixed(1)}%
+                        </span>
+                      ) : (
+                        <span className="font-mono text-slate-300">
+                          {fee.toFixed(1)}%
+                        </span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <div className="font-mono text-sm font-semibold text-slate-100">
+                        {weight}%
+                      </div>
+                      <div className="mt-1 h-1 w-16 overflow-hidden rounded-full bg-white/[0.06]">
+                        <div
+                          className="h-full rounded-full transition-[width] duration-300"
+                          style={{
+                            width: `${weight}%`,
+                            backgroundColor: brandColor,
+                          }}
+                        />
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap font-mono text-slate-300">
                       ¥{amount / 10000}万
-                    </div>
-                  </div>
-                </div>
+                    </td>
+                    <td className="whitespace-nowrap font-mono text-xs text-slate-500">
+                      股{info.equity}% · 债{info.bond}% · 现{info.cash}%
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <ArrowRight size={14} className="text-slate-500" />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
-                <div
-                  style={{
-                    height: 3,
-                    background: "rgba(255,255,255,0.06)",
-                    borderRadius: 2,
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: `${weight}%`,
-                      background: BRAND_COLORS[info.brand] || "#185FA5",
-                      borderRadius: 2,
-                      transition: "width 0.3s",
-                    }}
-                  />
-                </div>
+        <div className="mt-4 flex items-center justify-between rounded-xl border border-gold/25 bg-gold/[0.06] px-4 py-3">
+          <span className="text-sm text-slate-400">组合加权手续费</span>
+          <span className="font-mono text-xl font-bold text-gold">
+            {avgFee.toFixed(2)}%
+          </span>
+        </div>
+        <p className="mt-1.5 text-right text-xs text-slate-500">
+          一次性约{" "}
+          <span className="font-mono">
+            ¥{((capital * avgFee) / 100 / 10000).toFixed(1)}
+          </span>
+          万
+        </p>
+      </div>
 
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#6B7280",
-                    marginTop: 4,
-                    display: "flex",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <span>股{info.equity}%</span>
-                  <span>债{info.bond}%</span>
-                  <span>现{info.cash}%</span>
-                  <span style={{ marginLeft: "auto", color: "#60A5FA" }}>
-                    查看持仓 →
+      {/* ── 情景分析 · 穿透汇总 vs 基准 ── */}
+      <div>
+        <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 mb-3">
+          <Activity size={13} className="text-gold" />
+          穿透汇总 vs 标准基准
+        </h3>
+
+        {penetrationData.map(({ name, target: tgt, achieved: ach }) => {
+          const diff = ach - tgt;
+          const ok = Math.abs(diff) <= 5;
+          return (
+            <div
+              key={name}
+              className="border-b border-white/[0.05] py-2.5 last:border-b-0"
+            >
+              <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-sm text-slate-300">{name}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-slate-500">
+                    基准 <span className="font-mono">{tgt}%</span>
+                  </span>
+                  <span className="font-mono text-sm font-semibold text-slate-100">
+                    {ach}%
+                  </span>
+                  <span
+                    className={`badge font-mono ${
+                      ok ? "badge-green" : "badge-red"
+                    }`}
+                  >
+                    {diff >= 0 ? "+" : ""}
+                    {diff.toFixed(1)}%{ok ? " 达标" : diff > 0 ? " 超配" : " 欠配"}
                   </span>
                 </div>
               </div>
-            );
-          })}
-
-          <div
-            style={{
-              marginTop: 12,
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "10px 12px",
-              background: "rgba(201, 168, 76, 0.08)",
-              border: "1px solid rgba(201, 168, 76, 0.15)",
-              borderRadius: 8,
-            }}
-          >
-            <span style={{ fontSize: 13, color: "#9CA3AF" }}>组合加权手续费</span>
-            <span style={{ fontSize: 16, fontWeight: 700, color: "#C9A84C" }}>
-              {avgFee.toFixed(2)}%
-            </span>
-          </div>
-          <div
-            style={{
-              fontSize: 11,
-              color: "#4B5563",
-              marginTop: 4,
-              textAlign: "right",
-            }}
-          >
-            一次性约 ¥{((capital * avgFee) / 100 / 10000).toFixed(1)}万
-          </div>
-        </div>
-
-        <div>
-          <div
-            style={{
-              fontSize: 12,
-              color: "#6B7280",
-              marginBottom: 12,
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-            }}
-          >
-            穿透汇总 vs 标准基准
-          </div>
-
-          {penetrationData.map(({ name, target: tgt, achieved: ach }) => {
-            const diff = ach - tgt;
-            const ok = Math.abs(diff) <= 5;
-            return (
-              <div
-                key={name}
-                style={{
-                  padding: "10px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
-                }}
-              >
+              <div className="relative h-1.5">
                 <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginBottom: 6,
-                  }}
-                >
-                  <span style={{ fontSize: 13, color: "#9CA3AF" }}>{name}</span>
-                  <div
-                    style={{ display: "flex", gap: 12, alignItems: "center" }}
-                  >
-                    <span style={{ fontSize: 12, color: "#6B7280" }}>
-                      基准 {tgt}%
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "#F9FAFB",
-                      }}
-                    >
-                      {ach}%
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        padding: "1px 6px",
-                        borderRadius: 4,
-                        background: ok
-                          ? "rgba(29,158,117,0.15)"
-                          : "rgba(216,90,48,0.15)",
-                        color: ok ? "#1D9E75" : "#D85A30",
-                      }}
-                    >
-                      {diff >= 0 ? "+" : ""}
-                      {diff.toFixed(1)}%
-                      {ok ? " ✓" : diff > 0 ? " 超配" : " 欠配"}
-                    </span>
-                  </div>
-                </div>
-                <div style={{ position: "relative", height: 6, marginBottom: 2 }}>
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      height: "100%",
-                      width: `${Math.min(tgt, 100)}%`,
-                      background: "rgba(255,255,255,0.1)",
-                      borderRadius: 3,
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      height: "100%",
-                      width: `${Math.min(ach, 100)}%`,
-                      background: ok ? "#1D9E75" : "#D85A30",
-                      borderRadius: 3,
-                      transition: "width 0.3s",
-                    }}
-                  />
-                </div>
+                  className="absolute inset-y-0 left-0 rounded-full bg-white/[0.10]"
+                  style={{ width: `${Math.min(tgt, 100)}%` }}
+                />
+                <div
+                  className={`absolute inset-y-0 left-0 rounded-full transition-[width] duration-300 ${
+                    ok ? "bg-fall" : "bg-rise"
+                  }`}
+                  style={{ width: `${Math.min(ach, 100)}%` }}
+                />
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
 
-          <div style={{ marginTop: 16, width: "100%", height: 160 }}>
-            <ResponsiveContainer width="100%" height={160}>
-              <BarChart
-                data={penetrationData}
-                barSize={isMobile ? 16 : 20}
-                margin={{ top: 5, right: 10, bottom: 5, left: -12 }}
-              >
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 11, fill: "#6B7280" }}
-                />
-                <YAxis tick={{ fontSize: 10, fill: "#6B7280" }} />
-                <Tooltip
-                  contentStyle={{
-                    background: "#1F2937",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  formatter={(v: number) => [`${v}%`, ""]}
-                />
-                <Bar dataKey="target" name="基准" fill="rgba(255,255,255,0.12)" />
-                <Bar dataKey="achieved" name="穿透后" fill="#185FA5" />
-                <Legend
-                  wrapperStyle={{ fontSize: 11, color: "#9CA3AF" }}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="mt-4 h-44 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={penetrationData}
+              barSize={isMobile ? 16 : 20}
+              margin={{ top: 5, right: 10, bottom: 5, left: -12 }}
+            >
+              <XAxis
+                dataKey="name"
+                tick={{ fontSize: 11, fill: "#94A3B8" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fontSize: 10, fill: "#94A3B8" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                content={<GlassTooltip />}
+                cursor={{ fill: "rgba(255,255,255,0.04)" }}
+              />
+              <Bar
+                dataKey="target"
+                name="基准"
+                fill="rgba(148,163,194,0.22)"
+                radius={[3, 3, 0, 0]}
+              />
+              <Bar
+                dataKey="achieved"
+                name="穿透后"
+                fill="#C9A84C"
+                radius={[3, 3, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="mt-2 flex items-center justify-center gap-5 text-xs text-slate-500">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-slate-400/60" />
+            基准
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-gold" />
+            穿透后
+          </span>
         </div>
       </div>
     </div>

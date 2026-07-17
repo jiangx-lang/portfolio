@@ -44,44 +44,26 @@ export default function StockPriceChart({ ticker, currentPrice, chartHeight = 20
   const returnPct = first > 0 ? (((currentPrice - first) / first) * 100).toFixed(1) : "0";
 
   return (
-    <div
-      style={{
-        background: "#111827",
-        borderRadius: 12,
-        border: "0.5px solid rgba(255,255,255,0.08)",
-        padding: "clamp(0.75rem, 2vw, 1.25rem)",
-        marginBottom: "1rem",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <div>
-          <span style={{ fontSize: 13, color: "#9CA3AF" }}>股价走势</span>
-          <span
-            style={{
-              fontSize: 13,
-              marginLeft: 12,
-              color: isPositive ? "#1D9E75" : "#D85A30",
-            }}
-          >
+    <div className="mb-4 rounded-2xl border border-white/[0.07] bg-navy-card p-4 md:p-5">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="flex items-baseline gap-3">
+          <span className="text-sm text-slate-400">股价走势</span>
+          <span className={`font-mono text-sm ${isPositive ? "text-rise" : "text-fall"}`}>
             {isPositive ? "+" : ""}
             {returnPct}% ({range})
           </span>
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
+        <div className="flex gap-1 rounded-full border border-white/[0.07] bg-white/[0.03] p-0.5">
           {(["1M", "3M", "1Y"] as const).map((r) => (
             <button
               key={r}
+              type="button"
               onClick={() => setRange(r)}
-              style={{
-                padding: "3px 10px",
-                borderRadius: 6,
-                fontSize: 11,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                border: range === r ? "0.5px solid #185FA5" : "0.5px solid rgba(255,255,255,0.1)",
-                background: range === r ? "#185FA522" : "transparent",
-                color: range === r ? "#60A5FA" : "#9CA3AF",
-              }}
+              className={`rounded-full px-2.5 py-0.5 font-mono text-[11px] transition ${
+                range === r
+                  ? "bg-gradient-gold font-semibold text-slate-950"
+                  : "text-slate-400 hover:text-slate-100"
+              }`}
             >
               {r}
             </button>
@@ -90,65 +72,51 @@ export default function StockPriceChart({ ticker, currentPrice, chartHeight = 20
       </div>
 
       {loading ? (
-        <div
-          style={{
-            height: chartHeight,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#9CA3AF",
-            fontSize: 12,
-          }}
-        >
-          加载走势数据...
-        </div>
+        <div className="skeleton" style={{ height: chartHeight }} />
       ) : data.length > 0 ? (
         <ResponsiveContainer width="100%" height={chartHeight}>
           <LineChart data={data} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,194,0.08)" />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 10, fill: "#6B7280" }}
+              tick={{ fontSize: 10, fill: "#64748B" }}
               tickFormatter={(v: string) => String(v).slice(5)}
               interval={Math.max(0, Math.floor(data.length / 5))}
             />
             <YAxis
-              tick={{ fontSize: 10, fill: "#6B7280" }}
+              tick={{ fontSize: 10, fill: "#64748B" }}
               tickFormatter={(v: number) => `$${Number(v).toFixed(0)}`}
               domain={["auto", "auto"]}
               width={50}
             />
             <Tooltip
               contentStyle={{
-                background: "#1F2937",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 8,
+                backgroundColor: "rgba(12,17,32,0.92)",
+                border: "1px solid rgba(201,168,76,0.3)",
+                borderRadius: 12,
                 fontSize: 12,
+                backdropFilter: "blur(12px)",
               }}
+              labelStyle={{ color: "#9AA7BD" }}
+              itemStyle={{ color: "#E3C87A" }}
               formatter={(v: number) => [`$${Number(v).toFixed(2)}`, "股价"]}
               labelFormatter={(v) => String(v)}
             />
-            <ReferenceLine y={first} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
+            <ReferenceLine y={first} stroke="rgba(148,163,194,0.2)" strokeDasharray="4 4" />
             <Line
               type="monotone"
               dataKey="price"
-              stroke={isPositive ? "#1D9E75" : "#D85A30"}
+              stroke="#C9A84C"
               strokeWidth={2}
               dot={false}
-              activeDot={{ r: 4 }}
+              activeDot={{ r: 4, fill: "#C9A84C" }}
             />
           </LineChart>
         </ResponsiveContainer>
       ) : (
         <div
-          style={{
-            height: chartHeight,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#6B7280",
-            fontSize: 12,
-          }}
+          className="flex items-center justify-center text-xs text-slate-500"
+          style={{ height: chartHeight }}
         >
           暂无历史数据
         </div>
@@ -156,4 +124,3 @@ export default function StockPriceChart({ ticker, currentPrice, chartHeight = 20
     </div>
   );
 }
-

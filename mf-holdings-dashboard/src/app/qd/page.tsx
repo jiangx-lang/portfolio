@@ -2,6 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowLeft,
+  BarChart3,
+  ChevronDown,
+  ExternalLink,
+  Filter,
+  LineChart,
+  Loader2,
+  PieChart,
+  Sparkles,
+} from "lucide-react";
 import { QdAISignalBox } from "@/components/QdAISignalBox";
 import HoldingsDeepAnalysis from "@/components/HoldingsDeepAnalysis";
 import { NavChart } from "@/components/NavChart";
@@ -57,11 +68,38 @@ interface FundNav {
 }
 type HoldingTypeFilter = "ALL" | "EQUITY" | "BOND" | "MIXED";
 
-function codeBadgeStyle(code: string): { bg: string; color: string; border: string } {
+/** 产品代码徽章：QDUT 系列用紫色系，其余用信息蓝 */
+function codeBadgeClass(code: string): string {
   const c = (code || "").toUpperCase();
-  if (c.startsWith("QDUT")) return { bg: "#534AB722", color: "#AFA9EC", border: "0.5px solid rgba(83,74,183,0.35)" };
-  return { bg: "#185FA522", color: "#60A5FA", border: "0.5px solid rgba(24,95,165,0.35)" };
+  if (c.startsWith("QDUT")) {
+    return "badge border border-violet-400/30 bg-violet-400/10 text-violet-300";
+  }
+  return "badge badge-blue";
 }
+
+/** 筛选 chip：未选中幽灵态，选中 badge-gold */
+function chipClass(active: boolean, disabled = false): string {
+  return [
+    "badge select-none transition-colors duration-150",
+    active
+      ? "badge-gold cursor-pointer"
+      : "cursor-pointer border border-white/[0.08] bg-white/[0.03] text-slate-400 hover:border-gold/30 hover:text-slate-200",
+    disabled ? "cursor-not-allowed opacity-40" : "",
+  ]
+    .join(" ")
+    .trim();
+}
+
+/** 分组小标题：eyebrow 风格金色小字 */
+const GROUP_LABEL = "mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold";
+
+/** 详情面板分区标题 */
+const SECTION_TITLE =
+  "mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400";
+
+/** 手机端折叠条按钮 */
+const MOBILE_COLLAPSE_BTN =
+  "flex w-full items-center justify-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-2.5 text-xs font-medium text-slate-300 transition-colors hover:border-gold/30 hover:text-slate-100";
 
 function classifyHoldingTypeByTags(tags?: string[]): "EQUITY" | "BOND" | "MIXED" | "UNKNOWN" {
   const t = (tags || []).map((x) => String(x));
@@ -471,112 +509,76 @@ export default function QdPage() {
     { id: "MIXED", label: "混合型" },
   ];
 
-  const s: Record<string, React.CSSProperties> = {
-    page: {
-      padding: isMobile ? "1rem" : "1.5rem",
-      paddingBottom: isMobile ? "5rem" : "1.5rem",
-      fontFamily: "var(--font-sans, Inter, sans-serif)",
-      color: "#F9FAFB",
-      minHeight: "100vh",
-    },
-    grid4: {
-      display: "grid",
-      gridTemplateColumns: isMobile ? "repeat(2,minmax(0,1fr))" : "repeat(4,minmax(0,1fr))",
-      gap: 10,
-      marginBottom: "1.25rem",
-    },
-    metric: { background: "#1F2937", borderRadius: 8, padding: "0.75rem 1rem" },
-    mlabel: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.05em", marginBottom: 4 },
-    mval: { fontSize: 20, fontWeight: 500 },
-    card: { background: "#111827", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "1rem 1.25rem" },
-    stitle: { fontSize: 11, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: 10 },
-    row: { display: "flex", gap: 8, marginBottom: "1rem", flexWrap: "wrap" as const, alignItems: "center" },
-    tab: { padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", border: "0.5px solid transparent", color: "#9CA3AF", background: "transparent" },
-    tabA: { padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", border: "0.5px solid #185FA5", color: "#60A5FA", background: "#185FA522" },
-    filterChips: {
-      display: "flex",
-      flexWrap: "wrap" as const,
-      gap: 6,
-      alignItems: "center",
-    },
-    filterSection: {
-      marginTop: 12,
-      paddingTop: 12,
-      borderTop: "1px solid rgba(255,255,255,0.06)",
-    },
-    filterLabel: {
-      fontSize: 11,
-      color: "#6B7280",
-      marginBottom: 6,
-      fontWeight: 500,
-      letterSpacing: "0.04em",
-    },
-    input: {
-      padding: "8px 14px",
-      borderRadius: 8,
-      border: "0.5px solid rgba(255,255,255,0.15)",
-      background: "#1F2937",
-      color: "#F9FAFB",
-      fontSize: 13,
-      width: isMobile ? ("100%" as const) : 320,
-      maxWidth: "100%",
-      outline: "none",
-      fontFamily: "inherit",
-    },
-    table: { width: "100%", borderCollapse: "collapse" as const, fontSize: 13 },
-    th: { padding: "8px 12px", textAlign: "left" as const, fontSize: 10, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.04em", borderBottom: "0.5px solid rgba(255,255,255,0.08)", background: "#1F2937" },
-    thr: { padding: "8px 12px", textAlign: "right" as const, fontSize: 10, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase" as const, letterSpacing: "0.04em", borderBottom: "0.5px solid rgba(255,255,255,0.08)", background: "#1F2937" },
-    td: { padding: "10px 12px", color: "#F9FAFB", borderBottom: "0.5px solid rgba(255,255,255,0.05)" },
-    tdr: { padding: "10px 12px", color: "#F9FAFB", borderBottom: "0.5px solid rgba(255,255,255,0.05)", textAlign: "right" as const, fontVariantNumeric: "tabular-nums" },
-  };
+  const backLink = (
+    <Link href="/portfolio" className="btn-ghost">
+      <ArrowLeft size={15} aria-hidden />
+      Portfolio
+    </Link>
+  );
+
+  const pageHeader = (
+    <header className="mb-8 mt-6">
+      <span className="eyebrow">QDII FUND POOL</span>
+      <h1 className="font-display text-3xl sm:text-4xl font-bold mt-2">QDII 基金池</h1>
+      <p className="text-sm text-slate-400 mt-2">
+        跨境资产一站式纵览——按地域、行业、主题与固收谱系，透视 QDII 基金的持仓与净值表现。
+      </p>
+    </header>
+  );
 
   if (loading) {
     return (
       <div className="min-h-screen bg-navy">
-        <header className="border-b border-white/10 px-6 py-4">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <Link href="/portfolio" className="text-info hover:underline">
-              ← Portfolio
-            </Link>
-            <h1 className="text-xl font-semibold text-white">QD 基金池</h1>
-            <span />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-20 pb-24">
+          {backLink}
+          {pageHeader}
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <Loader2 size={15} className="animate-spin" aria-hidden />
+            正在加载 QDII 基金池…
           </div>
-        </header>
-        <div style={{ ...s.page, textAlign: "center", paddingTop: "4rem", color: "#9CA3AF" }}>加载 QD 基金中…</div>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="skeleton h-24 rounded-2xl" />
+            ))}
+          </div>
+          <div className="skeleton mt-6 h-[420px] rounded-2xl" />
+        </div>
       </div>
     );
   }
 
+  const metrics = [
+    { label: "QDII 基金总数", value: String(funds.length), unit: "只" },
+    { label: "有持仓数据", value: String(withPrimaryCodeCount), unit: "只" },
+    { label: "当前筛选", value: String(filtered.length), unit: "只" },
+    { label: "最新数据截至", value: latestAsOf, unit: "" },
+  ];
+
   return (
     <div className="min-h-screen bg-navy">
-      <header className="border-b border-white/10 px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/portfolio" className="text-info hover:underline">
-            ← Portfolio
-          </Link>
-          <h1 className="text-xl font-semibold text-white">QD 基金池</h1>
-          <span />
-        </div>
-      </header>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-20 pb-24">
+        {backLink}
+        {pageHeader}
 
-      <div style={s.page}>
         {/* 指标卡 */}
-        <div style={s.grid4}>
-          {[
-            { label: "QD 基金总数", value: `${funds.length} 只` },
-            { label: "有持仓数据", value: `${withPrimaryCodeCount} 只` },
-            { label: "当前筛选", value: `${filtered.length} 只` },
-            { label: "最新数据截至", value: latestAsOf },
-          ].map((m) => (
-            <div key={m.label} style={s.metric}>
-              <div style={s.mlabel}>{m.label}</div>
-              <div style={s.mval}>{m.value}</div>
+        <div className="animate-in grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {metrics.map((m) => (
+            <div key={m.label} className="glass-card p-4 sm:p-5">
+              <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                {m.label}
+              </div>
+              <div className="mt-2 font-mono text-2xl font-semibold text-slate-50">
+                {m.value}
+                {m.unit ? (
+                  <span className="ml-1 text-sm font-normal text-slate-500">{m.unit}</span>
+                ) : null}
+              </div>
             </div>
           ))}
         </div>
 
         {/* 奇思妙想 · 默认折叠，点击标题展开 */}
-        <div style={{ marginBottom: "1.25rem" }}>
+        <div className="mt-6">
           <div
             role="button"
             tabIndex={0}
@@ -592,33 +594,23 @@ export default function QdPage() {
             className="group flex cursor-pointer select-none items-center justify-between py-2"
           >
             <div>
-              <div className="text-xs font-medium uppercase tracking-widest text-gray-500">
-                ✦ 奇思妙想 · 主题发现
-              </div>
-              <p className="mt-0.5 text-sm text-gray-400">
-                {"五档宏观主题组合  ·  基于2026宏观三元悖论研究"}
+              <span className="eyebrow">
+                <Sparkles size={12} aria-hidden />
+                奇思妙想 · 主题发现
+              </span>
+              <p className="mt-1.5 text-sm text-slate-400">
+                五档宏观主题组合 · 基于 2026 宏观三元悖论研究
               </p>
             </div>
-            <svg
-              width={16}
-              height={16}
-              viewBox="0 0 16 16"
-              fill="none"
-              className={`shrink-0 text-gray-500 transition-transform duration-200 group-hover:text-gray-300 ${
-                whimsicalOpen ? "rotate-180" : "rotate-0"
-              }`}
+            <ChevronDown
+              size={16}
               aria-hidden
-            >
-              <path
-                d="M4 6L8 10L12 6"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+              className={`shrink-0 text-slate-500 transition-transform duration-200 group-hover:text-slate-300 ${
+                whimsicalOpen ? "rotate-180" : ""
+              }`}
+            />
           </div>
-          <div className="mb-3 border-b border-gray-800" />
+          <hr className="hairline-gold mb-4" />
           <div
             id="qd-whimsical-panel"
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
@@ -639,24 +631,24 @@ export default function QdPage() {
         </div>
 
         {/* 搜索 + 筛选（五组基金标签 + 持仓类型 + 穿透说明折叠） */}
-        <div style={{ ...s.card, marginBottom: "1.25rem" }}>
-          <div style={{ ...s.stitle, display: "flex", alignItems: "center", gap: 10 }}>筛选</div>
-          <div
-            style={{
-              ...s.row,
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: 14,
-            }}
-          >
-            <p style={{ fontSize: 11, color: "#6B7280", margin: 0, maxWidth: 560, lineHeight: 1.55 }}>
-              地域、行业、主题、策略与固收谱系可同时限定，逻辑为 <strong>且（AND）</strong>。基金侧使用{" "}
-              <strong>Top 3</strong> 标签，各维度任命中一条即视为满足该维。固收谱系对应{" "}
-              <code style={{ color: "#60A5FA" }}>tag_taxonomy</code> 中利率/主权、高收益、信用债等；与根目录{" "}
-              <code style={{ color: "#60A5FA" }}>qdiiTagMap.ts</code> 持仓层债券分类概念对齐。
+        <div className="glass-panel mt-6 p-5 sm:p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Filter size={14} className="text-gold" aria-hidden />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold">
+              多维筛选
+            </span>
+          </div>
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <p className="max-w-xl text-xs leading-relaxed text-slate-500">
+              地域、行业、主题、策略与固收谱系可同时限定，逻辑为{" "}
+              <strong className="text-slate-300">且（AND）</strong>。基金侧使用{" "}
+              <strong className="text-slate-300">Top 3</strong> 标签，各维度任命中一条即视为满足该维。固收谱系对应{" "}
+              <code className="font-mono text-info">tag_taxonomy</code>{" "}
+              中利率/主权、高收益、信用债等；与根目录{" "}
+              <code className="font-mono text-info">qdiiTagMap.ts</code> 持仓层债券分类概念对齐。
             </p>
             <input
-              style={s.input}
+              className="w-full max-w-full rounded-xl border border-white/10 bg-navy-elevated/60 px-4 py-2.5 text-sm text-slate-200 outline-none transition-colors placeholder:text-slate-600 focus:border-gold/40 sm:w-80 sm:shrink-0"
               placeholder="搜索基金名或代码（QDUR/QDUT）"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -664,19 +656,19 @@ export default function QdPage() {
           </div>
 
           {isMobile ? (
-            <div style={{ ...s.filterSection, borderTop: "none", paddingTop: 0 }}>
-              <div style={s.filterLabel}>收益率筛选</div>
-              <p style={{ fontSize: 10, color: "#6B7280", margin: "0 0 8px", lineHeight: 1.45 }}>
+            <div>
+              <div className={GROUP_LABEL}>收益率筛选</div>
+              <p className="mb-2.5 text-[10px] leading-relaxed text-slate-500">
                 先选时间维度，再选涨跌方向；与表头排序可同时使用。
               </p>
-              <div style={{ ...s.filterChips, marginBottom: 8 }}>
+              <div className="mb-2.5 flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     setMobilePerfField(null);
                     setMobilePerfSign("all");
                   }}
-                  style={mobilePerfField === null ? s.tabA : s.tab}
+                  className={chipClass(mobilePerfField === null)}
                 >
                   不按绩效
                 </button>
@@ -694,17 +686,17 @@ export default function QdPage() {
                     key={key}
                     type="button"
                     onClick={() => setMobilePerfField(key)}
-                    style={mobilePerfField === key ? s.tabA : s.tab}
+                    className={chipClass(mobilePerfField === key)}
                   >
                     {label}
                   </button>
                 ))}
               </div>
-              <div style={s.filterChips}>
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setMobilePerfSign("all")}
-                  style={mobilePerfSign === "all" ? s.tabA : s.tab}
+                  className={chipClass(mobilePerfSign === "all", mobilePerfField === null)}
                   disabled={mobilePerfField === null}
                 >
                   不限方向
@@ -712,7 +704,7 @@ export default function QdPage() {
                 <button
                   type="button"
                   onClick={() => setMobilePerfSign("positive")}
-                  style={mobilePerfSign === "positive" ? s.tabA : s.tab}
+                  className={chipClass(mobilePerfSign === "positive", mobilePerfField === null)}
                   disabled={mobilePerfField === null}
                 >
                   上涨 &gt;0
@@ -720,7 +712,7 @@ export default function QdPage() {
                 <button
                   type="button"
                   onClick={() => setMobilePerfSign("negative")}
-                  style={mobilePerfSign === "negative" ? s.tabA : s.tab}
+                  className={chipClass(mobilePerfSign === "negative", mobilePerfField === null)}
                   disabled={mobilePerfField === null}
                 >
                   下跌 &lt;0
@@ -730,52 +722,54 @@ export default function QdPage() {
           ) : null}
 
           {isMobile ? (
-            <div style={s.filterSection}>
+            <div className="mt-4 border-t border-white/[0.06] pt-4">
               <button
                 type="button"
                 onClick={() => setExpandMobileRegion((v) => !v)}
-                style={{
-                  ...s.tab,
-                  width: "100%",
-                  textAlign: "center" as const,
-                  border: "0.5px solid rgba(255,255,255,0.12)",
-                }}
+                className={MOBILE_COLLAPSE_BTN}
               >
-                {expandMobileRegion ? "收起地域 ▲" : "展开地域 ▼"}
-                {selectedRegion !== "全部" ? `（${qdTagLabelZh(selectedRegion)}）` : ""}
+                <span>
+                  {expandMobileRegion ? "收起地域" : "展开地域"}
+                  {selectedRegion !== "全部" ? (
+                    <span className="text-gold">（{qdTagLabelZh(selectedRegion)}）</span>
+                  ) : null}
+                </span>
+                <ChevronDown
+                  size={13}
+                  aria-hidden
+                  className={`transition-transform duration-200 ${expandMobileRegion ? "rotate-180" : ""}`}
+                />
               </button>
               {expandMobileRegion ? (
-                <div style={{ marginTop: 10 }}>
-                  <div style={s.filterChips}>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRegion("全部")}
+                    className={chipClass(selectedRegion === "全部")}
+                  >
+                    全部
+                  </button>
+                  {regionOptions.map((tag) => (
                     <button
+                      key={tag}
                       type="button"
-                      onClick={() => setSelectedRegion("全部")}
-                      style={selectedRegion === "全部" ? s.tabA : s.tab}
+                      onClick={() => setSelectedRegion(tag)}
+                      className={chipClass(selectedRegion === tag)}
                     >
-                      全部
+                      {qdTagLabelZh(tag)}
                     </button>
-                    {regionOptions.map((tag) => (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => setSelectedRegion(tag)}
-                        style={selectedRegion === tag ? s.tabA : s.tab}
-                      >
-                        {qdTagLabelZh(tag)}
-                      </button>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               ) : null}
             </div>
           ) : (
-            <div style={s.filterSection}>
-              <div style={s.filterLabel}>地域</div>
-              <div style={s.filterChips}>
+            <div className="mt-4 border-t border-white/[0.06] pt-4">
+              <div className={GROUP_LABEL}>地域</div>
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setSelectedRegion("全部")}
-                  style={selectedRegion === "全部" ? s.tabA : s.tab}
+                  className={chipClass(selectedRegion === "全部")}
                 >
                   全部
                 </button>
@@ -784,7 +778,7 @@ export default function QdPage() {
                     key={tag}
                     type="button"
                     onClick={() => setSelectedRegion(tag)}
-                    style={selectedRegion === tag ? s.tabA : s.tab}
+                    className={chipClass(selectedRegion === tag)}
                   >
                     {qdTagLabelZh(tag)}
                   </button>
@@ -794,26 +788,27 @@ export default function QdPage() {
           )}
 
           {isMobile && !expandSectorStyle ? (
-            <div style={{ marginTop: 12 }}>
+            <div className="mt-3">
               <button
                 type="button"
                 onClick={() => setExpandSectorStyle(true)}
-                style={{ ...s.tab, width: "100%", textAlign: "center" as const }}
+                className={MOBILE_COLLAPSE_BTN}
               >
-                展开行业与策略 ▼
+                <span>展开行业与策略</span>
+                <ChevronDown size={13} aria-hidden />
               </button>
             </div>
           ) : null}
 
           {(!isMobile || expandSectorStyle) && (
             <>
-              <div style={s.filterSection}>
-                <div style={s.filterLabel}>行业</div>
-                <div style={s.filterChips}>
+              <div className="mt-4 border-t border-white/[0.06] pt-4">
+                <div className={GROUP_LABEL}>行业</div>
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setSelectedSector("全部")}
-                    style={selectedSector === "全部" ? s.tabA : s.tab}
+                    className={chipClass(selectedSector === "全部")}
                   >
                     全部
                   </button>
@@ -822,7 +817,7 @@ export default function QdPage() {
                       key={tag}
                       type="button"
                       onClick={() => setSelectedSector(tag)}
-                      style={selectedSector === tag ? s.tabA : s.tab}
+                      className={chipClass(selectedSector === tag)}
                     >
                       {qdTagLabelZh(tag)}
                     </button>
@@ -830,13 +825,13 @@ export default function QdPage() {
                 </div>
               </div>
 
-              <div style={s.filterSection}>
-                <div style={s.filterLabel}>策略与定制</div>
-                <div style={s.filterChips}>
+              <div className="mt-4 border-t border-white/[0.06] pt-4">
+                <div className={GROUP_LABEL}>策略与定制</div>
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setSelectedStyleCustom("全部")}
-                    style={selectedStyleCustom === "全部" ? s.tabA : s.tab}
+                    className={chipClass(selectedStyleCustom === "全部")}
                   >
                     全部
                   </button>
@@ -845,7 +840,7 @@ export default function QdPage() {
                       key={tag}
                       type="button"
                       onClick={() => setSelectedStyleCustom(tag)}
-                      style={selectedStyleCustom === tag ? s.tabA : s.tab}
+                      className={chipClass(selectedStyleCustom === tag)}
                     >
                       {qdTagLabelZh(tag)}
                     </button>
@@ -854,13 +849,14 @@ export default function QdPage() {
               </div>
 
               {isMobile ? (
-                <div style={{ marginTop: 8, marginBottom: 4 }}>
+                <div className="mt-3">
                   <button
                     type="button"
                     onClick={() => setExpandSectorStyle(false)}
-                    style={{ ...s.tab, width: "100%", textAlign: "center" as const }}
+                    className={MOBILE_COLLAPSE_BTN}
                   >
-                    收起行业与策略 ▲
+                    <span>收起行业与策略</span>
+                    <ChevronDown size={13} aria-hidden className="rotate-180" />
                   </button>
                 </div>
               ) : null}
@@ -868,52 +864,54 @@ export default function QdPage() {
           )}
 
           {isMobile ? (
-            <div style={s.filterSection}>
+            <div className="mt-4 border-t border-white/[0.06] pt-4">
               <button
                 type="button"
                 onClick={() => setExpandMobileTheme((v) => !v)}
-                style={{
-                  ...s.tab,
-                  width: "100%",
-                  textAlign: "center" as const,
-                  border: "0.5px solid rgba(255,255,255,0.12)",
-                }}
+                className={MOBILE_COLLAPSE_BTN}
               >
-                {expandMobileTheme ? "收起主题与赛道 ▲" : "展开主题与赛道 ▼"}
-                {selectedThemeOnly !== "全部" ? `（${qdTagLabelZh(selectedThemeOnly)}）` : ""}
+                <span>
+                  {expandMobileTheme ? "收起主题与赛道" : "展开主题与赛道"}
+                  {selectedThemeOnly !== "全部" ? (
+                    <span className="text-gold">（{qdTagLabelZh(selectedThemeOnly)}）</span>
+                  ) : null}
+                </span>
+                <ChevronDown
+                  size={13}
+                  aria-hidden
+                  className={`transition-transform duration-200 ${expandMobileTheme ? "rotate-180" : ""}`}
+                />
               </button>
               {expandMobileTheme ? (
-                <div style={{ marginTop: 10 }}>
-                  <div style={s.filterChips}>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedThemeOnly("全部")}
+                    className={chipClass(selectedThemeOnly === "全部")}
+                  >
+                    全部
+                  </button>
+                  {themeOnlyOptions.map((tag) => (
                     <button
+                      key={tag}
                       type="button"
-                      onClick={() => setSelectedThemeOnly("全部")}
-                      style={selectedThemeOnly === "全部" ? s.tabA : s.tab}
+                      onClick={() => setSelectedThemeOnly(tag)}
+                      className={chipClass(selectedThemeOnly === tag)}
                     >
-                      全部
+                      {qdTagLabelZh(tag)}
                     </button>
-                    {themeOnlyOptions.map((tag) => (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => setSelectedThemeOnly(tag)}
-                        style={selectedThemeOnly === tag ? s.tabA : s.tab}
-                      >
-                        {qdTagLabelZh(tag)}
-                      </button>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               ) : null}
             </div>
           ) : (
-            <div style={s.filterSection}>
-              <div style={s.filterLabel}>主题与赛道</div>
-              <div style={s.filterChips}>
+            <div className="mt-4 border-t border-white/[0.06] pt-4">
+              <div className={GROUP_LABEL}>主题与赛道</div>
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setSelectedThemeOnly("全部")}
-                  style={selectedThemeOnly === "全部" ? s.tabA : s.tab}
+                  className={chipClass(selectedThemeOnly === "全部")}
                 >
                   全部
                 </button>
@@ -922,7 +920,7 @@ export default function QdPage() {
                     key={tag}
                     type="button"
                     onClick={() => setSelectedThemeOnly(tag)}
-                    style={selectedThemeOnly === tag ? s.tabA : s.tab}
+                    className={chipClass(selectedThemeOnly === tag)}
                   >
                     {qdTagLabelZh(tag)}
                   </button>
@@ -932,52 +930,51 @@ export default function QdPage() {
           )}
 
           {isMobile ? (
-            <div style={s.filterSection}>
+            <div className="mt-4 border-t border-white/[0.06] pt-4">
               <button
                 type="button"
                 onClick={() => setExpandMobileBond((v) => !v)}
-                style={{
-                  ...s.tab,
-                  width: "100%",
-                  textAlign: "center" as const,
-                  border: "0.5px solid rgba(255,255,255,0.12)",
-                }}
+                className={MOBILE_COLLAPSE_BTN}
               >
-                {expandMobileBond ? "收起固收谱系 ▲" : "展开固收谱系 ▼"}
-                {selectedBondSpectrum !== "全部" ? `（${selectedBondSpectrum}）` : ""}
+                <span>
+                  {expandMobileBond ? "收起固收谱系" : "展开固收谱系"}
+                  {selectedBondSpectrum !== "全部" ? (
+                    <span className="text-gold">（{selectedBondSpectrum}）</span>
+                  ) : null}
+                </span>
+                <ChevronDown
+                  size={13}
+                  aria-hidden
+                  className={`transition-transform duration-200 ${expandMobileBond ? "rotate-180" : ""}`}
+                />
               </button>
               {expandMobileBond ? (
-                <div style={{ marginTop: 10 }}>
-                  <div style={s.filterChips}>
-                    {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
-                      const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
-                      return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => setSelectedBondSpectrum(opt)}
-                          title={
-                            pendingAsia
-                              ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
-                              : undefined
-                          }
-                          style={{
-                            ...(selectedBondSpectrum === opt ? s.tabA : s.tab),
-                            ...(pendingAsia ? { opacity: 0.5 } : {}),
-                          }}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
+                    const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setSelectedBondSpectrum(opt)}
+                        title={
+                          pendingAsia
+                            ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
+                            : undefined
+                        }
+                        className={`${chipClass(selectedBondSpectrum === opt)}${pendingAsia ? " opacity-40" : ""}`}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
                 </div>
               ) : null}
             </div>
           ) : (
-            <div style={s.filterSection}>
-              <div style={s.filterLabel}>固收谱系</div>
-              <div style={s.filterChips}>
+            <div className="mt-4 border-t border-white/[0.06] pt-4">
+              <div className={GROUP_LABEL}>固收谱系</div>
+              <div className="flex flex-wrap items-center gap-2">
                 {QD_BOND_SPECTRUM_OPTIONS.map((opt) => {
                   const pendingAsia = opt === "亚洲债" && QD_BOND_SPECTRUM_GROUPS["亚洲债"].length === 0;
                   return (
@@ -990,10 +987,7 @@ export default function QdPage() {
                           ? "待在 tag_taxonomy 增加 AsiaBond 等标签并映射基金后生效"
                           : undefined
                       }
-                      style={{
-                        ...(selectedBondSpectrum === opt ? s.tabA : s.tab),
-                        ...(pendingAsia ? { opacity: 0.5 } : {}),
-                      }}
+                      className={`${chipClass(selectedBondSpectrum === opt)}${pendingAsia ? " opacity-40" : ""}`}
                     >
                       {opt}
                     </button>
@@ -1003,56 +997,51 @@ export default function QdPage() {
             </div>
           )}
 
-          <div style={{ ...s.row, marginBottom: 0, marginTop: 14 }}>
-            <span style={{ fontSize: 11, color: "#6B7280" }}>持仓类型：</span>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] text-slate-500">持仓类型</span>
             {typeTabs.map((t) => (
               <button
                 key={t.id}
                 type="button"
                 onClick={() => setHoldingType(t.id)}
-                style={holdingType === t.id ? s.tabA : s.tab}
+                className={chipClass(holdingType === t.id)}
               >
                 {t.label}
               </button>
             ))}
           </div>
 
-          <div style={{ marginTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
+          <div className="mt-5 border-t border-white/[0.06] pt-4">
             <button
               type="button"
               onClick={() => setExpandHoldingMapNote((v) => !v)}
-              style={{
-                ...s.tab,
-                width: "100%",
-                textAlign: "left" as const,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
+              className="flex w-full items-center justify-between text-left"
             >
-              <span style={{ fontSize: 12, color: "#9CA3AF" }}>
-                按底层持仓筛选（qdiiTagMap · 占位）
-              </span>
-              <span style={{ fontSize: 11, color: "#6B7280" }}>{expandHoldingMapNote ? "▲" : "▼"}</span>
+              <span className="text-xs text-slate-400">按底层持仓筛选（qdiiTagMap · 占位）</span>
+              <ChevronDown
+                size={14}
+                aria-hidden
+                className={`text-slate-500 transition-transform duration-200 ${expandHoldingMapNote ? "rotate-180" : ""}`}
+              />
             </button>
             {expandHoldingMapNote ? (
-              <p style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.55, margin: "10px 0 0" }}>
-                下一版将按基金持仓名匹配仓库根目录 <code style={{ color: "#60A5FA" }}>qdiiTagMap.ts</code>{" "}
-                中的 <code style={{ color: "#60A5FA" }}>qdiiHoldingTags</code>（地域 / 主题 / 债券），与当前「基金
-                Top3 标签」筛选并行。本版仅保留入口说明，避免与列表加载混淆。
+              <p className="mt-3 text-[11px] leading-relaxed text-slate-500">
+                下一版将按基金持仓名匹配仓库根目录{" "}
+                <code className="font-mono text-info">qdiiTagMap.ts</code> 中的{" "}
+                <code className="font-mono text-info">qdiiHoldingTags</code>
+                （地域 / 主题 / 债券），与当前「基金 Top3 标签」筛选并行。本版仅保留入口说明，避免与列表加载混淆。
               </p>
             ) : null}
           </div>
         </div>
 
         {/* 基金列表 */}
-        <div style={{ background: "#111827", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: 12, overflow: "hidden" }}>
+        <div className="mt-6">
           {isMobile ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: 10 }}>
+            <div className="flex flex-col gap-2.5">
               {sortedFiltered.map((fund) => {
                 const isSelected = selected?.fund_id === fund.fund_id;
                 const code = String(fund.primary_code || fund.sc_product_code || fund.code || "—").trim();
-                const badge = codeBadgeStyle(code);
                 const tags = (fund.tags || []).slice(0, 3);
                 return (
                   <div
@@ -1062,50 +1051,26 @@ export default function QdPage() {
                     tabIndex={0}
                     onClick={() => handleRowClick(fund)}
                     onKeyDown={(e) => e.key === "Enter" && handleRowClick(fund)}
-                    style={{
-                      background: isSelected ? "rgba(24,95,165,0.15)" : "#111827",
-                      border: isSelected ? "1px solid rgba(24,95,165,0.45)" : "1px solid rgba(255,255,255,0.07)",
-                      borderRadius: 10,
-                      padding: "12px 14px",
-                      cursor: "pointer",
-                    }}
+                    className={`cursor-pointer rounded-xl border p-4 transition-colors ${
+                      isSelected
+                        ? "border-gold/40 bg-gold/[0.05]"
+                        : "border-white/[0.07] bg-navy-card/70 hover:border-gold/25"
+                    }`}
                   >
-                    <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 6, color: "#F9FAFB" }}>
+                    <div className="mb-1.5 text-sm font-medium text-slate-50">
                       {fund.fund_name_cn}
                     </div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "2px 8px",
-                          borderRadius: 6,
-                          fontSize: 11,
-                          background: badge.bg,
-                          border: badge.border,
-                          color: badge.color,
-                        }}
-                      >
-                        {code}
-                      </span>
-                      <span style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={codeBadgeClass(code)}>{code}</span>
+                      <span className="font-mono text-[11px] text-slate-500">
                         NAV {formatFundNavDisplay(fund.performance?.nav)} ·{" "}
                         {formatPerfNavDate(fund.performance?.nav_date) ?? "—"}
                       </span>
                     </div>
                     {tags.length > 0 && (
-                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>{qdTagsJoinZh(tags)}</div>
+                      <div className="mt-1.5 text-[11px] text-slate-400">{qdTagsJoinZh(tags)}</div>
                     )}
-                    <div
-                      style={{
-                        marginTop: 8,
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "6px 10px",
-                        alignItems: "center",
-                        borderTop: "1px solid rgba(255,255,255,0.06)",
-                        paddingTop: 8,
-                      }}
-                    >
+                    <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-white/[0.06] pt-2.5">
                       {(
                         [
                           ["日涨跌", fund.performance?.daily_return],
@@ -1116,13 +1081,13 @@ export default function QdPage() {
                           ["1年", fund.performance?.yearly_1],
                         ] as const
                       ).map(([label, v]) => (
-                        <div key={label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                          <span style={{ fontSize: 10, color: "#6B7280" }}>{label}</span>
+                        <div key={label} className="flex items-center gap-1">
+                          <span className="text-[10px] text-slate-500">{label}</span>
                           <PerformanceCell value={v} />
                         </div>
                       ))}
                     </div>
-                    <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>
+                    <div className={`mt-2 text-[11px] ${isSelected ? "text-gold" : "text-slate-500"}`}>
                       {isSelected ? "点击收起" : "点击展开"}
                     </div>
                   </div>
@@ -1130,275 +1095,262 @@ export default function QdPage() {
               })}
             </div>
           ) : (
-          <div className="w-full overflow-x-auto">
-            <table className="w-full min-w-[1220px]" style={s.table}>
-            <thead>
-              <tr>
-                <th style={s.th}>基金名称</th>
-                <th style={s.th}>产品代码</th>
-                <th style={s.th}>主要标签</th>
-                <th style={s.thr}>NAV</th>
-                <th style={s.thr}>NAV获得日期</th>
-                <SortablePerfHeader
-                  label="日涨跌"
-                  perfKey="daily_return"
-                  sortKey={sortKey}
-                  sortDir={sortDir}
-                  onSort={handlePerfSort}
-                  borderLeft
-                  minWidth={66}
-                  style={s.thr}
-                />
-                <SortablePerfHeader
-                  label="1周"
-                  perfKey="weekly_return"
-                  sortKey={sortKey}
-                  sortDir={sortDir}
-                  onSort={handlePerfSort}
-                  minWidth={58}
-                  style={s.thr}
-                />
-                <SortablePerfHeader
-                  label="1月"
-                  perfKey="monthly_1"
-                  sortKey={sortKey}
-                  sortDir={sortDir}
-                  onSort={handlePerfSort}
-                  minWidth={58}
-                  style={s.thr}
-                />
-                <SortablePerfHeader
-                  label="3月"
-                  perfKey="monthly_3"
-                  sortKey={sortKey}
-                  sortDir={sortDir}
-                  onSort={handlePerfSort}
-                  minWidth={58}
-                  style={s.thr}
-                />
-                <SortablePerfHeader
-                  label="6月"
-                  perfKey="monthly_6"
-                  sortKey={sortKey}
-                  sortDir={sortDir}
-                  onSort={handlePerfSort}
-                  minWidth={58}
-                  style={s.thr}
-                />
-                <SortablePerfHeader
-                  label="1年"
-                  perfKey="yearly_1"
-                  sortKey={sortKey}
-                  sortDir={sortDir}
-                  onSort={handlePerfSort}
-                  minWidth={58}
-                  style={s.thr}
-                />
-                <th style={s.thr}>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedFiltered.map((fund) => {
-                const isSelected = selected?.fund_id === fund.fund_id;
-                const code = String(fund.primary_code || fund.sc_product_code || fund.code || "—").trim();
-                const badge = codeBadgeStyle(code);
-                const tags = (fund.tags || []).slice(0, 3);
-                const perf = fund.performance;
-                return (
-                  <tr
-                    id={`fund-row-${fund.fund_id}`}
-                    key={fund.fund_id}
-                    onClick={() => handleRowClick(fund)}
-                    style={{
-                      cursor: "pointer",
-                      background: isSelected ? "rgba(24,95,165,0.12)" : "transparent",
-                    }}
-                  >
-                    <td style={{ ...s.td, fontWeight: 500 }}>{fund.fund_name_cn}</td>
-                    <td style={s.td}>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "2px 8px",
-                          borderRadius: 6,
-                          fontSize: 11,
-                          background: badge.bg,
-                          border: badge.border,
-                          color: badge.color,
-                          fontVariantNumeric: "tabular-nums",
-                        }}
-                      >
-                        {code}
-                      </span>
-                    </td>
-                    <td style={{ ...s.td, color: tags.length ? "#F9FAFB" : "#6B7280" }}>
-                      {tags.length ? qdTagsJoinZh(tags) : "—"}
-                    </td>
-                    <td
-                      style={{
-                        ...s.tdr,
-                        fontSize: 12,
-                        color: "#E5E7EB",
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                      className="px-3 py-2"
-                    >
-                      {formatFundNavDisplay(perf?.nav)}
-                    </td>
-                    <td style={{ ...s.tdr, fontSize: 12, color: "#9CA3AF" }} className="px-3 py-2">
-                      {formatPerfNavDate(perf?.nav_date) ?? "—"}
-                    </td>
-                    <td style={{ ...s.tdr, minWidth: 66 }} className="border-l border-gray-700 px-3 py-2">
-                      <PerformanceCell value={perf?.daily_return} />
-                    </td>
-                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
-                      <PerformanceCell value={perf?.weekly_return} />
-                    </td>
-                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
-                      <PerformanceCell value={perf?.monthly_1} />
-                    </td>
-                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
-                      <PerformanceCell value={perf?.monthly_3} />
-                    </td>
-                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
-                      <PerformanceCell value={perf?.monthly_6} />
-                    </td>
-                    <td style={{ ...s.tdr, minWidth: 58 }} className="px-3 py-2">
-                      <PerformanceCell value={perf?.yearly_1} />
-                    </td>
-                    <td style={{ ...s.tdr, color: "#9CA3AF", fontSize: 12 }}>{isSelected ? "点击收起" : "点击展开"}</td>
+            <div className="atlas-table-wrap">
+              <table className="atlas-table min-w-[1220px]">
+                <thead>
+                  <tr>
+                    <th>基金名称</th>
+                    <th>产品代码</th>
+                    <th>主要标签</th>
+                    <th>
+                      <span className="block text-right">NAV</span>
+                    </th>
+                    <th>
+                      <span className="block text-right">NAV获得日期</span>
+                    </th>
+                    <SortablePerfHeader
+                      label="日涨跌"
+                      perfKey="daily_return"
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handlePerfSort}
+                      borderLeft
+                      minWidth={66}
+                    />
+                    <SortablePerfHeader
+                      label="1周"
+                      perfKey="weekly_return"
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handlePerfSort}
+                      minWidth={58}
+                    />
+                    <SortablePerfHeader
+                      label="1月"
+                      perfKey="monthly_1"
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handlePerfSort}
+                      minWidth={58}
+                    />
+                    <SortablePerfHeader
+                      label="3月"
+                      perfKey="monthly_3"
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handlePerfSort}
+                      minWidth={58}
+                    />
+                    <SortablePerfHeader
+                      label="6月"
+                      perfKey="monthly_6"
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handlePerfSort}
+                      minWidth={58}
+                    />
+                    <SortablePerfHeader
+                      label="1年"
+                      perfKey="yearly_1"
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handlePerfSort}
+                      minWidth={58}
+                    />
+                    <th>
+                      <span className="block text-right">操作</span>
+                    </th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          </div>
+                </thead>
+                <tbody>
+                  {sortedFiltered.map((fund) => {
+                    const isSelected = selected?.fund_id === fund.fund_id;
+                    const code = String(fund.primary_code || fund.sc_product_code || fund.code || "—").trim();
+                    const tags = (fund.tags || []).slice(0, 3);
+                    const perf = fund.performance;
+                    return (
+                      <tr
+                        id={`fund-row-${fund.fund_id}`}
+                        key={fund.fund_id}
+                        onClick={() => handleRowClick(fund)}
+                        className={`cursor-pointer ${isSelected ? "bg-gold/[0.06]" : ""}`}
+                      >
+                        <td>
+                          <span className="font-medium text-slate-50">{fund.fund_name_cn}</span>
+                        </td>
+                        <td>
+                          <span className={codeBadgeClass(code)}>{code}</span>
+                        </td>
+                        <td>
+                          {tags.length ? (
+                            <span className="text-slate-300">{qdTagsJoinZh(tags)}</span>
+                          ) : (
+                            <span className="text-slate-600">—</span>
+                          )}
+                        </td>
+                        <td className="text-right">
+                          <span className="font-mono text-xs text-slate-200">
+                            {formatFundNavDisplay(perf?.nav)}
+                          </span>
+                        </td>
+                        <td className="text-right">
+                          <span className="font-mono text-xs text-slate-500">
+                            {formatPerfNavDate(perf?.nav_date) ?? "—"}
+                          </span>
+                        </td>
+                        <td className="border-l border-white/[0.07]">
+                          <PerformanceCell value={perf?.daily_return} />
+                        </td>
+                        <td>
+                          <PerformanceCell value={perf?.weekly_return} />
+                        </td>
+                        <td>
+                          <PerformanceCell value={perf?.monthly_1} />
+                        </td>
+                        <td>
+                          <PerformanceCell value={perf?.monthly_3} />
+                        </td>
+                        <td>
+                          <PerformanceCell value={perf?.monthly_6} />
+                        </td>
+                        <td>
+                          <PerformanceCell value={perf?.yearly_1} />
+                        </td>
+                        <td className="text-right">
+                          <span className={`text-xs ${isSelected ? "text-gold" : "text-slate-500"}`}>
+                            {isSelected ? "点击收起" : "点击展开"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
           {performanceLastUpdated ? (
-            <p className="mt-2 text-right text-xs text-gray-600">
-              绩效数据更新时间：{formatPerformanceLastUpdated(performanceLastUpdated)} · 来源：基金公司 NAV
+            <p className="mt-3 text-right text-[11px] text-slate-600">
+              绩效数据更新时间：
+              <span className="font-mono">{formatPerformanceLastUpdated(performanceLastUpdated)}</span>
+              {" · 来源：基金公司 NAV"}
             </p>
           ) : null}
         </div>
 
         {/* 展开区 */}
         {selected && (
-          <div
-            style={{
-              marginTop: "1rem",
-              padding: "1rem",
-              background: "#1F2937",
-              borderRadius: 8,
-              borderLeft: "2px solid #185FA5",
-            }}
-          >
+          <div className="glass-panel animate-in mt-6 p-5 sm:p-6">
             {/* Block 1：基金信息卡 */}
-            <div style={{ fontSize: 12, fontWeight: 500, color: "#F9FAFB", marginBottom: 8 }}>{selected.fund_name_cn}</div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)",
-                gap: 8,
-              }}
-            >
-              {[
-                ["产品代码", String(selected.primary_code || selected.sc_product_code || selected.code || "—")],
+            <div className="font-display text-lg font-semibold text-slate-50">
+              {selected.fund_name_cn}
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {(
                 [
-                  "Top 标签",
-                  (selected.tags || []).length
-                    ? qdTagsJoinZh((selected.tags || []).slice(0, 3))
-                    : "—",
-                ],
-                ["NAV", formatFundNavDisplay(selected.performance?.nav)],
-                ["NAV获得日期", formatPerfNavDate(selected.performance?.nav_date) ?? "—"],
-                ["持仓记录数", String(selected.holdings_count)],
-              ].map(([k, v]) => (
-                <div key={String(k)}>
-                  <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 2 }}>{k}</div>
-                  <div style={{ fontSize: 13, color: "#F9FAFB" }}>{v}</div>
+                  {
+                    k: "产品代码",
+                    v: String(selected.primary_code || selected.sc_product_code || selected.code || "—"),
+                    mono: true,
+                  },
+                  {
+                    k: "Top 标签",
+                    v: (selected.tags || []).length
+                      ? qdTagsJoinZh((selected.tags || []).slice(0, 3))
+                      : "—",
+                    mono: false,
+                  },
+                  { k: "NAV", v: formatFundNavDisplay(selected.performance?.nav), mono: true },
+                  {
+                    k: "NAV获得日期",
+                    v: formatPerfNavDate(selected.performance?.nav_date) ?? "—",
+                    mono: true,
+                  },
+                  { k: "持仓记录数", v: String(selected.holdings_count), mono: true },
+                ] as const
+              ).map(({ k, v, mono }) => (
+                <div key={k}>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">{k}</div>
+                  <div className={`text-sm text-slate-100 ${mono ? "font-mono" : ""}`}>{v}</div>
                 </div>
               ))}
             </div>
 
+            <hr className="hairline-gold my-6" />
+
             {/* Block 1.5：净值曲线 + 分阶段收益率 */}
-            <div style={{ marginTop: "1rem" }}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
-                  gap: 12,
-                  alignItems: "start",
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: 11, color: "#9CA3AF", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    历史净值曲线
-                  </div>
-                  <NavChart
-                    dates={fundNavChart?.dates ?? []}
-                    navs={fundNavChart?.navs ?? []}
-                    isin={fundNavChart?.isin}
-                    height={isMobile ? 240 : 280}
-                    rangeDays={navRangeDays}
-                    onRangeChange={setNavRangeDays}
-                    rangeLoading={navChartLoading}
-                  />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
+              <div>
+                <div className={SECTION_TITLE}>
+                  <LineChart size={13} className="text-gold" aria-hidden />
+                  历史净值曲线
+                </div>
+                <NavChart
+                  dates={fundNavChart?.dates ?? []}
+                  navs={fundNavChart?.navs ?? []}
+                  isin={fundNavChart?.isin}
+                  height={isMobile ? 240 : 280}
+                  rangeDays={navRangeDays}
+                  onRangeChange={setNavRangeDays}
+                  rangeLoading={navChartLoading}
+                />
+              </div>
+
+              <div>
+                <div className={SECTION_TITLE}>
+                  <BarChart3 size={13} className="text-gold" aria-hidden />
+                  分阶段收益率
                 </div>
 
-                <div>
-                  <div style={{ fontSize: 11, color: "#9CA3AF", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    分阶段收益率
-                  </div>
-
-                  <div style={{ display: "grid", gap: 8 }}>
-                    {navFullLoading ? (
-                      <div style={{ padding: 12, borderRadius: 10, border: "0.5px solid rgba(255,255,255,0.08)", background: "#111827", color: "#9CA3AF", fontSize: 12 }}>
-                        加载净值数据...
-                      </div>
-                    ) : stageReturns ? (
-                      ([
-                        ["1M", "1M"],
-                        ["3M", "3M"],
-                        ["6M", "6M"],
-                        ["1Y", "1Y"],
-                        ["YTD", "YTD"],
-                      ] as const).map(([k, label]) => {
-                        const v = stageReturns[k];
-                        const color = typeof v === "number" && v >= 0 ? "#1D9E75" : "#D85A30";
-                        return (
-                          <div
-                            key={k}
-                            style={{
-                              background: "#111827",
-                              border: "0.5px solid rgba(255,255,255,0.08)",
-                              borderRadius: 10,
-                              padding: "10px 12px",
-                            }}
-                          >
-                            <div style={{ fontSize: 11, color: "#6B7280", marginBottom: 4 }}>{label}</div>
-                            <div style={{ fontSize: 16, fontWeight: 600, color: typeof v === "number" ? color : "#9CA3AF" }}>
-                              {typeof v === "number" ? `${v >= 0 ? "+" : ""}${v.toFixed(2)}%` : "—"}
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div style={{ padding: 12, borderRadius: 10, border: "0.5px solid rgba(255,255,255,0.08)", background: "#111827", color: "#9CA3AF", fontSize: 12 }}>
-                        暂无净值数据
-                      </div>
-                    )}
-                  </div>
+                <div className="grid gap-2">
+                  {navFullLoading ? (
+                    <div className="skeleton h-40 rounded-xl" />
+                  ) : stageReturns ? (
+                    ([
+                      ["1M", "1M"],
+                      ["3M", "3M"],
+                      ["6M", "6M"],
+                      ["1Y", "1Y"],
+                      ["YTD", "YTD"],
+                    ] as const).map(([k, label]) => {
+                      const v = stageReturns[k];
+                      const isNum = typeof v === "number";
+                      const tone = !isNum ? "text-slate-500" : v >= 0 ? "text-rise" : "text-fall";
+                      return (
+                        <div
+                          key={k}
+                          className="flex items-center justify-between rounded-xl border border-white/[0.07] bg-navy-card/70 px-4 py-3"
+                        >
+                          <span className="text-[11px] text-slate-500">{label}</span>
+                          <span className={`font-mono text-base font-semibold ${tone}`}>
+                            {isNum ? `${v >= 0 ? "+" : ""}${v.toFixed(2)}%` : "—"}
+                          </span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="rounded-xl border border-white/[0.07] bg-navy-card/70 px-4 py-3 text-xs text-slate-500">
+                      暂无净值数据
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
+            <hr className="hairline-gold my-6" />
+
             {/* Block 2：Top 10 Holdings */}
-            <div style={{ marginTop: "1rem" }}>
-              <div style={{ fontSize: 11, color: "#9CA3AF", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Top 10 Holdings
+            <div>
+              <div className={SECTION_TITLE}>
+                <PieChart size={13} className="text-gold" aria-hidden />
+                TOP 10 持仓
               </div>
 
-              {selected.holdingsLoading && <div style={{ color: "#9CA3AF", fontSize: 12 }}>Loading holdings...</div>}
+              {selected.holdingsLoading && (
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <Loader2 size={14} className="animate-spin" aria-hidden />
+                  正在加载持仓…
+                </div>
+              )}
               {selected.holdings && selected.holdings.length > 0 && (
                 isMobile ? (
                   <div>
@@ -1410,104 +1362,100 @@ export default function QdPage() {
                       return (
                         <div
                           key={i}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "10px 0",
-                            borderBottom: "1px solid rgba(255,255,255,0.05)",
-                          }}
+                          className="flex items-center justify-between border-b border-white/[0.05] py-2.5 last:border-b-0"
                         >
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <span style={{ fontSize: 13, marginRight: 6, color: "#6B7280" }}>{h.rank ?? i + 1}.</span>
+                          <div className="min-w-0 flex-1">
+                            <span className="mr-1.5 font-mono text-xs text-slate-500">
+                              {h.rank ?? i + 1}.
+                            </span>
                             {href ? (
                               <Link
                                 href={href}
-                                style={{
-                                  fontSize: 13,
-                                  fontWeight: 500,
-                                  color: "#60A5FA",
-                                  textDecoration: "none",
-                                }}
+                                className="text-[13px] font-medium text-info transition-colors hover:text-info/80"
                               >
                                 {h.holding_name_std || h.holding_name_raw}
                               </Link>
                             ) : (
-                              <span style={{ fontSize: 13, fontWeight: 500, color: "#F9FAFB" }}>
+                              <span className="text-[13px] font-medium text-slate-100">
                                 {h.holding_name_std || h.holding_name_raw}
                               </span>
                             )}
                             {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                              <span style={{ fontSize: 10, color: "#6B7280", marginLeft: 4 }}>{ticker}</span>
+                              <span className="ml-1.5 font-mono text-[10px] text-slate-500">{ticker}</span>
                             )}
                           </div>
-                          <div style={{ textAlign: "right", marginLeft: 8 }}>
-                            <div style={{ fontSize: 13, color: "#1D9E75" }}>{Number(h.weight_pct).toFixed(2)}%</div>
-                            <div style={{ fontSize: 10, color: "#6B7280" }}>{h.holding_type}</div>
+                          <div className="ml-3 text-right">
+                            <div className="font-mono text-[13px] text-gold-light">
+                              {Number(h.weight_pct).toFixed(2)}%
+                            </div>
+                            <div className="text-[10px] text-slate-500">{h.holding_type}</div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 ) : (
-                <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 12 }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>#</th>
-                      <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>持仓名称</th>
-                      <th style={{ textAlign: "left", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>类型</th>
-                      <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>权重%</th>
-                      <th style={{ textAlign: "right", padding: "4px 8px", color: "#6B7280", fontWeight: 400 }}>截至日期</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selected.holdings.slice(0, 10).map((h, i) => {
-                      const nameKey = String(h.holding_name_std || h.holding_name_raw || "").trim();
-                      const ticker = getTickerFromHolding(nameKey);
-                      const canClick = Boolean(ticker && isClickable(nameKey));
-                      const href = canClick && ticker ? `/stock/${encodeURIComponent(ticker)}` : undefined;
-                      return (
-                        <tr key={i} style={{ borderTop: "0.5px solid rgba(255,255,255,0.05)" }}>
-                          <td style={{ padding: "5px 8px", color: "#6B7280" }}>{h.rank ?? i + 1}</td>
-                          <td style={{ padding: "5px 8px" }}>
-                            {href ? (
-                              <Link
-                                href={href}
-                                style={{ fontWeight: 500, color: "#60A5FA", textDecoration: "none" }}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title={`查看公开市场数据：${ticker}`}
-                              >
-                                {h.holding_name_std || h.holding_name_raw}
-                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#60A5FA" }}>
-                                    {ticker} ↗
-                                  </span>
-                                )}
-                              </Link>
-                            ) : (
-                              <>
-                                <span style={{ fontWeight: 500, color: "#F9FAFB" }}>
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-white/[0.07]">
+                        <th className="py-2 pr-3 text-left font-medium uppercase tracking-wider text-slate-500">#</th>
+                        <th className="py-2 pr-3 text-left font-medium uppercase tracking-wider text-slate-500">持仓名称</th>
+                        <th className="py-2 pr-3 text-left font-medium uppercase tracking-wider text-slate-500">类型</th>
+                        <th className="py-2 pl-3 text-right font-medium uppercase tracking-wider text-slate-500">权重%</th>
+                        <th className="py-2 pl-3 text-right font-medium uppercase tracking-wider text-slate-500">截至日期</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selected.holdings.slice(0, 10).map((h, i) => {
+                        const nameKey = String(h.holding_name_std || h.holding_name_raw || "").trim();
+                        const ticker = getTickerFromHolding(nameKey);
+                        const canClick = Boolean(ticker && isClickable(nameKey));
+                        const href = canClick && ticker ? `/stock/${encodeURIComponent(ticker)}` : undefined;
+                        return (
+                          <tr key={i} className="border-b border-white/[0.05]">
+                            <td className="py-2.5 pr-3 font-mono text-slate-500">{h.rank ?? i + 1}</td>
+                            <td className="py-2.5 pr-3">
+                              {href ? (
+                                <Link
+                                  href={href}
+                                  className="font-medium text-info transition-colors hover:text-info/80"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={`查看公开市场数据：${ticker}`}
+                                >
                                   {h.holding_name_std || h.holding_name_raw}
-                                </span>
-                                {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
-                                  <span style={{ fontSize: 11, marginLeft: 6, color: "#4B5563" }}>{ticker}</span>
-                                )}
-                              </>
-                            )}
-                          </td>
-                          <td style={{ padding: "5px 8px", color: "#9CA3AF" }}>{h.holding_type}</td>
-                          <td style={{ padding: "5px 8px", color: "#1D9E75", textAlign: "right" }}>{Number(h.weight_pct).toFixed(2)}%</td>
-                          <td style={{ padding: "5px 8px", color: "#6B7280", textAlign: "right" }}>{h.as_of_date}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                                  {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                                    <span className="ml-1.5 inline-flex items-center gap-0.5 font-mono text-[11px] text-info/80">
+                                      {ticker}
+                                      <ExternalLink size={10} aria-hidden />
+                                    </span>
+                                  )}
+                                </Link>
+                              ) : (
+                                <>
+                                  <span className="font-medium text-slate-100">
+                                    {h.holding_name_std || h.holding_name_raw}
+                                  </span>
+                                  {ticker && !["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"].includes(ticker) && (
+                                    <span className="ml-1.5 font-mono text-[11px] text-slate-600">{ticker}</span>
+                                  )}
+                                </>
+                              )}
+                            </td>
+                            <td className="py-2.5 pr-3 text-slate-400">{h.holding_type}</td>
+                            <td className="py-2.5 pl-3 text-right font-mono text-gold-light">
+                              {Number(h.weight_pct).toFixed(2)}%
+                            </td>
+                            <td className="py-2.5 pl-3 text-right font-mono text-slate-500">{h.as_of_date}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 )
               )}
               {selected.holdings && selected.holdings.length === 0 && !selected.holdingsLoading && (
-                <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>暂无底层持仓数据</div>
+                <div className="mt-2 text-xs text-slate-500">暂无底层持仓数据</div>
               )}
             </div>
 
@@ -1531,15 +1479,23 @@ export default function QdPage() {
               />
             )}
 
+            <hr className="hairline-gold my-6" />
+
             {/* Block 3：通义千问 AI 分析（缓存优先） */}
             <div id={`ai-box-${selected.fund_id}`}>
+              <div className={SECTION_TITLE}>
+                <Sparkles size={13} className="text-gold" aria-hidden />
+                AI 信号
+              </div>
               <QdAISignalBox code={String(selected.primary_code || selected.sc_product_code || selected.code || "")} />
             </div>
           </div>
         )}
 
-        <div style={{ marginTop: "1rem", fontSize: 11, color: "#4B5563", textAlign: "center" }}>
-          数据来源：本地 `qdii_portfolio/fund_tagging.db`（fund_holding_exposure + fund_tag_map + tag_taxonomy）
+        <div className="mt-10 text-center text-[11px] text-slate-600">
+          数据来源：本地{" "}
+          <span className="font-mono">qdii_portfolio/fund_tagging.db</span>
+          （fund_holding_exposure + fund_tag_map + tag_taxonomy）
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { getQuote, getIVStats, getOptionsChain } from "@/lib/publiccom";
 import { buildStrategyCards } from "@/lib/strategies";
 import { notFound } from "next/navigation";
@@ -46,33 +47,22 @@ export default async function StockDetailPage({ params }: PageProps) {
 
     return (
       <div className="min-h-screen bg-navy">
-        <header className="border-b border-white/10">
-          <div className="mx-auto max-w-7xl">
+        <header className="border-b border-white/[0.07]">
+          <div className="mx-auto max-w-7xl px-4 py-4 md:px-6 md:py-6">
             {/* 股票头部信息卡 */}
-            <div
-              className="flex flex-col gap-4 bg-gradient-to-br from-[#0f172a] to-[#111827] p-4 md:flex-row md:flex-wrap md:items-center md:gap-8 md:p-8"
-            >
+            <div className="glass-panel glow-border animate-in flex flex-col gap-4 p-4 md:flex-row md:flex-wrap md:items-center md:gap-8 md:p-8">
               <div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: "#6B7280",
-                    marginBottom: 4,
-                  }}
-                >
-                  {tickerUpper} · Stock Detail
-                </div>
-                <div
-                  className="text-3xl font-bold tabular-nums text-[#F9FAFB] md:text-4xl"
-                >
+                <span className="eyebrow">US EQUITY · STOCK DETAIL</span>
+                <h1 className="font-display mt-2 text-2xl font-bold text-slate-100 md:text-3xl">
+                  {tickerUpper}
+                </h1>
+                <div className="mt-2 font-mono text-4xl font-semibold tabular-nums text-slate-50 md:text-5xl">
                   ${quote.price.toFixed(2)}
                 </div>
                 <div
-                  style={{
-                    fontSize: 14,
-                    color: isPositive ? "#1D9E75" : "#D85A30",
-                    marginTop: 2,
-                  }}
+                  className={`mt-1 font-mono text-sm md:text-base ${
+                    isPositive ? "text-rise" : "text-fall"
+                  }`}
                 >
                   {isPositive ? "+" : ""}
                   {quote.change.toFixed(2)} ({changePct.toFixed(2)}%)
@@ -102,24 +92,10 @@ export default async function StockDetailPage({ params }: PageProps) {
                 },
               ].map(({ label, value }) => (
                 <div key={label}>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: "#6B7280",
-                      marginBottom: 4,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
+                  <div className="mb-1 text-[11px] uppercase tracking-[0.05em] text-slate-500">
                     {label}
                   </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 500,
-                      color: "#F9FAFB",
-                    }}
-                  >
+                  <div className="font-mono text-lg font-medium text-slate-100">
                     {value}
                   </div>
                 </div>
@@ -127,8 +103,9 @@ export default async function StockDetailPage({ params }: PageProps) {
               </div>
 
               <div className="mt-2 text-sm md:ml-auto md:mt-0">
-                <Link href="/portfolio" className="text-info hover:underline">
-                  ← 返回 Portfolio
+                <Link href="/portfolio" className="btn-ghost text-xs">
+                  <ArrowLeft size={14} />
+                  返回 Portfolio
                 </Link>
               </div>
             </div>
@@ -153,13 +130,13 @@ export default async function StockDetailPage({ params }: PageProps) {
     const quote = await fetchQuote(tickerUpper);
     return (
       <div className="min-h-screen bg-navy">
-        <header className="border-b border-white/10 px-4 py-4 md:px-6">
+        <header className="border-b border-white/[0.07] px-4 py-4 md:px-6">
           <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <Link href="/mrf" className="text-sm text-sky-400 hover:underline">
-              ← MRF
+            <Link href="/mrf" className="inline-flex items-center gap-1.5 text-sm text-info hover:underline">
+              <ArrowLeft size={14} /> MRF
             </Link>
-            <h1 className="text-lg font-semibold text-white">{tickerUpper}</h1>
-            <Link href="/portfolio" className="text-sm text-sky-400 hover:underline">
+            <h1 className="font-display text-lg font-semibold text-slate-100">{tickerUpper}</h1>
+            <Link href="/portfolio" className="text-sm text-info hover:underline">
               Portfolio →
             </Link>
           </div>
@@ -185,12 +162,12 @@ export default async function StockDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-navy">
-      <header className="border-b border-white/10 px-6 py-4">
+      <header className="border-b border-white/[0.07] px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/portfolio" className="text-info hover:underline">
-            ← Portfolio
+          <Link href="/portfolio" className="inline-flex items-center gap-1.5 text-info hover:underline">
+            <ArrowLeft size={14} /> Portfolio
           </Link>
-          <h1 className="text-xl font-semibold text-white">
+          <h1 className="font-display text-xl font-semibold text-slate-100">
             {tickerUpper} — QDII 基金
           </h1>
           <span />

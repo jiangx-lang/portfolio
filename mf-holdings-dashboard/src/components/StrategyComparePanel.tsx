@@ -47,7 +47,11 @@ function buildPayoffSeries(strategy: StrategyCard, spot: number) {
   return { labels: labels.map(String), profits };
 }
 
-const COLORS = ["rgba(24,95,165,0.9)", "rgba(29,158,117,0.9)", "rgba(216,90,48,0.9)"];
+const LINE_PALETTE = [
+  { border: "rgba(201,168,76,0.95)", fill: "rgba(201,168,76,0.12)" },
+  { border: "rgba(91,147,240,0.9)", fill: "rgba(91,147,240,0.12)" },
+  { border: "rgba(148,163,194,0.8)", fill: "rgba(148,163,194,0.1)" },
+];
 
 export function StrategyComparePanel({
   strategies,
@@ -59,8 +63,8 @@ export function StrategyComparePanel({
   const usable = strategies.filter(Boolean).slice(0, 3);
   if (usable.length === 0) {
     return (
-      <div className="flex h-[260px] items-center justify-center rounded-xl border border-white/10 bg-navy-card text-white/50">
-        No strategies to compare
+      <div className="flex h-[260px] items-center justify-center rounded-2xl border border-white/[0.07] bg-navy-card text-slate-500">
+        暂无可对比的策略
       </div>
     );
   }
@@ -68,11 +72,12 @@ export function StrategyComparePanel({
   const base = buildPayoffSeries(usable[0], spot);
   const datasets = usable.map((s, idx) => {
     const series = buildPayoffSeries(s, spot);
+    const palette = LINE_PALETTE[idx] ?? LINE_PALETTE[0];
     return {
       label: s.name,
       data: series.profits,
-      borderColor: COLORS[idx] ?? COLORS[0],
-      backgroundColor: (COLORS[idx] ?? COLORS[0]).replace("0.9", "0.15"),
+      borderColor: palette.border,
+      backgroundColor: palette.fill,
       borderWidth: 2,
       pointRadius: 0,
       tension: 0.25,
@@ -88,18 +93,27 @@ export function StrategyComparePanel({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { labels: { color: "#9CA3AF", boxWidth: 10, boxHeight: 10 } },
-      title: { display: true, text: "Strategy payoff compare", color: "#9CA3AF" },
-      tooltip: { enabled: true },
+      legend: { labels: { color: "#9AA7BD", boxWidth: 10, boxHeight: 10 } },
+      title: { display: true, text: "策略收益曲线对比", color: "#E3C87A" },
+      tooltip: {
+        enabled: true,
+        backgroundColor: "rgba(12,17,32,0.95)",
+        borderColor: "rgba(201,168,76,0.3)",
+        borderWidth: 1,
+        titleColor: "#E3C87A",
+        bodyColor: "#F4F6FB",
+        padding: 10,
+        cornerRadius: 10,
+      },
     },
     scales: {
-      x: { ticks: { color: "#9CA3AF", maxTicksLimit: 10 }, grid: { color: "rgba(255,255,255,0.06)" } },
-      y: { ticks: { color: "#9CA3AF" }, grid: { color: "rgba(255,255,255,0.06)" } },
+      x: { ticks: { color: "#66738C", maxTicksLimit: 10 }, grid: { color: "rgba(148,163,194,0.08)" } },
+      y: { ticks: { color: "#66738C" }, grid: { color: "rgba(148,163,194,0.08)" } },
     },
   } as const;
 
   return (
-    <div className="h-[260px] rounded-xl border border-white/10 bg-navy-card p-4">
+    <div className="h-[260px] rounded-2xl border border-white/[0.07] bg-navy-card p-4">
       <Line data={data} options={options} />
     </div>
   );

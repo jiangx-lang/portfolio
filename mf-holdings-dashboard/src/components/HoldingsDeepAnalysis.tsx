@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { BarChart3, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import type { DeepAnalysisResult, MarketDataRow, RiskFlag } from "@/lib/fundDeepAnalysisGroq";
 
 export interface HoldingInput {
@@ -22,34 +23,13 @@ function Tooltip({ children, tip }: { children: ReactNode; tip: string }) {
   const [show, setShow] = useState(false);
   return (
     <div
-      style={{ position: "relative", display: "block", width: "100%" }}
+      className="relative block w-full"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
       {children}
       {show && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "100%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            marginBottom: 8,
-            background: "#0f2744",
-            border: "1px solid #3b82f6",
-            borderRadius: 8,
-            padding: "10px 14px",
-            fontSize: 12,
-            color: "#cbd5e1",
-            lineHeight: 1.6,
-            width: "min(280px, 92vw)",
-            maxWidth: 320,
-            zIndex: 999,
-            whiteSpace: "pre-line",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
-            pointerEvents: "none",
-          }}
-        >
+        <div className="pointer-events-none absolute bottom-full left-1/2 z-[999] mb-2 w-[min(280px,92vw)] max-w-80 -translate-x-1/2 whitespace-pre-line rounded-lg border border-info/40 bg-navy-elevated px-3.5 py-2.5 text-xs leading-relaxed text-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
           {tip}
         </div>
       )}
@@ -59,40 +39,33 @@ function Tooltip({ children, tip }: { children: ReactNode; tip: string }) {
 
 const NON_YF_TICKERS = new Set(["BOND", "ETF", "COMMODITY", "FUND", "UNKNOWN"]);
 
-const cardShell: CSSProperties = {
-  background: "#0d1b2e",
-  border: "1px solid #1e3a5f",
-  borderRadius: 8,
-  padding: 12,
-  height: "100%",
-};
-
 function scoreTextClass(score: number): string {
-  if (score >= 75) return "text-emerald-400";
-  if (score >= 55) return "text-amber-400";
-  return "text-red-400";
+  if (score >= 75) return "text-fall";
+  if (score >= 55) return "text-gold";
+  return "text-rise";
 }
 
 function flagClass(t: RiskFlag["type"]): string {
   switch (t) {
     case "danger":
-      return "bg-red-500/20 text-red-300 border border-red-500/40";
+      return "badge badge-red";
     case "warning":
-      return "bg-amber-500/15 text-amber-200 border border-amber-500/35";
+      return "badge badge-gold";
     case "success":
-      return "bg-emerald-500/15 text-emerald-200 border border-emerald-500/35";
+      return "badge badge-green";
     case "info":
-      return "bg-sky-500/15 text-sky-200 border border-sky-500/35";
+      return "badge badge-blue";
     default:
-      return "bg-slate-600/30 text-slate-300 border border-slate-500/40";
+      return "badge border border-white/15 bg-white/5 text-slate-300";
   }
 }
 
 function peBadge(pe: number | null | undefined): { text: string; cls: string } {
-  if (pe == null || Number.isNaN(pe)) return { text: "—", cls: "bg-slate-600/40 text-slate-400" };
-  if (pe < 12) return { text: "偏低", cls: "bg-emerald-500/20 text-emerald-300" };
-  if (pe < 22) return { text: "中性", cls: "bg-amber-500/20 text-amber-200" };
-  return { text: "偏贵", cls: "bg-red-500/20 text-red-300" };
+  if (pe == null || Number.isNaN(pe))
+    return { text: "—", cls: "badge border border-white/10 bg-white/5 text-slate-400" };
+  if (pe < 12) return { text: "偏低", cls: "badge badge-green" };
+  if (pe < 22) return { text: "中性", cls: "badge badge-gold" };
+  return { text: "偏贵", cls: "badge badge-red" };
 }
 
 function peBarWidth(pe: number | null | undefined): number {
@@ -100,7 +73,17 @@ function peBarWidth(pe: number | null | undefined): number {
   return Math.min(100, Math.max(6, (pe / 45) * 100));
 }
 
-const BAR_COLORS = ["#3b82f6", "#6366f1", "#8b5cf6", "#a855f7", "#d946ef", "#ec4899", "#f43f5e", "#f97316"];
+/** 集中度色盘：镜像 DESIGN_SYSTEM 令牌（金 / 蓝 / 石板），供堆叠条按序号取色 */
+const BAR_COLORS = [
+  "#C9A84C", // gold
+  "#5B93F0", // info
+  "#94A3B8", // slate-400
+  "#9A7E2F", // gold-dark
+  "#2F66C4", // primary
+  "#64748B", // slate-500
+  "#E3C87A", // gold-light
+  "#475569", // slate-600
+];
 
 /** 从“英伟达 NVDA / 腾讯 0700.HK / 茅台 600519.SH”等字符串末尾提取 ticker；仅作展示层兜底 */
 function extractTickerFromName(raw: string): string {
@@ -169,11 +152,14 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
 
   if (equityHoldings.length < 2) {
     return (
-      <div style={{ marginTop: 24, borderTop: "1px solid #1e3a5f", paddingTop: 20 }}>
-        <h3 style={{ color: "#e2e8f0", fontSize: 16, margin: "0 0 8px" }}>📊 持仓深度分析</h3>
-        <p className="text-sm text-slate-400" style={{ margin: 0, lineHeight: 1.65, maxWidth: 560 }}>
+      <div className="mt-6 border-t border-white/[0.07] pt-5">
+        <h3 className="flex items-center gap-2 font-display text-lg text-slate-100">
+          <BarChart3 className="h-4 w-4 text-gold" aria-hidden />
+          持仓深度分析
+        </h3>
+        <p className="mt-2 max-w-[560px] text-sm leading-relaxed text-slate-400">
           本基金持仓以债券或非上市资产为主（当前{" "}
-          <span className="text-slate-300">{equityHoldings.length}</span>{" "}
+          <span className="num text-slate-300">{equityHoldings.length}</span>{" "}
           只股票持仓可映射到公开市场数据），样本过少，暂不展示持仓深度分析，避免误导。
         </p>
       </div>
@@ -272,22 +258,16 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
   console.log("[Debug] Sorted Matrix (filtered):", sortedForMatrix);
 
   return (
-    <div style={{ marginTop: 24, borderTop: "1px solid #1e3a5f", paddingTop: 20 }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 16,
-          flexWrap: "wrap",
-          gap: 12,
-        }}
-      >
+    <div className="mt-6 border-t border-white/[0.07] pt-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 style={{ color: "#e2e8f0", fontSize: 16, margin: 0 }}>📊 持仓深度分析</h3>
-          <p style={{ color: "#64748b", fontSize: 12, margin: "4px 0 0" }}>
+          <h3 className="flex items-center gap-2 font-display text-lg text-slate-100">
+            <BarChart3 className="h-4 w-4 text-gold" aria-hidden />
+            持仓深度分析
+          </h3>
+          <p className="mt-1 text-xs text-slate-500">
             一页纸投研：服务端四维评分与集中度 → 通义千问精简解读（可选）；Python{" "}
-            <code style={{ fontSize: 11 }}>fetch_market_data.py</code> 并行抓取 + 按日缓存
+            <code className="font-mono text-[11px]">fetch_market_data.py</code> 并行抓取 + 按日缓存
           </p>
         </div>
         {step === "idle" && (
@@ -295,42 +275,36 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
             type="button"
             onClick={runAnalysis}
             disabled={equityHoldings.length === 0}
-            style={{
-              background: "#0f2744",
-              color: "#60a5fa",
-              border: "1px solid #3b82f6",
-              borderRadius: 8,
-              padding: "8px 16px",
-              fontSize: 13,
-              cursor: equityHoldings.length === 0 ? "not-allowed" : "pointer",
-              opacity: equityHoldings.length === 0 ? 0.5 : 1,
-            }}
+            className="btn-gold !px-4 !py-2 text-[13px] disabled:cursor-not-allowed disabled:opacity-50"
           >
+            <Sparkles className="h-3.5 w-3.5" aria-hidden />
             运行分析
           </button>
         )}
       </div>
 
       {loading && step === "running" && (
-        <div style={{ color: "#94a3b8", fontSize: 13, padding: "16px 0" }}>
-          ⏳ 正在抓取市场数据（并行 + 缓存）并生成投研页（约 10–40 秒，美股期权链较慢）…
+        <div className="flex items-center gap-2 py-4 text-[13px] text-slate-400">
+          <Loader2 className="h-4 w-4 animate-spin text-gold" aria-hidden />
+          正在抓取市场数据（并行 + 缓存）并生成投研页（约 10–40 秒，美股期权链较慢）…
         </div>
       )}
 
-      {error && <div style={{ color: "#ef4444", fontSize: 13 }}>{error}</div>}
+      {error && <div className="text-[13px] text-rise">{error}</div>}
 
       {showResults && scores && wm && conc && (
-        <div className="rounded-lg border border-slate-700/80 bg-slate-950/40 p-4 text-slate-200">
+        <div className="glass-panel animate-in p-5 text-slate-200 sm:p-6">
           {/* 页眉 */}
-          <div className="mb-5 flex flex-col justify-between gap-3 border-b border-slate-700 pb-4 sm:flex-row sm:items-start">
+          <div className="mb-5 flex flex-col justify-between gap-3 border-b border-white/[0.07] pb-4 sm:flex-row sm:items-start">
             <div>
-              <h2 className="text-lg font-medium text-white">{fundName}</h2>
+              <h2 className="font-display text-xl font-bold text-white">{fundName}</h2>
               <p className="mt-1 text-xs text-slate-500">
-                {(productCode && productCode.trim()) || "—"} · {todayStr} · Top {sortedForMatrix.length} 持仓
+                {(productCode && productCode.trim()) || "—"} · <span className="num">{todayStr}</span> · Top{" "}
+                <span className="num">{sortedForMatrix.length}</span> 持仓
               </p>
             </div>
             <div className="text-right sm:ml-auto">
-              <div className={`text-4xl font-semibold ${scoreTextClass(scores.overall)}`}>{scores.overall}</div>
+              <div className={`num text-4xl font-semibold ${scoreTextClass(scores.overall)}`}>{scores.overall}</div>
               <div className="mt-1 text-xs text-slate-500">综合评分 / 100</div>
             </div>
           </div>
@@ -345,9 +319,9 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
                 ["质量", scores.quality, scores.qualityLabel],
               ] as const
             ).map(([title, val, label]) => (
-              <div key={title} className="rounded-lg border border-slate-700/60 bg-slate-900/50 p-3">
+              <div key={title} className="glass-card rounded-xl p-3">
                 <div className="text-[11px] text-slate-500">{title}</div>
-                <div className={`text-2xl font-semibold ${scoreTextClass(val)}`}>{val}</div>
+                <div className={`num text-2xl font-semibold ${scoreTextClass(val)}`}>{val}</div>
                 <div className="mt-1 text-xs text-slate-400">{label}</div>
               </div>
             ))}
@@ -364,9 +338,9 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
               ["Beta", wm.beta != null ? wm.beta.toFixed(2) : "—"],
             ].map(([k, v]) => (
               <Tooltip key={k} tip={`${k}：由有数据成分按权重计算；缺失市场常无 IV/期权。`}>
-                <div style={{ ...cardShell, cursor: "help" }} className="!p-2">
+                <div className="glass-card h-full cursor-help rounded-xl p-2">
                   <div className="text-[11px] text-slate-500">{k}</div>
-                  <div className="text-lg font-semibold text-slate-100">{v}</div>
+                  <div className="num text-lg font-semibold text-slate-100">{v}</div>
                 </div>
               </Tooltip>
             ))}
@@ -383,23 +357,23 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
                 return (
                   <div
                     key={`${d.ticker}-${label}`}
-                    className="flex flex-col gap-1 rounded border border-slate-700/50 bg-slate-900/30 px-3 py-2 sm:flex-row sm:items-center"
+                    className="glass-card flex flex-col gap-1 rounded-xl px-3 py-2 sm:flex-row sm:items-center"
                   >
                     <div className="w-full shrink-0 text-sm text-slate-200 sm:w-44">
-                      <span className="font-medium">{d.ticker}</span>
+                      <span className="font-mono font-medium">{d.ticker}</span>
                       <span className="ml-2 truncate text-xs text-slate-500">{label}</span>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-navy">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-400"
+                          className="h-full rounded-full bg-gradient-gold"
                           style={{ width: `${peBarWidth(pe)}%` }}
                         />
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-2 sm:w-40 sm:justify-end">
-                      <span className="text-xs text-slate-400">PE {pe != null ? pe.toFixed(1) : "—"}</span>
-                      <span className={`rounded px-2 py-0.5 text-[11px] ${badge.cls}`}>{badge.text}</span>
+                      <span className="num text-xs text-slate-400">PE {pe != null ? pe.toFixed(1) : "—"}</span>
+                      <span className={badge.cls}>{badge.text}</span>
                     </div>
                   </div>
                 );
@@ -410,7 +384,7 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
           {/* 集中度 */}
           <div className="mb-5">
             <h4 className="mb-2 text-sm font-medium text-slate-300">持仓集中度</h4>
-            <div className="flex h-8 w-full overflow-hidden rounded-md bg-slate-800">
+            <div className="flex h-8 w-full overflow-hidden rounded-lg border border-white/[0.07] bg-navy">
               {sortedForMatrix.map((d, i) => {
                 const pct = (d.weight ?? 0) * 100;
                 const flexGrow = Math.max(d.weight ?? 0, 0.002);
@@ -418,9 +392,9 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
                   <div
                     key={`bar-${d.ticker}-${i}`}
                     title={`${d.ticker} ${pct.toFixed(1)}%`}
+                    className="min-w-[3px]"
                     style={{
                       flex: `${flexGrow} 1 0`,
-                      minWidth: 3,
                       background: BAR_COLORS[i % BAR_COLORS.length],
                     }}
                   />
@@ -428,8 +402,10 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
               })}
             </div>
             <p className="mt-2 text-xs text-slate-500">
-              Top4 合计 {(conc.top4Weight * 100).toFixed(1)}% · Top10 合计 {(conc.top10Weight * 100).toFixed(1)}% · HHI{" "}
-              {conc.hhi.toFixed(1)} · 有效持仓数（1/Σw²）{conc.effectiveN.toFixed(2)}
+              Top4 合计 <span className="num">{(conc.top4Weight * 100).toFixed(1)}%</span> · Top10 合计{" "}
+              <span className="num">{(conc.top10Weight * 100).toFixed(1)}%</span> · HHI{" "}
+              <span className="num">{conc.hhi.toFixed(1)}</span> · 有效持仓数（1/Σw²）{" "}
+              <span className="num">{conc.effectiveN.toFixed(2)}</span>
             </p>
           </div>
 
@@ -439,7 +415,7 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
               <h4 className="mb-2 text-sm font-medium text-slate-300">风险与信号标签</h4>
               <div className="flex flex-wrap gap-2">
                 {analysis.riskFlags.map((f, i) => (
-                  <span key={i} className={`rounded-full px-2.5 py-1 text-xs ${flagClass(f.type)}`}>
+                  <span key={i} className={flagClass(f.type)}>
                     {f.label}
                   </span>
                 ))}
@@ -448,8 +424,11 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
           )}
 
           {/* AI 解读 */}
-          <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-4">
-            <h4 className="mb-3 text-sm font-medium text-sky-200/90">AI 投研解读</h4>
+          <div className="glass-card rounded-xl p-4">
+            <h4 className="mb-3 flex items-center gap-2 text-sm font-medium text-gold-light">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden />
+              AI 投研解读
+            </h4>
             {!ai ? (
               <p className="text-sm text-slate-500">
                 AI 解读暂不可用（未配置 QWEN_API_KEY、模型错误或解析失败）。数值评分与上图仍可供参考。
@@ -491,80 +470,76 @@ export default function HoldingsDeepAnalysis({ fundName, holdings, productCode }
               setStep("idle");
               setError("");
             }}
-            style={{
-              marginTop: 16,
-              background: "transparent",
-              color: "#475569",
-              border: "1px solid #1e3a5f",
-              borderRadius: 6,
-              padding: "4px 12px",
-              fontSize: 11,
-              cursor: "pointer",
-            }}
+            className="btn-ghost mt-4 !px-3.5 !py-1.5 text-xs"
           >
+            <RefreshCw className="h-3 w-3" aria-hidden />
             重新分析
           </button>
         </div>
       )}
 
       {marketData.length > 0 && (
-        <details style={{ marginTop: 16 }}>
-          <summary style={{ color: "#64748b", fontSize: 12, cursor: "pointer" }}>查看个股原始数据</summary>
-          <table style={{ width: "100%", fontSize: 12, marginTop: 8, borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ color: "#64748b", textAlign: "left" }}>
-                <th style={{ padding: "4px 8px" }}>股票</th>
-                <th style={{ padding: "4px 8px" }}>详情</th>
-                <th style={{ padding: "4px 8px" }}>权重</th>
-                <th style={{ padding: "4px 8px" }}>PE</th>
-                <th style={{ padding: "4px 8px" }}>PB</th>
-                <th style={{ padding: "4px 8px" }}>IV</th>
-                <th style={{ padding: "4px 8px" }}>PCR</th>
-                <th style={{ padding: "4px 8px" }}>股息%</th>
-                <th style={{ padding: "4px 8px" }}>缓存</th>
-                <th style={{ padding: "4px 8px" }}>数据源</th>
-                <th style={{ padding: "4px 8px" }}>质量</th>
-              </tr>
-            </thead>
-            <tbody>
-              {marketData.map((d, i) => (
-                <tr key={i} style={{ borderTop: "1px solid #1e3a5f", color: d.error ? "#475569" : "#e2e8f0" }}>
-                  <td style={{ padding: "4px 8px" }}>{d.ticker}</td>
-                  <td style={{ padding: "4px 8px" }}>
-                    {d.ticker && !d.error ? (
-                      <Link
-                        href={`/stock/${encodeURIComponent(String(d.ticker))}`}
-                        style={{ color: "#60a5fa", fontSize: 12 }}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        打开
-                      </Link>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td style={{ padding: "4px 8px" }}>{((d.weight ?? 0) * 100).toFixed(1)}%</td>
-                  <td style={{ padding: "4px 8px" }}>{d.pe_ttm != null ? Number(d.pe_ttm).toFixed(1) : "—"}</td>
-                  <td style={{ padding: "4px 8px" }}>{d.pb != null ? Number(d.pb).toFixed(2) : "—"}</td>
-                  <td style={{ padding: "4px 8px" }}>
-                    {d.implied_volatility != null ? `${(Number(d.implied_volatility) * 100).toFixed(1)}%` : "—"}
-                  </td>
-                  <td style={{ padding: "4px 8px" }}>{d.put_call_ratio != null ? Number(d.put_call_ratio).toFixed(2) : "—"}</td>
-                  <td style={{ padding: "4px 8px" }}>
-                    {d.dividend_yield != null ? Number(d.dividend_yield).toFixed(2) : "—"}
-                  </td>
-                  <td style={{ padding: "4px 8px" }}>{d.cached ? "是" : "—"}</td>
-                  <td style={{ padding: "4px 8px", fontSize: 11 }}>{d.data_source ?? "—"}</td>
-                  <td style={{ padding: "4px 8px" }}>{d.data_quality ?? "—"}</td>
+        <details className="mt-4">
+          <summary className="cursor-pointer text-xs text-slate-500 transition-colors hover:text-slate-300">
+            查看个股原始数据
+          </summary>
+          <div className="atlas-table-wrap mt-2">
+            <table className="atlas-table">
+              <thead>
+                <tr>
+                  <th>股票</th>
+                  <th>详情</th>
+                  <th>权重</th>
+                  <th>PE</th>
+                  <th>PB</th>
+                  <th>IV</th>
+                  <th>PCR</th>
+                  <th>股息%</th>
+                  <th>缓存</th>
+                  <th>数据源</th>
+                  <th>质量</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {marketData.map((d, i) => (
+                  <tr key={i} className={d.error ? "[&_td]:text-slate-600" : ""}>
+                    <td className="font-mono">{d.ticker}</td>
+                    <td>
+                      {d.ticker && !d.error ? (
+                        <Link
+                          href={`/stock/${encodeURIComponent(String(d.ticker))}`}
+                          className="text-xs text-info hover:text-info/80"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          打开
+                        </Link>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td className="num">{((d.weight ?? 0) * 100).toFixed(1)}%</td>
+                    <td className="num">{d.pe_ttm != null ? Number(d.pe_ttm).toFixed(1) : "—"}</td>
+                    <td className="num">{d.pb != null ? Number(d.pb).toFixed(2) : "—"}</td>
+                    <td className="num">
+                      {d.implied_volatility != null ? `${(Number(d.implied_volatility) * 100).toFixed(1)}%` : "—"}
+                    </td>
+                    <td className="num">{d.put_call_ratio != null ? Number(d.put_call_ratio).toFixed(2) : "—"}</td>
+                    <td className="num">
+                      {d.dividend_yield != null ? Number(d.dividend_yield).toFixed(2) : "—"}
+                    </td>
+                    <td>{d.cached ? "是" : "—"}</td>
+                    <td className="text-[11px]">{d.data_source ?? "—"}</td>
+                    <td>{d.data_quality ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </details>
       )}
 
-      <p style={{ color: "#475569", fontSize: 11, marginTop: 12 }}>
+      <p className="mt-3 text-[11px] text-slate-600">
         四维评分与集中度由服务端根据公开行情计算；AI 部分为解读辅助。仅供参考，不构成投资建议。
       </p>
     </div>

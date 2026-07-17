@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 type WmpRow = {
@@ -62,27 +63,25 @@ function isWmpDataLikelyStale(latestIso: string, now: Date = new Date()): boolea
   return countBusinessDaysAfterLatestToTodayInclusive(latest, now) > 2;
 }
 
+/** 收益率着色：中国惯例红涨绿跌（text-rise / text-fall 令牌） */
 function YieldText({ value }: { value: string }) {
   if (value === "N/A") {
-    return <span className="text-gray-500">N/A</span>;
+    return <span className="num text-slate-500">N/A</span>;
   }
   const n = Number.parseFloat(value.replace("%", "").trim());
   if (!Number.isFinite(n)) {
-    return <span className="text-gray-500">{value}</span>;
+    return <span className="num text-slate-500">{value}</span>;
   }
-  if (n > 0) return <span className="text-red-400">{value}</span>;
-  if (n < 0) return <span className="text-green-400">{value}</span>;
-  return <span className="text-gray-500">{value}</span>;
+  if (n > 0) return <span className="num text-rise">{value}</span>;
+  if (n < 0) return <span className="num text-fall">{value}</span>;
+  return <span className="num text-flat">{value}</span>;
 }
 
 function TableSkeleton() {
   return (
-    <div className="animate-pulse space-y-3">
+    <div className="space-y-3">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div
-          key={i}
-          className="h-12 rounded-lg bg-slate-800/80 border border-slate-700/80"
-        />
+        <div key={i} className="skeleton h-12" />
       ))}
     </div>
   );
@@ -90,12 +89,9 @@ function TableSkeleton() {
 
 function CardSkeleton() {
   return (
-    <div className="animate-pulse space-y-4">
+    <div className="space-y-4">
       {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="rounded-xl border border-slate-700/80 bg-slate-900/60 p-4 h-40"
-        />
+        <div key={i} className="skeleton h-40" />
       ))}
     </div>
   );
@@ -135,37 +131,43 @@ export default function WmpPage() {
   }, [load]);
 
   return (
-    <div className="min-h-screen bg-[#0a0f1e] text-slate-100">
-      <div className="mx-auto max-w-6xl px-4 py-6 pb-16">
-        <div className="mb-4 rounded-lg border border-amber-900/50 bg-amber-950/25 px-4 py-3 text-center text-sm text-amber-100/90">
-          本页面数据仅供参考，不构成任何投资建议
-        </div>
+    <div className="min-h-screen bg-navy text-slate-100">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-20 pb-24">
+        <Link
+          href="/"
+          className="mb-5 inline-flex items-center gap-1.5 text-xs text-slate-500 transition hover:text-gold"
+        >
+          <ArrowLeft size={14} />
+          返回首页
+        </Link>
 
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <Link
-            href="/"
-            className="text-sm text-slate-500 transition hover:text-slate-300"
-          >
-            ← 返回首页
-          </Link>
-          <h1 className="text-xl font-semibold text-slate-100 md:text-2xl">
-            🏦 WMP 净值
+        <header className="mb-8 animate-in">
+          <span className="eyebrow">WEALTH MANAGEMENT</span>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold mt-2">
+            理财净值
           </h1>
-          {latestDate && (
-            <span className="text-xs text-slate-500">数据截至 {latestDate}</span>
-          )}
+          <p className="text-sm text-slate-400 mt-2">
+            银行理财（WMP）净值与区间年化收益跟踪
+            {latestDate && (
+              <span className="num text-slate-500"> · 数据截至 {latestDate}</span>
+            )}
+          </p>
+        </header>
+
+        <div className="glass-panel mb-6 px-4 py-3 text-center text-xs text-slate-400">
+          本页面数据仅供参考，不构成任何投资建议
         </div>
 
         {loading && (isMobile ? <CardSkeleton /> : <TableSkeleton />)}
 
         {!loading && error && (!data || data.length === 0) && (
-          <div className="rounded-lg border border-red-900/40 bg-red-950/20 px-4 py-6 text-center text-sm text-red-200/90">
-            <p className="mb-2">无法读取净值数据</p>
-            <p className="text-xs text-red-300/70">{error}</p>
+          <div className="glass-card px-4 py-10 text-center">
+            <p className="mb-2 text-sm text-rise">无法读取净值数据</p>
+            <p className="text-xs text-slate-500">{error}</p>
             <button
               type="button"
               onClick={() => void load()}
-              className="mt-4 rounded-lg border border-blue-500/50 bg-slate-900 px-4 py-2 text-sm text-blue-300 hover:bg-slate-800"
+              className="btn-ghost mx-auto mt-5 text-xs"
             >
               重试
             </button>
@@ -173,7 +175,7 @@ export default function WmpPage() {
         )}
 
         {!loading && data && data.length === 0 && !error && (
-          <p className="text-center text-slate-500">
+          <p className="text-center text-sm text-slate-500">
             暂无净值历史数据。请确认服务器上已存在 wmp_history.csv 且由爬虫写入。
           </p>
         )}
@@ -184,56 +186,66 @@ export default function WmpPage() {
           latestDate &&
           isWmpDataLikelyStale(latestDate) && (
             <div
-              className="mb-4 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-center text-sm text-amber-200"
+              className="mb-4 flex items-center justify-center gap-2 rounded-xl border border-gold/30 bg-gold/5 px-4 py-3 text-center text-xs text-gold-light"
               role="status"
             >
-              {`⚠️ 数据可能未更新，最新记录为 ${latestDate}，请注意核实`}
+              <AlertTriangle size={14} className="shrink-0" />
+              <span>
+                数据可能未更新，最新记录为{" "}
+                <span className="num">{latestDate}</span>
+                ，请注意核实
+              </span>
             </div>
           )}
 
         {!loading && data && data.length > 0 && !isMobile && (
-          <div className="overflow-x-auto rounded-xl border border-slate-700/80 bg-[#0d1b2e]">
-            <table className="w-full min-w-[900px] border-collapse text-left text-sm">
+          <div className="atlas-table-wrap animate-in">
+            <table className="atlas-table min-w-[900px]">
               <thead>
-                <tr className="border-b border-slate-700/90 text-xs uppercase tracking-wide text-slate-400">
-                  <th className="px-3 py-3 font-medium">产品销售代码</th>
-                  <th className="px-3 py-3 font-medium">产品名称</th>
-                  <th className="px-3 py-3 font-medium">风险评级</th>
-                  <th className="px-3 py-3 font-medium">投资期限</th>
-                  <th className="px-3 py-3 font-medium text-right">最新净值</th>
-                  <th className="px-3 py-3 font-medium text-right">daily%年化</th>
-                  <th className="px-3 py-3 font-medium text-right">1W年化</th>
-                  <th className="px-3 py-3 font-medium text-right">1M年化</th>
-                  <th className="px-3 py-3 font-medium text-right">3M年化</th>
+                <tr>
+                  <th>产品销售代码</th>
+                  <th>产品名称</th>
+                  <th>风险评级</th>
+                  <th>投资期限</th>
+                  <th>
+                    <span className="block text-right">最新净值</span>
+                  </th>
+                  <th>
+                    <span className="block text-right">daily%年化</span>
+                  </th>
+                  <th>
+                    <span className="block text-right">1W年化</span>
+                  </th>
+                  <th>
+                    <span className="block text-right">1M年化</span>
+                  </th>
+                  <th>
+                    <span className="block text-right">3M年化</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((r) => (
-                  <tr
-                    key={r.product_code}
-                    className="border-b border-slate-800/90 last:border-0 hover:bg-slate-900/40"
-                  >
-                    <td className="px-3 py-2.5 font-mono text-slate-300">
-                      {r.product_code}
-                    </td>
-                    <td className="max-w-[220px] px-3 py-2.5 text-slate-200">
+                  <tr key={r.product_code}>
+                    <td className="num text-slate-300">{r.product_code}</td>
+                    <td className="max-w-[240px] text-slate-200">
                       {r.product_name}
                     </td>
-                    <td className="px-3 py-2.5 text-slate-400">{r.risk_level}</td>
-                    <td className="px-3 py-2.5 text-slate-400">{r.term}</td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-slate-200">
+                    <td className="text-slate-400">{r.risk_level}</td>
+                    <td className="text-slate-400">{r.term}</td>
+                    <td className="num text-right text-slate-100">
                       {r.nav.toFixed(4)}
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums">
+                    <td className="text-right">
                       <YieldText value={r.daily_yield} />
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums">
+                    <td className="text-right">
                       <YieldText value={r.yield_1w} />
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums">
+                    <td className="text-right">
                       <YieldText value={r.yield_1m} />
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums">
+                    <td className="text-right">
                       <YieldText value={r.yield_3m} />
                     </td>
                   </tr>
@@ -246,26 +258,23 @@ export default function WmpPage() {
         {!loading && data && data.length > 0 && isMobile && (
           <div className="space-y-4">
             {data.map((r) => (
-              <div
-                key={r.product_code}
-                className="rounded-xl border border-slate-700/80 bg-[#0d1b2e] p-4"
-              >
-                <div className="mb-2 text-xs text-slate-500">
+              <div key={r.product_code} className="glass-card p-4">
+                <div className="num mb-1 text-[11px] text-slate-500">
                   {r.product_code}
                 </div>
-                <h2 className="text-base font-medium text-slate-100 leading-snug">
+                <h2 className="text-base font-medium leading-snug text-slate-100">
                   {r.product_name}
                 </h2>
                 <p className="mt-1 text-xs text-slate-500">
                   {r.risk_level} · {r.term}
                 </p>
-                <p className="mt-3 text-sm text-slate-300">
+                <p className="mt-3 text-sm text-slate-400">
                   最新净值{" "}
-                  <span className="tabular-nums font-medium text-slate-100">
+                  <span className="num font-medium text-gold-light">
                     {r.nav.toFixed(4)}
                   </span>
                 </p>
-                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/[0.06] pt-3 text-sm">
                   <div>
                     <div className="text-xs text-slate-500">daily%年化</div>
                     <YieldText value={r.daily_yield} />
@@ -288,7 +297,8 @@ export default function WmpPage() {
           </div>
         )}
 
-        <p className="mt-10 text-center text-xs leading-relaxed text-slate-500">
+        <hr className="hairline-gold mt-10" />
+        <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">
           赎回到账：WMP产品T+1到账；142890 T+2到账；汇华CIO系列T+5到账
         </p>
       </div>

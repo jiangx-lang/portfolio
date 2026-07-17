@@ -1,366 +1,300 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { motion } from "framer-motion";
+import {
+  Landmark,
+  Globe,
+  LineChart,
+  PieChart,
+  FileText,
+  Podcast,
+  Shield,
+  Radio,
+  Lock,
+  ArrowRight,
+  Crown,
+  type LucideIcon,
+} from "lucide-react";
+import { type FeatureKey } from "@/lib/progress";
+import { UpgradeBanner } from "@/components/UpgradeBanner";
 
-/** 与 Streamlit 落地页按钮风格对齐的站内链接样式 */
-const pillLinkStyle = (
-  base: React.CSSProperties
-): React.CSSProperties => ({
-  ...base,
-  display: "inline-block",
-  boxSizing: "border-box",
-  textAlign: "center",
-  textDecoration: "none",
+interface ProgressData {
+  xp: number;
+  level: number;
+  levelName: string;
+}
+
+interface Entry {
+  key: FeatureKey;
+  tag: string;
+  title: string;
+  desc: string;
+  icon: LucideIcon;
+  href: string;
+  accent?: boolean;
+}
+
+const mainEntries: Entry[] = [
+  {
+    key: "qd",
+    tag: "QDII FUND POOL",
+    title: "QDII 基金池",
+    desc: "组合构建 · 主题搜索 · 历史业绩回溯",
+    icon: Landmark,
+    href: "/qd",
+    accent: true,
+  },
+  {
+    key: "mrf",
+    tag: "MRF PORTFOLIO",
+    title: "MRF 互认基金",
+    desc: "基金池筛选 · 组合构建 · 持仓穿透分析",
+    icon: Globe,
+    href: "/mrf",
+    accent: true,
+  },
+  {
+    key: "wmp",
+    tag: "WMP NAV",
+    title: "WMP 理财",
+    desc: "净值抓取 · 走势追踪 · 收益对比",
+    icon: LineChart,
+    href: "/wmp",
+  },
+  {
+    key: "portfolio",
+    tag: "MODEL PORTFOLIO",
+    title: "标准组合",
+    desc: "手续费测算 · 组合诊断 · 情景分析",
+    icon: PieChart,
+    href: "/portfolio",
+  },
+];
+
+const secondaryEntries: Entry[] = [
+  {
+    key: "notes",
+    tag: "CONTENT",
+    title: "市场笔记",
+    desc: "每日市场报告与深度解读",
+    icon: FileText,
+    href: "/notes",
+  },
+  {
+    key: "podcast",
+    tag: "AUDIO",
+    title: "播客",
+    desc: "音频形式的市场解读",
+    icon: Podcast,
+    href: "/podcast",
+  },
+  {
+    key: "risk",
+    tag: "RISK",
+    title: "风险监控",
+    desc: "交互式宏观风险仪表板",
+    icon: Shield,
+    href: "/risk",
+  },
+  {
+    key: "signals",
+    tag: "SIGNALS",
+    title: "信号中心",
+    desc: "宏观 / 行业 / 个股 AI 信号",
+    icon: Radio,
+    href: "/signals",
+  },
+];
+
+const requiredLevels: Record<FeatureKey, number> = {
+  qd: 1,
+  mrf: 1,
+  wmp: 1,
+  notes: 1,
+  podcast: 1,
+  portfolio: 2,
+  stock: 2,
+  ai_summary: 2,
+  risk: 3,
+  deep_analysis: 3,
+  signals: 4,
+  pdf_export: 4,
+};
+
+const entrance = (delay: number) => ({
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.45, ease: "easeOut" as const },
 });
 
-/** 与 Streamlit `app.py` → `render_landing_page` 版式对齐；设备切换在 Next 侧用路由/新标签近似 */
 export default function LandingSelector() {
-  const router = useRouter();
-  const { isMobile } = useIsMobile();
+  const [progress, setProgress] = useState<ProgressData | null>(null);
 
-  const cardInner = {
-    background: "#0d1b2e",
-    border: "1px solid #1e3a5f",
-    borderRadius: "12px",
-    padding: "24px",
-    marginBottom: "12px",
-  } as const;
+  useEffect(() => {
+    fetch("/api/progress/me")
+      .then((r) => r.json())
+      .then((data) => setProgress(data as ProgressData))
+      .catch(() => {});
+  }, []);
 
-  const tagStyle: React.CSSProperties = {
-    color: "#60a5fa",
-    fontSize: 12,
-    letterSpacing: "2px",
-    marginBottom: 8,
+  const userLevel = progress?.level ?? 1;
+
+  const renderMainCard = (entry: Entry, index: number) => {
+    const required = requiredLevels[entry.key];
+    const locked = userLevel < required;
+    const Icon = entry.icon;
+
+    return (
+      <motion.div key={entry.key} {...entrance(0.16 + index * 0.06)} className="h-full">
+        <Link href={locked ? "/qd" : entry.href} className="block h-full">
+          <div
+            className={`glass-card group relative h-full flex flex-col p-6 overflow-hidden ${
+              entry.accent && !locked ? "glow-border" : ""
+            } ${locked ? "opacity-60 saturate-50 pb-12" : ""}`}
+          >
+            {locked && (
+              <span className="badge badge-gold absolute top-4 right-4 z-10">
+                <Lock className="w-3 h-3" />
+                Lv.{required} 解锁
+              </span>
+            )}
+            <div className="w-12 h-12 rounded-full bg-gold/[0.08] border border-gold/25 flex items-center justify-center text-gold shadow-glow-gold mb-5">
+              <Icon className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-semibold tracking-[0.22em] text-slate-500 uppercase">
+              {entry.tag}
+            </span>
+            <h3 className="font-display text-xl font-bold text-white mt-1.5">
+              {entry.title}
+            </h3>
+            <p className="text-sm text-slate-400 leading-relaxed mt-2 flex-1">
+              {entry.desc}
+            </p>
+            <div className="mt-5 flex items-center text-sm font-medium text-gold-light">
+              {locked ? "去获取 XP" : "进入"}
+              <ArrowRight className="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </div>
+            {locked && (
+              <div className="absolute inset-x-0 bottom-0 py-2.5 text-center text-xs text-gold-light bg-navy/70 backdrop-blur-sm border-t border-gold/20 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0">
+                再多使用几次即可开启
+              </div>
+            )}
+          </div>
+        </Link>
+      </motion.div>
+    );
   };
 
-  const titleStyle: React.CSSProperties = {
-    color: "#e2e8f0",
-    fontSize: 18,
-    fontWeight: 600,
-    marginBottom: 8,
-  };
+  const renderSecondaryCard = (entry: Entry, index: number) => {
+    const required = requiredLevels[entry.key];
+    const locked = userLevel < required;
+    const Icon = entry.icon;
 
-  const descStyle: React.CSSProperties = {
-    color: "#94a3b8",
-    fontSize: 13,
-  };
-
-  const deviceBtn: React.CSSProperties = {
-    background: "#0f2744",
-    color: "#60a5fa",
-    border: "1px solid #3b82f6",
-    borderRadius: "8px",
-    padding: "8px 12px",
-    fontSize: 14,
-    cursor: "pointer",
-    width: "100%",
-    fontFamily: "inherit",
-  };
-
-  const bottomCard: React.CSSProperties = {
-    background: "#0d1b2e",
-    border: "1px solid #1e3a5f",
-    borderRadius: "12px",
-    padding: "20px",
-    textAlign: "center",
-    marginBottom: 8,
+    return (
+      <motion.div key={entry.key} {...entrance(0.34 + index * 0.05)} className="h-full">
+        <Link href={locked ? "/qd" : entry.href} className="block h-full">
+          <div
+            className={`glass-card group h-full flex items-center gap-3.5 px-4 py-3.5 ${
+              locked ? "opacity-60 saturate-50" : ""
+            }`}
+          >
+            <div className="w-9 h-9 shrink-0 rounded-full bg-gold/[0.08] border border-gold/20 flex items-center justify-center text-gold">
+              <Icon className="w-4 h-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-white truncate">
+                {entry.title}
+              </div>
+              <div className="text-xs text-slate-500 truncate mt-0.5">
+                {locked ? (
+                  <>
+                    <span className="group-hover:hidden">{entry.desc}</span>
+                    <span className="hidden group-hover:inline text-gold-light">
+                      再多使用几次即可开启
+                    </span>
+                  </>
+                ) : (
+                  entry.desc
+                )}
+              </div>
+            </div>
+            {locked ? (
+              <span className="badge badge-gold shrink-0">
+                <Lock className="w-3 h-3" />
+                Lv.{required} 解锁
+              </span>
+            ) : (
+              <ArrowRight className="w-4 h-4 shrink-0 text-slate-500 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-gold-light" />
+            )}
+          </div>
+        </Link>
+      </motion.div>
+    );
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0a0f1e",
-        color: "#e2e8f0",
-        padding: "24px 16px 48px",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-        }}
-      >
-        {/* Header — 与 Streamlit 落地页一致 */}
-        <div style={{ textAlign: "center", padding: "24px 0 8px" }}>
-          <div
-            style={{
-              fontSize: 13,
-              color: "#3b82f6",
-              letterSpacing: "3px",
-              marginBottom: 8,
-            }}
-          >
-            ◆ ATLAS
-          </div>
-          <h1
-            style={{
-              color: "#e2e8f0",
-              fontSize: isMobile ? 26 : 32,
-              fontWeight: 700,
-              margin: 0,
-            }}
-          >
-            Market Portfolio
-          </h1>
-          <p style={{ color: "#94a3b8", fontSize: 14, marginTop: 8 }}>
-            Model Portfolio 数据展示 · 市场资讯分享 · 不构成任何投资建议
-          </p>
-        </div>
-        <p
-          style={{
-            textAlign: "center",
-            color: "#94a3b8",
-            fontSize: 13,
-            marginBottom: 20,
-          }}
-        >
-          请选择入口与设备
+    <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-20">
+      {/* Hero */}
+      <motion.header {...entrance(0)} className="text-center">
+        <span className="eyebrow">ATLAS MARKET PORTFOLIO</span>
+        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mt-4 tracking-wide">
+          全资产<span className="text-gradient-gold">投研</span>工作台
+        </h1>
+        <p className="text-sm sm:text-base text-slate-400 mt-4 max-w-xl mx-auto leading-relaxed">
+          持仓透视 · 净值追踪 · AI 信号，一站式纵览全球资产
         </p>
-        <hr
-          style={{
-            border: "none",
-            borderTop: "1px solid #1e3a5f",
-            margin: "0 0 28px",
-          }}
-        />
-
-        {/* QDII | MRF */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: "16px",
-            marginBottom: 8,
-          }}
-        >
-          {/* QDII */}
-          <div>
-            <div style={cardInner}>
-              <div style={tagStyle}>QDII PORTFOLIO</div>
-              <div style={titleStyle}>🏦 锦城轮动 · QDII</div>
-              <div style={descStyle}>
-                QDII 基金组合构建器 · 主题搜索 · 历史业绩
-              </div>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
-              <button
-                type="button"
-                style={deviceBtn}
-                onClick={() => router.push("/qd")}
-              >
-                📱 手机端
-              </button>
-              <button
-                type="button"
-                style={deviceBtn}
-                onClick={() => router.push("/qd")}
-              >
-                🖥️ 电脑端
-              </button>
-            </div>
-            <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-              手机端与电脑端均进入 Next QD 基金池
-            </p>
+        {progress && (
+          <div className="mt-6 inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass-panel">
+            <Crown className="w-4 h-4 text-gold" />
+            <span className="text-sm font-semibold text-gold-light">
+              Lv.{progress.level} · {progress.levelName}
+            </span>
+            <span className="w-px h-3.5 bg-white/10" />
+            <span className="num text-xs text-slate-400">{progress.xp} XP</span>
           </div>
+        )}
+      </motion.header>
 
-          {/* MRF */}
-          <div>
-            <div style={cardInner}>
-              <div style={tagStyle}>MRF PORTFOLIO</div>
-              <div style={titleStyle}>🌐 锦城轮动 · MRF</div>
-              <div style={descStyle}>
-                MRF 基金池 · 组合构建 · 穿透分析
-              </div>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
-              <button
-                type="button"
-                style={deviceBtn}
-                onClick={() => router.push("/mrf")}
-              >
-                📱 手机端
-              </button>
-              <button
-                type="button"
-                style={deviceBtn}
-                onClick={() => router.push("/portfolio")}
-              >
-                🖥️ 电脑端
-              </button>
-            </div>
-            <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-              手机端：MRF 列表与穿透；电脑端：Next Model Portfolio（标准组合）
-            </p>
-          </div>
-        </div>
+      {/* 成长提示条 */}
+      <motion.div {...entrance(0.1)} className="max-w-3xl mx-auto mt-10">
+        <UpgradeBanner />
+      </motion.div>
 
-        {/* WMP | MRF Pool — 与 QDII/MRF 行相同响应式栅格 */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: "16px",
-            marginTop: 8,
-          }}
-        >
-          <div>
-            <div style={cardInner}>
-              <div style={tagStyle}>WMP NAV</div>
-              <div style={titleStyle}>🏦 WMP 净值</div>
-              <div style={descStyle}>抓取与查看 WMP 净值数据</div>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
-              <Link href="/wmp" style={pillLinkStyle(deviceBtn)}>
-                📱 手机端
-              </Link>
-              <Link href="/wmp" style={pillLinkStyle(deviceBtn)}>
-                🖥️ 电脑端
-              </Link>
-            </div>
-            <p style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>
-              本站 Next · WMP 净值（读服务器 CSV）
-            </p>
-          </div>
-
-          <div>
-            <div style={cardInner}>
-              <div style={tagStyle}>MRF POOL</div>
-              <div style={titleStyle}>🌏 MRF 基金池</div>
-              <div style={descStyle}>
-                16只互认基金 · 地域筛选 · 主题分析
-              </div>
-            </div>
-            <Link href="/mrf" style={pillLinkStyle(deviceBtn)}>
-              进入基金池 →
-            </Link>
-          </div>
-        </div>
-
-        {/* 市场笔记 · 播客 · 管理员 */}
-        <div style={{ marginTop: 24 }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-              gap: "16px",
-            }}
-          >
-            <div>
-              <div style={bottomCard}>
-                <div style={{ fontSize: 24, marginBottom: 8 }}>📝</div>
-                <div style={{ fontWeight: 600, fontSize: 15 }}>市场笔记</div>
-                <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 4 }}>
-                  市场观察与分析
-                </div>
-              </div>
-              <Link
-                href="/notes"
-                style={pillLinkStyle({ ...deviceBtn, marginTop: 4 })}
-              >
-                进入市场笔记 →
-              </Link>
-            </div>
-            <div>
-              <div style={bottomCard}>
-                <div style={{ fontSize: 24, marginBottom: 8 }}>🎙️</div>
-                <div style={{ fontWeight: 600, fontSize: 15 }}>播客</div>
-                <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 4 }}>
-                  音频市场解读
-                </div>
-              </div>
-              <Link
-                href="/podcast"
-                style={pillLinkStyle({ ...deviceBtn, marginTop: 4 })}
-              >
-                进入播客 →
-              </Link>
-            </div>
-            <div>
-              <div style={bottomCard}>
-                <div style={{ fontSize: 24, marginBottom: 8 }}>🔐</div>
-                <div style={{ fontWeight: 600, fontSize: 15 }}>管理员</div>
-                <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 4 }}>
-                  内容管理后台
-                </div>
-              </div>
-              <Link
-                href="/admin"
-                style={pillLinkStyle({ ...deviceBtn, marginTop: 4 })}
-              >
-                🔐 管理员
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Model Portfolio 快捷（Next 独有，窄条） */}
-        <div
-          style={{
-            marginTop: 28,
-            padding: "16px",
-            background: "rgba(24,95,165,0.12)",
-            border: "1px solid rgba(59,130,246,0.35)",
-            borderRadius: 12,
-            textAlign: "center",
-          }}
-        >
-          <span style={{ fontSize: 13, color: "#94a3b8" }}>
-            Next 站内 ·{" "}
+      {/* 主入口 */}
+      <motion.div {...entrance(0.14)} className="mt-12">
+        <div className="flex items-center gap-4 mb-4">
+          <span className="text-[11px] font-semibold tracking-[0.22em] text-slate-500 uppercase">
+            核心工作台
           </span>
-          <button
-            type="button"
-            onClick={() => router.push("/portfolio")}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#60a5fa",
-              fontSize: 13,
-              cursor: "pointer",
-              textDecoration: "underline",
-              fontFamily: "inherit",
-            }}
-          >
-            📊 Model Portfolio（标准组合）
-          </button>
+          <span className="flex-1 h-px bg-white/[0.06]" />
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {mainEntries.map((entry, i) => renderMainCard(entry, i))}
+        </div>
+      </motion.div>
 
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: 36,
-            paddingTop: 20,
-            borderTop: "1px solid #1e3a5f",
-            fontSize: 12,
-            color: "#475569",
-            lineHeight: 1.6,
-          }}
-        >
-          本平台所有内容仅为市场数据展示与资讯分享，不构成任何投资建议。
-          <br />
-          投资涉及风险，请咨询持牌理财顾问后自行决策。
+      {/* 次入口 */}
+      <div className="mt-10">
+        <motion.div {...entrance(0.3)} className="flex items-center gap-4 mb-4">
+          <span className="text-[11px] font-semibold tracking-[0.22em] text-slate-500 uppercase">
+            资讯与情报
+          </span>
+          <span className="flex-1 h-px bg-white/[0.06]" />
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {secondaryEntries.map((entry, i) => renderSecondaryCard(entry, i))}
         </div>
       </div>
+
+      {/* 页脚 */}
+      <motion.footer {...entrance(0.5)} className="mt-16">
+        <hr className="hairline-gold" />
+        <p className="mt-6 text-center text-xs text-slate-500 leading-relaxed">
+          数据仅供研究参考，不构成投资建议 · 投资涉及风险，决策需谨慎
+        </p>
+      </motion.footer>
     </div>
   );
 }

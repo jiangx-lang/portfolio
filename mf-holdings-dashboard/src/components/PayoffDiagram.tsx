@@ -29,8 +29,8 @@ interface PayoffDiagramProps {
 export function PayoffDiagram({ strategy, spot }: PayoffDiagramProps) {
   if (!strategy) {
     return (
-      <div className="flex h-[240px] items-center justify-center rounded-xl border border-white/10 bg-navy-card text-white/50">
-        Select a strategy
+      <div className="flex h-[240px] items-center justify-center rounded-2xl border border-white/[0.07] bg-navy-card text-slate-500">
+        请选择策略情景
       </div>
     );
   }
@@ -66,7 +66,8 @@ export function PayoffDiagram({ strategy, spot }: PayoffDiagramProps) {
       {
         label: "P&L ($)",
         data: profits,
-        backgroundColor: profits.map((v) => (v >= 0 ? "rgba(29, 158, 117, 0.8)" : "rgba(216, 90, 48, 0.8)")),
+        // 红涨绿跌：正收益为红、负收益为绿
+        backgroundColor: profits.map((v) => (v >= 0 ? "rgba(232,93,80,0.85)" : "rgba(47,191,143,0.85)")),
       },
     ],
   };
@@ -76,23 +77,32 @@ export function PayoffDiagram({ strategy, spot }: PayoffDiagramProps) {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      title: { display: true, text: `${strategy.name} payoff`, color: "#9CA3AF" },
+      title: { display: true, text: `${strategy.name} 收益结构`, color: "#E3C87A" },
+      tooltip: {
+        backgroundColor: "rgba(12,17,32,0.95)",
+        borderColor: "rgba(201,168,76,0.3)",
+        borderWidth: 1,
+        titleColor: "#E3C87A",
+        bodyColor: "#F4F6FB",
+        padding: 10,
+        cornerRadius: 10,
+      },
     },
     scales: {
       x: {
-        ticks: { color: "#9CA3AF", maxTicksLimit: 12 },
-        grid: { color: "rgba(255,255,255,0.06)" },
+        ticks: { color: "#66738C", maxTicksLimit: 12 },
+        grid: { color: "rgba(148,163,194,0.08)" },
       },
       y: {
         reverse: false,
-        ticks: { color: "#9CA3AF" },
-        grid: { color: "rgba(255,255,255,0.06)" },
+        ticks: { color: "#66738C" },
+        grid: { color: "rgba(148,163,194,0.08)" },
       },
     },
   };
 
   return (
-    <div className="h-[240px] rounded-xl border border-white/10 bg-navy-card p-4">
+    <div className="h-[240px] rounded-2xl border border-white/[0.07] bg-navy-card p-4">
       <Bar data={data} options={options} />
     </div>
   );

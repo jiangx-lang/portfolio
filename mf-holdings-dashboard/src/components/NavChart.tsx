@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -33,6 +33,29 @@ interface NavChartProps {
   rangeLoading?: boolean;
 }
 
+/** 深色玻璃 tooltip：金边 + font-mono 数值 */
+function NavChartTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: ReadonlyArray<{ value?: number | string }>;
+  label?: string;
+}) {
+  if (!active || !payload || payload.length === 0) return null;
+  const raw = payload[0]?.value;
+  const num = typeof raw === "number" ? raw : Number(raw);
+  return (
+    <div className="rounded-xl border border-gold/30 bg-navy-elevated/95 px-3 py-2 shadow-card backdrop-blur-md">
+      <p className="font-mono text-[11px] text-slate-500">日期 {label}</p>
+      <p className="mt-1 font-mono text-sm text-gold-light">
+        净值 {Number.isFinite(num) ? num.toFixed(4) : "—"}
+      </p>
+    </div>
+  );
+}
+
 export function NavChart({
   dates,
   navs,
@@ -49,21 +72,23 @@ export function NavChart({
   if (!data.length && !rangeLoading) {
     return (
       <div
-        className="flex flex-col rounded-xl border border-white/10 bg-navy-card text-white/50"
+        className="glass-card flex flex-col text-slate-500"
         style={{ minHeight: height }}
       >
         {showRangeBar && (
-          <div className="flex flex-wrap gap-2 border-b border-white/10 p-3">
-            {NAV_CHART_RANGES.map((r) => (
-              <button
-                key={r.label}
-                type="button"
-                disabled
-                className="rounded-md px-2.5 py-1 text-xs text-white/40"
-              >
-                {r.label}
-              </button>
-            ))}
+          <div className="border-b border-white/[0.07] p-3">
+            <div className="inline-flex flex-wrap items-center gap-1 rounded-full border border-white/[0.07] bg-navy/60 p-1">
+              {NAV_CHART_RANGES.map((r) => (
+                <button
+                  key={r.label}
+                  type="button"
+                  disabled
+                  className="rounded-full border border-transparent px-3 py-1 text-xs font-medium text-slate-600"
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
         <div className="flex flex-1 items-center justify-center">暂无净值数据</div>
@@ -73,22 +98,22 @@ export function NavChart({
 
   return (
     <div
-      className="rounded-xl border border-white/10 bg-navy-card p-4"
+      className="glass-card p-4"
       style={{ minHeight: height }}
     >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-medium text-white/80">
-          历史净值 {isin ? `· ${isin}` : ""}
+        <p className="text-sm font-medium text-slate-300">
+          历史净值 {isin ? <span className="font-mono text-slate-500">· {isin}</span> : ""}
         </p>
         {rangeLoading && (
-          <span className="text-xs text-sky-400/90" aria-live="polite">
+          <span className="text-xs text-gold-light/90" aria-live="polite">
             更新中…
           </span>
         )}
       </div>
 
       {showRangeBar && (
-        <div className="mb-3 flex flex-wrap gap-1.5">
+        <div className="mb-3 inline-flex flex-wrap items-center gap-1 rounded-full border border-white/[0.07] bg-navy/60 p-1">
           {NAV_CHART_RANGES.map((r) => {
             const active = r.days === rangeDays;
             return (
@@ -97,10 +122,10 @@ export function NavChart({
                 type="button"
                 onClick={() => onRangeChange!(r.days)}
                 disabled={rangeLoading}
-                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                   active
-                    ? "border border-sky-500/80 bg-sky-500/20 text-sky-300"
-                    : "border border-transparent bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80"
+                    ? "border border-gold/40 bg-gold/15 text-gold-light"
+                    : "border border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-200"
                 } ${rangeLoading ? "cursor-wait opacity-70" : ""}`}
               >
                 {r.label}
@@ -111,35 +136,44 @@ export function NavChart({
       )}
 
       {data.length === 0 && rangeLoading ? (
-        <div className="flex items-center justify-center text-white/50" style={{ height: height * 0.75 }}>
+        <div className="flex items-center justify-center text-slate-500" style={{ height: height * 0.75 }}>
           加载图表…
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={showRangeBar ? Math.max(200, height - 72) : height * 0.9}>
-          <LineChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+          <AreaChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
+            <defs>
+              <linearGradient id="atlasNavStroke" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#9A7E2F" />
+                <stop offset="55%" stopColor="#C9A84C" />
+                <stop offset="100%" stopColor="#E3C87A" />
+              </linearGradient>
+              <linearGradient id="atlasNavFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#C9A84C" stopOpacity={0.28} />
+                <stop offset="100%" stopColor="#C9A84C" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,194,0.08)" />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 10, fill: "#9CA3AF" }}
+              tick={{ fontSize: 10, fill: "#64748b", className: "font-mono" }}
               tickFormatter={(v) => (v ? String(v).slice(5) : "")}
             />
             <YAxis
-              tick={{ fontSize: 10, fill: "#9CA3AF" }}
+              tick={{ fontSize: 10, fill: "#64748b", className: "font-mono" }}
               tickFormatter={(v) => (typeof v === "number" ? v.toFixed(2) : "")}
               domain={["auto", "auto"]}
             />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#111827",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "8px",
-              }}
-              labelStyle={{ color: "#9CA3AF" }}
-              formatter={(value: number) => [value.toFixed(4), "净值"]}
-              labelFormatter={(label) => `日期: ${label}`}
+            <Tooltip content={<NavChartTooltip />} />
+            <Area
+              type="monotone"
+              dataKey="nav"
+              stroke="url(#atlasNavStroke)"
+              strokeWidth={2}
+              fill="url(#atlasNavFill)"
+              dot={false}
             />
-            <Line type="monotone" dataKey="nav" stroke="#185FA5" strokeWidth={2} dot={false} />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       )}
     </div>

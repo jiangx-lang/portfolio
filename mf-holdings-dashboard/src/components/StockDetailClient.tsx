@@ -47,7 +47,7 @@ export function StockDetailClient({
   ].filter(Boolean) as StrategyCard[];
 
   const pctChange = useMemo(() => (spot ? (change / spot) * 100 : 0), [change, spot]);
-  const moodColor = iv.ivRank < 30 ? "#1D9E75" : iv.ivRank <= 50 ? "#BA7517" : "#D85A30";
+  const moodClass = iv.ivRank < 30 ? "text-fall" : iv.ivRank <= 50 ? "text-gold" : "text-rise";
   const moodLabel = iv.ivRank < 30 ? "波动偏低" : iv.ivRank <= 50 ? "波动中性" : "波动偏高";
   const earningsCountdown = useMemo(() => {
     if (!iv.nextEarnings) return null;
@@ -72,22 +72,18 @@ export function StockDetailClient({
   return (
     <div className="space-y-4 px-3 pb-4 md:space-y-6 md:px-0 md:pb-0">
       {/* 1) 股票总结卡 */}
-      <div
-        className={`rounded-2xl border border-[color:var(--border-normal)] bg-[color:var(--bg-card)] shadow-[0_18px_48px_rgba(0,0,0,0.7)] ${isMobile ? "p-4" : "p-6"}`}
-      >
+      <div className={`glass-panel ${isMobile ? "p-4" : "p-6"}`}>
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
-            {ticker} · 公开市场数据
-          </div>
+          <span className="eyebrow">{ticker} · 公开市场数据</span>
           <div
             className={`mt-2 ${isMobile ? "flex flex-col gap-2" : "flex items-baseline gap-3"}`}
           >
             <div
-              className={`font-mono font-semibold text-[color:var(--text-primary)] ${isMobile ? "text-3xl" : "text-4xl"}`}
+              className={`font-mono font-semibold tabular-nums text-slate-50 ${isMobile ? "text-3xl" : "text-4xl"}`}
             >
               ${spot.toFixed(2)}
             </div>
-            <div className={change >= 0 ? "text-[color:var(--color-up)]" : "text-[color:var(--color-down)]"}>
+            <div className={`font-mono ${change >= 0 ? "text-rise" : "text-fall"}`}>
               {change >= 0 ? "+" : ""}
               {change.toFixed(2)} ({pctChange >= 0 ? "+" : ""}
               {pctChange.toFixed(2)}%)
@@ -95,7 +91,7 @@ export function StockDetailClient({
           </div>
           <div className={`mt-3 grid gap-3 ${isMobile ? "grid-cols-2" : "grid-cols-2 md:grid-cols-5"}`}>
             <MetricCard label="市场波动(30日)" value={`${(iv.iv30d * 100).toFixed(1)}%`} />
-            <MetricCard label="波动分位示意" value={moodLabel} sub="仅作数据参考" className="border-white/10" />
+            <MetricCard label="波动分位示意" value={moodLabel} sub="仅作数据参考" />
             <MetricCard label="市场分位" value={iv.ivPercentile.toFixed(0)} sub="越低越平静" />
             <MetricCard label="下次财报" value={iv.nextEarnings ?? "—"} sub={earningsCountdown ? `倒计时：${earningsCountdown}` : undefined} />
             <MetricCard label="波动范围(52周)" value={`${(iv.iv52wLow * 100).toFixed(0)}-${(iv.iv52wHigh * 100).toFixed(0)}%`} />
@@ -111,7 +107,7 @@ export function StockDetailClient({
       />
 
       {/* 1.8) 市场数据解读 */}
-      <div className="rounded-2xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-card)] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.6)]">
+      <div className="glass-panel p-5">
         <AISignalBox
           ticker={ticker}
           initial={initialSignal}
@@ -127,20 +123,20 @@ export function StockDetailClient({
       {/* 2) 波动分位（IV Rank） */}
       <div className="grid gap-4 md:grid-cols-2">
         <IVGauge stats={iv} className="rounded-2xl" />
-        <div className="rounded-2xl border border-white/10 bg-navy-card p-5">
-          <div className="text-xs font-medium uppercase tracking-wider text-white/60">市场情绪解释</div>
+        <div className="rounded-2xl border border-white/[0.07] bg-navy-card p-5">
+          <div className="text-xs font-medium uppercase tracking-wider text-slate-400">市场情绪解释</div>
           <div className="mt-3">
-            <div className="flex items-center justify-between text-xs text-white/60">
-              <span>52周低</span>
-              <span style={{ color: moodColor }}>{moodLabel}</span>
-              <span>52周高</span>
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span className="font-mono">52周低</span>
+              <span className={moodClass}>{moodLabel}</span>
+              <span className="font-mono">52周高</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
-              <div className="h-full bg-info" style={{ width: `${Math.min(100, Math.max(0, iv.ivRank))}%` }} />
+              <div className="h-full bg-gradient-gold" style={{ width: `${Math.min(100, Math.max(0, iv.ivRank))}%` }} />
             </div>
           </div>
-          <div className="mt-4 rounded-lg border border-white/10 bg-white/5 p-3 text-sm text-white/80">
-            <div className="text-[10px] uppercase tracking-wide text-white/40">估值温度计结论</div>
+          <div className="mt-4 rounded-xl border border-white/[0.07] bg-white/[0.03] p-3 text-sm text-slate-300">
+            <div className="text-[10px] uppercase tracking-wide text-slate-500">估值温度计结论</div>
             <div className="mt-1">
               {iv.ivRank < 30
                 ? "隐含波动处于较低分位，反映市场对短期波动的定价相对温和，仅供数据观察。"
@@ -149,8 +145,8 @@ export function StockDetailClient({
                   : "隐含波动处于较高分位，短期不确定性定价偏高，仅供数据观察。"}
             </div>
             {iv.nextEarnings && (
-              <div className="mt-2 text-xs text-white/60">
-                下次财报：{iv.nextEarnings}（{earningsCountdown ? `倒计时 ${earningsCountdown}` : "—"}）
+              <div className="mt-2 text-xs text-slate-400">
+                下次财报：<span className="font-mono">{iv.nextEarnings}</span>（{earningsCountdown ? `倒计时 ${earningsCountdown}` : "—"}）
               </div>
             )}
           </div>
@@ -158,8 +154,8 @@ export function StockDetailClient({
       </div>
 
       {/* 3) Tabs */}
-      <div className="rounded-2xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-card)] p-5">
-        <div className="flex flex-wrap gap-2">
+      <div className="glass-panel p-5">
+        <div className="inline-flex flex-wrap gap-1 rounded-full border border-white/[0.07] bg-white/[0.03] p-1">
           {tabs.map((t) => (
             <button
               key={t.id}
@@ -167,8 +163,8 @@ export function StockDetailClient({
               onClick={() => setTab(t.id)}
               className={
                 tab === t.id
-                  ? "rounded-lg bg-info/20 px-3 py-1.5 text-xs font-medium text-info"
-                  : "rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/70 hover:text-white"
+                  ? "rounded-full bg-gradient-gold px-4 py-1.5 text-xs font-semibold text-slate-950 shadow-glow-gold"
+                  : "rounded-full px-4 py-1.5 text-xs text-slate-400 transition hover:text-slate-100"
               }
             >
               {t.label}
@@ -180,11 +176,11 @@ export function StockDetailClient({
           {tab === "strategies" && (
             <div className="grid gap-4 lg:grid-cols-2">
               <div>
-                <div className="mb-2 text-sm font-semibold text-white">策略情景说明（教育用途，非操作指引）</div>
+                <div className="mb-2 text-sm font-semibold text-slate-200">策略情景说明（教育用途，非操作指引）</div>
                 <StrategyCards cards={strategyCards} ivRank={iv.ivRank} selectedId={selectedStrategyId} onSelect={setSelectedStrategyId} />
               </div>
               <div>
-                <div className="mb-2 text-sm font-semibold text-white">策略收益对比</div>
+                <div className="mb-2 text-sm font-semibold text-slate-200">策略收益对比</div>
                 <StrategyComparePanel strategies={compareStrategies} spot={spot} />
               </div>
             </div>
@@ -192,9 +188,9 @@ export function StockDetailClient({
 
           {tab === "chain" && (
             <div>
-              <details className="rounded-xl border border-white/10 bg-navy-card p-3">
-                <summary className="cursor-pointer text-sm text-white/80">衍生品报价链（专业参考，点击展开）</summary>
-                <p className="mt-2 text-xs text-white/50">
+              <details className="rounded-xl border border-white/[0.07] bg-navy-card p-3">
+                <summary className="cursor-pointer text-sm text-slate-300">衍生品报价链（专业参考，点击展开）</summary>
+                <p className="mt-2 text-xs text-slate-500">
                   ATM 行蓝色高亮，ITM 行绿色。选择合约后可在下方生成合约级数据说明（不构成任何投资建议）。
                 </p>
                 <div className="mt-3">
@@ -209,7 +205,7 @@ export function StockDetailClient({
 
           {tab === "payoff" && (
             <div>
-              <div className="mb-2 text-sm font-semibold text-white">收益图：{selectedCard?.name ?? "未选择"}</div>
+              <div className="mb-2 text-sm font-semibold text-slate-200">收益图：{selectedCard?.name ?? "未选择"}</div>
               <PayoffDiagram strategy={selectedCard} spot={spot} />
             </div>
           )}

@@ -27,83 +27,84 @@ export function OptionsChain({ contracts, spot, selected, onSelectContract }: Op
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-white/10 bg-navy-card">
-      <p className="border-b border-white/10 p-3 text-sm font-medium text-white/80">
-        Options chain (ATM blue, ITM green)
+    <div>
+      <p className="mb-2 text-sm font-medium text-slate-300">
+        期权报价链 · <span className="text-info">ATM 蓝色标记</span> / <span className="text-fall">ITM 绿色标记</span>
       </p>
-      <table className="w-full min-w-[720px] text-left text-sm tabular-nums">
-        <thead>
-          <tr className="border-b border-white/10 text-white/60">
-            <th className="p-2">Strike</th>
-            <th className="p-2">Call Bid</th>
-            <th className="p-2">Call Ask</th>
-            <th className="p-2">Call IV</th>
-            <th className="p-2">Delta</th>
-            <th className="p-2">Theta</th>
-            <th className="p-2">Put Bid</th>
-            <th className="p-2">Put Ask</th>
-            <th className="p-2">Put IV</th>
-            <th className="p-2">Put Δ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {strikes.map((strike) => {
-            const c = calls.find((x) => x.strike === strike);
-            const p = puts.find((x) => x.strike === strike);
-            const atm = isATM(strike);
-            const rowClass = cn(
-              "border-b border-white/5",
-              atm && "border-l-2 border-info bg-info/10",
-              !atm && c && isITM(strike, "call") && "bg-gain/5",
-              !atm && p && isITM(strike, "put") && "bg-gain/5"
-            );
-            const cellBtn = (active: boolean) =>
-              cn(
-                "w-full rounded px-2 py-1 text-left transition",
-                "hover:bg-white/5",
-                active && "ring-1 ring-info bg-info/10"
+      <div className="atlas-table-wrap">
+        <table className="atlas-table min-w-[720px]">
+          <thead>
+            <tr>
+              <th>Strike</th>
+              <th>Call Bid</th>
+              <th>Call Ask</th>
+              <th>Call IV</th>
+              <th>Delta</th>
+              <th>Theta</th>
+              <th>Put Bid</th>
+              <th>Put Ask</th>
+              <th>Put IV</th>
+              <th>Put Δ</th>
+            </tr>
+          </thead>
+          <tbody className="font-mono">
+            {strikes.map((strike) => {
+              const c = calls.find((x) => x.strike === strike);
+              const p = puts.find((x) => x.strike === strike);
+              const atm = isATM(strike);
+              const rowClass = cn(
+                atm && "border-l-2 border-info bg-info/10",
+                !atm && c && isITM(strike, "call") && "bg-fall/5",
+                !atm && p && isITM(strike, "put") && "bg-fall/5"
               );
-            return (
-              <tr key={strike} className={rowClass}>
-                <td className="p-2 font-mono text-white">{strike}</td>
-                <td className="p-2 text-white/90">
-                  <button
-                    type="button"
-                    disabled={!c}
-                    className={cn(
-                      cellBtn(!!c && isSelected(c)),
-                      !c && "cursor-not-allowed opacity-60 hover:bg-transparent"
-                    )}
-                    onClick={() => (c ? onSelectContract?.(c) : null)}
-                  >
-                    {c ? c.bid.toFixed(2) : "—"}
-                  </button>
-                </td>
-                <td className="p-2 text-white/90">{c?.ask.toFixed(2) ?? "—"}</td>
-                <td className="p-2 text-white/70">{c ? `${(c.iv * 100).toFixed(1)}%` : "—"}</td>
-                <td className="p-2 text-white/70">{c?.delta.toFixed(2) ?? "—"}</td>
-                <td className="p-2 text-white/70">{c?.theta.toFixed(3) ?? "—"}</td>
-                <td className="p-2 text-white/90">
-                  <button
-                    type="button"
-                    disabled={!p}
-                    className={cn(
-                      cellBtn(!!p && isSelected(p)),
-                      !p && "cursor-not-allowed opacity-60 hover:bg-transparent"
-                    )}
-                    onClick={() => (p ? onSelectContract?.(p) : null)}
-                  >
-                    {p ? p.bid.toFixed(2) : "—"}
-                  </button>
-                </td>
-                <td className="p-2 text-white/90">{p?.ask.toFixed(2) ?? "—"}</td>
-                <td className="p-2 text-white/70">{p ? `${(p.iv * 100).toFixed(1)}%` : "—"}</td>
-                <td className="p-2 text-white/70">{p?.delta.toFixed(2) ?? "—"}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              const cellBtn = (active: boolean) =>
+                cn(
+                  "w-full rounded px-2 py-1 text-left transition",
+                  "hover:bg-white/5",
+                  active && "bg-gold/10 ring-1 ring-gold/60"
+                );
+              return (
+                <tr key={strike} className={rowClass}>
+                  <td className="text-slate-100">{strike}</td>
+                  <td>
+                    <button
+                      type="button"
+                      disabled={!c}
+                      className={cn(
+                        cellBtn(!!c && isSelected(c)),
+                        !c && "cursor-not-allowed opacity-60 hover:bg-transparent"
+                      )}
+                      onClick={() => (c ? onSelectContract?.(c) : null)}
+                    >
+                      {c ? c.bid.toFixed(2) : "—"}
+                    </button>
+                  </td>
+                  <td>{c?.ask.toFixed(2) ?? "—"}</td>
+                  <td className="text-slate-400">{c ? `${(c.iv * 100).toFixed(1)}%` : "—"}</td>
+                  <td className="text-slate-400">{c?.delta.toFixed(2) ?? "—"}</td>
+                  <td className="text-slate-400">{c?.theta.toFixed(3) ?? "—"}</td>
+                  <td>
+                    <button
+                      type="button"
+                      disabled={!p}
+                      className={cn(
+                        cellBtn(!!p && isSelected(p)),
+                        !p && "cursor-not-allowed opacity-60 hover:bg-transparent"
+                      )}
+                      onClick={() => (p ? onSelectContract?.(p) : null)}
+                    >
+                      {p ? p.bid.toFixed(2) : "—"}
+                    </button>
+                  </td>
+                  <td>{p?.ask.toFixed(2) ?? "—"}</td>
+                  <td className="text-slate-400">{p ? `${(p.iv * 100).toFixed(1)}%` : "—"}</td>
+                  <td className="text-slate-400">{p?.delta.toFixed(2) ?? "—"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

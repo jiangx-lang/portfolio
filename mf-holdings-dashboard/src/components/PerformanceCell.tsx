@@ -26,19 +26,20 @@ export function formatFundNavDisplay(nav: number | null | undefined): string {
 export function PerformanceCell({ value, digits = 2 }: PerformanceCellProps) {
   if (value == null || (typeof value === "number" && Number.isNaN(value))) {
     return (
-      <span className="block text-right text-xs font-medium tabular-nums text-gray-500">—</span>
+      <span className="block text-right text-xs font-medium font-mono text-flat">—</span>
     );
   }
   const n = Number(value);
   if (n === 0) {
     return (
-      <span className="block text-right text-xs font-medium tabular-nums text-gray-400">0.00%</span>
+      <span className="block text-right text-xs font-medium font-mono text-flat">0.00%</span>
     );
   }
   const abs = Math.abs(n).toFixed(digits);
   const text = n > 0 ? `+${abs}%` : `-${abs}%`;
-  const color = n > 0 ? "text-emerald-400" : "text-red-400";
+  // 中国市场惯例：红涨绿跌
+  const color = n > 0 ? "text-rise" : "text-fall";
   return (
-    <span className={`block text-right text-xs font-medium tabular-nums ${color}`}>{text}</span>
+    <span className={`block text-right text-xs font-medium font-mono ${color}`}>{text}</span>
   );
 }
