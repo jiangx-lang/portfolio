@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import {
   ResponsiveContainer,
   Line,
@@ -756,18 +756,21 @@ export function ChronicleChart({
   panelId?: string;
 }) {
   const [hidden, setHidden] = useState<Record<string, boolean>>({});
+  const fillId = `atlasGoldFill-${useId().replace(/:/g, "")}`;
   const view = useMemo(() => buildView(data, panelId), [data, panelId]);
   const obj = data && typeof data === "object" ? (data as AnyRec) : null;
   const chartH = height ?? (compact ? 280 : 400);
 
-  // 跨数量级的长周期走势（如 118 → 11867 的 100 倍曲线）自动切换对数坐标
+  // 跨数量级的长周期走势（如 118 → 11867）自动对数；含 0/负值（利差）绝不能开 log，否则线会消失
   const logScale = useMemo(() => {
     if (!view || view.kind !== "area") return false;
     const key = view.yKeys[0];
+    if (/spread|pct|pe|yoy|return|weight|ratio/i.test(key)) return false;
     const vals = view.series
       .map((r) => Number(r[key]))
-      .filter((v) => Number.isFinite(v) && v > 0);
+      .filter((v) => Number.isFinite(v));
     if (vals.length < 10) return false;
+    if (vals.some((v) => v <= 0)) return false;
     const min = Math.min(...vals);
     const max = Math.max(...vals);
     return min > 0 && max / min >= 25;
@@ -889,7 +892,7 @@ export function ChronicleChart({
           ) : (
             <AreaChart data={view.series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <defs>
-                <linearGradient id="atlasGoldFill" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#C9A84C" stopOpacity={0.32} />
                   <stop offset="100%" stopColor="#C9A84C" stopOpacity={0} />
                 </linearGradient>
@@ -921,11 +924,12 @@ export function ChronicleChart({
                     type="monotone"
                     dataKey={k}
                     stroke={COLORS[i % COLORS.length]}
-                    fill="url(#atlasGoldFill)"
+                    fill={`url(#${fillId})`}
                     strokeWidth={1.7}
                     dot={false}
                     name={k}
                     connectNulls
+                    isAnimationActive={!compact}
                   />
                 ) : (
                   <Line
@@ -937,6 +941,7 @@ export function ChronicleChart({
                     dot={false}
                     name={k}
                     connectNulls
+                    isAnimationActive={!compact}
                   />
                 )
               )}
