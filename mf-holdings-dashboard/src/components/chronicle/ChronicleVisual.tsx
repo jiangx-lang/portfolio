@@ -326,6 +326,8 @@ export function ChronicleVisual({ id, data }: { id: string; data: unknown }) {
       return <CapeChart data={data} />;
     case "forward-pe":
       return <ForwardPeChart data={data} />;
+    case "ndx-forward-pe":
+      return <ForwardPeChart data={data} />;
     case "mag7-concentration":
       return <Mag7Chart data={data} />;
     default:

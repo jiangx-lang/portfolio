@@ -102,6 +102,11 @@ function buildView(data: unknown): View | null {
         };
       });
       if (series.every((s) => "label" in s) && series.length < 120) {
+        // 小数刻度数据（如 -0.14）统一转百分点，避免 Y 轴出现 "-0%"
+        const maxAbs = Math.max(...series.map((s) => Math.abs(Number(s._v))), 0);
+        if (maxAbs > 0 && maxAbs <= 2) {
+          for (const s of series) s._v = Number(s._v) * 100;
+        }
         return { kind: "signed-bar", series, xKey: "label", yKey: "_v" };
       }
     }
@@ -137,7 +142,10 @@ function buildView(data: unknown): View | null {
   const preferred = multi.filter((m) =>
     /^(pe|cape|series|price|drawdowns|annual)/i.test(m.key)
   );
-  const chosen = (preferred.length ? preferred : multi).slice(0, 3);
+  const chosen = (preferred.length ? preferred : multi)
+    .slice(0, 3)
+    // 覆盖期最长的序列排最前，担任主视觉（金色面积图）
+    .sort((a, b) => b.points.length - a.points.length);
 
   if (chosen.length === 1) {
     const points = downsampleSeries(chosen[0].points);
@@ -164,13 +172,19 @@ function buildView(data: unknown): View | null {
     // annual-like single series
     if (xKey === "year" || (points.length < 120 && yKeys[0] && /return|tr|value/i.test(yKeys[0]))) {
       const yKey = yKeys[0];
+      const series = points.map((p) => ({
+        ...p,
+        label: String(p.year ?? p.date ?? p.period ?? ""),
+        _v: Number(p[yKey] ?? 0),
+      }));
+      // 小数刻度数据（如 -0.14）统一转百分点，避免 Y 轴出现 "-0%"
+      const maxAbs = Math.max(...series.map((s) => Math.abs(s._v)), 0);
+      if (maxAbs > 0 && maxAbs <= 2) {
+        for (const s of series) s._v = s._v * 100;
+      }
       return {
         kind: "signed-bar",
-        series: points.map((p) => ({
-          ...p,
-          label: String(p.year ?? p.date ?? p.period ?? ""),
-          _v: Number(p[yKey] ?? 0),
-        })),
+        series,
         xKey: "label",
         yKey: "_v",
       };
@@ -254,6 +268,19 @@ export function ChronicleChart({
   const view = useMemo(() => buildView(data), [data]);
   const obj = data && typeof data === "object" ? (data as AnyRec) : null;
   const chartH = height ?? (compact ? 280 : 400);
+
+  // 跨数量级的长周期走势（如 118 → 11867 的 100 倍曲线）自动切换对数坐标
+  const logScale = useMemo(() => {
+    if (!view || view.kind !== "area") return false;
+    const key = view.yKeys[0];
+    const vals = view.series
+      .map((r) => Number(r[key]))
+      .filter((v) => Number.isFinite(v) && v > 0);
+    if (vals.length < 10) return false;
+    const min = Math.min(...vals);
+    const max = Math.max(...vals);
+    return min > 0 && max / min >= 25;
+  }, [view]);
 
   if (!view) {
     if (compact) {
@@ -359,7 +386,17 @@ export function ChronicleChart({
                 minTickGap={compact ? 64 : 48}
                 tickFormatter={tickFmt}
               />
-              <YAxis tick={{ fill: "#66738c", fontSize: 10 }} width={52} />
+              <YAxis
+                tick={{ fill: "#66738c", fontSize: 10 }}
+                width={52}
+                {...(logScale
+                  ? {
+                      scale: "log" as const,
+                      domain: ["auto", "auto"] as const,
+                      allowDataOverflow: true,
+                    }
+                  : {})}
+              />
               <Tooltip contentStyle={tipStyle} />
               {!compact ? <Legend /> : null}
               {view.yKeys.map((k, i) =>

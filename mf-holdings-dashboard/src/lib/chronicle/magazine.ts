@@ -78,6 +78,7 @@ const CHAPTER_ZH: Record<string, string> = {
 
 /** 面板短题（目录 / 旗舰标题用，避免长问句） */
 export const PANEL_SHORT_ZH: Record<string, string> = {
+  /* 标普 500 */
   annual: "年回报",
   "annual-dist": "年回报分布",
   "annualized-matrix": "买入年 × 卖出年",
@@ -93,22 +94,85 @@ export const PANEL_SHORT_ZH: Record<string, string> = {
   eps: "TTM 每股收益",
   roe: "净资产收益率",
   "forward-pe": "静态 / 动态市盈率",
+  "return-details": "总回报分解",
+  "sp500-driver-decomp": "估值 × 盈利驱动",
   m7: "七巨头指数",
   sectors: "行业结构",
+  scatter: "成分股气泡图",
+  changes: "成分股进出",
+  rules: "入选规则",
+  /* 纳斯达克 */
   "nasdaq-composite": "纳指综指",
   "nasdaq-logyoy": "纳指对数同比",
-  "ndx-drawdown": "纳指 100 回撤",
+  "nasdaq100-annual": "QQQ 年回报",
+  "ndx-annual-dist": "纳指 100 回报分布",
+  "ndx-matrix": "买入年 × 卖出年",
+  "ndx-rolling": "五年滚动回报",
   "ndx-forward-pe": "纳指 100 估值",
+  "ndx-driver-decomp": "重估 × 修正",
+  "ndx-drawdown": "纳指 100 回撤",
+  "ndx-intrayear-dd": "年内回撤 vs 年末",
+  "ndx-volatility": "纳指波动率",
+  "ndx-vxn": "VXN 波动指数",
+  "ndx-monthly": "月度热图",
+  "ndx-return-details": "QQQ 回报分解",
+  "nasdaq100-companies": "成分公司",
+  "nasdaq100-weights": "头部权重",
+  "nasdaq100-ytd": "回报排行",
+  /* 半导体 */
   "semi-price": "费半走势",
   "semi-annual": "费半年回报",
+  "semi-annual-dist": "费半回报分布",
+  "semi-intrayear-dd": "年内回撤 vs 年末",
+  "semi-composition": "成分拆解",
+  "semi-smh": "SMH 持仓",
+  "semi-memory": "存储阵营",
+  "semi-ratios": "相对强度",
+  "semi-memory-valuation": "存储估值",
+  /* 信息技术 XLK */
   "xlk-price": "XLK 走势",
+  "xlk-annual": "XLK 年回报",
+  "xlk-annual-dist": "XLK 回报分布",
+  "xlk-intrayear-dd": "年内回撤 vs 年末",
+  "xlk-holdings": "头部持仓",
+  "xlk-reclass": "2018 大调仓",
+  /* 金融 XLF */
   "fin-price": "XLF 走势",
+  "fin-annual": "XLF 年回报",
+  "fin-annual-dist": "XLF 回报分布",
+  "fin-intrayear-dd": "年内回撤 vs 年末",
   "fin-crisis": "2008 金融危机",
+  "fin-rates": "利率曲线",
+  "fin-reclass": "2023 大调仓",
+  "fin-holdings": "持仓结构",
+  /* 七巨头 */
   "mag7-index": "七巨头等权",
   "mag7-concentration": "七巨头集中度",
-  "top10-roster": "市值十强名录",
+  "mag7-drawdown": "成员回撤",
+  "mag7-correlation": "相关性矩阵",
+  "mag7-ai-valuation": "AI 估值对照",
+  "mag7-predecessors": "前辈对照",
+  /* 市值王朝 */
+  "top10-roster": "十强名录",
+  "top10-lineage": "长青者",
+  "top10-crowns": "王冠",
+  "top10-eclipse": "日蚀",
+  "top10-concurrents": "同榜者",
+  "top10-aftermath": "余波",
+  "top10-spx-share": "峰值份额",
+  "top10-pe-at-entry": "峰值市盈率",
+  /* 集中度与回撤研究 */
   "cp-conc-top10": "十强集中度",
+  "cp-conc-top3": "龙头 vs 指数",
+  "cp-conc-size": "大盘 vs 小盘",
   "cp-dd-base-rates": "回撤基准率",
+  "cp-dd-forward-returns": "触底后回报",
+  "cp-dd-timing": "顶底时点",
+  "cp-dd-paths": "复苏路径",
+  "cp-dd-cases": "NVDA vs INTC",
+  "cp-iss-overview": "发行 vs 注销",
+  "cp-iss-deciles": "激励稀释",
+  "cp-iss-quadrant": "激励 × 回购",
 };
 
 export type ParsedChapter = {
@@ -198,6 +262,21 @@ export function buildMagazineSections(panels: ChroniclePanel[]): SectionBundle[]
         all,
       };
     });
+
+    // 章节按罗马数字排序（源数据顺序可能与刊号不一致，如 III 排在 II 前）
+    const romanValue = (r: string) => {
+      const map: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100 };
+      let total = 0;
+      for (let i = 0; i < r.length; i++) {
+        const cur = map[r[i]] ?? 0;
+        const next = map[r[i + 1]] ?? 0;
+        total += cur < next ? -cur : cur;
+      }
+      return total || Number.MAX_SAFE_INTEGER;
+    };
+    chapters.sort(
+      (a, b) => romanValue(a.parsed.roman) - romanValue(b.parsed.roman)
+    );
 
     return {
       category,
