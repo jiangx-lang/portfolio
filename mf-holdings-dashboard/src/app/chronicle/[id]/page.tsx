@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ChronicleVisual } from "@/components/chronicle/ChronicleVisual";
 import { getSyncMeta, loadPanelDataset, loadProfilePanels } from "@/lib/chronicle/load";
+import { panelShortTitle, parseChapter } from "@/lib/chronicle/magazine";
 import { datasetPathFromUrl } from "@/lib/chronicle/types";
 import { LATEST_KEY_ZH, PANEL_ZH } from "@/lib/chronicle/zh";
 
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   const panels = await loadProfilePanels();
   const panel = panels.find((p) => p.id === decodeURIComponent(params.id));
   return {
-    title: panel ? `${panel.title} · 美股编年史` : "美股编年史",
+    title: panel ? `${panelShortTitle(panel)} · 美股编年史` : "美股编年史",
   };
 }
 
@@ -27,7 +28,6 @@ function summarize(data: unknown): { label: string; value: string; tone?: "rise"
   };
 
   push("更新", o.updated);
-  push("标的", o.ticker);
   if (typeof o.average === "number") {
     push("均值", `${o.average.toFixed?.(1) ?? o.average}%`);
   }
@@ -37,12 +37,11 @@ function summarize(data: unknown): { label: string; value: string; tone?: "rise"
 
   if (o.latest && typeof o.latest === "object") {
     const latest = o.latest as Record<string, unknown>;
-    for (const [k, v] of Object.entries(latest).slice(0, 4)) {
-      // 跳过日期键、长文本与布尔值，避免摘要卡出现 "最新·NOTE" 这类原始字段
+    for (const [k, v] of Object.entries(latest).slice(0, 3)) {
       if (/^(date|year|day|time)$/i.test(k)) continue;
       if (typeof v === "boolean" || v === "true" || v === "false") continue;
       if (typeof v === "string" && v.length > 24) continue;
-      push(`最新·${LATEST_KEY_ZH[k.toLowerCase()] ?? k}`, v);
+      push(LATEST_KEY_ZH[k.toLowerCase()] ?? k, v);
     }
   }
   if (o.best && typeof o.best === "object") {
@@ -54,7 +53,7 @@ function summarize(data: unknown): { label: string; value: string; tone?: "rise"
     push("最差", `${worst.year ?? ""} ${worst.value ?? worst.return ?? ""}`.trim(), "fall");
   }
 
-  return rows.slice(0, 8);
+  return rows.slice(0, 6);
 }
 
 export default async function ChroniclePanelPage({
@@ -81,58 +80,35 @@ export default async function ChroniclePanelPage({
   const idx = panels.findIndex((p) => p.id === id);
   const prev = idx > 0 ? panels[idx - 1] : null;
   const next = idx >= 0 && idx < panels.length - 1 ? panels[idx + 1] : null;
+  const ch = parseChapter(panel.chapter);
+  const short = panelShortTitle(panel);
+  const caption = PANEL_ZH[panel.id]?.q;
+  const note = PANEL_ZH[panel.id]?.h;
 
   return (
     <div className="min-h-screen bg-navy text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-gradient-dark" />
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 pt-20 pb-28">
-        <Link
-          href="/chronicle"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-gold transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          返回编年史目录
-        </Link>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <Link
+            href="/chronicle"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-gold transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            编年史
+          </Link>
+          {ch.roman ? (
+            <span className="font-mono text-[11px] text-slate-600">
+              {ch.roman}. {ch.titleZh}
+            </span>
+          ) : null}
+        </div>
 
-        <header className="mb-8 animate-in">
-          {panel.chapter ? <span className="eyebrow">{panel.chapter}</span> : null}
-          <h1 className="font-display text-2xl sm:text-4xl font-bold mt-2 text-white">
-            {panel.title}
-          </h1>
-          {PANEL_ZH[panel.id]?.q ? (
-            <p className="text-sm sm:text-base text-slate-400 mt-3 max-w-3xl leading-relaxed">
-              {PANEL_ZH[panel.id].q}
-            </p>
-          ) : null}
-          {PANEL_ZH[panel.id]?.h ? (
-            <div className="mt-5 rounded-2xl border border-gold/25 bg-gold/5 px-4 py-3 text-sm text-gold-light leading-relaxed">
-              {PANEL_ZH[panel.id].h}
-            </div>
-          ) : null}
+        {/* 标题极简 —— 图在先 */}
+        <header className="mb-5 animate-in">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-white">{short}</h1>
+          <p className="mt-1 text-xs text-slate-600">{panel.title}</p>
         </header>
-
-        {stats.length > 0 ? (
-          <div className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {stats.map((s) => (
-              <div key={s.label} className="glass-card px-3 py-3">
-                <div className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
-                  {s.label}
-                </div>
-                <div
-                  className={`mt-1 text-sm font-semibold font-mono truncate ${
-                    s.tone === "rise"
-                      ? "text-rise"
-                      : s.tone === "fall"
-                        ? "text-fall"
-                        : "text-slate-100"
-                  }`}
-                >
-                  {s.value}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
 
         {error ? (
           <div className="rounded-2xl border border-rise/30 bg-rise/10 p-4 text-sm text-rise">
@@ -142,44 +118,79 @@ export default async function ChroniclePanelPage({
           <ChronicleVisual id={panel.id} data={data} />
         )}
 
-        <div className="mt-8 flex flex-wrap gap-3 text-sm">
+        {stats.length > 0 ? (
+          <div className="mt-5 flex flex-wrap gap-x-8 gap-y-3 border-y border-white/[0.06] py-4">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <div className="text-[10px] uppercase tracking-[0.14em] text-slate-600">
+                  {s.label}
+                </div>
+                <div
+                  className={`num mt-0.5 text-sm font-semibold ${
+                    s.tone === "rise"
+                      ? "text-rise"
+                      : s.tone === "fall"
+                        ? "text-fall"
+                        : "text-slate-200"
+                  }`}
+                >
+                  {s.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {caption ? (
+          <p className="mt-5 max-w-2xl text-sm text-slate-500 leading-relaxed">{caption}</p>
+        ) : null}
+
+        {note ? (
+          <details className="mt-4 group">
+            <summary className="cursor-pointer text-xs text-gold/80 hover:text-gold list-none [&::-webkit-details-marker]:hidden">
+              要点速览 ▸
+            </summary>
+            <p className="mt-2 text-sm text-slate-500 leading-relaxed border-l border-gold/25 pl-3">
+              {note}
+            </p>
+          </details>
+        ) : null}
+
+        <div className="mt-6">
           <Link
             href={`/api/chronicle/${rel}`}
-            className="btn-ghost inline-flex items-center gap-1.5 !py-2 !px-3 text-xs"
+            className="text-[11px] text-slate-600 hover:text-slate-400"
           >
-            数据 API（JSON）
+            JSON API
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="mt-10 flex justify-between gap-4 text-sm border-t border-white/10 pt-6">
           {prev ? (
-            <Link href={`/chronicle/${encodeURIComponent(prev.id)}`} className="glass-card p-4 group">
-              <div className="text-[10px] uppercase tracking-wider text-slate-500">上一篇</div>
-              <div className="mt-1 text-sm text-slate-200 group-hover:text-gold transition-colors line-clamp-2">
-                {prev.title}
-              </div>
+            <Link
+              href={`/chronicle/${encodeURIComponent(prev.id)}`}
+              className="text-slate-500 hover:text-gold transition-colors max-w-[45%]"
+            >
+              <div className="text-[10px] uppercase tracking-wider text-slate-600">Prev</div>
+              <div className="mt-0.5 truncate">{panelShortTitle(prev)}</div>
             </Link>
           ) : (
-            <div />
+            <span />
           )}
           {next ? (
             <Link
               href={`/chronicle/${encodeURIComponent(next.id)}`}
-              className="glass-card p-4 group text-right sm:text-left"
+              className="text-right text-slate-500 hover:text-gold transition-colors max-w-[45%] ml-auto"
             >
-              <div className="text-[10px] uppercase tracking-wider text-slate-500">下一篇</div>
-              <div className="mt-1 text-sm text-slate-200 group-hover:text-gold transition-colors line-clamp-2">
-                {next.title}
-              </div>
+              <div className="text-[10px] uppercase tracking-wider text-slate-600">Next</div>
+              <div className="mt-0.5 truncate">{panelShortTitle(next)}</div>
             </Link>
           ) : null}
         </div>
 
-        <footer className="mt-10 border-t border-white/10 pt-5 text-xs text-slate-600 leading-relaxed">
-          数据来源：History of Market · 美股编年史（CC-BY-4.0 署名使用）。
-          {meta.synced_at
-            ? ` 本地镜像同步于 ${meta.synced_at}${meta.stale ? "（已过期，本页可能已回源更新）" : ""}。`
-            : " 当前直接回源获取最新数据。"}
+        <footer className="mt-8 text-[11px] text-slate-600">
+          数据来源：History of Market（CC-BY-4.0）
+          {meta.synced_at ? ` · 同步于 ${meta.synced_at.slice(0, 10)}` : ""}
         </footer>
       </div>
     </div>

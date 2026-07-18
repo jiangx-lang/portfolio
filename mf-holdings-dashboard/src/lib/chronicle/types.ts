@@ -17,6 +17,7 @@ export type ChronicleCategory =
   | "xlk"
   | "fin"
   | "mag7"
+  | "dynasties"
   | "latest"
   | "macro"
   | "other";
@@ -31,9 +32,10 @@ export const CATEGORY_META: Record<
   xlk: { label: "信息技术 XLK", labelEn: "XLK", order: 4 },
   fin: { label: "金融 XLF", labelEn: "Financials", order: 5 },
   mag7: { label: "七巨头", labelEn: "Magnificent 7", order: 6 },
-  latest: { label: "集中度与回撤研究", labelEn: "Concentration", order: 7 },
-  macro: { label: "宏观", labelEn: "Macro", order: 8 },
-  other: { label: "其他", labelEn: "Other", order: 9 },
+  dynasties: { label: "市值王朝", labelEn: "Dynasties", order: 7 },
+  latest: { label: "集中度与回撤", labelEn: "Concentration", order: 8 },
+  macro: { label: "宏观", labelEn: "Macro", order: 9 },
+  other: { label: "其他", labelEn: "Other", order: 10 },
 };
 
 export function inferCategory(panel: ChroniclePanel): ChronicleCategory {
@@ -48,7 +50,8 @@ export function inferCategory(panel: ChroniclePanel): ChronicleCategory {
   if (id.startsWith("fin") || ds.includes("/fin/")) return "fin";
   if (id.startsWith("mag7") || id.startsWith("m7") || ds.includes("/mag7/") || ds.includes("/m7/"))
     return "mag7";
-  if (id.startsWith("cp-") || id.startsWith("top10") || ds.includes("/latest/")) return "latest";
+  if (id.startsWith("top10") || c === "dynasties" || ds.includes("/dynast")) return "dynasties";
+  if (id.startsWith("cp-") || ds.includes("/latest/")) return "latest";
   if (id.includes("aiae") || id.includes("yield") || ds.includes("recessions") || ds.includes("yield-curve"))
     return "macro";
   if (id.startsWith("sp500") || ds.includes("/sp500/") || c === "sp500") return "sp500";

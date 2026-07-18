@@ -238,15 +238,34 @@ function DrawdownTable({ data }: { data: AnyRec }) {
   );
 }
 
-export function ChronicleChart({ data, title }: { data: unknown; title?: string }) {
+export function ChronicleChart({
+  data,
+  title,
+  compact = false,
+  height,
+}: {
+  data: unknown;
+  title?: string;
+  /** Hub 旗舰预览：去卡片框、去说明表、压缩高度 */
+  compact?: boolean;
+  height?: number;
+}) {
   const [hidden, setHidden] = useState<Record<string, boolean>>({});
   const view = useMemo(() => buildView(data), [data]);
   const obj = data && typeof data === "object" ? (data as AnyRec) : null;
+  const chartH = height ?? (compact ? 280 : 400);
 
   if (!view) {
+    if (compact) {
+      return (
+        <div className="flex h-full items-center justify-center text-xs text-slate-500">
+          打开面板查看完整数据
+        </div>
+      );
+    }
     return (
       <div className="glass-card p-6 text-sm text-slate-400">
-        此数据集以结构化字段为主。下方可查看摘要；完整定制交互见原站面板。
+        此数据集以结构化字段为主，摘要如下；完整数据可通过 API 获取。
         {obj && Array.isArray(obj.drawdowns) ? <DrawdownTable data={obj} /> : null}
       </div>
     );
@@ -254,14 +273,14 @@ export function ChronicleChart({ data, title }: { data: unknown; title?: string 
 
   const tickFmt = (v: string) => (v?.length > 7 ? v.slice(0, 7) : v);
 
-  return (
-    <div className="glass-card p-3 sm:p-5 glow-border">
-      {title ? (
+  const chartBody = (
+    <>
+      {title && !compact ? (
         <div className="mb-3 flex items-center justify-between gap-3 px-1">
           <div className="text-sm font-medium text-slate-200">{title}</div>
           {view.kind === "area" ? (
             <div className="flex flex-wrap gap-2">
-              {view.yKeys.map((k, i) => (
+              {view.yKeys.map((k) => (
                 <button
                   key={k}
                   type="button"
@@ -276,21 +295,21 @@ export function ChronicleChart({ data, title }: { data: unknown; title?: string 
         </div>
       ) : null}
 
-      <div className="h-[400px] w-full">
+      <div className="w-full" style={{ height: chartH }}>
         <ResponsiveContainer width="100%" height="100%">
           {view.kind === "signed-bar" ? (
             <BarChart data={view.series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
               <XAxis
                 dataKey={view.xKey}
-                tick={{ fill: "#66738c", fontSize: 10 }}
+                tick={{ fill: "#66738c", fontSize: compact ? 9 : 10 }}
                 interval="preserveStartEnd"
-                minTickGap={24}
+                minTickGap={compact ? 36 : 24}
               />
               <YAxis
                 tick={{ fill: "#66738c", fontSize: 10 }}
                 tickFormatter={(v) => `${Number(v).toFixed(0)}%`}
-                width={48}
+                width={44}
               />
               <ReferenceLine y={0} stroke="rgba(148,163,194,0.35)" />
               <Tooltip
@@ -307,17 +326,21 @@ export function ChronicleChart({ data, title }: { data: unknown; title?: string 
               </Bar>
             </BarChart>
           ) : view.kind === "drawdown-bar" ? (
-            <BarChart data={view.series} margin={{ top: 8, right: 8, left: 0, bottom: 40 }}>
+            <BarChart
+              data={view.series}
+              margin={{ top: 8, right: 8, left: 0, bottom: compact ? 8 : 40 }}
+            >
               <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
               <XAxis
                 dataKey={view.xKey}
                 tick={{ fill: "#66738c", fontSize: 9 }}
-                interval={0}
-                angle={-35}
-                textAnchor="end"
-                height={60}
+                interval={compact ? "preserveStartEnd" : 0}
+                angle={compact ? 0 : -35}
+                textAnchor={compact ? "middle" : "end"}
+                height={compact ? 28 : 60}
+                minTickGap={32}
               />
-              <YAxis tick={{ fill: "#66738c", fontSize: 10 }} width={48} />
+              <YAxis tick={{ fill: "#66738c", fontSize: 10 }} width={44} />
               <Tooltip contentStyle={tipStyle} />
               <Bar dataKey="decline" fill="#C9A84C" name="回撤幅度" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -333,12 +356,12 @@ export function ChronicleChart({ data, title }: { data: unknown; title?: string 
               <XAxis
                 dataKey={view.xKey}
                 tick={{ fill: "#66738c", fontSize: 10 }}
-                minTickGap={48}
+                minTickGap={compact ? 64 : 48}
                 tickFormatter={tickFmt}
               />
-              <YAxis tick={{ fill: "#66738c", fontSize: 10 }} width={56} />
+              <YAxis tick={{ fill: "#66738c", fontSize: 10 }} width={52} />
               <Tooltip contentStyle={tipStyle} />
-              <Legend />
+              {!compact ? <Legend /> : null}
               {view.yKeys.map((k, i) =>
                 hidden[k] ? null : i === 0 ? (
                   <Area
@@ -370,7 +393,11 @@ export function ChronicleChart({ data, title }: { data: unknown; title?: string 
         </ResponsiveContainer>
       </div>
 
-      {obj && Array.isArray(obj.drawdowns) ? <DrawdownTable data={obj} /> : null}
-    </div>
+      {!compact && obj && Array.isArray(obj.drawdowns) ? <DrawdownTable data={obj} /> : null}
+    </>
   );
+
+  if (compact) return <div className="w-full">{chartBody}</div>;
+
+  return <div className="glass-card p-3 sm:p-5 glow-border">{chartBody}</div>;
 }

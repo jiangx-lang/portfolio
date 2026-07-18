@@ -90,35 +90,35 @@ export async function TodayStrip() {
     tone?: "rise" | "fall" | "flat";
   }[] = [
     {
-      label: "标普 500 · 最新单日",
+      label: "S&P 500",
       value: `${dailyPct >= 0 ? "+" : ""}${dailyPct.toFixed(2)}%`,
-      sub: "近 30 个交易日",
+      sub: "近 30 日",
       tone: dailyPct > 0 ? "rise" : dailyPct < 0 ? "fall" : "flat",
     },
     {
-      label: "距历史高点",
+      label: "Drawdown",
       value: `${ddFromHigh.toFixed(1)}%`,
-      sub: "以收盘价计",
+      sub: "距历史高点",
       tone: ddFromHigh < -0.01 ? "fall" : "flat",
     },
   ];
   if (vixLatest != null) {
     metrics.push({
-      label: "VIX 恐慌指数",
+      label: "VIX",
       value: vixLatest.toFixed(1),
-      sub: vixPctile != null ? `1990 年以来第 ${vixPctile} 百分位` : undefined,
+      sub: vixPctile != null ? `高于 ${vixPctile}% 的历史读数` : undefined,
     });
   }
   if (fwdLatest != null) {
     metrics.push({
-      label: "标普 500 动态市盈率",
+      label: "Forward P/E",
       value: `${fwdLatest.toFixed(1)}×`,
-      sub: trlLatest != null ? `静态 ${trlLatest.toFixed(1)}×` : undefined,
+      sub: trlLatest != null ? `Trailing ${trlLatest.toFixed(1)}×` : undefined,
     });
   }
   if (m7Latest != null) {
     metrics.push({
-      label: "七姐妹市值占比",
+      label: "Mag 7",
       value: `${m7Latest.toFixed(1)}%`,
       sub: m7Peak != null ? `峰值 ${m7Peak.toFixed(1)}%` : undefined,
     });
