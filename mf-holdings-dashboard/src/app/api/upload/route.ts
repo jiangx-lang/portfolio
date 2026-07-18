@@ -6,7 +6,7 @@ import crypto from "crypto";
 export const runtime = "nodejs";
 
 const ADMIN_PASSWORD =
-  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "cd123";
 
 const COOKIE_NAME = "atlas_auth";
 

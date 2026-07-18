@@ -4,7 +4,7 @@ import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 
 const ADMIN_PASSWORD =
-  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "cd123";
 
 type WmpJsonPayload = {
   success?: boolean;

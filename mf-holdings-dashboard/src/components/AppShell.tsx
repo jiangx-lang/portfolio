@@ -23,6 +23,7 @@ const navLinks: NavLink[] = [
   { label: "QD基金", href: "/qd" },
   { label: "MRF", href: "/mrf" },
   { label: "理财", href: "/wmp" },
+  { label: "编年史", href: "https://historyofmarket.com/", external: true },
   { label: "市场笔记", href: "/notes" },
   { label: "播客", href: "/podcast" },
   { label: "Risk", href: "/risk" },
@@ -44,8 +45,19 @@ const BOTTOM_TABS: { href: string; label: string; icon: TabIcon }[] = [
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const pathname = usePathname() || "/";
   usePageTracking();
+
+  // 仅 admin 账号显示管理后台入口
+  useEffect(() => {
+    fetch("/api/progress/me")
+      .then((r) => r.json())
+      .then((d) =>
+        setIsAdmin(String(d?.username || "").toLowerCase() === "admin")
+      )
+      .catch(() => {});
+  }, []);
 
   // 滚动后加深导航底部分隔，并点亮金色发丝线
   useEffect(() => {
@@ -123,6 +135,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </Link>
               )
             )}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={`relative flex items-center px-3 text-[13px] whitespace-nowrap transition-colors ${
+                  navActive("/admin")
+                    ? "text-gold"
+                    : "text-slate-500 hover:text-slate-100"
+                }`}
+              >
+                管理
+                <span
+                  className={`absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-gradient-gold transition-opacity duration-300 ${
+                    navActive("/admin") ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              </Link>
+            )}
           </nav>
 
           <div className="hidden md:block">
@@ -190,6 +219,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   {label}
                 </Link>
               )
+            )}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-xl border-l-2 border-transparent px-4 py-3 text-sm text-slate-500 transition-colors hover:bg-white/[0.04] hover:text-slate-100"
+              >
+                管理后台
+              </Link>
             )}
           </div>
         </>

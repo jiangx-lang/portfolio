@@ -1,0 +1,31 @@
+# 美股编年史数据同步健康检查（不提交大体积 JSON）
+# History of Market 日更后，探测上游是否可达；真正落盘在腾讯云 cron
+name: Chronicle Upstream Health
+
+on:
+  schedule:
+    # 北京时间 工作日 09:30 ≈ UTC 01:30
+    - cron: "30 1 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check History of Market APIs
+        run: |
+          set -e
+          curl -fsSL -o /tmp/manifest.json -w "manifest:%{http_code}\n" https://historyofmarket.com/api/_manifest.json
+          curl -fsSL -o /tmp/profile.json -w "profile:%{http_code}\n" https://historyofmarket.com/api/profile.json
+          python3 - <<'PY'
+          import json
+          m=json.load(open("/tmp/manifest.json"))
+          p=json.load(open("/tmp/profile.json"))
+          ds=len(m.get("datasets") or [])
+          panels=len(p.get("panels") or [])
+          missing=m.get("missing") or []
+          print(f"datasets={ds} panels={panels} missing={len(missing)}")
+          assert ds >= 80, ds
+          assert panels >= 50, panels
+          assert missing == [], missing
+          PY

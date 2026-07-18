@@ -675,3 +675,57 @@ a {
     transparent
   );
 }
+
+/* ============================================================
+   高定细节 · Luxe finish
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 键盘可见聚焦环：金色细环 */
+:focus-visible {
+  outline: 2px solid rgba(201, 168, 76, 0.55);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::placeholder {
+  color: #5b6a85;
+  opacity: 1;
+}
+
+/* 标题自动平衡换行 */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* 首页 Hero 环境光晕 */
+.hero-glow {
+  background: radial-gradient(
+    closest-side,
+    rgba(201, 168, 76, 0.14),
+    transparent 72%
+  );
+}
+
+/* 金饰分隔：两侧发丝线 + 中心点缀 */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(201, 168, 76, 0.75);
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+}
+.ornament::before {
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.45));
+}
+.ornament::after {
+  background: linear-gradient(90deg, rgba(201, 168, 76, 0.45), transparent);
+}

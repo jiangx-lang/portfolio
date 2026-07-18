@@ -25,7 +25,7 @@ import { formatBeijingTime } from "@/lib/formatBeijingTime";
 
 /** 仅前端门槛，会打进客户端包；生产请改服务端鉴权或服务_role API */
 const ADMIN_PASSWORD =
-  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "cd123";
 
 type AdminAnalyticsJson = {
   error?: string;
@@ -553,25 +553,26 @@ export default function AdminPage() {
             <Lock size={20} className="text-gold" aria-hidden />
             管理员登录
           </h2>
-          <input
-            type="password"
-            placeholder="输入管理员密码"
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
-            className={ADMIN_INPUT_CLS}
-          />
-          <button
-            type="button"
-            className="btn-gold w-full"
-            onClick={() => {
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
               if (pwd === ADMIN_PASSWORD) {
                 setAuthed(true);
                 setMsg("");
               } else setMsg("密码错误");
             }}
           >
-            登录
-          </button>
+            <input
+              type="password"
+              placeholder="输入管理员密码"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              className={ADMIN_INPUT_CLS}
+            />
+            <button type="submit" className="btn-gold w-full">
+              登录
+            </button>
+          </form>
           {msg && (
             <p className="mt-3 text-sm text-red-400">{msg}</p>
           )}

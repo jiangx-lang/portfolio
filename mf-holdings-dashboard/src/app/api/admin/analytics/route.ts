@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServiceRole } from "@/lib/supabase";
 
 const ADMIN_PASSWORD =
-  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "cd123";
 
 function unauthorized() {
   return NextResponse.json({ error: "未授权" }, { status: 401 });

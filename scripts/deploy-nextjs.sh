@@ -17,6 +17,14 @@ echo "=== 安装 Node 依赖 ==="
 cd "${DASH}"
 npm install
 
+echo "=== 同步 History of Market 公开数据（CC-BY-4.0）==="
+npm run sync:chronicle || echo "WARN: chronicle sync failed, runtime will fall back to upstream"
+
+echo "=== 安装编年史日更 cron（若尚未安装）==="
+if [ -f "${REPO_ROOT}/scripts/install_chronicle_cron.sh" ]; then
+  bash "${REPO_ROOT}/scripts/install_chronicle_cron.sh" || echo "WARN: cron install skipped"
+fi
+
 echo "=== 安装 Python 依赖（持仓深度分析）==="
 pip3 install -r scripts/requirements-market.txt
 

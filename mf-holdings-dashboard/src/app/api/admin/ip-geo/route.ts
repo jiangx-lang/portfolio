@@ -4,7 +4,7 @@ import type { IpApiFields } from "@/lib/ipGeoDisplay";
 export const dynamic = "force-dynamic";
 
 const ADMIN_PASSWORD =
-  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "atlas2024";
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD?.trim() || "cd123";
 
 /** 免费层为 HTTP；服务端代取避免浏览器 CORS 与混源限制 */
 const IP_API_BASE = "http://ip-api.com/json";

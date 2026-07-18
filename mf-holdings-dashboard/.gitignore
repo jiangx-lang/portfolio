@@ -45,3 +45,6 @@ scripts/.market_cache/
 
 # Playwright 巡检截图（勿提交）
 /.preview_shots/
+
+# History of Market 数据镜像（体积大，部署时用 npm run sync:chronicle）
+/public/chronicle-data/
