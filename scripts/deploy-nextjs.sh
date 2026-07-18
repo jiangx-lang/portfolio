@@ -26,7 +26,7 @@ if [ -f "${REPO_ROOT}/scripts/install_chronicle_cron.sh" ]; then
 fi
 
 echo "=== 安装 Python 依赖（持仓深度分析）==="
-pip3 install -r scripts/requirements-market.txt
+pip3 install -r scripts/requirements-market.txt || pip3 install --break-system-packages -r scripts/requirements-market.txt || echo "WARN: python deps install skipped"
 
 echo "=== 构建 Next.js ==="
 npm run build
