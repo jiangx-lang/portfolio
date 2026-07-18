@@ -331,6 +331,6 @@ export function ChronicleVisual({ id, data }: { id: string; data: unknown }) {
     case "mag7-concentration":
       return <Mag7Chart data={data} />;
     default:
-      return <ChronicleChart data={data} title="数据可视化" />;
+      return <ChronicleChart data={data} title="数据可视化" panelId={id} />;
   }
 }

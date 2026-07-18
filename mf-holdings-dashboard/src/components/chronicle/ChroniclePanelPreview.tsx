@@ -1,8 +1,47 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ExternalLink } from "lucide-react";
 import { ChronicleChart } from "@/components/chronicle/ChronicleChart";
-import { datasetPathFromUrl, type ChroniclePanel } from "@/lib/chronicle/types";
+import { panelShortTitle } from "@/lib/chronicle/magazine";
+import {
+  datasetPathFromUrl,
+  isChronicleJsonDataset,
+  type ChroniclePanel,
+} from "@/lib/chronicle/types";
+import { PANEL_ZH } from "@/lib/chronicle/zh";
+
+function EditorialNoApi({ panel, height }: { panel: ChroniclePanel; height: number }) {
+  const href = panel.static_url || panel.panel || panel.dataset;
+  const q = PANEL_ZH[panel.id]?.q;
+  return (
+    <div
+      className="flex flex-col justify-between rounded-xl border border-dashed border-gold/25 bg-gold/[0.04] px-4 py-4"
+      style={{ minHeight: height }}
+    >
+      <div>
+        <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500">
+          原站专页 · JSON 未公开
+        </div>
+        <div className="mt-2 font-display text-lg text-gold-light">{panelShortTitle(panel)}</div>
+        {q ? (
+          <p className="mt-2 text-xs text-slate-500 leading-relaxed line-clamp-3">{q}</p>
+        ) : (
+          <p className="mt-2 text-xs text-slate-600 leading-relaxed line-clamp-2">{panel.title}</p>
+        )}
+      </div>
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-4 inline-flex items-center gap-1.5 text-xs text-gold hover:text-gold-light"
+        onClick={(e) => e.stopPropagation()}
+      >
+        在 History of Market 打开 <ExternalLink className="h-3 w-3" />
+      </a>
+    </div>
+  );
+}
 
 /**
  * 视口内才拉数据的旗舰预览图 —— Hub 杂志布局核心，避免一次加载全部面板。
@@ -19,6 +58,7 @@ export function ChroniclePanelPreview({
   const [data, setData] = useState<unknown>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const hasJson = isChronicleJsonDataset(panel.dataset);
 
   useEffect(() => {
     const el = ref.current;
@@ -37,9 +77,13 @@ export function ChroniclePanelPreview({
   }, []);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || !hasJson) return;
     let cancelled = false;
     const rel = datasetPathFromUrl(panel.dataset);
+    if (!rel || rel === "/" || !rel.includes(".")) {
+      setErr("no-json");
+      return;
+    }
     setLoading(true);
     setErr(null);
     fetch(`/api/chronicle/${rel}`)
@@ -59,23 +103,21 @@ export function ChroniclePanelPreview({
     return () => {
       cancelled = true;
     };
-  }, [visible, panel.dataset]);
+  }, [visible, panel.dataset, hasJson]);
 
   return (
     <div ref={ref} className="w-full" style={{ minHeight: height }}>
-      {err ? (
+      {!hasJson ? (
+        <EditorialNoApi panel={panel} height={height} />
+      ) : err ? (
         <div className="flex h-full min-h-[200px] items-center justify-center text-xs text-slate-500">
           图表暂不可用
         </div>
       ) : loading || !data ? (
-        <div
-          className="skeleton w-full rounded-xl"
-          style={{ height }}
-          aria-hidden
-        />
+        <div className="skeleton w-full rounded-xl" style={{ height }} aria-hidden />
       ) : (
-        <div style={{ height }} className="w-full">
-          <ChronicleChart data={data} title="" compact height={height} />
+        <div style={{ height }} className="w-full overflow-hidden">
+          <ChronicleChart data={data} title="" compact height={height} panelId={panel.id} />
         </div>
       )}
     </div>

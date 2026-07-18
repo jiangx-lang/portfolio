@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ChronicleVisual } from "@/components/chronicle/ChronicleVisual";
 import { getSyncMeta, loadPanelDataset, loadProfilePanels } from "@/lib/chronicle/load";
 import { panelShortTitle, parseChapter } from "@/lib/chronicle/magazine";
-import { datasetPathFromUrl } from "@/lib/chronicle/types";
+import { datasetPathFromUrl, isChronicleJsonDataset } from "@/lib/chronicle/types";
 import { LATEST_KEY_ZH, PANEL_ZH } from "@/lib/chronicle/zh";
 
 export const dynamic = "force-dynamic";
@@ -68,13 +68,16 @@ export default async function ChroniclePanelPage({
 
   let data: unknown = null;
   let error: string | null = null;
-  try {
-    data = await loadPanelDataset(panel);
-  } catch (e) {
-    error = e instanceof Error ? e.message : "加载失败";
+  const hasJson = isChronicleJsonDataset(panel.dataset);
+  if (hasJson) {
+    try {
+      data = await loadPanelDataset(panel);
+    } catch (e) {
+      error = e instanceof Error ? e.message : "加载失败";
+    }
   }
 
-  const rel = datasetPathFromUrl(panel.dataset);
+  const rel = hasJson ? datasetPathFromUrl(panel.dataset) : "";
   const stats = summarize(data);
   const meta = getSyncMeta();
   const idx = panels.findIndex((p) => p.id === id);
@@ -84,6 +87,7 @@ export default async function ChroniclePanelPage({
   const short = panelShortTitle(panel);
   const caption = PANEL_ZH[panel.id]?.q;
   const note = PANEL_ZH[panel.id]?.h;
+  const external = panel.static_url || panel.panel || panel.dataset;
 
   return (
     <div className="min-h-screen bg-navy text-slate-100">
@@ -110,7 +114,24 @@ export default async function ChroniclePanelPage({
           <p className="mt-1 text-xs text-slate-600">{panel.title}</p>
         </header>
 
-        {error ? (
+        {!hasJson ? (
+          <div className="rounded-2xl border border-dashed border-gold/30 bg-gold/[0.04] p-6 sm:p-8">
+            <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500">
+              原站专页 · JSON 未公开
+            </div>
+            <p className="mt-3 text-sm text-slate-400 leading-relaxed max-w-2xl">
+              History of Market 尚未为该章节发布可镜像的公开 JSON。站内无法绘制数据图，可前往原站查看完整交互面板。
+            </p>
+            <a
+              href={external}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 inline-flex items-center gap-1.5 text-sm text-gold hover:text-gold-light"
+            >
+              在 History of Market 打开 <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        ) : error ? (
           <div className="rounded-2xl border border-rise/30 bg-rise/10 p-4 text-sm text-rise">
             数据加载失败：{error}
           </div>
@@ -156,14 +177,16 @@ export default async function ChroniclePanelPage({
           </details>
         ) : null}
 
-        <div className="mt-6">
-          <Link
-            href={`/api/chronicle/${rel}`}
-            className="text-[11px] text-slate-600 hover:text-slate-400"
-          >
-            JSON API
-          </Link>
-        </div>
+        {hasJson && rel ? (
+          <div className="mt-6">
+            <Link
+              href={`/api/chronicle/${rel}`}
+              className="text-[11px] text-slate-600 hover:text-slate-400"
+            >
+              JSON API
+            </Link>
+          </div>
+        ) : null}
 
         <div className="mt-10 flex justify-between gap-4 text-sm border-t border-white/10 pt-6">
           {prev ? (

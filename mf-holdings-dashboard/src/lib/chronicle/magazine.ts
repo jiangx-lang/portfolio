@@ -1,5 +1,5 @@
 import type { ChronicleCategory, ChroniclePanel } from "./types";
-import { CATEGORY_META, inferCategory } from "./types";
+import { CATEGORY_META, inferCategory, isChronicleJsonDataset } from "./types";
 
 /** 类目罗马数字（对齐 History of Market 章节轨） */
 export const SECTION_ROMAN: Record<ChronicleCategory, string> = {
@@ -251,8 +251,12 @@ export function buildMagazineSections(panels: ChroniclePanel[]): SectionBundle[]
 
     const chapters: ChapterBundle[] = chapterOrder.map((key) => {
       const all = chapterMap.get(key)!;
+      const withJson = all.filter((p) => isChronicleJsonDataset(p.dataset));
       const flagship =
-        all.find((p) => FLAGSHIP_IDS.has(p.id)) || all[0];
+        withJson.find((p) => FLAGSHIP_IDS.has(p.id)) ||
+        all.find((p) => FLAGSHIP_IDS.has(p.id) && isChronicleJsonDataset(p.dataset)) ||
+        withJson[0] ||
+        all[0];
       const rest = all.filter((p) => p.id !== flagship.id);
       return {
         key,

@@ -61,8 +61,13 @@ export function inferCategory(panel: ChroniclePanel): ChronicleCategory {
 export function datasetPathFromUrl(datasetUrl: string): string {
   try {
     const u = new URL(datasetUrl);
-    return u.pathname.replace(/^\/api\//, "");
+    return u.pathname.replace(/^\/api\//, "").replace(/^\//, "");
   } catch {
     return datasetUrl.replace(/^https?:\/\/[^/]+\/api\//, "").replace(/^\//, "");
   }
+}
+
+/** 是否为可镜像的公开 JSON（王朝 / 发行等 SPA 锚点无 API） */
+export function isChronicleJsonDataset(url: string): boolean {
+  return /\/api\/[^?#\s]+\.json(\?|#|$)/i.test(url);
 }

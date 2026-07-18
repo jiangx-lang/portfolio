@@ -17,8 +17,18 @@ import {
   ReferenceLine,
 } from "recharts";
 import { downsampleSeries } from "@/components/chronicle/load-client";
+import {
+  ChronicleStructureView,
+  hasStructureVisual,
+} from "@/components/chronicle/ChronicleStructureView";
 
 type AnyRec = Record<string, unknown>;
+
+type View =
+  | { kind: "area"; series: AnyRec[]; yKeys: string[]; xKey: string }
+  | { kind: "signed-bar"; series: AnyRec[]; xKey: string; yKey: string }
+  | { kind: "drawdown-bar"; series: AnyRec[]; xKey: string }
+  | { kind: "rank-bar"; series: AnyRec[]; xKey: string; yKey: string };
 
 function isNum(v: unknown): v is number {
   return typeof v === "number" && Number.isFinite(v);
@@ -36,6 +46,67 @@ function pickSeries(data: AnyRec): { key: string; points: AnyRec[] }[] {
     }
   }
   return out;
+}
+
+/** series 为命名字典：{ sox_vs_spx: [{date,value}, ...] } */
+function dictSeriesParts(series: unknown): { key: string; points: AnyRec[] }[] {
+  if (!series || typeof series !== "object" || Array.isArray(series)) return [];
+  return Object.entries(series as Record<string, unknown>)
+    .filter(([, v]) => Array.isArray(v) && (v as unknown[]).length >= 2)
+    .map(([key, points]) => ({ key, points: points as AnyRec[] }))
+    .filter(({ points }) => {
+      const s = points[0];
+      return s && typeof s === "object" && ("date" in s || "year" in s);
+    });
+}
+
+function mergeNamedSeries(
+  parts: { key: string; points: AnyRec[] }[],
+  fieldPrefer = ["value", "close", "pe", "weight"]
+): View | null {
+  if (!parts.length) return null;
+  const byDate = new Map<string, AnyRec>();
+  for (const m of parts.slice(0, 4)) {
+    const vk =
+      valueKeys(m.points).find((k) => fieldPrefer.includes(k)) ||
+      valueKeys(m.points)[0] ||
+      "value";
+    for (const p of m.points) {
+      const d = String(p.date || p.year || "");
+      if (!d) continue;
+      const row = byDate.get(d) || { date: d };
+      const n = Number(p[vk]);
+      if (Number.isFinite(n)) row[m.key] = n;
+      byDate.set(d, row);
+    }
+  }
+  const merged = Array.from(byDate.values()).sort((a, b) =>
+    String(a.date).localeCompare(String(b.date))
+  );
+  if (merged.length < 2) return null;
+  return {
+    kind: "area",
+    series: downsampleSeries(merged, 1400),
+    yKeys: parts.slice(0, 4).map((c) => c.key),
+    xKey: "date",
+  };
+}
+
+function rankBarFrom(
+  rows: AnyRec[],
+  labelKey: string,
+  valueKey: string,
+  limit = 12
+): View | null {
+  const series = rows
+    .map((p) => ({
+      label: String(p[labelKey] ?? ""),
+      _v: Number(p[valueKey]),
+    }))
+    .filter((r) => r.label && Number.isFinite(r._v))
+    .slice(0, limit);
+  if (series.length < 2) return null;
+  return { kind: "rank-bar", series, xKey: "label", yKey: "_v" };
 }
 
 function valueKeys(points: AnyRec[]): string[] {
@@ -74,14 +145,278 @@ const tipStyle = {
   boxShadow: "0 12px 40px rgba(0,0,0,0.45)",
 };
 
-type View =
-  | { kind: "area"; series: AnyRec[]; yKeys: string[]; xKey: string }
-  | { kind: "signed-bar"; series: AnyRec[]; xKey: string; yKey: string }
-  | { kind: "drawdown-bar"; series: AnyRec[]; xKey: string };
-
-function buildView(data: unknown): View | null {
+function buildView(data: unknown, panelId?: string): View | null {
   if (!data || typeof data !== "object") return null;
   const obj = data as AnyRec;
+  const id = (panelId || "").toLowerCase();
+
+  // —— 同文件多面板：按 id 优先切片 ——
+  if (id === "cp-conc-size") {
+    const ss = obj.sizeSeries as AnyRec | undefined;
+    if (ss && Array.isArray(ss.months) && Array.isArray(ss.iwb)) {
+      const months = ss.months as string[];
+      const iwb = ss.iwb as number[];
+      const iwm = Array.isArray(ss.iwm) ? (ss.iwm as number[]) : [];
+      const series = months.map((m, i) => ({
+        date: m,
+        iwb: iwb[i],
+        ...(iwm.length ? { iwm: iwm[i] } : {}),
+      }));
+      return {
+        kind: "area",
+        series: downsampleSeries(series, 1400),
+        yKeys: iwm.length ? ["iwb", "iwm"] : ["iwb"],
+        xKey: "date",
+      };
+    }
+  }
+  if (id === "cp-conc-top3") {
+    const t3 = obj.top3Relative as AnyRec | undefined;
+    if (t3 && Array.isArray(t3.years) && Array.isArray(t3.pos1)) {
+      const years = t3.years as number[];
+      const series = years.map((y, i) => ({
+        date: String(y),
+        pos1: Number((t3.pos1 as number[])[i]),
+        pos2: Number((t3.pos2 as number[] | undefined)?.[i]),
+        pos3: Number((t3.pos3 as number[] | undefined)?.[i]),
+      }));
+      return { kind: "area", series, yKeys: ["pos1", "pos2", "pos3"], xKey: "date" };
+    }
+  }
+  if (id === "cp-dd-timing") {
+    const timing = obj.timing as AnyRec | undefined;
+    const peaks = Array.isArray(timing?.peaks) ? (timing!.peaks as AnyRec[]) : [];
+    if (peaks.length >= 2) {
+      return {
+        kind: "area",
+        series: downsampleSeries(
+          peaks.map((p) => ({ date: String(p.m), peaks: Number(p.c) })),
+          800
+        ),
+        yKeys: ["peaks"],
+        xKey: "date",
+      };
+    }
+  }
+  if (id === "cp-dd-paths") {
+    const rp = obj.recoveryPaths as AnyRec | undefined;
+    const median = Array.isArray(rp?.median) ? (rp!.median as number[]) : [];
+    if (median.length >= 2) {
+      return {
+        kind: "area",
+        series: median.map((v, i) => ({ date: String(i), median: v })),
+        yKeys: ["median"],
+        xKey: "date",
+      };
+    }
+  }
+  if (id === "cp-dd-forward-returns" && Array.isArray(obj.bins)) {
+    const series = (obj.bins as AnyRec[])
+      .map((b) => {
+        const fwd = b.fwdTsrMedian as Record<string, number> | undefined;
+        const v = fwd && typeof fwd["5"] === "number" ? fwd["5"] * 100 : NaN;
+        return { label: String(b.bin), _v: v };
+      })
+      .filter((r) => r.label && Number.isFinite(r._v));
+    if (series.length >= 2) {
+      return { kind: "rank-bar", series, xKey: "label", yKey: "_v" };
+    }
+  }
+  if (id === "cp-dd-base-rates" && Array.isArray(obj.bins)) {
+    const sample = obj.bins[0] as AnyRec;
+    if ("bin" in sample && isNum(sample.count)) {
+      return {
+        kind: "rank-bar",
+        series: (obj.bins as AnyRec[]).map((b) => ({
+          label: String(b.bin),
+          _v: Number(b.count),
+        })),
+        xKey: "label",
+        yKey: "_v",
+      };
+    }
+  }
+
+  // dict-of-series（semi/ratios）
+  {
+    const parts = dictSeriesParts(obj.series);
+    if (parts.length) {
+      const merged = mergeNamedSeries(parts);
+      if (merged) return merged;
+    }
+  }
+
+  // 成员嵌套时间序列（memory-valuation PE）
+  if (Array.isArray(obj.members) && obj.members.length) {
+    const nested = (obj.members as AnyRec[])
+      .filter((m) => Array.isArray(m.series) && (m.series as AnyRec[]).length >= 2)
+      .map((m) => ({
+        key: String(m.ticker || m.name || "s"),
+        points: m.series as AnyRec[],
+      }));
+    if (nested.length) {
+      const pe = mergeNamedSeries(nested, ["pe", "value", "price"]);
+      if (pe) return pe;
+    }
+  }
+
+  // 持仓 / 权重条
+  if (Array.isArray(obj.cumulativeWeights) && obj.cumulativeWeights.length >= 2) {
+    const v = rankBarFrom(obj.cumulativeWeights as AnyRec[], "ticker", "cumulative", 12);
+    if (v) return v;
+  }
+  if (Array.isArray(obj.members) && obj.members.length >= 2) {
+    const sample = obj.members[0] as AnyRec;
+    if (isNum(sample.weight) || isNum(sample.etfWeight)) {
+      const key = isNum(sample.weight) ? "weight" : "etfWeight";
+      const v = rankBarFrom(obj.members as AnyRec[], "ticker", key, 12);
+      if (v) return v;
+    }
+  }
+  if (Array.isArray(obj.subsectors) && obj.subsectors.length >= 2) {
+    const sample = obj.subsectors[0] as AnyRec;
+    if (isNum(sample.weight)) {
+      const v = rankBarFrom(
+        (obj.subsectors as AnyRec[]).map((s) => ({
+          ...s,
+          ticker: String(s.name_cn || s.name_en || s.id || s.name || ""),
+        })),
+        "ticker",
+        "weight",
+        12
+      );
+      if (v) return v;
+    }
+    if (isNum(sample.count)) {
+      const v = rankBarFrom(
+        (obj.subsectors as AnyRec[]).map((s) => ({
+          ...s,
+          ticker: String(s.name_cn || s.name_en || s.id || ""),
+          weight: Number(s.count),
+        })),
+        "ticker",
+        "weight",
+        12
+      );
+      if (v) return v;
+    }
+  }
+  if (Array.isArray(obj.sectors) && obj.sectors.length >= 2) {
+    const v = rankBarFrom(
+      (obj.sectors as AnyRec[]).map((s) => ({
+        ticker: String(s.name || s.english || s.id || ""),
+        weight: Number(s.weight),
+      })),
+      "ticker",
+      "weight",
+      12
+    );
+    if (v) return v;
+  }
+
+  // 指数合成序列
+  if (Array.isArray(obj.indexSeries) && obj.indexSeries.length >= 2) {
+    const series = downsampleSeries(obj.indexSeries as AnyRec[]);
+    return { kind: "area", series, yKeys: ["value"], xKey: "date" };
+  }
+
+  // 集中度 paperExtension.points
+  {
+    const pe = obj.paperExtension as AnyRec | undefined;
+    if (pe && Array.isArray(pe.points) && pe.points.length >= 2) {
+      const series = (pe.points as AnyRec[]).map((p) => ({
+        date: String(p.year ?? p.date ?? ""),
+        top1: Number(p.top1),
+        top3: Number(p.top3),
+        top10: Number(p.top10),
+      }));
+      return { kind: "area", series, yKeys: ["top10", "top3", "top1"], xKey: "date" };
+    }
+  }
+
+  // 大小盘 sizeSeries
+  {
+    const ss = obj.sizeSeries as AnyRec | undefined;
+    if (ss && Array.isArray(ss.months) && Array.isArray(ss.iwb)) {
+      const months = ss.months as string[];
+      const iwb = ss.iwb as number[];
+      const iwm = Array.isArray(ss.iwm) ? (ss.iwm as number[]) : [];
+      const series = months.map((m, i) => ({
+        date: m,
+        iwb: iwb[i],
+        ...(iwm.length ? { iwm: iwm[i] } : {}),
+      }));
+      return {
+        kind: "area",
+        series: downsampleSeries(series, 1400),
+        yKeys: iwm.length ? ["iwb", "iwm"] : ["iwb"],
+        xKey: "date",
+      };
+    }
+  }
+
+  // top3 相对收益
+  {
+    const t3 = obj.top3Relative as AnyRec | undefined;
+    if (t3 && Array.isArray(t3.years) && Array.isArray(t3.pos1)) {
+      const years = t3.years as number[];
+      const series = years.map((y, i) => ({
+        date: String(y),
+        pos1: Number((t3.pos1 as number[])[i]),
+        pos2: Number((t3.pos2 as number[] | undefined)?.[i]),
+        pos3: Number((t3.pos3 as number[] | undefined)?.[i]),
+      }));
+      return { kind: "area", series, yKeys: ["pos1", "pos2", "pos3"], xKey: "date" };
+    }
+  }
+
+  // 回撤分桶 bins
+  if (Array.isArray(obj.bins) && obj.bins.length >= 2) {
+    const sample = obj.bins[0] as AnyRec;
+    if ("bin" in sample && isNum(sample.count)) {
+      return {
+        kind: "rank-bar",
+        series: (obj.bins as AnyRec[]).map((b) => ({
+          label: String(b.bin),
+          _v: Number(b.count),
+        })),
+        xKey: "label",
+        yKey: "_v",
+      };
+    }
+  }
+
+  // 危机回撤名单 → 幅度条
+  if (Array.isArray(obj.casualties) || Array.isArray(obj.survivors)) {
+    const rows = [
+      ...((obj.casualties as AnyRec[]) || []),
+      ...((obj.survivors as AnyRec[]) || []),
+    ].map((r) => {
+      const peak = Number(r.peak);
+      const trough = Number(r.trough);
+      const dd =
+        Number.isFinite(peak) && peak !== 0 && Number.isFinite(trough)
+          ? Math.abs((trough / peak - 1) * 100)
+          : NaN;
+      return { label: String(r.ticker || r.name || ""), decline: dd };
+    }).filter((r) => r.label && Number.isFinite(r.decline));
+    if (rows.length >= 2) {
+      return { kind: "drawdown-bar", series: rows, xKey: "label" };
+    }
+  }
+
+  // 世代峰值权重
+  if (Array.isArray(obj.generations) && obj.generations.length) {
+    const series = (obj.generations as AnyRec[])
+      .map((g) => ({
+        label: String(g.label_cn || g.label_en || g.id || g.peakYear || ""),
+        _v: Number(g.peakWeight ?? (Array.isArray(g.members) ? g.members.length : NaN)),
+      }))
+      .filter((r) => r.label && Number.isFinite(r._v));
+    if (series.length >= 2) {
+      return { kind: "rank-bar", series, xKey: "label", yKey: "_v" };
+    }
+  }
 
   if (Array.isArray(obj.series) && obj.series.length) {
     const sample = obj.series[0] as AnyRec;
@@ -257,15 +592,18 @@ export function ChronicleChart({
   title,
   compact = false,
   height,
+  panelId,
 }: {
   data: unknown;
   title?: string;
   /** Hub 旗舰预览：去卡片框、去说明表、压缩高度 */
   compact?: boolean;
   height?: number;
+  /** 同 JSON 多面板时按 id 选择切片 */
+  panelId?: string;
 }) {
   const [hidden, setHidden] = useState<Record<string, boolean>>({});
-  const view = useMemo(() => buildView(data), [data]);
+  const view = useMemo(() => buildView(data, panelId), [data, panelId]);
   const obj = data && typeof data === "object" ? (data as AnyRec) : null;
   const chartH = height ?? (compact ? 280 : 400);
 
@@ -283,6 +621,15 @@ export function ChronicleChart({
   }, [view]);
 
   if (!view) {
+    if (hasStructureVisual(data)) {
+      const body = (
+        <div className={compact ? "py-2" : "p-4"} style={{ minHeight: compact ? chartH : undefined }}>
+          <ChronicleStructureView data={data} compact={compact} />
+        </div>
+      );
+      if (compact) return body;
+      return <div className="glass-card glow-border">{body}</div>;
+    }
     if (compact) {
       return (
         <div className="flex h-full items-center justify-center text-xs text-slate-500">
@@ -351,6 +698,21 @@ export function ChronicleChart({
                   />
                 ))}
               </Bar>
+            </BarChart>
+          ) : view.kind === "rank-bar" ? (
+            <BarChart data={view.series} margin={{ top: 8, right: 8, left: 0, bottom: compact ? 8 : 28 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+              <XAxis
+                dataKey={view.xKey}
+                tick={{ fill: "#66738c", fontSize: 9 }}
+                interval={0}
+                angle={compact ? -25 : -35}
+                textAnchor="end"
+                height={compact ? 48 : 64}
+              />
+              <YAxis tick={{ fill: "#66738c", fontSize: 10 }} width={44} />
+              <Tooltip contentStyle={tipStyle} />
+              <Bar dataKey={view.yKey} fill="#C9A84C" radius={[4, 4, 0, 0]} />
             </BarChart>
           ) : view.kind === "drawdown-bar" ? (
             <BarChart
