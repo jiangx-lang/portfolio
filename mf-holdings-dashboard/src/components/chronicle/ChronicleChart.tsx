@@ -237,6 +237,22 @@ function buildView(data: unknown, panelId?: string): View | null {
     }
   }
 
+  // 利率曲线 × XLF：量纲差一个数量级，合并会压扁利差线 → 主视觉只用 spread
+  if (
+    id === "fin-rates" ||
+    (Array.isArray(obj.spread) &&
+      (obj.spread as AnyRec[]).length >= 2 &&
+      Array.isArray(obj.xlf_yoy))
+  ) {
+    const points = downsampleSeries(obj.spread as AnyRec[], 1600).map((p) => ({
+      date: String(p.date ?? ""),
+      spread: Number(p.value),
+    }));
+    if (points.length >= 2) {
+      return { kind: "area", series: points, yKeys: ["spread"], xKey: "date" };
+    }
+  }
+
   // —— editorial：王朝 / 发行 ——
   if (Array.isArray(obj.eras) && obj.eras.length) {
     const techBars = (obj.eras as AnyRec[]).map((era) => {

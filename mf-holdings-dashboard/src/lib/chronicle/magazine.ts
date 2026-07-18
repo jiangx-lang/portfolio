@@ -30,7 +30,10 @@ export const FLAGSHIP_IDS = new Set([
   "semi-price",
   "semi-annual",
   "xlk-price",
+  "xlk-holdings",
   "fin-price",
+  "fin-rates",
+  "fin-holdings",
   "fin-crisis",
   "mag7-concentration",
   "mag7-index",
@@ -41,6 +44,9 @@ export const FLAGSHIP_IDS = new Set([
   "cp-dd-base-rates",
   "cp-iss-overview",
 ]);
+
+/** Hub 上不单独开「旗舰大卡」的叙事面板（并入上一章目录） */
+export const FOLD_NARRATIVE_IDS = new Set(["xlk-reclass", "fin-reclass"]);
 
 /** 章节英文名 → 中文短题（杂志感，不写长段） */
 const CHAPTER_ZH: Record<string, string> = {
@@ -285,12 +291,50 @@ export function buildMagazineSections(panels: ChroniclePanel[]): SectionBundle[]
       (a, b) => romanValue(a.parsed.roman) - romanValue(b.parsed.roman)
     );
 
+    // 叙事-only 章（如 2018 调仓）不占旗舰大卡，并入上一章目录
+    const folded: ChapterBundle[] = [];
+    for (const ch of chapters) {
+      const narrativeOnly =
+        ch.all.length >= 1 &&
+        ch.all.every((p) => FOLD_NARRATIVE_IDS.has(p.id));
+      if (narrativeOnly && folded.length > 0) {
+        const prev = folded[folded.length - 1];
+        for (const p of ch.all) {
+          if (!prev.all.some((x) => x.id === p.id)) {
+            prev.all.push(p);
+            prev.rest.push(p);
+          }
+        }
+        continue;
+      }
+      // 若旗舰本身是叙事面板，改选同章可绘面板
+      if (FOLD_NARRATIVE_IDS.has(ch.flagship.id)) {
+        const alt = ch.all.find(
+          (p) => !FOLD_NARRATIVE_IDS.has(p.id) && isChronicleJsonDataset(p)
+        );
+        if (alt) {
+          ch.flagship = alt;
+          ch.rest = ch.all.filter((p) => p.id !== alt.id);
+        } else if (folded.length > 0) {
+          const prev = folded[folded.length - 1];
+          for (const p of ch.all) {
+            if (!prev.all.some((x) => x.id === p.id)) {
+              prev.all.push(p);
+              prev.rest.push(p);
+            }
+          }
+          continue;
+        }
+      }
+      folded.push(ch);
+    }
+
     return {
       category,
       roman: SECTION_ROMAN[category],
       label: CATEGORY_META[category].label,
       labelEn: CATEGORY_META[category].labelEn,
-      chapters,
+      chapters: folded,
       panels: list,
     };
   });

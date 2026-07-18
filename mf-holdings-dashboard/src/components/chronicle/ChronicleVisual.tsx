@@ -317,6 +317,92 @@ function Mag7Chart({ data }: { data: unknown }) {
   );
 }
 
+/* ---- 利率曲线 × XLF（fin-rates）：利差为主，XLF 同比右侧量纲 ---- */
+function FinRatesChart({ data }: { data: unknown }) {
+  const series = useMemo(() => {
+    if (!data || typeof data !== "object") return [];
+    const o = data as AnyRec;
+    const spread = Array.isArray(o.spread) ? (o.spread as AnyRec[]) : [];
+    const yoy = Array.isArray(o.xlf_yoy) ? (o.xlf_yoy as AnyRec[]) : [];
+    const yoyMap = new Map(
+      yoy.map((p) => [String(p.date ?? "").slice(0, 7), Number(p.value)])
+    );
+    return downsampleSeries(
+      spread.map((p) => {
+        const d = String(p.date ?? "");
+        const ym = d.slice(0, 7);
+        return {
+          date: d,
+          spread: Number(p.value),
+          xlf: yoyMap.has(ym) ? yoyMap.get(ym) : undefined,
+        };
+      }),
+      1600
+    );
+  }, [data]);
+
+  if (series.length < 2) return <ChronicleChart data={data} title="利率曲线" panelId="fin-rates" />;
+
+  return (
+    <ChartCard title="2s10s 利差" sub="金色：国债利差（%）· 蓝线：XLF 同比（右轴，%）">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={series} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="spreadFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#C9A84C" stopOpacity={0.28} />
+              <stop offset="100%" stopColor="#C9A84C" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+          <XAxis
+            dataKey="date"
+            tick={{ fill: "#66738c", fontSize: 10 }}
+            minTickGap={64}
+            tickFormatter={(v: string) => v.slice(0, 7)}
+          />
+          <YAxis
+            yAxisId="left"
+            tick={{ fill: "#66738c", fontSize: 10 }}
+            width={44}
+            tickFormatter={(v: number) => `${v}`}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            tick={{ fill: "#66738c", fontSize: 10 }}
+            width={44}
+            tickFormatter={(v: number) => `${v}%`}
+          />
+          <ReferenceLine yAxisId="left" y={0} stroke="rgba(148,163,194,0.35)" />
+          <Tooltip contentStyle={tipStyle} />
+          <Legend />
+          <Area
+            yAxisId="left"
+            type="monotone"
+            dataKey="spread"
+            name="2s10s"
+            stroke="#C9A84C"
+            fill="url(#spreadFill)"
+            strokeWidth={1.7}
+            dot={false}
+            connectNulls
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="xlf"
+            name="XLF YoY"
+            stroke="#5B93F0"
+            strokeWidth={1.4}
+            dot={false}
+            connectNulls
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </ChartCard>
+  );
+}
+
 /** 按面板 id 分发：招牌面板用定制视图，其余走通用自动图 */
 export function ChronicleVisual({ id, data }: { id: string; data: unknown }) {
   switch (id) {
@@ -330,6 +416,8 @@ export function ChronicleVisual({ id, data }: { id: string; data: unknown }) {
       return <ForwardPeChart data={data} />;
     case "mag7-concentration":
       return <Mag7Chart data={data} />;
+    case "fin-rates":
+      return <FinRatesChart data={data} />;
     default:
       return <ChronicleChart data={data} title="数据可视化" panelId={id} />;
   }
