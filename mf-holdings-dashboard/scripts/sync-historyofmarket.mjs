@@ -138,6 +138,19 @@ async function main() {
   };
   writeAtomic(path.join(OUT, "_sync_meta.json"), JSON.stringify(meta, null, 2));
   console.log(`[chronicle-sync] done ok=${ok} skipped=${skipped} fail=${fail}`);
+
+  // editorial 面板（王朝 / 发行）无公开 API，从原站 bundle 抽取
+  try {
+    const { spawnSync } = await import("child_process");
+    const r = spawnSync(process.execPath, [path.join(__dirname, "extract-editorial-chronicle.mjs")], {
+      cwd: ROOT,
+      stdio: "inherit",
+    });
+    if (r.status !== 0) console.warn("[chronicle-sync] editorial extract warning, status=", r.status);
+  } catch (e) {
+    console.warn("[chronicle-sync] editorial extract skipped:", e instanceof Error ? e.message : e);
+  }
+
   if (fail > 0 && ok === 0) process.exit(1);
 }
 

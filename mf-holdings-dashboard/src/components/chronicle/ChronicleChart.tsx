@@ -237,6 +237,143 @@ function buildView(data: unknown, panelId?: string): View | null {
     }
   }
 
+  // —— editorial：王朝 / 发行 ——
+  if (Array.isArray(obj.eras) && obj.eras.length) {
+    const techBars = (obj.eras as AnyRec[]).map((era) => {
+      const tops = Array.isArray(era.top10) ? (era.top10 as AnyRec[]) : [];
+      const tech = tops.filter((f) => f.sector === "tech").length;
+      return { label: String(era.decade || ""), _v: tech };
+    });
+    if (techBars.filter((r) => r.label).length >= 2) {
+      return { kind: "rank-bar", series: techBars, xKey: "label", yKey: "_v" };
+    }
+  }
+  if (Array.isArray(obj.peaks) && obj.peaks.length >= 2) {
+    const sample = obj.peaks[0] as AnyRec;
+    if (isNum(sample.sharePct)) {
+      const v = rankBarFrom(
+        (obj.peaks as AnyRec[]).map((p) => ({
+          ticker: String(p.canonical || p.name || ""),
+          weight: Number(p.sharePct),
+        })),
+        "ticker",
+        "weight",
+        14
+      );
+      if (v) return v;
+    }
+    if (isNum(sample.trailingPE)) {
+      const v = rankBarFrom(
+        (obj.peaks as AnyRec[])
+          .map((p) => ({
+            ticker: String(p.canonical || p.name || ""),
+            weight: Number(p.trailingPE),
+          }))
+          .sort((a, b) => b.weight - a.weight),
+        "ticker",
+        "weight",
+        14
+      );
+      if (v) return v;
+    }
+  }
+  if (Array.isArray(obj.firms) && obj.firms.length >= 2) {
+    const sample = obj.firms[0] as AnyRec;
+    if (isNum(sample.count) || isNum(sample.appearances)) {
+      const key = isNum(sample.count) ? "count" : "appearances";
+      const v = rankBarFrom(
+        (obj.firms as AnyRec[]).map((f) => ({
+          ticker: String(f.nameCn || f.name || f.ticker || f.key || ""),
+          weight: Number(f[key]),
+        })),
+        "ticker",
+        "weight",
+        12
+      );
+      if (v) return v;
+    }
+  }
+  if (Array.isArray(obj.crowns) && obj.crowns.length >= 2) {
+    const v = rankBarFrom(
+      (obj.crowns as AnyRec[]).map((c) => ({
+        ticker: String(c.nameCn || c.name || c.ticker || c.key || ""),
+        weight: Number(c.count),
+      })),
+      "ticker",
+      "weight",
+      12
+    );
+    if (v) return v;
+  }
+  if (Array.isArray(obj.sectors) && (obj.sectors[0] as AnyRec)?.firstDecade) {
+    const v = rankBarFrom(
+      (obj.sectors as AnyRec[]).map((s) => ({
+        ticker: String(s.sector || ""),
+        weight: Number(s.count),
+      })),
+      "ticker",
+      "weight",
+      12
+    );
+    if (v) return v;
+  }
+  if (Array.isArray(obj.pairs) && obj.pairs.length >= 2) {
+    const v = rankBarFrom(
+      (obj.pairs as AnyRec[]).slice(0, 12).map((p) => ({
+        ticker: `${p.a}·${p.b}`,
+        weight: Number(p.count),
+      })),
+      "ticker",
+      "weight",
+      12
+    );
+    if (v) return v;
+  }
+  if (Array.isArray(obj.sbcSeries) && obj.sbcSeries.length >= 2) {
+    return {
+      kind: "area",
+      series: (obj.sbcSeries as AnyRec[]).map((p) => ({
+        date: String(p.year ?? p.date ?? ""),
+        pct: Number(p.pct),
+      })),
+      yKeys: ["pct"],
+      xKey: "date",
+    };
+  }
+  if (Array.isArray(obj.sbcByDecile) && obj.sbcByDecile.length >= 2) {
+    return {
+      kind: "rank-bar",
+      series: (obj.sbcByDecile as number[]).map((v, i) => ({
+        label: `D${i + 1}`,
+        _v: Number(v),
+      })),
+      xKey: "label",
+      yKey: "_v",
+    };
+  }
+  if (Array.isArray(obj.quintiles) && obj.quintiles.length >= 2) {
+    return {
+      kind: "signed-bar",
+      series: (obj.quintiles as number[]).map((v, i) => ({
+        label: `Q${i + 1}`,
+        _v: Number(v) * 100,
+      })),
+      xKey: "label",
+      yKey: "_v",
+    };
+  }
+  if (isNum(obj.issuanceUsdT) && isNum(obj.retirementUsdT)) {
+    return {
+      kind: "rank-bar",
+      series: [
+        { label: "Issuance", _v: Number(obj.issuanceUsdT) },
+        { label: "Retirement", _v: Number(obj.retirementUsdT) },
+      ],
+      xKey: "label",
+      yKey: "_v",
+    };
+  }
+
   // dict-of-series（semi/ratios）
   {
     const parts = dictSeriesParts(obj.series);

@@ -5,8 +5,8 @@ import { ExternalLink } from "lucide-react";
 import { ChronicleChart } from "@/components/chronicle/ChronicleChart";
 import { panelShortTitle } from "@/lib/chronicle/magazine";
 import {
-  datasetPathFromUrl,
   isChronicleJsonDataset,
+  resolveDatasetRel,
   type ChroniclePanel,
 } from "@/lib/chronicle/types";
 import { PANEL_ZH } from "@/lib/chronicle/zh";
@@ -58,7 +58,7 @@ export function ChroniclePanelPreview({
   const [data, setData] = useState<unknown>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const hasJson = isChronicleJsonDataset(panel.dataset);
+  const hasJson = isChronicleJsonDataset(panel);
 
   useEffect(() => {
     const el = ref.current;
@@ -79,7 +79,7 @@ export function ChroniclePanelPreview({
   useEffect(() => {
     if (!visible || !hasJson) return;
     let cancelled = false;
-    const rel = datasetPathFromUrl(panel.dataset);
+    const rel = resolveDatasetRel(panel);
     if (!rel || rel === "/" || !rel.includes(".")) {
       setErr("no-json");
       return;
@@ -103,7 +103,7 @@ export function ChroniclePanelPreview({
     return () => {
       cancelled = true;
     };
-  }, [visible, panel.dataset, hasJson]);
+  }, [visible, panel, hasJson]);
 
   return (
     <div ref={ref} className="w-full" style={{ minHeight: height }}>

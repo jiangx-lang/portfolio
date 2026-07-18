@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { ChroniclePanel } from "./types";
-import { datasetPathFromUrl } from "./types";
+import { resolveDatasetRel } from "./types";
 
 const UPSTREAM = "https://historyofmarket.com";
 const LOCAL_ROOT = path.join(process.cwd(), "public", "chronicle-data");
@@ -120,7 +120,7 @@ export async function loadProfilePanels(): Promise<ChroniclePanel[]> {
 }
 
 export async function loadPanelDataset(panel: ChroniclePanel): Promise<unknown> {
-  const rel = datasetPathFromUrl(panel.dataset);
+  const rel = resolveDatasetRel(panel);
   return loadChronicleJson(rel);
 }
 

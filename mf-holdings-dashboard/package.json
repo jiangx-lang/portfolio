@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "sync:chronicle": "node scripts/sync-historyofmarket.mjs",
-    "sync:chronicle:fast": "node scripts/sync-historyofmarket.mjs --concurrency 8"
+    "sync:chronicle:fast": "node scripts/sync-historyofmarket.mjs --concurrency 8",
+    "sync:chronicle:editorial": "node scripts/extract-editorial-chronicle.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

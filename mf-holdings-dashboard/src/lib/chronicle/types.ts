@@ -67,7 +67,31 @@ export function datasetPathFromUrl(datasetUrl: string): string {
   }
 }
 
-/** 是否为可镜像的公开 JSON（王朝 / 发行等 SPA 锚点无 API） */
-export function isChronicleJsonDataset(url: string): boolean {
-  return /\/api\/[^?#\s]+\.json(\?|#|$)/i.test(url);
+/** editorial 面板：无公开 /api JSON，站内镜像由 extract-editorial-chronicle 生成 */
+export const EDITORIAL_DATASET: Record<string, string> = {
+  "top10-roster": "dynasties/roster.json",
+  "top10-lineage": "dynasties/lineage.json",
+  "top10-crowns": "dynasties/crowns.json",
+  "top10-eclipse": "dynasties/eclipse.json",
+  "top10-concurrents": "dynasties/concurrents.json",
+  "top10-aftermath": "dynasties/aftermath.json",
+  "top10-spx-share": "dynasties/spx-share.json",
+  "top10-pe-at-entry": "dynasties/pe-at-entry.json",
+  "cp-iss-overview": "latest/issuance-overview.json",
+  "cp-iss-deciles": "latest/issuance-deciles.json",
+  "cp-iss-quadrant": "latest/issuance-quadrant.json",
+};
+
+export function resolveDatasetRel(panel: { id: string; dataset: string }): string {
+  if (EDITORIAL_DATASET[panel.id]) return EDITORIAL_DATASET[panel.id];
+  return datasetPathFromUrl(panel.dataset);
+}
+
+/** 是否为可镜像的公开 JSON（含 editorial 抽取产物） */
+export function isChronicleJsonDataset(urlOrPanel: string | { id: string; dataset: string }): boolean {
+  if (typeof urlOrPanel === "object") {
+    if (EDITORIAL_DATASET[urlOrPanel.id]) return true;
+    return /\/api\/[^?#\s]+\.json(\?|#|$)/i.test(urlOrPanel.dataset);
+  }
+  return /\/api\/[^?#\s]+\.json(\?|#|$)/i.test(urlOrPanel);
 }

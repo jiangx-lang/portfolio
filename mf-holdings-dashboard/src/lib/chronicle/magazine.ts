@@ -35,8 +35,11 @@ export const FLAGSHIP_IDS = new Set([
   "mag7-concentration",
   "mag7-index",
   "top10-roster",
+  "top10-spx-share",
+  "top10-pe-at-entry",
   "cp-conc-top10",
   "cp-dd-base-rates",
+  "cp-iss-overview",
 ]);
 
 /** 章节英文名 → 中文短题（杂志感，不写长段） */
@@ -251,10 +254,10 @@ export function buildMagazineSections(panels: ChroniclePanel[]): SectionBundle[]
 
     const chapters: ChapterBundle[] = chapterOrder.map((key) => {
       const all = chapterMap.get(key)!;
-      const withJson = all.filter((p) => isChronicleJsonDataset(p.dataset));
+      const withJson = all.filter((p) => isChronicleJsonDataset(p));
       const flagship =
         withJson.find((p) => FLAGSHIP_IDS.has(p.id)) ||
-        all.find((p) => FLAGSHIP_IDS.has(p.id) && isChronicleJsonDataset(p.dataset)) ||
+        all.find((p) => FLAGSHIP_IDS.has(p.id) && isChronicleJsonDataset(p)) ||
         withJson[0] ||
         all[0];
       const rest = all.filter((p) => p.id !== flagship.id);

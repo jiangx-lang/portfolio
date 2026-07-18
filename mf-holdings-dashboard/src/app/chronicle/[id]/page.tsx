@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ChronicleVisual } from "@/components/chronicle/ChronicleVisual";
 import { loadPanelDataset, loadProfilePanels } from "@/lib/chronicle/load";
 import { panelShortTitle, parseChapter } from "@/lib/chronicle/magazine";
-import { datasetPathFromUrl, isChronicleJsonDataset } from "@/lib/chronicle/types";
+import { resolveDatasetRel, isChronicleJsonDataset } from "@/lib/chronicle/types";
 import { LATEST_KEY_ZH, PANEL_ZH } from "@/lib/chronicle/zh";
 
 export const dynamic = "force-dynamic";
@@ -68,7 +68,7 @@ export default async function ChroniclePanelPage({
 
   let data: unknown = null;
   let error: string | null = null;
-  const hasJson = isChronicleJsonDataset(panel.dataset);
+  const hasJson = isChronicleJsonDataset(panel);
   if (hasJson) {
     try {
       data = await loadPanelDataset(panel);
@@ -77,7 +77,7 @@ export default async function ChroniclePanelPage({
     }
   }
 
-  const rel = hasJson ? datasetPathFromUrl(panel.dataset) : "";
+  const rel = hasJson ? resolveDatasetRel(panel) : "";
   const stats = summarize(data);
   const idx = panels.findIndex((p) => p.id === id);
   const prev = idx > 0 ? panels[idx - 1] : null;
