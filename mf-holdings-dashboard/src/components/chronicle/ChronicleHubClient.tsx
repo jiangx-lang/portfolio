@@ -9,6 +9,7 @@ import {
   type ChronicleCategory,
   type ChroniclePanel,
 } from "@/lib/chronicle/types";
+import { PANEL_ZH } from "@/lib/chronicle/zh";
 
 const FEATURED_IDS = ["pe", "drawdown", "annual", "forward-pe", "ndx-drawdown", "mag7-concentration"];
 
@@ -61,8 +62,8 @@ export function ChronicleHubClient({
                 <div className="font-display text-lg text-white group-hover:text-gold transition-colors">
                   {p.title}
                 </div>
-                {p.question ? (
-                  <p className="mt-2 text-sm text-slate-400 line-clamp-2">{p.question}</p>
+                {PANEL_ZH[p.id]?.q ? (
+                  <p className="mt-2 text-sm text-slate-400 line-clamp-2">{PANEL_ZH[p.id].q}</p>
                 ) : null}
                 <div className="mt-4 inline-flex items-center gap-1 text-sm text-gold">
                   阅读 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -125,12 +126,12 @@ export function ChronicleHubClient({
                 <div className="text-base font-semibold text-slate-100 group-hover:text-gold transition-colors">
                   {p.title}
                 </div>
-                {p.question ? (
-                  <p className="mt-2 text-sm text-slate-400 line-clamp-2">{p.question}</p>
+                {PANEL_ZH[p.id]?.q ? (
+                  <p className="mt-2 text-sm text-slate-400 line-clamp-2">{PANEL_ZH[p.id].q}</p>
                 ) : null}
-                {p.highlight ? (
+                {PANEL_ZH[p.id]?.h ? (
                   <p className="mt-2 text-xs text-slate-500 line-clamp-2 border-t border-white/5 pt-2">
-                    {p.highlight}
+                    {PANEL_ZH[p.id].h}
                   </p>
                 ) : null}
               </Link>

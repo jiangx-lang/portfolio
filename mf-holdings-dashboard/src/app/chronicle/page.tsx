@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, ExternalLink, RefreshCw } from "lucide-react";
+import { BookOpen, RefreshCw } from "lucide-react";
 import { ChronicleHubClient } from "@/components/chronicle/ChronicleHubClient";
 import { TodayStrip } from "@/components/chronicle/TodayStrip";
 import { getSyncMeta, loadProfilePanels } from "@/lib/chronicle/load";
@@ -50,14 +50,7 @@ export default async function ChronicleHubPage() {
                   : `已同步 · ${meta.age_hours ?? 0}h 前`
                 : "实时回源官网"}
             </span>
-            <a
-              href="https://historyofmarket.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="badge badge-blue inline-flex items-center gap-1"
-            >
-              原站 <ExternalLink className="h-3 w-3" />
-            </a>
+            <span className="badge badge-blue">每个交易日更新</span>
           </div>
         </header>
 
@@ -66,10 +59,9 @@ export default async function ChronicleHubPage() {
         <ChronicleHubClient panels={panels} />
 
         <footer className="mt-14 border-t border-white/10 pt-6 text-xs leading-relaxed text-slate-600">
-          Attribution required (CC-BY-4.0): History of Market — The Chronicle of
-          the U.S. Stock Market, historyofmarket.com. 上游日更后，本站通过腾讯云
-          cron / <code className="text-slate-500">npm run sync:chronicle</code>{" "}
-          同步；若本地镜像超过约 26 小时，页面自动回源官网最新 JSON。本页为研究镜像，不构成投资建议。
+          数据与图表来源：History of Market · 美股编年史（CC-BY-4.0 署名使用）。
+          本站每个交易日自动同步公开数据；若本地镜像超过约 26
+          小时，页面自动回源获取最新 JSON。本页为研究镜像，不构成投资建议。
         </footer>
       </div>
     </div>

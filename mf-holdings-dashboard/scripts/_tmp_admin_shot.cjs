@@ -41,7 +41,7 @@ const sig = b64(crypto.createHmac("sha256", loadAuthSecret()).update(body).diges
   await page.waitForTimeout(1500);
   const adminLink = await page.locator('header a[href="/admin"]').count();
   console.log("admin nav link count:", adminLink);
-  await page.screenshot({ path: path.join(OUT, "admin_nav_entry.png") });
+  await page.screenshot({ path: path.join(OUT, "admin_nav_entry.png"), fullPage: true });
   console.log("OK admin_nav_entry");
 
   // 2) /admin 门禁页

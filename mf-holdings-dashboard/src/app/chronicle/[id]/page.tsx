@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ChronicleVisual } from "@/components/chronicle/ChronicleVisual";
 import { getSyncMeta, loadPanelDataset, loadProfilePanels } from "@/lib/chronicle/load";
 import { datasetPathFromUrl } from "@/lib/chronicle/types";
+import { LATEST_KEY_ZH, PANEL_ZH } from "@/lib/chronicle/zh";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,7 @@ function summarize(data: unknown): { label: string; value: string; tone?: "rise"
       if (/^(date|year|day|time)$/i.test(k)) continue;
       if (typeof v === "boolean" || v === "true" || v === "false") continue;
       if (typeof v === "string" && v.length > 24) continue;
-      push(`最新·${k}`, v);
+      push(`最新·${LATEST_KEY_ZH[k.toLowerCase()] ?? k}`, v);
     }
   }
   if (o.best && typeof o.best === "object") {
@@ -98,14 +99,14 @@ export default async function ChroniclePanelPage({
           <h1 className="font-display text-2xl sm:text-4xl font-bold mt-2 text-white">
             {panel.title}
           </h1>
-          {panel.question ? (
+          {PANEL_ZH[panel.id]?.q ? (
             <p className="text-sm sm:text-base text-slate-400 mt-3 max-w-3xl leading-relaxed">
-              {panel.question}
+              {PANEL_ZH[panel.id].q}
             </p>
           ) : null}
-          {panel.highlight ? (
+          {PANEL_ZH[panel.id]?.h ? (
             <div className="mt-5 rounded-2xl border border-gold/25 bg-gold/5 px-4 py-3 text-sm text-gold-light leading-relaxed">
-              {panel.highlight}
+              {PANEL_ZH[panel.id].h}
             </div>
           ) : null}
         </header>
@@ -142,39 +143,11 @@ export default async function ChroniclePanelPage({
         )}
 
         <div className="mt-8 flex flex-wrap gap-3 text-sm">
-          <a
-            href={panel.dataset}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-ghost inline-flex items-center gap-1.5 !py-2 !px-3 text-xs"
-          >
-            原始 JSON <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-          {panel.static_url ? (
-            <a
-              href={panel.static_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost inline-flex items-center gap-1.5 !py-2 !px-3 text-xs"
-            >
-              原站静态页 <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          ) : null}
-          {panel.panel ? (
-            <a
-              href={panel.panel}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost inline-flex items-center gap-1.5 !py-2 !px-3 text-xs"
-            >
-              原站交互面板 <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          ) : null}
           <Link
             href={`/api/chronicle/${rel}`}
             className="btn-ghost inline-flex items-center gap-1.5 !py-2 !px-3 text-xs"
           >
-            站内 API
+            数据 API（JSON）
           </Link>
         </div>
 
@@ -203,11 +176,10 @@ export default async function ChroniclePanelPage({
         </div>
 
         <footer className="mt-10 border-t border-white/10 pt-5 text-xs text-slate-600 leading-relaxed">
-          Attribution: History of Market — The Chronicle of the U.S. Stock Market,{" "}
-          {panel.title}, historyofmarket.com (CC-BY-4.0).
+          数据来源：History of Market · 美股编年史（CC-BY-4.0 署名使用）。
           {meta.synced_at
-            ? ` 本地镜像同步于 ${meta.synced_at}${meta.stale ? "（已过期，本页可能已回源）" : ""}。`
-            : " 当前直接回源官网。"}
+            ? ` 本地镜像同步于 ${meta.synced_at}${meta.stale ? "（已过期，本页可能已回源更新）" : ""}。`
+            : " 当前直接回源获取最新数据。"}
         </footer>
       </div>
     </div>
