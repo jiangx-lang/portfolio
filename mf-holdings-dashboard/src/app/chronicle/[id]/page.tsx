@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ChronicleVisual } from "@/components/chronicle/ChronicleVisual";
-import { getSyncMeta, loadPanelDataset, loadProfilePanels } from "@/lib/chronicle/load";
+import { loadPanelDataset, loadProfilePanels } from "@/lib/chronicle/load";
 import { panelShortTitle, parseChapter } from "@/lib/chronicle/magazine";
 import { datasetPathFromUrl, isChronicleJsonDataset } from "@/lib/chronicle/types";
 import { LATEST_KEY_ZH, PANEL_ZH } from "@/lib/chronicle/zh";
@@ -79,7 +79,6 @@ export default async function ChroniclePanelPage({
 
   const rel = hasJson ? datasetPathFromUrl(panel.dataset) : "";
   const stats = summarize(data);
-  const meta = getSyncMeta();
   const idx = panels.findIndex((p) => p.id === id);
   const prev = idx > 0 ? panels[idx - 1] : null;
   const next = idx >= 0 && idx < panels.length - 1 ? panels[idx + 1] : null;
@@ -210,11 +209,6 @@ export default async function ChroniclePanelPage({
             </Link>
           ) : null}
         </div>
-
-        <footer className="mt-8 text-[11px] text-slate-600">
-          数据来源：History of Market（CC-BY-4.0）
-          {meta.synced_at ? ` · 同步于 ${meta.synced_at.slice(0, 10)}` : ""}
-        </footer>
       </div>
     </div>
   );
