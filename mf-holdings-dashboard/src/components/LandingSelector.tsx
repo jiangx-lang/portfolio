@@ -154,7 +154,6 @@ export default function LandingSelector() {
   }, []);
 
   const userLevel = progress?.level ?? 1;
-  const isAdmin = (progress?.username ?? "").toLowerCase() === "admin";
 
   const renderBigCard = (entry: Entry, index: number) => {
     const required = entry.key ? requiredLevels[entry.key] : 1;
@@ -355,17 +354,16 @@ export default function LandingSelector() {
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {toolEntries.map((entry, i) => renderSmallCard(entry, i))}
-          {isAdmin &&
-            renderSmallCard(
-              {
-                tag: "ADMIN",
-                title: "管理后台",
-                desc: "内容上传 · 数据统计",
-                icon: Lock,
-                href: "/admin",
-              },
-              toolEntries.length
-            )}
+          {renderSmallCard(
+            {
+              tag: "ADMIN",
+              title: "管理后台",
+              desc: "内容上传 · 数据统计",
+              icon: Lock,
+              href: "/admin",
+            },
+            toolEntries.length
+          )}
         </div>
       </div>
 
