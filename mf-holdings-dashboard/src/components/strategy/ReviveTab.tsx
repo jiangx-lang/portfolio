@@ -13,6 +13,7 @@ import {
 import { StrategyNavChart } from "@/components/strategy/StrategyNavChart";
 import { VariantGrid } from "@/components/strategy/VariantGrid";
 import { MonthlyHeatmap } from "@/components/strategy/MonthlyHeatmap";
+import { V16SwitchSection } from "@/components/strategy/V16SwitchSection";
 import { SectionHeader } from "@/components/strategy/SectionHeader";
 import { STRATEGY, num, pct } from "@/data/publicStrategy";
 
@@ -151,6 +152,18 @@ export function ReviveTab() {
         </div>
       </section>
 
+      {/* ---- v1.6 池年线开关（新生产版本）---- */}
+      <section className="border-b border-white/[0.07] bg-navy-soft px-4 py-10 sm:px-6">
+        <div className="mx-auto w-full max-w-7xl">
+          <SectionHeader
+            eyebrow="V1.6 PRODUCTION"
+            title="v1.6 · 池年线开关"
+            desc="新生产版本：仓位开关从宽基指数换成策略自己可投池的年线——哨兵和战场是同一个地方。同一信号引擎下，年化站上 50%、夏普超过 3，开关触发的无效换手几乎消失。"
+          />
+          <V16SwitchSection />
+        </div>
+      </section>
+
       {/* ---- 净值大图 ---- */}
       <section className="border-b border-white/[0.07] bg-navy-soft px-4 py-10 sm:px-6">
         <div className="mx-auto w-full max-w-7xl">
@@ -261,7 +274,7 @@ export function ReviveTab() {
                   <tr
                     key={v.version}
                     className={`border-b border-white/[0.05] ${
-                      v.status === "现役"
+                      v.status === "现役" || v.status === "生产"
                         ? "text-emerald-300"
                         : "text-slate-300"
                     }`}
@@ -283,6 +296,10 @@ export function ReviveTab() {
                       {v.status === "现役" ? (
                         <span className="rounded border border-emerald-500/40 px-1.5 py-0.5 text-[11px] text-emerald-400">
                           现役
+                        </span>
+                      ) : v.status === "生产" ? (
+                        <span className="rounded border border-emerald-400/60 bg-emerald-500/15 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-300">
+                          新生产版本
                         </span>
                       ) : v.status === "候选" ? (
                         <span className="rounded border border-info/40 px-1.5 py-0.5 text-[11px] text-info">

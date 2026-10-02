@@ -22,6 +22,51 @@ export type VersionRow = {
   status: string;
 };
 
+export type V16GradientRow = {
+  n: number;
+  holdingLabel: string;
+  cagr: number;
+  sharpe: number;
+  maxDD: number;
+  calmar: number;
+  multiple: number;
+  nTrades: number;
+  production: boolean;
+};
+
+export type V16Champion = {
+  board: string;
+  holdingLabel: string;
+  value: number;
+  fmt: "pct" | "num";
+  note?: string;
+};
+
+export type V16Data = {
+  label: string;
+  productionN: number;
+  gradient: V16GradientRow[];
+  champions: V16Champion[];
+  dates: string[];
+  nav: Record<string, number[]>;
+  v0: {
+    label: string;
+    cagr: number;
+    sharpe: number;
+    maxDD: number;
+    nTrades: number;
+  };
+  mechanics: { title: string; text: string }[];
+  state: {
+    status: string;
+    poolIndex: number;
+    poolMa: number;
+    asof: string;
+    text: string;
+  };
+  source: string;
+};
+
 export type PublicStrategyData = {
   meta: {
     name: string;
@@ -67,6 +112,7 @@ export type PublicStrategyData = {
   };
   monthly: Record<string, Record<string, number | null>>;
   versions: VersionRow[];
+  v16: V16Data;
   source: string;
 };
 
