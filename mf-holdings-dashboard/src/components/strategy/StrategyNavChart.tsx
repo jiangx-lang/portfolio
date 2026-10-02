@@ -88,8 +88,8 @@ export function StrategyNavChart() {
       labels: mc.dates,
       datasets: [
         line(STRATEGY.active.label, mc.active, "#10B981", 2.2),
+        line(STRATEGY.monthlyRef.label, mc.monthlyRef, "#C9A84C", 1.6, [5, 4]),
         line("全市场等权基准", mc.benchmark, "#94A3C2", 1.4),
-        line(STRATEGY.candidate.label, mc.candidate, "#5B93F0", 1.4, [5, 4]),
       ],
     }),
     [mc]

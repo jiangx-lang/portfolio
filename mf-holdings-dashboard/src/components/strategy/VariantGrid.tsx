@@ -32,8 +32,8 @@ export function VariantGrid() {
   const { ns, ws, weightLabels, holdingLabels, dates, nav, cells } =
     STRATEGY.grid;
   const [selected, setSelected] = useState<string[]>([
-    STRATEGY.active.gridKey,
-    STRATEGY.candidate.gridKey,
+    STRATEGY.grid.activeKey,
+    STRATEGY.grid.championKey,
   ]);
 
   const cagrExtent = useMemo(() => {
@@ -104,7 +104,8 @@ export function VariantGrid() {
                     (c.cagr - cagrExtent.min) /
                     (cagrExtent.max - cagrExtent.min || 1);
                   const isSel = selected.includes(c.key);
-                  const isActive = c.key === STRATEGY.active.gridKey;
+                  const isActive = c.key === STRATEGY.grid.activeKey;
+                  const isChamp = c.key === STRATEGY.grid.championKey;
                   return (
                     <td key={w}>
                       <motion.button
@@ -132,6 +133,11 @@ export function VariantGrid() {
                             现役
                           </span>
                         )}
+                        {isChamp && (
+                          <span className="mt-0.5 block text-[9px] font-semibold text-gold-light">
+                            冠军
+                          </span>
+                        )}
                       </motion.button>
                     </td>
                   );
@@ -142,8 +148,9 @@ export function VariantGrid() {
         </table>
       </div>
       <p className="text-[11px] text-slate-500">
-        单元格为年化收益率（颜色越亮越高）。点击格子联动下方曲线与指标，最多同时对比{" "}
-        {MAX_SELECTED} 个变体。
+        单元格为年化收益率（颜色越亮越高，修正口径）。点击格子联动下方曲线与指标，最多同时对比{" "}
+        {MAX_SELECTED} 个变体。注意排序倒挂：线下仓位越高（防守越少）年化越高——冠军为持仓3只
+        · 不防守（25.0%）。
       </p>
 
       {/* 联动净值曲线 */}

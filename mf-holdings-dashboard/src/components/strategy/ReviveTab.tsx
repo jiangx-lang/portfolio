@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
+  ArrowRightLeft,
+  Bug,
   Crosshair,
   FilterX,
   Landmark,
@@ -13,11 +15,8 @@ import {
 import { StrategyNavChart } from "@/components/strategy/StrategyNavChart";
 import { VariantGrid } from "@/components/strategy/VariantGrid";
 import { MonthlyHeatmap } from "@/components/strategy/MonthlyHeatmap";
-import { V16SwitchSection } from "@/components/strategy/V16SwitchSection";
 import { SectionHeader } from "@/components/strategy/SectionHeader";
 import { STRATEGY, num, pct } from "@/data/publicStrategy";
-
-const EMERALD_GLOW = "0 0 24px rgba(16,185,129,0.35)";
 
 function KpiCard({
   label,
@@ -45,11 +44,53 @@ function KpiCard({
   );
 }
 
+function VersionBadge({ status }: { status: string }) {
+  if (status === "现役")
+    return (
+      <span className="rounded border border-emerald-500/40 px-1.5 py-0.5 text-[11px] text-emerald-400">
+        现役
+      </span>
+    );
+  if (status === "干净参照")
+    return (
+      <span className="rounded border border-gold/40 px-1.5 py-0.5 text-[11px] text-gold">
+        干净参照
+      </span>
+    );
+  if (status === "被证伪的岔路")
+    return (
+      <span className="rounded border border-rise/40 bg-rise/[0.08] px-1.5 py-0.5 text-[11px] text-rise">
+        被证伪的岔路
+      </span>
+    );
+  return <span className="text-[11px] text-slate-500">{status}</span>;
+}
+
 export function ReviveTab() {
   const a = STRATEGY.active;
+  const m = STRATEGY.monthlyRef;
+  const fix = STRATEGY.correction;
 
   return (
     <div>
+      {/* ---- 口径修正警示条 ---- */}
+      <div className="border-b border-rise/30 bg-rise/[0.10] px-4 py-3 sm:px-6">
+        <div className="mx-auto flex w-full max-w-7xl items-start gap-2.5 text-xs leading-relaxed text-rise sm:text-sm">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.8} />
+          <p>
+            本页数字曾于 {fix.date} 全面修正：债息重复计提 bug
+            影响了此前展示的数值（如 v1.6 年化 50.49% 实为 6.54%）。详见页内
+            <a
+              href="#fix-note"
+              className="mx-1 underline decoration-rise/50 underline-offset-2 hover:text-rose-300"
+            >
+              「口径修复说明」
+            </a>
+            。
+          </p>
+        </div>
+      </div>
+
       {/* ---- Tab 内 Hero ---- */}
       <section className="px-4 pb-10 pt-8 sm:px-6 sm:pt-10">
         <div className="mx-auto w-full max-w-7xl">
@@ -65,7 +106,7 @@ export function ReviveTab() {
               <div>
                 <h2
                   className="font-display text-3xl font-bold text-emerald-300 sm:text-4xl"
-                  style={{ textShadow: EMERALD_GLOW }}
+                  style={{ textShadow: "0 0 24px rgba(16,185,129,0.35)" }}
                 >
                   枯木逢春 · Revive
                 </h2>
@@ -127,16 +168,60 @@ export function ReviveTab() {
         </div>
       </section>
 
+      {/* ---- 口径修复说明 ---- */}
+      <section
+        id="fix-note"
+        className="scroll-mt-20 border-b border-white/[0.07] bg-navy-soft px-4 py-10 sm:px-6"
+      >
+        <div className="mx-auto w-full max-w-7xl">
+          <SectionHeader
+            eyebrow="CALIBER FIX · 2026-10-02"
+            title="口径修复说明"
+          />
+          <div className="glass-panel border-rise/20 p-5 sm:p-6">
+            <div className="flex items-start gap-3">
+              <Bug className="mt-0.5 h-5 w-5 shrink-0 text-rise" strokeWidth={1.6} />
+              <div className="space-y-3 text-sm leading-relaxed text-slate-300">
+                <p>{fix.bug}</p>
+                <p className="text-slate-100">
+                  <strong>{fix.impact}</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            {fix.flips.map((f, i) => (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.45, delay: i * 0.06 }}
+                className="glass-panel p-5 transition-shadow hover:shadow-[0_0_22px_rgba(232,93,80,0.12)]"
+              >
+                <ArrowRightLeft className="h-5 w-5 text-rise" strokeWidth={1.6} />
+                <h3 className="mt-3 text-base font-semibold text-slate-100">
+                  翻转{["一", "二", "三"][i]} · {f.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  {f.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ---- KPI ---- */}
       <section className="border-b border-white/[0.07] px-4 py-10 sm:px-6">
         <div className="mx-auto w-full max-w-7xl">
           <SectionHeader
             eyebrow="KEY METRICS"
-            title="现役版本一览"
-            desc="2012 年 4 月至今的完整回测窗口，费用与滑点已计入。"
+            title="现役版本一览（修正口径）"
+            desc="2012 年 4 月至今的完整回测窗口，费用与滑点已计入，债息按修正口径核算。"
           />
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <KpiCard label="年化收益率" value={pct(a.cagr, 1)} sub="费后" />
+            <KpiCard label="年化收益率" value={pct(a.cagr, 1)} sub={`费后 · ${a.note}`} />
             <KpiCard label="夏普比率" value={num(a.sharpe)} sub="日收益年化" />
             <KpiCard
               label="最大回撤"
@@ -149,18 +234,11 @@ export function ReviveTab() {
               sub="回测期全程"
             />
           </div>
-        </div>
-      </section>
-
-      {/* ---- v1.6 池年线开关（新生产版本）---- */}
-      <section className="border-b border-white/[0.07] bg-navy-soft px-4 py-10 sm:px-6">
-        <div className="mx-auto w-full max-w-7xl">
-          <SectionHeader
-            eyebrow="V1.6 PRODUCTION"
-            title="v1.6 · 池年线开关"
-            desc="新生产版本：仓位开关从宽基指数换成策略自己可投池的年线——哨兵和战场是同一个地方。同一信号引擎下，年化站上 50%、夏普超过 3，开关触发的无效换手几乎消失。"
-          />
-          <V16SwitchSection />
+          <p className="mt-4 text-xs leading-relaxed text-slate-500">
+            对照 · {m.label}：年化 {pct(m.cagr, 1)} / 夏普 {num(m.sharpe)} /
+            最大回撤 {pct(m.maxDD, 1)} / 累计 {num(m.multiple, 1)}×
+            ——唯一未被 bug 污染的引擎，是衡量一切日度版本的基准线。
+          </p>
         </div>
       </section>
 
@@ -170,7 +248,7 @@ export function ReviveTab() {
           <SectionHeader
             eyebrow="EQUITY CURVE"
             title="净值曲线与回撤"
-            desc="现役版本 vs 全市场等权基准（策略可投池内等权）vs 候选版本（线下全守档，未启用）。"
+            desc="现役 v1.4（修正口径）vs 月度 v1.1（干净参照）vs 全市场等权基准。两条策略线几乎贴合——日度机制相对月度的真实增益远比旧口径显示的小。"
           />
           <div className="glass-panel p-3 sm:p-5">
             <StrategyNavChart />
@@ -183,8 +261,8 @@ export function ReviveTab() {
         <div className="mx-auto w-full max-w-7xl">
           <SectionHeader
             eyebrow="VARIANT MATRIX"
-            title="组合构建变体网格"
-            desc="策略收益对两个组合构建维度的敏感性：持仓只数 × 大盘线下仓位档位。25 个变体在同一信号引擎下回测，用于展示结论的稳健性——信号逻辑完全一致，仅组合构建不同。"
+            title="组合构建变体网格（修正口径）"
+            desc="25 个变体在同一信号引擎、修正口径下重跑。修正后结论与旧口径完全倒挂：防守档位越低、年化越高——线下撤仓省下的亏损，抵不过错过的反弹。"
           />
           <div className="glass-panel p-3 sm:p-5">
             <VariantGrid />
@@ -198,7 +276,7 @@ export function ReviveTab() {
           <SectionHeader
             eyebrow="MONTHLY RETURNS"
             title="月度收益热力表"
-            desc="现役版本逐月费后收益。可以看到收益的分布并不均匀——它高度依赖困境反转标的的供给与市场环境。"
+            desc="现役版本逐月费后收益（修正口径）。收益分布并不均匀——高度依赖困境反转标的的供给与市场环境。"
           />
           <div className="glass-panel p-3 sm:p-5">
             <MonthlyHeatmap />
@@ -231,7 +309,7 @@ export function ReviveTab() {
                 逐段解剖数千笔持仓：约八成半的利润来自上年同期亏损或微利、
                 本期刚转正的「扭亏型」公司；低基数公司贡献其次。基数正常的真
                 拐点组同样整体盈利——这不是单纯的数字游戏，而是市场对困境
-                反转的系统性低估。
+                反转的系统性低估。（交易层解剖不受债息 bug 影响。）
               </p>
             </div>
             <div className="glass-panel p-5 transition-shadow hover:shadow-[0_0_22px_rgba(16,185,129,0.12)]">
@@ -254,11 +332,11 @@ export function ReviveTab() {
         <div className="mx-auto w-full max-w-7xl">
           <SectionHeader
             eyebrow="LINEAGE"
-            title="版本谱系"
-            desc="每一次改动都由一个可证伪的问题驱动：日历为什么重要、排名恶化多快该离场、观察频率多高才够。"
+            title="版本谱系（修正口径）"
+            desc="每一次改动都由一个可证伪的问题驱动。v1.5 之后的「升级」全部建立在被污染的债息上——修正后无一例外是岔路。"
           />
           <div className="glass-panel overflow-x-auto p-3 sm:p-5">
-            <table className="w-full min-w-[640px] text-sm">
+            <table className="w-full min-w-[720px] text-sm">
               <thead>
                 <tr className="border-b border-white/[0.08] text-left text-[11px] text-slate-500">
                   <th className="py-2 pr-3 font-medium">版本</th>
@@ -266,58 +344,55 @@ export function ReviveTab() {
                   <th className="py-2 pr-3 text-right font-medium">年化收益</th>
                   <th className="py-2 pr-3 text-right font-medium">夏普比率</th>
                   <th className="py-2 pr-3 text-right font-medium">最大回撤</th>
+                  <th className="py-2 pr-3 text-right font-medium">修正前</th>
                   <th className="py-2 text-right font-medium">状态</th>
                 </tr>
               </thead>
               <tbody>
-                {STRATEGY.versions.map((v) => (
-                  <tr
-                    key={v.version}
-                    className={`border-b border-white/[0.05] ${
-                      v.status === "现役" || v.status === "生产"
-                        ? "text-emerald-300"
-                        : "text-slate-300"
-                    }`}
-                  >
-                    <td className="num py-2.5 pr-3 font-semibold">
-                      {v.version}
-                    </td>
-                    <td className="py-2.5 pr-3">{v.desc}</td>
-                    <td className="num py-2.5 pr-3 text-right">
-                      {pct(v.cagr, 1)}
-                    </td>
-                    <td className="num py-2.5 pr-3 text-right">
-                      {num(v.sharpe)}
-                    </td>
-                    <td className="num py-2.5 pr-3 text-right">
-                      {v.maxDD == null ? "—" : pct(v.maxDD, 1)}
-                    </td>
-                    <td className="py-2.5 text-right">
-                      {v.status === "现役" ? (
-                        <span className="rounded border border-emerald-500/40 px-1.5 py-0.5 text-[11px] text-emerald-400">
-                          现役
-                        </span>
-                      ) : v.status === "生产" ? (
-                        <span className="rounded border border-emerald-400/60 bg-emerald-500/15 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-300">
-                          新生产版本
-                        </span>
-                      ) : v.status === "候选" ? (
-                        <span className="rounded border border-info/40 px-1.5 py-0.5 text-[11px] text-info">
-                          候选
-                        </span>
-                      ) : (
-                        <span className="text-[11px] text-slate-500">
-                          {v.status}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {STRATEGY.versions.map((v) => {
+                  const falsified = v.status === "被证伪的岔路";
+                  return (
+                    <tr
+                      key={v.version}
+                      className={`border-b border-white/[0.05] ${
+                        v.status === "现役"
+                          ? "text-emerald-300"
+                          : falsified
+                            ? "text-slate-500"
+                            : "text-slate-300"
+                      }`}
+                    >
+                      <td className="num py-2.5 pr-3 font-semibold">
+                        {v.version}
+                      </td>
+                      <td className="py-2.5 pr-3">{v.desc}</td>
+                      <td className="num py-2.5 pr-3 text-right">
+                        {pct(v.cagr, 1)}
+                      </td>
+                      <td className="num py-2.5 pr-3 text-right">
+                        {num(v.sharpe)}
+                      </td>
+                      <td className="num py-2.5 pr-3 text-right">
+                        {v.maxDD == null ? "—" : pct(v.maxDD, 1)}
+                      </td>
+                      <td className="num py-2.5 pr-3 text-right text-rise/80">
+                        {v.cagrBug == null
+                          ? "—"
+                          : typeof v.cagrBug === "number"
+                            ? pct(v.cagrBug, 1)
+                            : v.cagrBug}
+                      </td>
+                      <td className="py-2.5 text-right">
+                        <VersionBadge status={v.status} />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             <p className="mt-3 text-[11px] leading-relaxed text-slate-500">
-              候选版本把「大盘线下收缩仓位」做到极致，历史数字显著更好，但它
-              是参数扫描中的最优点、且使策略带择时属性——尚未启用，仅作对照。
+              「修正前」列为被债息 bug 污染的旧展示值，仅作对照存档；v1.2/v1.3
+              的数字出自月度/周度实验，尚未按修正口径重跑，仅作历史参考。
             </p>
           </div>
         </div>
@@ -334,6 +409,12 @@ export function ReviveTab() {
                 strokeWidth={1.6}
               />
               <ul className="space-y-3 text-sm leading-relaxed text-slate-300">
+                {STRATEGY.riskExtra.map((t) => (
+                  <li key={t.slice(0, 12)}>
+                    <strong className="text-rise/90">口径警示。</strong>
+                    {t}
+                  </li>
+                ))}
                 <li>
                   <strong className="text-slate-100">回测非实盘。</strong>
                   全部结果来自历史数据模拟，含费用与滑点假设；实盘存在冲击
@@ -343,11 +424,6 @@ export function ReviveTab() {
                   <strong className="text-slate-100">回撤可能极深。</strong>
                   历史上最大回撤约 50%，极端情形（如 2015 年式闪崩）可能
                   更深；也曾出现连续数年的低迷期。
-                </li>
-                <li>
-                  <strong className="text-slate-100">超额收益正在衰减。</strong>
-                  2025 年以来，策略相对自身可投池的超额明显走弱，有两条相互
-                  独立的证据支持这一结论；是拥挤化还是风格周期，目前无定论。
                 </li>
                 <li>
                   <strong className="text-slate-100">容量有限。</strong>
@@ -363,8 +439,8 @@ export function ReviveTab() {
           </div>
           <p className="mt-6 text-[11px] text-slate-500">
             数据截止 {STRATEGY.meta.asof} · 回测区间{" "}
-            {STRATEGY.meta.backtestStart} 至 {STRATEGY.meta.dataEnd} ·
-            历史回测，非实盘业绩，不构成投资建议
+            {STRATEGY.meta.backtestStart} 至 {STRATEGY.meta.dataEnd} · 口径修正日{" "}
+            {STRATEGY.meta.correctedOn} · 历史回测，非实盘业绩，不构成投资建议
           </p>
         </div>
       </section>

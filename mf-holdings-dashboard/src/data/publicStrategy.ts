@@ -19,52 +19,16 @@ export type VersionRow = {
   cagr: number | null;
   sharpe: number | null;
   maxDD: number | null;
+  cagrBug: number | string | null;
   status: string;
 };
 
-export type V16GradientRow = {
-  n: number;
-  holdingLabel: string;
-  cagr: number;
-  sharpe: number;
-  maxDD: number;
-  calmar: number;
-  multiple: number;
-  nTrades: number;
-  production: boolean;
-};
-
-export type V16Champion = {
-  board: string;
-  holdingLabel: string;
-  value: number;
-  fmt: "pct" | "num";
-  note?: string;
-};
-
-export type V16Data = {
-  label: string;
-  productionN: number;
-  gradient: V16GradientRow[];
-  champions: V16Champion[];
-  dates: string[];
-  nav: Record<string, number[]>;
-  v0: {
-    label: string;
-    cagr: number;
-    sharpe: number;
-    maxDD: number;
-    nTrades: number;
-  };
-  mechanics: { title: string; text: string }[];
-  state: {
-    status: string;
-    poolIndex: number;
-    poolMa: number;
-    asof: string;
-    text: string;
-  };
-  source: string;
+export type CorrectionNote = {
+  date: string;
+  title: string;
+  bug: string;
+  impact: string;
+  flips: { title: string; text: string }[];
 };
 
 export type PublicStrategyData = {
@@ -73,8 +37,10 @@ export type PublicStrategyData = {
     asof: string;
     dataEnd: string;
     backtestStart: string;
+    correctedOn: string;
     disclaimer: string;
   };
+  correction: CorrectionNote;
   active: {
     gridKey: string;
     label: string;
@@ -83,21 +49,20 @@ export type PublicStrategyData = {
     maxDD: number;
     calmar: number;
     multiple: number;
+    note: string;
   };
-  candidate: {
-    gridKey: string;
+  monthlyRef: {
     label: string;
     cagr: number;
     sharpe: number;
     maxDD: number;
-    calmar: number;
     multiple: number;
   };
   mainChart: {
     dates: string[];
     active: (number | null)[];
+    monthlyRef: (number | null)[];
     benchmark: (number | null)[];
-    candidate: (number | null)[];
     ddActive: (number | null)[];
     ddBenchmark: (number | null)[];
   };
@@ -109,10 +74,12 @@ export type PublicStrategyData = {
     cells: GridCell[];
     dates: string[];
     nav: Record<string, number[]>;
+    activeKey: string;
+    championKey: string;
   };
   monthly: Record<string, Record<string, number | null>>;
   versions: VersionRow[];
-  v16: V16Data;
+  riskExtra: string[];
   source: string;
 };
 
