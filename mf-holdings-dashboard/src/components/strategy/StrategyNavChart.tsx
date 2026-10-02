@@ -40,9 +40,9 @@ function baseOptions(yTitle: string, log = false) {
       },
       tooltip: {
         backgroundColor: "#0C1120",
-        borderColor: "rgba(201,168,76,0.35)",
+        borderColor: "rgba(16,185,129,0.35)",
         borderWidth: 1,
-        titleColor: "#E3C87A",
+        titleColor: "#6EE7B7",
         bodyColor: "#cbd5e1",
       },
     },
@@ -61,19 +61,12 @@ function baseOptions(yTitle: string, log = false) {
   };
 }
 
-const line = (
-  label: string,
-  data: (number | null)[],
-  color: string,
-  width = 2,
-  dash?: number[]
-) => ({
+const line = (label: string, data: (number | null)[], color: string, width = 2) => ({
   label,
   data,
   borderColor: color,
   backgroundColor: color,
   borderWidth: width,
-  borderDash: dash,
   pointRadius: 0,
   pointHoverRadius: 3,
   tension: 0,
@@ -87,8 +80,7 @@ export function StrategyNavChart() {
     () => ({
       labels: mc.dates,
       datasets: [
-        line(STRATEGY.active.label, mc.active, "#10B981", 2.2),
-        line(STRATEGY.monthlyRef.label, mc.monthlyRef, "#C9A84C", 1.6, [5, 4]),
+        line(STRATEGY.root.label, mc.root, "#10B981", 2.2),
         line("全市场等权基准", mc.benchmark, "#94A3C2", 1.4),
       ],
     }),
@@ -99,7 +91,7 @@ export function StrategyNavChart() {
     () => ({
       labels: mc.dates,
       datasets: [
-        { ...line(STRATEGY.active.label, mc.ddActive, "#10B981", 1.6), fill: true, backgroundColor: "rgba(16,185,129,0.10)" },
+        { ...line(STRATEGY.root.label, mc.ddRoot, "#10B981", 1.6), fill: true, backgroundColor: "rgba(16,185,129,0.10)" },
         { ...line("全市场等权基准", mc.ddBenchmark, "#94A3C2", 1.2), fill: true, backgroundColor: "rgba(148,163,194,0.08)" },
       ],
     }),
