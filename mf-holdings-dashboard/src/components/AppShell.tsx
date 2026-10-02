@@ -26,6 +26,7 @@ const navLinks: NavLink[] = [
   { label: "编年史", href: "https://historyofmarket.com/", external: true },
   { label: "市场笔记", href: "/notes" },
   { label: "播客", href: "/podcast" },
+  { label: "星图策略", href: "/strategy" },
   { label: "Risk", href: "/risk" },
 ];
 

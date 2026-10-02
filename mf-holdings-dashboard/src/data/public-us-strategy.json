@@ -1,0 +1,123 @@
+{
+ "meta": {
+  "name": "巨鲸追踪 · WhaleTrail",
+  "quarter": "2026 Q2",
+  "dataNote": "信号样本 2020–2024，季度亮点截至 2026Q2 披露季",
+  "disclaimer": "历史回测，非实盘业绩"
+ },
+ "tracks": {
+  "A": {
+   "key": "bottleneck",
+   "label": "物理瓶颈产业链",
+   "tagline": "电网、核电、热管理、核燃料、数据中心 REIT、储能等「有物理产能约束」的链条",
+   "signals": 310,
+   "winRate": 0.775,
+   "alphaWinRate": 0.636,
+   "avg4Q": 0.4411,
+   "avgAlpha": 0.3063
+  },
+  "B": {
+   "key": "radar",
+   "label": "全市场雷达",
+   "tagline": "同一套「机构共识 + 估值未贵」标准，不限行业，在全市场扫描",
+   "signals": 255,
+   "winRate": 0.767,
+   "alphaWinRate": 0.61,
+   "avg4Q": 0.4282,
+   "avgAlpha": 0.2921
+  }
+ },
+ "yearly": [
+  {
+   "year": 2020,
+   "aSignals": 34,
+   "aAvg4Q": 0.4718,
+   "aAlpha": 0.2214,
+   "aAlphaWin": 0.559,
+   "bSignals": 26,
+   "bAvg4Q": 0.5275,
+   "bAlpha": 0.2681,
+   "bAlphaWin": 0.538,
+   "spyReturn": 0.1664
+  },
+  {
+   "year": 2021,
+   "aSignals": 55,
+   "aAvg4Q": 0.0602,
+   "aAlpha": 0.1378,
+   "aAlphaWin": 0.673,
+   "bSignals": 46,
+   "bAvg4Q": 0.0602,
+   "bAlpha": 0.1324,
+   "bAlphaWin": 0.696,
+   "spyReturn": 0.3084
+  },
+  {
+   "year": 2022,
+   "aSignals": 37,
+   "aAvg4Q": 0.4909,
+   "aAlpha": 0.3778,
+   "aAlphaWin": 0.811,
+   "bSignals": 31,
+   "bAvg4Q": 0.4728,
+   "bAlpha": 0.3604,
+   "bAlphaWin": 0.774,
+   "spyReturn": -0.1865
+  },
+  {
+   "year": 2023,
+   "aSignals": 61,
+   "aAvg4Q": 0.7373,
+   "aAlpha": 0.4714,
+   "aAlphaWin": 0.623,
+   "bSignals": 50,
+   "bAvg4Q": 0.7163,
+   "bAlpha": 0.4427,
+   "bAlphaWin": 0.56,
+   "spyReturn": 0.2671
+  },
+  {
+   "year": 2024,
+   "aSignals": 71,
+   "aAvg4Q": 0.441,
+   "aAlpha": 0.2984,
+   "aAlphaWin": 0.563,
+   "bSignals": 57,
+   "bAvg4Q": 0.403,
+   "bAlpha": 0.2628,
+   "bAlphaWin": 0.526,
+   "spyReturn": 0.2605
+  }
+ ],
+ "downYear": {
+  "year": 2022,
+  "aSignals": 37,
+  "aAvg4Q": 0.4909,
+  "aAlpha": 0.3778,
+  "aAlphaWin": 0.811,
+  "bSignals": 31,
+  "bAvg4Q": 0.4728,
+  "bAlpha": 0.3604,
+  "bAlphaWin": 0.774,
+  "spyReturn": -0.1865
+ },
+ "quarterHighlights": [
+  {
+   "title": "潜伏共识黑马",
+   "text": "POWL、MOD、NVT、NXT、SXI：机构开仓/加仓极其密集但净流入金额尚小——典型的「爆发前潜伏」形态，集中在变电开关、数据中心液冷、电网继电器等物理瓶颈细分。"
+  },
+  {
+   "title": "净买入主线：硬资产与电力",
+   "text": "GEV（单季机构净买入约 $14.9B、上百家机构加仓）、CEG、VRT 领衔，电网设备、核电、热管理、储能霸榜加仓前列。"
+  },
+  {
+   "title": "净卖出主线：按席位收费的 SaaS",
+   "text": "CRM、ZM、DOCU 等 Seat-SaaS 被机构集体减持——AI 按量计费模式正在侵蚀按人头收费的叙事。"
+  },
+  {
+   "title": "宏观锚点：贴现率新常态",
+   "text": "Higher for Longer 延续；AI 资本开支进入「ROIC 能否覆盖 CAPEX」的检验期；数据中心发债成本升至 7.2%–7.8% 的历史高位。"
+  }
+ ],
+ "source": "SEC 13F 公开披露; backflow 回测流水（T+1 收盘买入，持有 4 季度）; SPY 对照"
+}

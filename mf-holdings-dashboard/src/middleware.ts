@@ -23,12 +23,13 @@ function getRequiredLevelForPath(pathname: string): { level: number; feature: st
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 放行登录、API、静态资源
+  // 放行登录、API、静态资源、公开策略展示页
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/progress") ||
     pathname.startsWith("/api/chronicle") ||
+    pathname.startsWith("/strategy") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon")
   ) {
