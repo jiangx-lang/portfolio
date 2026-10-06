@@ -162,7 +162,7 @@ export function ReviveTab() {
               <h3 className="mt-3 text-base font-semibold text-slate-100">出场</h3>
               <div className="mt-2 space-y-1 text-sm">
                 <div className="num text-emerald-300">
-                  止盈 {s.exit.tpN.toLocaleString()} 笔 · +{num(s.exit.tpPnlWan, 0)} 万
+                  止盈（已删规则·存档） {s.exit.tpN.toLocaleString()} 笔 · +{num(s.exit.tpPnlWan, 0)} 万
                 </div>
                 <div className="num text-slate-400">
                   衰减离场 {s.exit.decayN.toLocaleString()} 笔 · {num(s.exit.decayPnlWan, 0)} 万
